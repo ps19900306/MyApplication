@@ -21,7 +21,7 @@ import kotlin.coroutines.CoroutineContext
 
 class FileLog(val log: LogFilterInfo? = null) : ILog, CoroutineScope {
 
-    private val MAX_LOG_COUNT = 1000 // 缓存的最大日志数量
+    private val MAX_LOG_COUNT = 300 // 缓存的最大日志数量
     private val MAX_LOG_AGE_DAYS = 7 // 日志文件的最大保留天数
     private val logQueue = mutableListOf<Pair<Long, String>>()
     private val job = Job()
@@ -29,6 +29,11 @@ class FileLog(val log: LogFilterInfo? = null) : ILog, CoroutineScope {
         get() = Dispatchers.IO + job
     private var lastFileTime = DataUtils.getEndOfDayTimestamp()
     private var fileName = DataUtils.getCurrentDateTime() + ".txt"
+
+
+    init {
+        cleanOldLogs()
+    }
     override fun v(tag: String, msg: String, time: Long) {
         writeLogToFile(System.currentTimeMillis(), ":$tag :v: $msg")
     }
@@ -100,6 +105,12 @@ class FileLog(val log: LogFilterInfo? = null) : ILog, CoroutineScope {
         }
     }
 
+    override fun flushLogs() {
+        launch {
+            flushLog()
+        }
+    }
+
     //android
     //如果我在 context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) 存放日志文件
     //日志文件格式是yyyy-MM-dd.text。我希望删除掉七天之前的文件
@@ -110,7 +121,7 @@ class FileLog(val log: LogFilterInfo? = null) : ILog, CoroutineScope {
             if (dir.exists() && dir.isDirectory) {
                 // 获取当前日期，设置为7天前
                 val calendar = Calendar.getInstance()
-                calendar.add(Calendar.DAY_OF_YEAR, -7)
+                calendar.add(Calendar.DAY_OF_YEAR, -MAX_LOG_AGE_DAYS)
                 val sevenDaysAgo = calendar.time
 
                 // 创建日期格式器，匹配文件名格式 "yyyy-MM-dd"
@@ -139,11 +150,7 @@ class FileLog(val log: LogFilterInfo? = null) : ILog, CoroutineScope {
     }
 
 
-    override fun flushLogs() {
-        launch {
-            flushLog()
-        }
-    }
+
 
 
 }
