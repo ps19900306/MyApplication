@@ -30,6 +30,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -38,6 +41,16 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.room.runtime)
+    implementation(libs.androidx.paging.common.android)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
+
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.viewmodel.savedstate)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.paging.runtime.ktx)
+
     annotationProcessor(libs.room.compiler)
     implementation(libs.room.ktx)
     implementation(project(":BaseUtils"))

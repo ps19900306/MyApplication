@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LogListActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewLogs"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/filterLinearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/filterLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewLogs">
+
+        <EditText
+            android:id="@+id/editTextTag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tag" />
+
+        <Spinner
+            android:id="@+id/spinnerLevel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/log_levels" />
+
+        <EditText
+            android:id="@+id/editTextStartTimeThreshold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Start Time Threshold" />
+
+        <EditText
+            android:id="@+id/editTextEndTimeThreshold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="End Time Threshold" />
+
+        <EditText
+            android:id="@+id/editTextCreateTimeThreshold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Create Time Threshold" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

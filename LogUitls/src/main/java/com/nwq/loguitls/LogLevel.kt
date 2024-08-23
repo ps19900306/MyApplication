@@ -11,5 +11,7 @@ annotation class LogLevel {
         const val INFO = 3   //普通日志信息
         const val WARN = 4   //重要的信息
         const val ERROR = 5  //异常信息
+
+        fun  values():Array<Int> = arrayOf(VERBOSE,DEBUG,INFO,WARN,ERROR)
     }
 }

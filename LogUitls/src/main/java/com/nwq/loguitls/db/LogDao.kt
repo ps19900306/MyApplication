@@ -1,5 +1,6 @@
 package com.nwq.loguitls.db
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -19,23 +20,29 @@ interface LogDao {
     fun deleteLogsBefore(timeThreshold: Long): Int
 
 
-    // 删除所有 createTime 小于指定时间的日志记录
-    @Query("SELECT * FROM logs WHERE level >=:level and recordTime>=:startTimeThreshold and recordTime<=:endTimeThreshold and createTime >=:createTimeThreshold")
-    fun queryByTime(
+
+    // 分页查询所有 createTime 大于等于指定时间的日志记录
+    @Query("SELECT * FROM logs WHERE level >= :level AND recordTime >= :startTimeThreshold AND recordTime <= :endTimeThreshold AND createTime >= :createTimeThreshold ORDER BY recordTime ASC LIMIT :pageSize OFFSET :offset")
+    fun queryByTimePaged(
         level: Int = LogLevel.VERBOSE,
         startTimeThreshold: Long = -1,
         endTimeThreshold: Long = Long.MAX_VALUE,
         createTimeThreshold: Long = -1,
-    ): Int
+        pageSize: Int,
+        offset: Int
+    ): PagingSource<Int, LogEntity>
 
-    // 查询所有 tag 包含特定字符串的日志记录
-    @Query("SELECT * FROM logs WHERE tag LIKE '%' || :searchText || '%' and level >=:level and recordTime>=:startTimeThreshold and recordTime<=:endTimeThreshold and createTime >=:createTimeThreshold")
-    fun queryByTag(
+    // 分页查询所有 tag 包含特定字符串的日志记录
+    @Query("SELECT * FROM logs WHERE tag LIKE '%' || :searchText || '%' AND level >= :level AND recordTime >= :startTimeThreshold AND recordTime <= :endTimeThreshold AND createTime >= :createTimeThreshold ORDER BY recordTime ASC LIMIT :pageSize OFFSET :offset")
+    fun queryByTagPaged(
         searchText: String,
         level: Int = LogLevel.VERBOSE,
         startTimeThreshold: Long = -1,
         endTimeThreshold: Long = Long.MAX_VALUE,
         createTimeThreshold: Long = -1,
-    ): List<LogEntity>
+        pageSize: Int,
+        offset: Int
+    ): PagingSource<Int, LogEntity>
+
 
 }
