@@ -2,6 +2,7 @@ package com.nwq.loguitls.db
 
 
 import com.nwq.loguitls.ILog
+import com.nwq.loguitls.LogFilterInfo
 import com.nwq.loguitls.LogLevel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +11,7 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import kotlin.coroutines.CoroutineContext
 
-class DbLog : ILog, CoroutineScope {
+class DbLog(val log: LogFilterInfo? = null) : ILog, CoroutineScope {
 
     private val logQueue = mutableListOf<LogEntity>()
     private val job = Job()
@@ -22,7 +23,9 @@ class DbLog : ILog, CoroutineScope {
     init {
         cleanOldLogs()
     }
-
+    override fun getLogFilterInfo(): LogFilterInfo? {
+        return log;
+    }
     override fun v(tag: String, msg: String, time: Long) {
         writeLogToFile(tag, msg, time, LogLevel.VERBOSE)
     }

@@ -1,9 +1,19 @@
 package com.nwq.loguitls
 
+import com.nwq.loguitls.cat.CatLog
+import com.nwq.loguitls.db.DbLog
+import com.nwq.loguitls.file.FileLog
+
 //日志输出的类
 object L : ILog {
 
     private val list = mutableListOf<ILog>()
+
+    init {
+        list.add(FileLog(LogFilterInfo(level = LogLevel.INFO)))
+        list.add(CatLog())
+        list.add(DbLog(LogFilterInfo(level = LogLevel.DEBUG)))
+    }
 
     override fun v(tag: String, msg: String, time: Long) {
         list.forEach {
