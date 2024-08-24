@@ -11,7 +11,9 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/BaseUtils" />
             <option value="$PROJECT_DIR$/LogUitls" />
+            <option value="$PROJECT_DIR$/TargetIdentification" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/opencvIdentification" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

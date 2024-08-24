@@ -23,3 +23,5 @@ rootProject.name = "MyApplication"
 include(":app")
 include(":LogUitls")
 include(":BaseUtils")
+include(":TargetIdentification")
+include(":opencvIdentification")
