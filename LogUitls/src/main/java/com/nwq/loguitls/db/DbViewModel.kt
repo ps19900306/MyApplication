@@ -8,6 +8,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.nwq.loguitls.LogLevel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -26,6 +27,7 @@ class DbViewModel : ViewModel() {
         _tag,
         _level, _startTimeThreshold, _endTimeThreshold, _createTimeThreshold
     ) { tag, level, start, end, create ->
+        delay(1000)
         getTagLogFlow(tag, level, start, end, create)
     }.flatMapLatest { it }
         .cachedIn(viewModelScope)
