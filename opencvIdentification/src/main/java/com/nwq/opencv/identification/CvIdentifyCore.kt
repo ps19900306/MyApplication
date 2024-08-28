@@ -23,7 +23,6 @@ class CvIdentifyCore {
         // 调用函数
         val (processedImageB, maskB) = preprocessImageB("path_to_imageB.png")
         val result = findImageBInImageA("path_to_imageA.png", processedImageB, maskB)
-
     }
 
 

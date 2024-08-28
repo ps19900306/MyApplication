@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.nwq.opencv.identification"
+    namespace = "com.nwq.exculde"
     compileSdk = 34
 
     defaultConfig {
@@ -40,10 +40,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.opencv)
-
-    annotationProcessor(libs.room.compiler)
-    implementation(libs.room.ktx)
-    implementation(project(":BaseUtils"))
-
 }

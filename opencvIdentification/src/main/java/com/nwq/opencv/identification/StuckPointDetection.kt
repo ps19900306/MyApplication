@@ -15,14 +15,16 @@ class StuckPointDetection {
     //阈值
     var threshold = 3 // 最大存储数量
 
+
     /**
      * 检查当前帧是否处于静止状态
      *
-     * 该函数通过对比当前帧与最近帧的差异，来判断画面是否静止不动
-     * 主要用于检测摄像头画面是否停滞
+     * 此函数的目的是通过比较当前视频帧与最近几个帧之间的差异来判断画面是否发生变化
+     * 如果画面变化小于设定的阈值，持续一定时间后，则认为画面可能卡住
      *
-     * @param currentFrame 当前的图像帧，使用Mat对象表示
-     * @return 返回一个整型值，表示当前帧的静止状态
+     * @param currentFrame 当前的视频帧
+     * @return 如果返回 -1，则表示当前帧数量不足以进行比较；如果返回大于等于0的值，则表示已经比较了的帧数，
+     *         用于判断画面是否卡住（通过与阈值比较）
      */
     private fun checkStuckPoint(currentFrame: Mat): Int {
         // 根据预设的裁剪区域从当前帧中裁剪出感兴趣的区域
@@ -30,7 +32,7 @@ class StuckPointDetection {
         // 如果最近的图像帧数量小于阈值，直接添加当前帧并返回帧数不足的提示
         if (recentImages.size < threshold) {
             recentImages.add(croppedFrame)
-            return StuckStatus.NUMBER_TOO_SMALL
+            return -1
         } else {
             // 初始化差异总和用于计算平均差异度
             var diffSum = 0.0
@@ -45,20 +47,16 @@ class StuckPointDetection {
             // 如果平均差异度大于设定的阈值，表示画面有变化，清除之前的图像记录并返回正常状态
             if (diffSum / recentImages.size > diffThreshold) {
                 recentImages.clear()
-                return StuckStatus.NORMAL
+                return 0
             } else {
-                // 根据最近图像的数量返回不同的静止状态
-                val result = if (recentImages.size <= threshold) {
-                    StuckStatus.IS_STUCK
-                } else if (recentImages.size <= threshold * 3) {
-                    StuckStatus.IS_STUCK_LONG
-                } else {
-                    StuckStatus.ERROR
-                }
-                // 添加当前帧到最近图像列表中，并返回相应的静止状态
+                // 计算当前帧与最早记录帧之间的帧数差，用于判断画面卡住的情况
+                val result = recentImages.size - threshold + 1
                 recentImages.add(croppedFrame)
                 return result
             }
         }
     }
+
+
+
 }
