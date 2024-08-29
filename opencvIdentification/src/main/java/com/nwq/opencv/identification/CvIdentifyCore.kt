@@ -48,6 +48,7 @@ class CvIdentifyCore {
         return Pair(processedImageB, mask)
     }
 
+    //如果我希望将ImgB的descriptorsB 存入Room数据库，希望存到数据库中，那么我应该如何处理？
     fun findImageBInImageA(imageAPath: String, imageB: Mat, maskB: Mat): Mat {
         val imageA = Imgcodecs.imread(imageAPath, Imgcodecs.IMREAD_COLOR)
 
