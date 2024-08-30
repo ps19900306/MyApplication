@@ -1,7 +1,12 @@
 package com.nwq.baseutils
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.graphics.Bitmap
+import android.media.MediaScannerConnection
 import android.os.Environment
+import android.provider.MediaStore
+import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileWriter
@@ -50,6 +55,54 @@ object FileUtils {
             }
         }
         return file;
+    }
+
+
+    /**
+     * 将Bitmap保存到图库
+     *
+     * @param bitmap 要保存的Bitmap对象
+     * @param fileName 文件名
+     * @return 保存是否成功
+     */
+    fun saveBitmapToGallery(bitmap: Bitmap, fileName: String): Boolean {
+        // 检查外部存储是否可用
+        val state = Environment.getExternalStorageState()
+        if (state != Environment.MEDIA_MOUNTED) {
+            return false
+        }
+
+        // 获取外部存储目录
+        val directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: return false
+
+        // 创建文件对象
+        val file = File(directory, fileName)
+        if (!file.parentFile.exists()) {
+            file.parentFile.mkdirs()
+        }
+
+        // 将Bitmap保存到文件
+        try {
+            file.outputStream().use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            }
+            // 扫描文件，使其出现在图库中
+            MediaScannerConnection.scanFile(context, arrayOf(file.path), arrayOf("image/jpeg"), null)
+
+            // 将文件路径转换为Uri
+            val contentUri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+            // 插入到MediaStore
+            context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues().apply {
+                put(MediaStore.Images.Media.DATA, file.absolutePath)
+                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            })
+
+            return true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return false
+        }
     }
 
 

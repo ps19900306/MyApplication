@@ -45,5 +45,9 @@ dependencies {
     annotationProcessor(libs.room.compiler)
     implementation(libs.room.ktx)
     implementation(project(":BaseUtils"))
+    implementation(project(":LogUitls"))
+    implementation(project(":TargetIdentification"))
+    implementation(project(":opencvIdentification"))
+
 
 }
