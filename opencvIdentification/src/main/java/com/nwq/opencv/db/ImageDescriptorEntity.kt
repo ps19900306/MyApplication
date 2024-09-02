@@ -24,7 +24,6 @@ data class ImageDescriptorEntity(
         if (matCols != other.matCols) return false
         if (matRows != other.matRows) return false
         if (!descriptors.contentEquals(other.descriptors)) return false
-
         return true
     }
 

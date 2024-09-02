@@ -4,17 +4,12 @@ import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.Rect
 
-class StuckPointDetection {
+//裁剪区域
+//阈值
+class StuckPointDetection(val diffThreshold:Long = 1000L, val cropRect:Rect= Rect(0, 0, 640, 480), val threshold:Int =3) {
 
     // 存储最近几张图像用于比较
     private val recentImages = mutableListOf<Mat>()
-
-    var diffThreshold = 1000.0 // 根据实际需求调整阈值
-    //裁剪区域
-    var cropRect = Rect(0, 0, 640, 480)
-    //阈值
-    var threshold = 3 // 最大存储数量
-
 
     /**
      * 检查当前帧是否处于静止状态
