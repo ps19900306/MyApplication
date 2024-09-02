@@ -40,4 +40,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(project(":BaseUtils"))
+    implementation(project(":LogUitls"))
+    implementation(project(":TargetIdentification"))
+    implementation(project(":opencvIdentification"))
 }

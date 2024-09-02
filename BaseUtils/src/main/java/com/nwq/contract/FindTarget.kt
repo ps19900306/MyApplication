@@ -7,4 +7,5 @@ interface FindTarget{
 
    fun findTarget(any: Any): Area?
 
+
 }
