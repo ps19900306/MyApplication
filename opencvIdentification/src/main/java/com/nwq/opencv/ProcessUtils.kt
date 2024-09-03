@@ -1,6 +1,7 @@
 package com.nwq.opencv
 
 
+import android.graphics.Bitmap
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.Rect
@@ -13,7 +14,7 @@ import org.opencv.imgproc.Imgproc
 object ProcessUtils {
 
     //寻找高亮区域
-    fun findHighBrightnessArea (src: Mat) {
+    fun findHighBrightnessArea(src: Mat) {
         // 转换为灰度图
         val gray = Mat()
         Imgproc.cvtColor(src, gray, Imgproc.COLOR_BGR2GRAY)
@@ -63,7 +64,6 @@ object ProcessUtils {
     }
 
     fun findMaskedArea(src: Mat) {
-
         // 1. 转换为灰度图
         val gray = Mat()
         Imgproc.cvtColor(src, gray, Imgproc.COLOR_BGR2GRAY)
@@ -79,7 +79,13 @@ object ProcessUtils {
         // 4. 查找轮廓
         val contours: MutableList<MatOfPoint> = mutableListOf()
         val hierarchy = Mat()
-        Imgproc.findContours(binary, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
+        Imgproc.findContours(
+            binary,
+            contours,
+            hierarchy,
+            Imgproc.RETR_EXTERNAL,
+            Imgproc.CHAIN_APPROX_SIMPLE
+        )
 
         // 5. 筛选出被遮盖的区域
         for (i in contours.indices) {
