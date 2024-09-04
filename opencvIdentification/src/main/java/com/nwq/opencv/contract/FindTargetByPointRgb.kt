@@ -1,9 +1,9 @@
-package com.nwq.contract
+package com.nwq.opencv.contract
 
 import android.graphics.Bitmap
 import com.nwq.baseobj.Area
 
-interface FindTargetBitmap : FindTarget {
+class FindTargetByPointRgb() : FindTarget {
 
     override fun findTarget(bitmap: Any): Area?{
         if (bitmap is Bitmap)
@@ -11,7 +11,14 @@ interface FindTargetBitmap : FindTarget {
         return null
     }
 
+    override fun release() {
 
-    fun findTargetBitmap(bitmap: Bitmap): Area?
+    }
+
+
+    fun findTargetBitmap(bitmap: Bitmap): Area?{
+
+        return null
+    }
 
 }
