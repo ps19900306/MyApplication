@@ -13,4 +13,5 @@ interface ImageDescriptorDao {
     @Query("SELECT * FROM image_descriptors WHERE keyTag = :keyTag")
     suspend fun getDescriptor(keyTag: String): ImageDescriptorEntity?
 
+
 }

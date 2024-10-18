@@ -30,6 +30,9 @@ object CoordinateUtils{
     }
 
 
+
+
+
 //    fun calculateBoundingRectangle(coordinateArea: CoordinateArea): CoordinateArea {
 //        // 初始化边界值
 //        var minX = Int.MAX_VALUE

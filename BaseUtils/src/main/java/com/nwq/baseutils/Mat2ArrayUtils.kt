@@ -17,4 +17,10 @@ object Mat2ArrayUtils {
         mat.put(0, 0, bytes)
         return mat
     }
+
+    //确认登录状态
+    //发送或者接受消息
+    fun sendMessage(message: String) {
+        //发送消息
+    }
 }

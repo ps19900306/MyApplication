@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(project(":BaseUtils"))
     implementation(project(":LogUitls"))
-
+    implementation("com.google.mlkit:text-recognition:16.0.0")
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:16.1.0")
 
 }

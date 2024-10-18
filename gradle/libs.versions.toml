@@ -18,6 +18,10 @@ coroutines = "1.7.3"
 pagingRuntimeKtx = "3.3.2"
 opencv="4.10.0"
 
+
+
+
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
