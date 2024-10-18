@@ -6,13 +6,18 @@ data class ImageDescriptorEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val keyTag: String,
+    //这些是Mat的
+    val matCols: Int,
+    val matRows: Int,
+    val matType: Int,
+    val descriptors: ByteArray,
+    //这些是记录的
     val detectionType: String,
     var checkNumber: Int,
     var passNumber: Int,
     var errorNumber: Int,
-    val matCols: Int,
-    val matRows: Int,
-    val descriptors: ByteArray
+
+
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

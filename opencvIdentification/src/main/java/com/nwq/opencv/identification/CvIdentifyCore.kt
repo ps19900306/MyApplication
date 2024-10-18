@@ -45,6 +45,8 @@ class CvIdentifyCore {
         val processedImageB = Mat()
         Core.bitwise_and(imageB, imageB, processedImageB, mask)
 
+        
+
         return Pair(processedImageB, mask)
     }
 
@@ -68,6 +70,8 @@ class CvIdentifyCore {
         val bfMatcher = BFMatcher.create(Core.NORM_HAMMING, true)
         val matches = MatOfDMatch()
         bfMatcher.match(descriptorsB, descriptorsA, matches)
+
+
 
         // 根据匹配结果在图A中绘制图B
         val result = Mat()
