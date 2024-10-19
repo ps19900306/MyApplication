@@ -8,10 +8,11 @@ import androidx.room.Query
 interface ImageDescriptorDao {
 
     @Insert
-    suspend fun insertDescriptor(entity: ImageDescriptorEntity)
+    fun insertDescriptor(entity: ImageDescriptorEntity)
 
     @Query("SELECT * FROM image_descriptors WHERE keyTag = :keyTag")
-    suspend fun getDescriptor(keyTag: String): ImageDescriptorEntity?
+    fun getDescriptor(keyTag: String): ImageDescriptorEntity?
+
 
 
 }

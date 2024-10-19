@@ -12,12 +12,10 @@ data class ImageDescriptorEntity(
     val matType: Int,
     val descriptors: ByteArray,
     //这些是记录的
-    val detectionType: String,
-    var checkNumber: Int,
-    var passNumber: Int,
-    var errorNumber: Int,
-
-
+    val detectionType: String = "",
+    var checkNumber: Int = 0,
+    var passNumber: Int = 0,
+    var errorNumber: Int = 0,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

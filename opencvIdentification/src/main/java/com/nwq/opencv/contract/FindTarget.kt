@@ -3,9 +3,9 @@ package com.nwq.opencv.contract
 import com.nwq.baseobj.CoordinateArea
 
 
-interface FindTarget{
+abstract class FindTarget(val tag: String) {
 
-   fun findTarget(any: Any): CoordinateArea?
+    abstract fun findTarget(any: Any): CoordinateArea?
 
-   fun release()
+    abstract fun release()
 }

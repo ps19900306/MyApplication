@@ -1,6 +1,7 @@
 package com.nwq.opencv.identification
 
 import android.graphics.Bitmap
+import com.nwq.baseutils.Mat2ArrayUtils
 import org.opencv.android.Utils
 import org.opencv.calib3d.Calib3d
 import org.opencv.core.Core
@@ -45,8 +46,6 @@ class CvIdentifyCore {
         val processedImageB = Mat()
         Core.bitwise_and(imageB, imageB, processedImageB, mask)
 
-        
-
         return Pair(processedImageB, mask)
     }
 
@@ -65,6 +64,13 @@ class CvIdentifyCore {
         val keypointsB = MatOfKeyPoint()
         val descriptorsB = Mat()
         orb.detectAndCompute(imageB, maskB, keypointsB, descriptorsB)
+
+        descriptorsB.rows()
+        descriptorsB.cols()
+        descriptorsB.type()
+
+
+        Mat2ArrayUtils.matToByteArray(descriptorsB)
 
         // 使用BFMatcher进行特征点匹配
         val bfMatcher = BFMatcher.create(Core.NORM_HAMMING, true)

@@ -1,10 +1,8 @@
 package com.nwq.exculde
 
-import com.nwq.opencv.contract.FindTarget
 
-
-//最简单一个判断单元
-class JudeUnit (val findTarget: FindTarget){
+//判断单元 一个执行动作的判断单元
+abstract class JudeUnit() {
 
 
 }
