@@ -10,14 +10,22 @@ material = "1.10.0"
 constraintlayout = "2.1.4"
 navigationFragmentKtx = "2.6.0"
 navigationUiKtx = "2.6.0"
-room="2.5.2"
+room = "2.5.2"
 pagingCommonAndroid = "3.3.2"
 activity = "1.8.0"
 lifecycle = "2.6.2"
 coroutines = "1.7.3"
 pagingRuntimeKtx = "3.3.2"
-opencv="4.10.0"
+opencv = "4.10.0"
+firebaseCrashlyticsBuildtools = "3.0.2"
+goson = "2.9.0"
+text-recognition="16.0.0"
+mlkit-text-recognition = "16.0.1"
 
+
+#implementation("com.google.code.gson:gson:2.9.0")
+#implementation("com.google.mlkit:text-recognition:16.0.0")
+#implementation("com.google.android.gms:play-services-mlkit-text-recognition:16.1.0")
 
 
 
@@ -37,12 +45,16 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-paging-common-android = { group = "androidx.paging", name = "paging-common-android", version.ref = "pagingCommonAndroid" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
-lifecycle-viewmodel-ktx  = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
-kotlinx-coroutines-android  = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-lifecycle-livedata-ktx  = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
-lifecycle-viewmodel-savedstate  = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "lifecycle" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
+lifecycle-viewmodel-savedstate = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "lifecycle" }
 androidx-paging-runtime-ktx = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
 opencv = { group = "org.opencv", name = "opencv", version.ref = "opencv" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "goson" }
+text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "text-recognition" }
+play-services-mlkit-text-recognition = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition", version.ref = "mlkit-text-recognition" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

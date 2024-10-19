@@ -33,10 +33,12 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":BaseUtils"))
+    implementation(project(":LogUitls"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -44,9 +46,9 @@ dependencies {
 
     annotationProcessor(libs.room.compiler)
     implementation(libs.room.ktx)
-    implementation(project(":BaseUtils"))
-    implementation(project(":LogUitls"))
-    implementation("com.google.mlkit:text-recognition:16.0.0")
-    implementation("com.google.android.gms:play-services-mlkit-text-recognition:16.1.0")
+
+    implementation(libs.gson)
+    implementation(libs.text.recognition )
+    implementation(libs.play.services.mlkit.text.recognition)
 
 }
