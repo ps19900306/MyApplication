@@ -44,25 +44,25 @@ class ColorRule(
         val greenF = green.toFloat()
         val blueF = blue.toFloat()
 
-        val flag1 = if (redToGreenMin > 0 && redToGreenMax > 0 && red > 0 && green > 0) {
+        val flag1 = if (redToGreenMin.isNaN() || redToGreenMax.isNaN() || red == 0 || green == 0) {
+            true
+        } else {
             val redToGreen = redF / greenF
             redToGreen in redToGreenMin..redToGreenMax
-        } else {
-            true
         }
 
-        val flag2 = if (redToBlueMin > 0 && redToBlueMax > 0 && blue > 0 && red > 0) {
+        val flag2 = if (redToBlueMin.isNaN() || redToBlueMax.isNaN() || red == 0 || blue == 0) {
+            true
+        } else {
             val redToBlue = redF / blueF
             redToBlue in redToBlueMin..redToBlueMax
-        } else {
-            true
         }
 
-        val flag3 = if (greenToBlueMin > 0 && greenToBlueMax > 0 && blue > 0 && green > 0) {
+        val flag3 = if (greenToBlueMin.isNaN() || greenToBlueMax.isNaN() || green == 0 || blue == 0) {
+            true
+        } else {
             val greenToBlue = greenF / blueF
             greenToBlue in greenToBlueMin..greenToBlueMax
-        } else {
-            true
         }
 
         return flag1 && flag2 && flag3
