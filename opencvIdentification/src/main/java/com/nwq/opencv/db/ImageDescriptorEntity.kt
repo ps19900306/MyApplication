@@ -1,5 +1,10 @@
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import org.opencv.core.KeyPoint
+import org.opencv.core.MatOfKeyPoint
+import org.opencv.core.Point
 
 @Entity(tableName = "image_descriptors")
 data class ImageDescriptorEntity(
@@ -11,12 +16,31 @@ data class ImageDescriptorEntity(
     val matRows: Int,
     val matType: Int,
     val descriptors: ByteArray,
+    var keyPointList: List<KeyPoint>,
+    var pointList: List<Point>,
     //这些是记录的
     val detectionType: String = "",
     var checkNumber: Int = 0,
     var passNumber: Int = 0,
     var errorNumber: Int = 0,
 ) {
+
+    @Ignore
+    private var mMatOfKeyPoint: MatOfKeyPoint? = null
+
+    public fun setMatOfKeyPoint(matOfKeyPoint: MatOfKeyPoint) {
+        mMatOfKeyPoint = matOfKeyPoint
+    }
+
+    public fun getMatOfKeyPoint(): MatOfKeyPoint {
+        if (mMatOfKeyPoint == null) {
+            val points = keyPointList.toTypedArray()
+            mMatOfKeyPoint = MatOfKeyPoint(*points)
+        }
+        return mMatOfKeyPoint!!
+    }
+
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
