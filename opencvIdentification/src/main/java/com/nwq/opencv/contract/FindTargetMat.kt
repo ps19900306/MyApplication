@@ -34,8 +34,8 @@ abstract class FindTargetMat(
         const val MAT_SUFFIX = "_mat"
         const val DB_SUFFIX = "_db"
 
-        // 创建ORB检测器 可以根据需求替换提取器
-        val feature2D: Feature2D = ORB.create()
+        // 创建SIFT检测器 可以根据需求替换提取器
+        val feature2D: Feature2D = SIFT.create()
 
         private val bImageDescriptorDao by lazy {
             IdentifyDatabase.getDatabase().imageDescriptorDao()

@@ -18,6 +18,9 @@ class PointRule(val point: CoordinatePoint, val rule: ColorRule) {
 
 
     fun checkIpr(bitmap: Bitmap, offsetX: Int, offsetY: Int): Boolean {
+        if (bitmap.width <= point.x + offsetX || bitmap.height <= point.y + offsetY) {
+            return false
+        }
         val intColor = bitmap.getPixel(point.x + offsetX, point.y + offsetY)
         return rule.optInt(intColor)
     }
