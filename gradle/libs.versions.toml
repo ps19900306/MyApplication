@@ -21,11 +21,9 @@ firebaseCrashlyticsBuildtools = "3.0.2"
 goson = "2.9.0"
 text-recognition="16.0.0"
 mlkit-text-recognition = "16.0.1"
-
-
-#implementation("com.google.code.gson:gson:2.9.0")
-#implementation("com.google.mlkit:text-recognition:16.0.0")
-#implementation("com.google.android.gms:play-services-mlkit-text-recognition:16.1.0")
+#这个貌似弃用了使
+tensorflow="2.5.0"
+litert = "1.0.1"
 
 
 
@@ -55,6 +53,9 @@ firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "fireb
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "goson" }
 text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "text-recognition" }
 play-services-mlkit-text-recognition = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition", version.ref = "mlkit-text-recognition" }
+tensorflow= { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorflow" }
+tensorflow-gpu= { group = "org.tensorflow", name = "tensorflow-lite-gpu", version.ref = "tensorflow" }
+litert = { group = "com.google.ai.edge.litert", name = "litert", version.ref = "litert" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

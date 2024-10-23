@@ -39,7 +39,10 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":BaseUtils"))
+    implementation(project(":LogUitls"))
+    implementation(project(":opencvIdentification"))
+    implementation(project(":exculdeModule"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -49,4 +52,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation("org.tensorflow:tensorflow-lite:2.5.0")
+    implementation("org.tensorflow:tensorflow-lite-gpu:2.5.0")
 }

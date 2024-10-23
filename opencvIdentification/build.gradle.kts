@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.litert)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -51,4 +52,9 @@ dependencies {
     implementation(libs.text.recognition )
     implementation(libs.play.services.mlkit.text.recognition)
 
+    implementation("org.tensorflow:tensorflow-lite:2.5.0")
+    implementation("org.tensorflow:tensorflow-lite-gpu:2.5.0")
+
+//    implementation(libs.tensorflow)
+//    implementation(libs.tensorflow.gpu)
 }
