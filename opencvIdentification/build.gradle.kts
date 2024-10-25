@@ -52,8 +52,8 @@ dependencies {
     implementation(libs.text.recognition )
     implementation(libs.play.services.mlkit.text.recognition)
 
-    implementation("org.tensorflow:tensorflow-lite:2.5.0")
-    implementation("org.tensorflow:tensorflow-lite-gpu:2.5.0")
+//    implementation("org.tensorflow:tensorflow-lite:2.5.0")
+//    implementation("org.tensorflow:tensorflow-lite-gpu:2.5.0")
 
 //    implementation(libs.tensorflow)
 //    implementation(libs.tensorflow.gpu)
