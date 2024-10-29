@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.CommonCallBack
 import com.nwq.baseutils.CommonCallBack2
-import com.nwq.baseutils.Mat2ArrayUtils
+import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.db.IdentifyDatabase
 import org.opencv.android.Utils
 import org.opencv.calib3d.Calib3d
@@ -15,12 +15,9 @@ import org.opencv.core.MatOfDMatch
 import org.opencv.core.MatOfKeyPoint
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Point
-import org.opencv.core.Rect
 import org.opencv.features2d.BFMatcher
 import org.opencv.features2d.Feature2D
-import org.opencv.features2d.ORB
 import org.opencv.features2d.SIFT
-import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 
 abstract class FindTargetMat(
@@ -121,7 +118,7 @@ abstract class FindTargetMat(
             } else {
                 mKeypoints = imageDescriptorEntity.getMatOfKeyPoint();
                 points = imageDescriptorEntity.pointList.toTypedArray()
-                Mat2ArrayUtils.byteArrayToMat(
+                MatUtils.byteArrayToMat(
                     imageDescriptorEntity.descriptors,
                     imageDescriptorEntity.matType,
                     imageDescriptorEntity.matRows,
@@ -164,7 +161,7 @@ abstract class FindTargetMat(
             val keypointList = keypoints.toArray().toList()
             val imageDescriptorEntity = ImageDescriptorEntity(
                 keyTag = dbKeyTag,
-                descriptors = Mat2ArrayUtils.matToByteArray(descriptors),
+                descriptors = MatUtils.matToByteArray(descriptors),
                 matType = descriptors.type(),
                 matRows = descriptors.rows(),
                 matCols = descriptors.cols(),

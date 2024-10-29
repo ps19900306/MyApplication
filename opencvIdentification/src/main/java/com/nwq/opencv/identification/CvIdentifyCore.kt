@@ -1,8 +1,6 @@
 package com.nwq.opencv.identification
 
-import android.graphics.Bitmap
-import com.nwq.baseutils.Mat2ArrayUtils
-import org.opencv.android.Utils
+import com.nwq.baseutils.MatUtils
 import org.opencv.calib3d.Calib3d
 import org.opencv.core.Core
 import org.opencv.core.Mat
@@ -70,7 +68,7 @@ class CvIdentifyCore {
         descriptorsB.type()
 
 
-        Mat2ArrayUtils.matToByteArray(descriptorsB)
+        MatUtils.matToByteArray(descriptorsB)
 
         // 使用BFMatcher进行特征点匹配
         val bfMatcher = BFMatcher.create(Core.NORM_HAMMING, true)
