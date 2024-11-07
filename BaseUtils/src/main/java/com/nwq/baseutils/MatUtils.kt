@@ -4,8 +4,6 @@ import android.graphics.Bitmap
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.Mat
-import org.opencv.core.MatOfPoint
-import org.opencv.core.Point
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import java.nio.ByteBuffer
@@ -47,7 +45,7 @@ object MatUtils {
     }
 
 
-    fun bitmapToMat(bitmap: android.graphics.Bitmap): Mat {
+    fun bitmapToMat(bitmap:Bitmap): Mat {
         // 创建一个 Mat 对象
         val mat = Mat()
         // 使用 OpenCV 的 Utils 类将 Bitmap 转换为 Mat
