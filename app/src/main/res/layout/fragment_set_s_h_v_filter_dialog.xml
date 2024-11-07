@@ -1,0 +1,189 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".opencv.SetSHVFilterDialog">
+
+    <!-- Hue 区间最小值选择 -->
+    <TextView
+        android:id="@+id/tv_hue_min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hue Min (0-180)"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <SeekBar
+        android:id="@+id/sb_hue_min"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="180"
+        app:layout_constraintTop_toBottomOf="@id/tv_hue_min"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/et_hue_min"
+        android:layout_margin="16dp"/>
+
+    <EditText
+        android:id="@+id/et_hue_min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="0-180"
+        app:layout_constraintTop_toBottomOf="@id/tv_hue_min"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- Hue 区间最大值选择 -->
+    <TextView
+        android:id="@+id/tv_hue_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hue Max (0-180)"
+        app:layout_constraintTop_toBottomOf="@id/sb_hue_min"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <SeekBar
+        android:id="@+id/sb_hue_max"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="180"
+        app:layout_constraintTop_toBottomOf="@id/tv_hue_max"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/et_hue_max"
+        android:layout_margin="16dp"/>
+
+    <EditText
+        android:id="@+id/et_hue_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="0-180"
+        app:layout_constraintTop_toBottomOf="@id/tv_hue_max"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- Saturation 区间最小值选择 -->
+    <TextView
+        android:id="@+id/tv_saturation_min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Saturation Min (0-255)"
+        app:layout_constraintTop_toBottomOf="@id/sb_hue_max"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <SeekBar
+        android:id="@+id/sb_saturation_min"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="255"
+        app:layout_constraintTop_toBottomOf="@id/tv_saturation_min"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/et_saturation_min"
+        android:layout_margin="16dp"/>
+
+    <EditText
+        android:id="@+id/et_saturation_min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="0-255"
+        app:layout_constraintTop_toBottomOf="@id/tv_saturation_min"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- Saturation 区间最大值选择 -->
+    <TextView
+        android:id="@+id/tv_saturation_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Saturation Max (0-255)"
+        app:layout_constraintTop_toBottomOf="@id/sb_saturation_min"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <SeekBar
+        android:id="@+id/sb_saturation_max"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="255"
+        app:layout_constraintTop_toBottomOf="@id/tv_saturation_max"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/et_saturation_max"
+        android:layout_margin="16dp"/>
+
+    <EditText
+        android:id="@+id/et_saturation_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="0-255"
+        app:layout_constraintTop_toBottomOf="@id/tv_saturation_max"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- Value 区间最小值选择 -->
+    <TextView
+        android:id="@+id/tv_value_min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Value Min (0-255)"
+        app:layout_constraintTop_toBottomOf="@id/sb_saturation_max"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <SeekBar
+        android:id="@+id/sb_value_min"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="255"
+        app:layout_constraintTop_toBottomOf="@id/tv_value_min"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/et_value_min"
+        android:layout_margin="16dp"/>
+
+    <EditText
+        android:id="@+id/et_value_min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="0-255"
+        app:layout_constraintTop_toBottomOf="@id/tv_value_min"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- Value 区间最大值选择 -->
+    <TextView
+        android:id="@+id/tv_value_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Value Max (0-255)"
+        app:layout_constraintTop_toBottomOf="@id/sb_value_min"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <SeekBar
+        android:id="@+id/sb_value_max"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="255"
+        app:layout_constraintTop_toBottomOf="@id/tv_value_max"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/et_value_max"
+        android:layout_margin="16dp"/>
+
+    <EditText
+        android:id="@+id/et_value_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="0-255"
+        app:layout_constraintTop_toBottomOf="@id/tv_value_max"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

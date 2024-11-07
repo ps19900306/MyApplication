@@ -1,5 +1,7 @@
 package com.nwq.baseutils
 
+import android.graphics.Bitmap
+import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
@@ -45,16 +47,34 @@ object MatUtils {
     }
 
 
-//    //根据MASK 获取全部的点
-//    fun getPointList(srcMat: Mat): List<Point> {
-//        val contours = mutableListOf<MatOfPoint>()
-//        val hierarchy = Mat()
-//        Imgproc.findContours(srcMat, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE)
-//        contours.forEach {
-//            val moments = Imgproc.moments(it)
-//            //val area = moments.get(".moment10") *
-//        }
-//    }
+    fun bitmapToMat(bitmap: android.graphics.Bitmap): Mat {
+        // 创建一个 Mat 对象
+        val mat = Mat()
+        // 使用 OpenCV 的 Utils 类将 Bitmap 转换为 Mat
+        Utils.bitmapToMat(bitmap, mat)
+        // 如果 Bitmap 是 ARGB_8888 格式，需要将其转换为 RGB 格式 去掉A通道
+        if (bitmap.config == Bitmap.Config.ARGB_8888 ) {
+            val rgbMat = Mat()
+            Imgproc.cvtColor(mat, rgbMat, Imgproc.COLOR_RGBA2RGB)
+            return rgbMat
+        }
+        return mat
+    }
+
+
+    fun matToBitmap(srcMat: Mat): Bitmap {
+        // 创建一个临时的 Mat 对象，用于存储 ARGB_8888 格式的图像
+        val argbMat = Mat()
+        // 将 RGB 格式的 Mat 转换为 ARGB_8888 格式
+        Imgproc.cvtColor(srcMat, argbMat, Imgproc.COLOR_RGB2RGBA)
+
+        // 创建一个 Bitmap 对象
+        val bitmap = Bitmap.createBitmap(argbMat.cols(), argbMat.rows(), Bitmap.Config.ARGB_8888)
+        // 使用 OpenCV 的 Utils 类将 Mat 转换为 Bitmap
+        Utils.matToBitmap(argbMat, bitmap)
+        return bitmap
+    }
+
 
 
 }
