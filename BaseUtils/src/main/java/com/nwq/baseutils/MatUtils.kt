@@ -48,6 +48,16 @@ object MatUtils {
         return maskMat
     }
 
+    fun filterByMask(srcMat: Mat, maskMat: Mat): Mat {
+        Core.bitwise_and(srcMat, srcMat, maskMat)
+        return srcMat
+    }
+
+    fun filterByHsv(srcMat: Mat, minH: Int, maxH: Int, minS: Int, maxS: Int, minV: Int, maxV: Int): Mat {
+        return filterByMask(srcMat, getMaskMat(srcMat, minH, maxH, minS, maxS, minV, maxV))
+    }
+
+
 
     fun bitmapToMat(bitmap:Bitmap): Mat {
         // 创建一个 Mat 对象

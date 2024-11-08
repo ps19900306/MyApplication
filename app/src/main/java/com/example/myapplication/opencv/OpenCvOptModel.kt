@@ -64,11 +64,11 @@ class OpenCvOptModel : ViewModel() {
         minV: Int,
         maxV: Int
     ): Bitmap? {
-        val bitmap = if (getOrCreateSrcMat() == null) {
+        val bitmap = if (getOrCreateHsvMat() == null) {
             null
         } else {
             val hsvMat = getOrCreateHsvMat()!!
-            val maskMat = MatUtils.getMaskMat(hsvMat, minH, maxH, minS, maxS, minV, maxV)
+            val maskMat = MatUtils.filterByHsv(hsvMat, minH, maxH, minS, maxS, minV, maxV)
             MatUtils.hsvMatToBitmap(maskMat)
         }
         return bitmap
