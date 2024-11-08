@@ -1,8 +1,12 @@
 package com.example.myapplication.opencv
 
+import BaseActivity
+import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -14,31 +18,41 @@ import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.nwq.baseutils.singleClick
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class PreviewImgActivity : AppCompatActivity() {
+class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 
-    private lateinit var binding: ActivityPreviewImgBinding
     private val viewModel by viewModels<OpenCvOptModel>()
+    override fun createBinding(inflater: LayoutInflater): ActivityPreviewImgBinding {
+        return ActivityPreviewImgBinding.inflate(layoutInflater)
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityPreviewImgBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun initData() {
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED){
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.showBitmapFlow.collectLatest {
                     binding.bgImg.setImageBitmap(it)
                 }
             }
         }
-
+        binding.button.singleClick {
+            checkPermission()
+        }
     }
 
+    override fun getPermission(): Array<String>? {
+        return arrayOf(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Manifest.permission.READ_MEDIA_IMAGES
+            } else {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
+        )
+    }
 
-
-    fun selectPicture(view: View) {
+    override fun onPermissionPass() {
         PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
             .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
                 override fun onResult(result: ArrayList<LocalMedia?>?) {
@@ -51,7 +65,10 @@ class PreviewImgActivity : AppCompatActivity() {
                         }
                     }
                 }
+
                 override fun onCancel() {}
             })
     }
+
+
 }

@@ -20,8 +20,10 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = createBinding(layoutInflater)
         setContentView(binding.root)
-        checkPermission()
+        initData()
     }
+
+    abstract fun initData()
 
     override fun onDestroy() {
         super.onDestroy()
