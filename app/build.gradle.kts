@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.myapplication"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -53,4 +53,10 @@ dependencies {
     implementation(libs.opencv)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation("io.github.lucksiege:pictureselector:v3.11.0")
+    implementation("io.github.lucksiege:compress:v3.10.9")
+
+
+
 }

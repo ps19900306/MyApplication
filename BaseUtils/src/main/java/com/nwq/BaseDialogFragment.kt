@@ -1,41 +1,41 @@
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.viewbinding.ViewBinding
 
-abstract class BaseDialogFragment : DialogFragment() {
+abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
 
 
-    private lateinit var mRootView: View
+    private var _binding: VB? = null
+    protected val binding: VB get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mRootView = inflater.inflate(getLayoutId(), container, false)
-        // 使用自定义的布局
-        return mRootView
+        _binding = createBinding(inflater, container)
+        return binding.root
     }
+
+    abstract fun createBinding(inflater: LayoutInflater, container: ViewGroup?): VB
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView(view) // 初始化视图，设置监听器等
+        setupView() // 初始化视图，设置监听器等
     }
 
-    // 返回布局ID，子类必须实现
-    abstract fun getLayoutId(): Int
-
     // 设置视图，子类可以重写这个方法来初始化视图
-    open fun setupView(view: View) {
+    open fun setupView() {
+
     }
 
     fun <T : View> findViewById(id: Int): T {
-        return mRootView.findViewById<T>(id)
+        return binding.root.findViewById<T>(id)
     }
 
     // 显示对话框

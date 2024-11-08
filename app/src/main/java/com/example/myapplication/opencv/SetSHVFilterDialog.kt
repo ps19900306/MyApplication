@@ -3,25 +3,29 @@ package com.example.myapplication.opencv
 import BaseDialogFragment
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
 import com.example.myapplication.R
+import com.example.myapplication.databinding.FragmentSetSHVFilterDialogBinding
 
 
-class SetSHVFilterDialog : BaseDialogFragment() {
+class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
 
     private val viewModel by viewModels<OpenCvOptModel>({ requireActivity() })
-
-
-    override fun getLayoutId(): Int {
-        return R.layout.fragment_set_s_h_v_filter_dialog
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentSetSHVFilterDialogBinding {
+        return FragmentSetSHVFilterDialogBinding.inflate(inflater)
     }
 
 
-    override fun setupView(view: View) {
-        super.setupView(view)
+    override fun setupView() {
+        super.setupView()
         setupSeekBarAndEditText(R.id.sb_hue_min, R.id.et_hue_min, 0, 180, viewModel::upDataMinHFlow)
         setupSeekBarAndEditText(R.id.sb_hue_max, R.id.et_hue_max, 0, 180, viewModel::upDataMaxHFlow)
         setupSeekBarAndEditText(

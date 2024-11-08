@@ -22,6 +22,13 @@ class OpenCvOptModel : ViewModel() {
     private var showBitmap: Bitmap? = null;
 
 
+    public var showBitmapFlow: MutableStateFlow<Bitmap?> = MutableStateFlow(null)
+
+    fun setScrMap(it: Bitmap) {
+        srcBitmap = it;
+        showBitmapFlow.value = it
+    }
+
     private val _HFlow =
         MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(0, 52, 0, 0)))//52= 180-128
     private val _SFlow =
