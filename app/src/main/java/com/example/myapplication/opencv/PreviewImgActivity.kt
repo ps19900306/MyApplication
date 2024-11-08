@@ -40,6 +40,9 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
         binding.button.singleClick {
             checkPermission()
         }
+        binding.button2.singleClick {
+            SetSHVFilterDialog().show(supportFragmentManager, "SHV");
+        }
     }
 
     override fun getPermission(): Array<String>? {

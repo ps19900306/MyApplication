@@ -9,8 +9,13 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentSetSHVFilterDialogBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
@@ -24,8 +29,8 @@ class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBindin
     }
 
 
-    override fun setupView() {
-        super.setupView()
+    override fun initData() {
+        super.initData()
         setupSeekBarAndEditText(R.id.sb_hue_min, R.id.et_hue_min, 0, 180, viewModel::upDataMinHFlow)
         setupSeekBarAndEditText(R.id.sb_hue_max, R.id.et_hue_max, 0, 180, viewModel::upDataMaxHFlow)
         setupSeekBarAndEditText(
@@ -56,7 +61,15 @@ class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBindin
             255,
             viewModel::upDataMaxVFlow
         )
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.processHsvBitmapFlow.collectLatest {
+                    viewModel.showBitmapFlow.value = it
+                }
+            }
+        }
     }
+
 
     private fun setupSeekBarAndEditText(
         seekBarId: Int,

@@ -26,11 +26,11 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView() // 初始化视图，设置监听器等
+        initData() // 初始化视图，设置监听器等
     }
 
     // 设置视图，子类可以重写这个方法来初始化视图
-    open fun setupView() {
+    open fun initData() {
 
     }
 

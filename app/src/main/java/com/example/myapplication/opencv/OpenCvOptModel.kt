@@ -18,6 +18,9 @@ class OpenCvOptModel : ViewModel() {
     //
     private var srcMat: Mat? = null;
 
+    //
+    private var srcHSVMat: Mat? = null;
+
     // 显示的图片
     private var showBitmap: Bitmap? = null;
 
@@ -27,18 +30,20 @@ class OpenCvOptModel : ViewModel() {
     fun setScrMap(it: Bitmap) {
         srcBitmap = it;
         showBitmapFlow.value = it
+        srcMat = null
+        srcHSVMat = null
     }
 
     private val _HFlow =
-        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(0, 52, 0, 0)))//52= 180-128
+        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 52, 0, 0)))//52= 180-128
     private val _SFlow =
-        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(0, 127, 0, 0)))//127= 255-128
+        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 127, 0, 0)))//127= 255-128
     private val _VFlow =
-        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(0, 127, 0, 0)))//127= 255-128
+        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 127, 0, 0)))//127= 255-128
 
 
     // Combine the parameters and get the Flow from getLogFlow
-    val logs: Flow<Bitmap?> = combine(
+    val processHsvBitmapFlow: Flow<Bitmap?> = combine(
         _HFlow,
         _SFlow,
         _VFlow,
@@ -62,43 +67,44 @@ class OpenCvOptModel : ViewModel() {
         val bitmap = if (getOrCreateSrcMat() == null) {
             null
         } else {
-            val hsvMat = getOrCreateSrcMat()!!
+            val hsvMat = getOrCreateHsvMat()!!
             val maskMat = MatUtils.getMaskMat(hsvMat, minH, maxH, minS, maxS, minV, maxV)
-            MatUtils.matToBitmap(maskMat)
+            MatUtils.hsvMatToBitmap(maskMat)
         }
         return bitmap
     }
 
 
     fun upDataMinHFlow(minH: Int) {
-        ByteToIntUtils.setByteToInt2(_HFlow.value, 0, minH)
+        _HFlow.value = ByteToIntUtils.setByteToInt2(_HFlow.value, 0, minH)
     }
 
     fun upDataMaxHFlow(maxH: Int) {
-        ByteToIntUtils.setByteToInt2(_HFlow.value, 1, maxH)
+        _HFlow.value = ByteToIntUtils.setByteToInt2(_HFlow.value, 1, maxH)
     }
 
     fun upDataMinSFlow(minS: Int) {
-        ByteToIntUtils.setByteToInt2(_SFlow.value, 0, minS)
+        _SFlow.value = ByteToIntUtils.setByteToInt2(_SFlow.value, 0, minS)
     }
 
     fun upDataMaxSFlow(maxS: Int) {
-        ByteToIntUtils.setByteToInt2(_SFlow.value, 1, maxS)
+        _SFlow.value = ByteToIntUtils.setByteToInt2(_SFlow.value, 1, maxS)
     }
 
     fun upDataMinVFlow(minV: Int) {
-        ByteToIntUtils.setByteToInt2(_VFlow.value, 0, minV)
+        _VFlow.value = ByteToIntUtils.setByteToInt2(_VFlow.value, 0, minV)
     }
 
     fun upDataMaxVFlow(maxV: Int) {
-        ByteToIntUtils.setByteToInt2(_VFlow.value, 1, maxV)
+        _VFlow.value = ByteToIntUtils.setByteToInt2(_VFlow.value, 1, maxV)
     }
 
 
     private fun getOrCreateSrcMat(): Mat? {
         return if (srcMat == null) {
             if (srcBitmap != null) {
-                MatUtils.bitmapToMat(srcBitmap!!)
+                srcMat = MatUtils.bitmapToMat(srcBitmap!!)
+                srcMat
             } else {
                 null
             }
@@ -107,5 +113,16 @@ class OpenCvOptModel : ViewModel() {
         }
     }
 
-
+    private fun getOrCreateHsvMat(): Mat? {
+        return if (srcHSVMat == null) {
+            if (srcBitmap != null) {
+                srcHSVMat = MatUtils.bitmapToHsvMat(srcBitmap!!)
+                srcHSVMat
+            } else {
+                null
+            }
+        } else {
+            srcHSVMat
+        }
+    }
 }

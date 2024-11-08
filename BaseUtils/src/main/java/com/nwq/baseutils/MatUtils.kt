@@ -1,12 +1,15 @@
 package com.nwq.baseutils
 
 import android.graphics.Bitmap
+import android.util.Log
 import org.opencv.android.Utils
 import org.opencv.core.Core
+import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import java.nio.ByteBuffer
+import kotlin.math.log
 
 object MatUtils {
 
@@ -37,6 +40,7 @@ object MatUtils {
      * @return 过滤后的掩码图像
      */
     fun getMaskMat(hsvMat: Mat, minH: Int, maxH: Int, minS: Int, maxS: Int, minV: Int, maxV: Int): Mat {
+        Log.d("getMaskMat","minH:$minH maxH:$maxH minS:$minS maxS:$maxS minV:$minV maxV:$maxV")
         val lowerBound = Scalar(minH.toDouble(), minS.toDouble(), minV.toDouble())
         val upperBound = Scalar(maxH.toDouble(), maxS.toDouble(), maxV.toDouble())
         val maskMat = Mat()
@@ -59,6 +63,16 @@ object MatUtils {
         return mat
     }
 
+    fun bitmapToHsvMat(bitmap: Bitmap): Mat {
+        // 将 Bitmap 转换为 Mat
+        val mat = bitmapToMat(bitmap)
+        // 创建一个 HSV 格式的 Mat 对象
+        val hsvMat = Mat(mat.size(), CvType.CV_8UC3)
+        // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
+        Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_RGB2HSV)
+        return hsvMat
+    }
+
 
     fun matToBitmap(srcMat: Mat): Bitmap {
         // 创建一个临时的 Mat 对象，用于存储 ARGB_8888 格式的图像
@@ -74,5 +88,13 @@ object MatUtils {
     }
 
 
+    fun hsvMatToBitmap(srcMat: Mat): Bitmap {
+        // 创建一个临时的 Mat 对象，用于存储 RGB 格式的图像
+        val rgbMat = Mat()
+        // 将 HSV 格式的 Mat 转换为 RGB 格式的 Mat
+        Imgproc.cvtColor(srcMat, rgbMat, Imgproc.COLOR_HSV2RGB)
 
+        // 将 RGB 格式的 Mat 转换为 Bitmap
+        return matToBitmap(rgbMat)
+    }
 }

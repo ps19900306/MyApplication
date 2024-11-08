@@ -78,7 +78,6 @@ object ByteToIntUtils {
      */
     fun setByteToInt2(value: Int, index: Int, byteValue2: Int): Int {
         val byteValue = byteValue2 - 255
-        require(byteValue in 0..255) { "Byte value must be between 0 and 255" }
         require(!(index < 0 || index > 3)) { "Index must be between 0 and 3" }
         val mask = (0xFF shl (24 - (index * 8))).inv()
         return (value and mask) or ((byteValue.toInt() and 0xFF) shl (24 - (index * 8)))
