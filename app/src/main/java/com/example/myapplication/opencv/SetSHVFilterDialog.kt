@@ -31,6 +31,8 @@ class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBindin
     }
 
 
+
+
     override fun initData() {
         super.initData()
         binding.etHueMin.setText("${viewModel.getMinH()}")

@@ -7,9 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.nwq.baseutils.ByteToIntUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.loguitls.L
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 
@@ -40,11 +42,11 @@ class OpenCvOptModel : ViewModel() {
     }
 
     private val _HFlow =
-        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 52, 0, 0)))//52= 180-128
+        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 52, 0, 0))).apply { debounce(1000) }     //52= 180-128
     private val _SFlow =
-        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 127, 0, 0)))//127= 255-128
+        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 127, 0, 0))).apply { debounce(1000) }//127= 255-128
     private val _VFlow =
-        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 127, 0, 0)))//127= 255-128
+        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 127, 0, 0))).apply { debounce(1000) } //127= 255-128
 
 
     // Combine the parameters and get the Flow from getLogFlow
@@ -55,7 +57,7 @@ class OpenCvOptModel : ViewModel() {
     ) { h, s, v ->
         val bitmap = getOrCreateShowBitmap(
             ByteToIntUtils.getByteFromInt2(h, 0), ByteToIntUtils.getByteFromInt2(h, 1),
-            ByteToIntUtils.getByteFromInt2(s, 0), ByteToIntUtils.getByteFromInt2(v, 1),
+            ByteToIntUtils.getByteFromInt2(s, 0), ByteToIntUtils.getByteFromInt2(s, 1),
             ByteToIntUtils.getByteFromInt2(v, 0), ByteToIntUtils.getByteFromInt2(v, 1)
         )
         bitmap
@@ -69,7 +71,6 @@ class OpenCvOptModel : ViewModel() {
         minV: Int,
         maxV: Int
     ): Bitmap? {
-        Log.i(TAG,"getOrCreateShowBitmap :: $minH");
         val bitmap = if (getOrCreateHsvMat() == null) {
             null
         } else {
