@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 
 class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
-    private val TAG =SetSHVFilterDialog::class.java.simpleName
+    private val TAG = SetSHVFilterDialog::class.java.simpleName
     private val viewModel by viewModels<OpenCvOptModel>({ requireActivity() })
     override fun createBinding(
         inflater: LayoutInflater,
@@ -29,8 +29,6 @@ class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBindin
     ): FragmentSetSHVFilterDialogBinding {
         return FragmentSetSHVFilterDialogBinding.inflate(inflater)
     }
-
-
 
 
     override fun initData() {
@@ -46,7 +44,7 @@ class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBindin
         binding.sbHueMax.progress = viewModel.getMaxH()
         binding.sbSaturationMin.progress = viewModel.getMinS()
         binding.sbSaturationMax.progress = viewModel.getMaxS()
-        binding.sbValueMax.progress = viewModel.getMaxV()
+        binding.sbValueMin.progress = viewModel.getMinV()
         binding.sbValueMax.progress = viewModel.getMaxV()
 
 
@@ -117,16 +115,17 @@ class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBindin
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                try {
-                    val value = s.toString().toInt()
-                    if (value in min..max) {
-                        seekBar.progress = value
-                        updateFlow?.invoke(value)
-                    } else {
-                        editText.error = "请输入 $min-$max 之间的值"
-                    }
-                } catch (e: NumberFormatException) {
-                    editText.error = "请输入有效的数字"
+                if (s.isNullOrEmpty()) {
+                    return
+                }
+                val strValue = s.toString();
+                if (strValue.isEmpty())
+                    return
+                
+                val value = strValue.toInt()
+                if (value in min..max) {
+                    seekBar.progress = value
+                    updateFlow?.invoke(value)
                 }
             }
         })
