@@ -20,6 +20,8 @@ import org.opencv.features2d.Feature2D
 import org.opencv.features2d.SIFT
 import org.opencv.imgproc.Imgproc
 
+
+//进行特征点匹配
 abstract class FindTargetMat(
     tag: String,
     val bitmapTake: CommonCallBack<Bitmap>,
@@ -56,6 +58,8 @@ abstract class FindTargetMat(
             return findTargetBitmap(any)
         return null
     }
+
+
 
     fun findTargetBitmap(mat: Mat): CoordinateArea? {
 

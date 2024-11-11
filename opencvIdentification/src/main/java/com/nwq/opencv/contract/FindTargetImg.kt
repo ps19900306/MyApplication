@@ -3,15 +3,14 @@ package com.nwq.opencv.contract
 import android.graphics.Bitmap
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.CommonCallBack
-import com.nwq.opencv.db.IdentifyDatabase
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
-import org.opencv.features2d.Feature2D
-import org.opencv.features2d.ORB
 import org.opencv.imgproc.Imgproc
 
+
+//进行图片匹配
 abstract class FindTargetImg(tag: String, val bitmapTake: CommonCallBack<Bitmap>) :
     FindTarget(tag) {
 

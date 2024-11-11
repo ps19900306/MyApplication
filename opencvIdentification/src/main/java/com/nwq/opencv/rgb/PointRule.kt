@@ -25,7 +25,4 @@ class PointRule(val point: CoordinatePoint, val rule: ColorRule) {
         return rule.optInt(intColor)
     }
 
-
-
-
 }
