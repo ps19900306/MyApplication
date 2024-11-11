@@ -3,6 +3,7 @@ package com.example.myapplication.opencv
 import BaseDialogFragment
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +15,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentSetSHVFilterDialogBinding
+import com.nwq.loguitls.L
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
 class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
-
+    private val TAG =SetSHVFilterDialog::class.java.simpleName
     private val viewModel by viewModels<OpenCvOptModel>({ requireActivity() })
     override fun createBinding(
         inflater: LayoutInflater,
@@ -31,6 +33,21 @@ class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBindin
 
     override fun initData() {
         super.initData()
+        binding.etHueMin.setText("${viewModel.getMinH()}")
+        binding.etHueMax.setText("${viewModel.getMaxH()}")
+        binding.etSaturationMin.setText("${viewModel.getMinS()}")
+        binding.etSaturationMax.setText("${viewModel.getMaxS()}")
+        binding.etValueMin.setText("${viewModel.getMinV()}")
+        binding.etValueMax.setText("${viewModel.getMaxV()}")
+
+        binding.sbHueMin.progress = viewModel.getMinH()
+        binding.sbHueMax.progress = viewModel.getMaxH()
+        binding.sbSaturationMin.progress = viewModel.getMinS()
+        binding.sbSaturationMax.progress = viewModel.getMaxS()
+        binding.sbValueMax.progress = viewModel.getMaxV()
+        binding.sbValueMax.progress = viewModel.getMaxV()
+
+
         setupSeekBarAndEditText(R.id.sb_hue_min, R.id.et_hue_min, 0, 180, viewModel::upDataMinHFlow)
         setupSeekBarAndEditText(R.id.sb_hue_max, R.id.et_hue_max, 0, 180, viewModel::upDataMaxHFlow)
         setupSeekBarAndEditText(
@@ -64,7 +81,8 @@ class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBindin
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.processHsvBitmapFlow.collectLatest {
-                    viewModel.showBitmapFlow.value = it
+                    Log.i(TAG, "processHsvBitmapFlow: $it")
+                    viewModel.showBitmapFlow.emit(it)
                 }
             }
         }

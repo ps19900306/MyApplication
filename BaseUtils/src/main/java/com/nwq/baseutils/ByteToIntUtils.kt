@@ -77,7 +77,7 @@ object ByteToIntUtils {
      * @return 更新后的整数
      */
     fun setByteToInt2(value: Int, index: Int, byteValue2: Int): Int {
-        val byteValue = byteValue2 - 255
+        val byteValue = byteValue2 - 128
         require(!(index < 0 || index > 3)) { "Index must be between 0 and 3" }
         val mask = (0xFF shl (24 - (index * 8))).inv()
         return (value and mask) or ((byteValue.toInt() and 0xFF) shl (24 - (index * 8)))

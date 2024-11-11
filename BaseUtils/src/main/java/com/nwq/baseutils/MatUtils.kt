@@ -39,7 +39,7 @@ object MatUtils {
      * @param maxV 最大亮度值
      * @return 过滤后的掩码图像
      */
-    fun getMaskMat(hsvMat: Mat, minH: Int, maxH: Int, minS: Int, maxS: Int, minV: Int, maxV: Int): Mat {
+    fun getFilterMaskMat(hsvMat: Mat, minH: Int, maxH: Int, minS: Int, maxS: Int, minV: Int, maxV: Int): Mat {
         Log.d("getMaskMat","minH:$minH maxH:$maxH minS:$minS maxS:$maxS minV:$minV maxV:$maxV")
         val lowerBound = Scalar(minH.toDouble(), minS.toDouble(), minV.toDouble())
         val upperBound = Scalar(maxH.toDouble(), maxS.toDouble(), maxV.toDouble())
@@ -48,13 +48,18 @@ object MatUtils {
         return maskMat
     }
 
-    fun filterByMask(srcMat: Mat, maskMat: Mat): Mat {
-        Core.bitwise_and(srcMat, srcMat, maskMat)
-        return srcMat
-    }
 
     fun filterByHsv(srcMat: Mat, minH: Int, maxH: Int, minS: Int, maxS: Int, minV: Int, maxV: Int): Mat {
-        return filterByMask(srcMat, getMaskMat(srcMat, minH, maxH, minS, maxS, minV, maxV))
+        val maskMat = getFilterMaskMat(srcMat, minH, maxH, minS, maxS, minV, maxV)
+
+        // 将 maskMat 转换为三通道，以便与 srcMat 兼容
+        val maskMat3Channel = Mat()
+        Imgproc.cvtColor(maskMat, maskMat3Channel, Imgproc.COLOR_GRAY2BGR)
+
+        // 通过 maskMat3Channel 对原图进行过滤，获取符合颜色空间的图像
+        val destMat = Mat()
+        Core.bitwise_and(srcMat, maskMat3Channel, destMat)
+        return destMat
     }
 
 

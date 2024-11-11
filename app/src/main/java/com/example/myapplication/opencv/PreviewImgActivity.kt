@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
@@ -23,7 +24,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
-
+    private val TAG =PreviewImgActivity::class.java.simpleName
     private val viewModel by viewModels<OpenCvOptModel>()
     override fun createBinding(inflater: LayoutInflater): ActivityPreviewImgBinding {
         return ActivityPreviewImgBinding.inflate(layoutInflater)
@@ -31,8 +32,9 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 
     override fun initData() {
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showBitmapFlow.collectLatest {
+                    Log.i(TAG, "showBitmapFlow collectLatest: $it")
                     binding.bgImg.setImageBitmap(it)
                 }
             }
