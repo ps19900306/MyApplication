@@ -1,6 +1,7 @@
-package com.nwq.exculde.imgtake
+package com.nwq.imgtake
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.Image
@@ -13,56 +14,50 @@ import android.util.DisplayMetrics
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatActivity.RESULT_OK
+import java.nio.ByteBuffer
 
 /**
  * 图像捕获工具类，提供屏幕捕获和截图功能
+ * 基于开启录像的
+ * 这个在Activity里面初始化
  */
-object ImageTakeUtils {
+class ImgTakeByVideo  : ImgTake {
 
     // 最大图像数量
     private val maxImages = 10
+
     // 图像阅读器，用于从虚拟显示器接收图像帧
     private var mImageReader: ImageReader? = null
+
     // 虚拟显示器，用于捕获屏幕内容
     private var mVirtualDisplay: VirtualDisplay? = null
+
     // 媒体投影，用于投影屏幕内容
     private var mMediaProjection: MediaProjection? = null
+
     // 显示标志，定义虚拟显示器的特性
-    private const val DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC or
+    private val DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC or
             DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY or
             DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR
 
     // 已捕获图像计数
     private var count = 0
+
     // 屏幕宽度
     private var width = 0
+
     // 屏幕高度
     private var height = 0
+
     // 屏幕密度（每英寸点数），这里简化为常量，实际应根据设备情况调整
     private val dpi = 1
+
     // 处理回调的Handler
     private var mHandler: Handler? = null
+
     // 媒体投影管理器，用于管理媒体投影服务
     private var mMediaProjectionManager: MediaProjectionManager? = null
 
-    /**
-     * 获取下一帧图像
-     *
-     * @return 下一帧Image对象，如果不可用则返回null
-     */
-    fun acquireNextImage(): Image? {
-        // 如果屏幕尺寸未设置，则返回null
-        if (width == 0 || height == 0)
-            return null
-        // 如果已达到最大图像数量，重置并释放资源
-        if (count >= maxImages) {
-            resetImageReader()
-        }
-        // 尝试获取下一帧图像
-        val image = mImageReader?.acquireNextImage()
-        count++
-        return image
-    }
 
     /**
      * 初始化工具类，请求媒体投影权限
@@ -92,6 +87,70 @@ object ImageTakeUtils {
         }
     }
 
+
+
+     override suspend fun takeScreenImg(): Bitmap? {
+        var bitmap: Bitmap? = null
+        acquireNextImage()?.let { image ->
+            if (image == null) {
+                //L.t("获取到最新图片")
+            } else {
+                //L.t("获取到最新图片")
+                val buffer: ByteBuffer = image.planes[0].getBuffer()
+                val width = image.width
+                val height = image.height
+                val pixelStride: Int = image.planes[0].pixelStride
+                val rowStride: Int = image.planes[0].rowStride
+                val rowPadding = rowStride - pixelStride * width
+                var bitmap = Bitmap.createBitmap(
+                    width + rowPadding / pixelStride,
+                    height,
+                    Bitmap.Config.ARGB_8888
+                )
+                bitmap!!.copyPixelsFromBuffer(buffer)
+                bitmap = Bitmap.createScaledBitmap(bitmap!!, bitmap!!.width, bitmap!!.height, false)
+                if (bitmap != null) {
+                    return bitmap
+                } else {
+                }
+                image.close()
+            }
+        }
+        return bitmap
+    }
+
+    /**
+     * 停止屏幕记录，释放资源并停止媒体投影
+     */
+    fun stopRecord() {
+        // 释放所有资源
+        releaseResources()
+        // 停止媒体投影
+        mMediaProjection?.stop()
+        mMediaProjection = null
+    }
+
+    /**
+     * 获取下一帧图像
+     *
+     * @return 下一帧Image对象，如果不可用则返回null
+     */
+    private fun acquireNextImage(): Image? {
+        // 如果屏幕尺寸未设置，则返回null
+        if (width == 0 || height == 0)
+            return null
+        // 如果已达到最大图像数量，重置并释放资源
+        if (count >= maxImages) {
+            resetImageReader()
+        }
+        // 尝试获取下一帧图像
+        val image = mImageReader?.acquireNextImage()
+        count++
+        return image
+    }
+
+
+
     /**
      * 开始记录屏幕
      *
@@ -101,7 +160,7 @@ object ImageTakeUtils {
      * @param handler                 处理回调的Handler
      * @param metrics                 屏幕显示度量，用于设置虚拟显示器的尺寸和密度
      */
-    fun startRecord(
+    private fun startRecord(
         mediaProjectionManager: MediaProjectionManager,
         resultCode: Int,
         data: Intent,
@@ -172,14 +231,7 @@ object ImageTakeUtils {
         mVirtualDisplay = null
     }
 
-    /**
-     * 停止屏幕记录，释放资源并停止媒体投影
-     */
-    fun stopRecord() {
-        // 释放所有资源
-        releaseResources()
-        // 停止媒体投影
-        mMediaProjection?.stop()
-        mMediaProjection = null
-    }
+
+
+
 }

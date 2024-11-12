@@ -7,4 +7,5 @@ import com.nwq.baseobj.CoordinateArea
 abstract class JudeUnit(val tag: String, val finArea: CoordinateArea?) {
 
 
+      
 }
