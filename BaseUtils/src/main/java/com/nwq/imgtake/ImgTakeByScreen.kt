@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.view.Display
 import androidx.annotation.RequiresApi
+import kotlinx.coroutines.delay
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -14,6 +15,9 @@ import kotlin.coroutines.suspendCoroutine
  * 这个在无障碍服务成功时候里面初始化
  */
 class ImgTakeByScreen(val acService: AccessibilityService) : ImgTake {
+
+
+
 
 
     @RequiresApi(Build.VERSION_CODES.R)
