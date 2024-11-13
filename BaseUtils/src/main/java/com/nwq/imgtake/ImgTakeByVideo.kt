@@ -21,7 +21,9 @@ import java.nio.ByteBuffer
  * 基于开启录像的
  * 这个在Activity里面初始化
  */
-class ImgTakeByVideo  : ImgTake {
+class ImgTakeByVideo : ImgTake {
+
+    private var lastImg: Bitmap? = null
 
     // 最大图像数量
     private val maxImages = 10
@@ -87,9 +89,13 @@ class ImgTakeByVideo  : ImgTake {
         }
     }
 
+    override suspend fun getLastImg(): Bitmap? {
+        return lastImg
+    }
 
-
-     override suspend fun takeScreenImg(): Bitmap? {
+    override suspend fun takeScreenImg(): Bitmap? {
+        lastImg?.recycle()
+        lastImg = null
         var bitmap: Bitmap? = null
         acquireNextImage()?.let { image ->
             if (image == null) {
@@ -108,15 +114,11 @@ class ImgTakeByVideo  : ImgTake {
                     Bitmap.Config.ARGB_8888
                 )
                 bitmap!!.copyPixelsFromBuffer(buffer)
-                bitmap = Bitmap.createScaledBitmap(bitmap!!, bitmap!!.width, bitmap!!.height, false)
-                if (bitmap != null) {
-                    return bitmap
-                } else {
-                }
+                lastImg = Bitmap.createScaledBitmap(bitmap!!, bitmap!!.width, bitmap!!.height, false)
                 image.close()
             }
         }
-        return bitmap
+        return lastImg
     }
 
     /**
@@ -148,7 +150,6 @@ class ImgTakeByVideo  : ImgTake {
         count++
         return image
     }
-
 
 
     /**
@@ -230,8 +231,6 @@ class ImgTakeByVideo  : ImgTake {
         mVirtualDisplay?.release()
         mVirtualDisplay = null
     }
-
-
 
 
 }

@@ -191,4 +191,8 @@
         app:layout_constraintTop_toBottomOf="@id/tv_value_max"
         app:layout_constraintWidth_percent="0.3" />
 
+
+    <!-- Value 区间最大值选择 -->
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

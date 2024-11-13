@@ -1,3 +1,5 @@
+package com.nwq.base
+
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater

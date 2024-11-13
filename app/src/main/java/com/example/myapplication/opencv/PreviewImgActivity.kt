@@ -1,16 +1,14 @@
 package com.example.myapplication.opencv
 
-import BaseActivity
+import com.nwq.base.BaseActivity
 import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
-import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
+import android.widget.SeekBar
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -45,6 +43,16 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
         binding.button2.singleClick {
             SetSHVFilterDialog().show(supportFragmentManager, "SHV");
         }
+
+        binding.sbHNearby.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                viewModel.upDataHFlow(progress);
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
     }
 
     override fun getPermission(): Array<String>? {

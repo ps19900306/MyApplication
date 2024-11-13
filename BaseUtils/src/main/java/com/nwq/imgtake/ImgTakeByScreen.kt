@@ -17,11 +17,12 @@ import kotlin.coroutines.suspendCoroutine
 class ImgTakeByScreen(val acService: AccessibilityService) : ImgTake {
 
 
-
-
+    private var lastImg: Bitmap? = null
 
     @RequiresApi(Build.VERSION_CODES.R)
     override suspend fun takeScreenImg(): Bitmap? = suspendCoroutine {
+        lastImg?.recycle()
+        lastImg = null
         acService.takeScreenshot(
             Display.DEFAULT_DISPLAY,
             acService.mainExecutor,
@@ -33,6 +34,7 @@ class ImgTakeByScreen(val acService: AccessibilityService) : ImgTake {
                     val screenBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
                     bitmap?.recycle()
                     screenshotResult.hardwareBuffer.close()
+                    lastImg = screenBitmap
                     it.resume(screenBitmap)
 
                 }
@@ -41,6 +43,10 @@ class ImgTakeByScreen(val acService: AccessibilityService) : ImgTake {
                     it.resume(null)
                 }
             })
+    }
+
+    override suspend fun getLastImg(): Bitmap? {
+       return lastImg
     }
 
 

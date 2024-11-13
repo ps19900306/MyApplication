@@ -1,4 +1,4 @@
-
+package com.nwq.base
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -83,4 +83,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     protected open fun onPermissionFail() {
         // 默认实现，子类可以重写
     }
+
+
+
 }

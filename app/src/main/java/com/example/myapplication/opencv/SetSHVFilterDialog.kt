@@ -1,11 +1,10 @@
 package com.example.myapplication.opencv
 
-import BaseDialogFragment
+import com.nwq.base.BaseDialogFragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.SeekBar
@@ -15,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentSetSHVFilterDialogBinding
-import com.nwq.loguitls.L
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -78,14 +76,6 @@ class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBindin
             255,
             viewModel::upDataMaxVFlow
         )
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.processHsvBitmapFlow.collectLatest {
-                    Log.i(TAG, "processHsvBitmapFlow: $it")
-                    viewModel.showBitmapFlow.emit(it)
-                }
-            }
-        }
     }
 
 

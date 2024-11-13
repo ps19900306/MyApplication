@@ -7,17 +7,19 @@ import androidx.lifecycle.viewModelScope
 import com.nwq.baseutils.ByteToIntUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.loguitls.L
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 
 class OpenCvOptModel : ViewModel() {
 
-    private val TAG =OpenCvOptModel::class.java.simpleName
+    private val TAG = OpenCvOptModel::class.java.simpleName
 
     // 图片
     private var srcBitmap: Bitmap? = null;
@@ -30,7 +32,7 @@ class OpenCvOptModel : ViewModel() {
 
     // 显示的图片
     private var showBitmap: Bitmap? = null;
-
+    val expendRange = 3;
 
     public var showBitmapFlow: MutableStateFlow<Bitmap?> = MutableStateFlow(null)
 
@@ -42,11 +44,38 @@ class OpenCvOptModel : ViewModel() {
     }
 
     private val _HFlow =
-        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 52, 0, 0))).apply { debounce(1000) }     //52= 180-128
+        MutableStateFlow<Int>(
+            ByteToIntUtils.bytesToInt(
+                byteArrayOf(
+                    -128,
+                    52,
+                    0,
+                    0
+                )
+            )
+        ).apply { debounce(1000) }     //52= 180-128
     private val _SFlow =
-        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 127, 0, 0))).apply { debounce(1000) }//127= 255-128
+        MutableStateFlow<Int>(
+            ByteToIntUtils.bytesToInt(
+                byteArrayOf(
+                    -128,
+                    127,
+                    0,
+                    0
+                )
+            )
+        ).apply { debounce(1000) }//127= 255-128
     private val _VFlow =
-        MutableStateFlow<Int>(ByteToIntUtils.bytesToInt(byteArrayOf(-128, 127, 0, 0))).apply { debounce(1000) } //127= 255-128
+        MutableStateFlow<Int>(
+            ByteToIntUtils.bytesToInt(
+                byteArrayOf(
+                    -128,
+                    127,
+                    0,
+                    0
+                )
+            )
+        ).apply { debounce(1000) } //127= 255-128
 
 
     // Combine the parameters and get the Flow from getLogFlow
@@ -82,8 +111,33 @@ class OpenCvOptModel : ViewModel() {
     }
 
 
+    private var job: Job? = null
+    private fun initSrcJob() {
+        if (job == null) {
+            job = viewModelScope.launch {
+                processHsvBitmapFlow.collect {
+                    showBitmapFlow.value = it
+                }
+            }
+        }
+    }
+
+
+    fun upDataHFlow(p: Int) {
+        val temp = ByteToIntUtils.setByteToInt2(
+            _HFlow.value,
+            0,
+            if (p > expendRange) p - expendRange else 0
+        )
+        _HFlow.value =
+            ByteToIntUtils.setByteToInt2(temp, 1, if (p < 180 - expendRange) p + expendRange else 0)
+        initSrcJob();
+    }
+
+
     fun upDataMinHFlow(minH: Int) {
         _HFlow.value = ByteToIntUtils.setByteToInt2(_HFlow.value, 0, minH)
+        initSrcJob();
     }
 
     fun getMinH(): Int {
@@ -92,14 +146,16 @@ class OpenCvOptModel : ViewModel() {
 
     fun upDataMaxHFlow(maxH: Int) {
         _HFlow.value = ByteToIntUtils.setByteToInt2(_HFlow.value, 1, maxH)
+        initSrcJob();
     }
 
     fun getMaxH(): Int {
-        return ByteToIntUtils.getByteFromInt2(_HFlow.value,1)
+        return ByteToIntUtils.getByteFromInt2(_HFlow.value, 1)
     }
 
     fun upDataMinSFlow(minS: Int) {
         _SFlow.value = ByteToIntUtils.setByteToInt2(_SFlow.value, 0, minS)
+        initSrcJob();
     }
 
     fun getMinS(): Int {
@@ -108,14 +164,16 @@ class OpenCvOptModel : ViewModel() {
 
     fun upDataMaxSFlow(maxS: Int) {
         _SFlow.value = ByteToIntUtils.setByteToInt2(_SFlow.value, 1, maxS)
+        initSrcJob();
     }
 
     fun getMaxS(): Int {
-        return ByteToIntUtils.getByteFromInt2(_SFlow.value,1)
+        return ByteToIntUtils.getByteFromInt2(_SFlow.value, 1)
     }
 
     fun upDataMinVFlow(minV: Int) {
         _VFlow.value = ByteToIntUtils.setByteToInt2(_VFlow.value, 0, minV)
+        initSrcJob();
     }
 
     fun getMinV(): Int {
@@ -124,10 +182,11 @@ class OpenCvOptModel : ViewModel() {
 
     fun upDataMaxVFlow(maxV: Int) {
         _VFlow.value = ByteToIntUtils.setByteToInt2(_VFlow.value, 1, maxV)
+        initSrcJob();
     }
 
     fun getMaxV(): Int {
-        return ByteToIntUtils.getByteFromInt2(_VFlow.value,1)
+        return ByteToIntUtils.getByteFromInt2(_VFlow.value, 1)
     }
 
     private fun getOrCreateSrcMat(): Mat? {
