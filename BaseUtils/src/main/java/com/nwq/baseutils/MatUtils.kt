@@ -2,6 +2,7 @@ package com.nwq.baseutils
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.nwq.baseobj.CoordinateArea
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
@@ -39,8 +40,16 @@ object MatUtils {
      * @param maxV 最大亮度值
      * @return 过滤后的掩码图像
      */
-    fun getFilterMaskMat(hsvMat: Mat, minH: Int, maxH: Int, minS: Int, maxS: Int, minV: Int, maxV: Int): Mat {
-        Log.d("getMaskMat","minH:$minH maxH:$maxH minS:$minS maxS:$maxS minV:$minV maxV:$maxV")
+    fun getFilterMaskMat(
+        hsvMat: Mat,
+        minH: Int,
+        maxH: Int,
+        minS: Int,
+        maxS: Int,
+        minV: Int,
+        maxV: Int
+    ): Mat {
+        Log.d("getMaskMat", "minH:$minH maxH:$maxH minS:$minS maxS:$maxS minV:$minV maxV:$maxV")
         val lowerBound = Scalar(minH.toDouble(), minS.toDouble(), minV.toDouble())
         val upperBound = Scalar(maxH.toDouble(), maxS.toDouble(), maxV.toDouble())
         val maskMat = Mat()
@@ -49,7 +58,15 @@ object MatUtils {
     }
 
 
-    fun filterByHsv(srcMat: Mat, minH: Int, maxH: Int, minS: Int, maxS: Int, minV: Int, maxV: Int): Mat {
+    fun filterByHsv(
+        srcMat: Mat,
+        minH: Int,
+        maxH: Int,
+        minS: Int,
+        maxS: Int,
+        minV: Int,
+        maxV: Int
+    ): Mat {
         val maskMat = getFilterMaskMat(srcMat, minH, maxH, minS, maxS, minV, maxV)
 
         // 将 maskMat 转换为三通道，以便与 srcMat 兼容
@@ -63,14 +80,13 @@ object MatUtils {
     }
 
 
-
-    fun bitmapToMat(bitmap:Bitmap): Mat {
+    fun bitmapToMat(bitmap: Bitmap): Mat {
         // 创建一个 Mat 对象
         val mat = Mat()
         // 使用 OpenCV 的 Utils 类将 Bitmap 转换为 Mat
         Utils.bitmapToMat(bitmap, mat)
         // 如果 Bitmap 是 ARGB_8888 格式，需要将其转换为 RGB 格式 去掉A通道
-        if (bitmap.config == Bitmap.Config.ARGB_8888 ) {
+        if (bitmap.config == Bitmap.Config.ARGB_8888) {
             val rgbMat = Mat()
             Imgproc.cvtColor(mat, rgbMat, Imgproc.COLOR_RGBA2RGB)
             return rgbMat
@@ -111,5 +127,18 @@ object MatUtils {
 
         // 将 RGB 格式的 Mat 转换为 Bitmap
         return matToBitmap(rgbMat)
+    }
+
+
+    fun cropMat(srcMat: Mat, coordinateArea: CoordinateArea): Mat {
+        val dstMat = Mat(coordinateArea.height, coordinateArea.width, srcMat.type())
+        srcMat.submat(
+            coordinateArea.y,
+            coordinateArea.y + coordinateArea.height,
+            coordinateArea.x,
+            coordinateArea.x + coordinateArea.width
+        ).copyTo(dstMat)
+        return dstMat
+
     }
 }

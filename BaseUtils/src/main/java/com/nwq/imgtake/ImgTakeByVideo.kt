@@ -21,7 +21,7 @@ import java.nio.ByteBuffer
  * 基于开启录像的
  * 这个在Activity里面初始化
  */
-class ImgTakeByVideo : ImgTake {
+class ImgTakeByVideo : ImgTake() {
 
     private var lastImg: Bitmap? = null
 
@@ -94,6 +94,7 @@ class ImgTakeByVideo : ImgTake {
     }
 
     override suspend fun takeScreenImg(): Bitmap? {
+        clearLastBitMapCache()
         lastImg?.recycle()
         lastImg = null
         var bitmap: Bitmap? = null

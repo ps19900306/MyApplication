@@ -14,7 +14,7 @@ import kotlin.coroutines.suspendCoroutine
  * 基于无障碍服务的
  * 这个在无障碍服务成功时候里面初始化
  */
-class ImgTakeByScreen(val acService: AccessibilityService) : ImgTake {
+class ImgTakeByScreen(val acService: AccessibilityService) : ImgTake() {
 
 
     private var lastImg: Bitmap? = null
@@ -22,6 +22,7 @@ class ImgTakeByScreen(val acService: AccessibilityService) : ImgTake {
     @RequiresApi(Build.VERSION_CODES.R)
     override suspend fun takeScreenImg(): Bitmap? = suspendCoroutine {
         lastImg?.recycle()
+        clearLastBitMapCache()
         lastImg = null
         acService.takeScreenshot(
             Display.DEFAULT_DISPLAY,
