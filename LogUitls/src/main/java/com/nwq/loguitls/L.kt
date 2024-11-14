@@ -9,10 +9,11 @@ object L : ILog {
 
     private val list = mutableListOf<ILog>()
 
+    //初始化打印哪些日志
     init {
-        list.add(FileLog(LogFilterInfo(level = LogLevel.INFO)))
-        list.add(CatLog())
-        list.add(DbLog(LogFilterInfo(level = LogLevel.DEBUG)))
+        // list.add(FileLog(LogFilterInfo(level = LogLevel.INFO))) //日志文件  默认不开启
+        list.add(CatLog()) //普通日志
+        list.add(DbLog(LogFilterInfo(level = LogLevel.DEBUG))) //数据库日志
     }
 
     override fun v(tag: String, msg: String, time: Long) {

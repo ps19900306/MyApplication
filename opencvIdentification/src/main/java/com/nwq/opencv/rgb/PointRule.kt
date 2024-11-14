@@ -8,6 +8,13 @@ import com.nwq.baseobj.CoordinatePoint
 //单点对应单色
 class PointRule(val point: CoordinatePoint, val rule: ColorRule) {
 
+
+    constructor(x: Int, y: Int, r: Int, g: Int, b: Int) : this(
+        CoordinatePoint(x, y),
+        ColorRule.getSimple(r, g, b)
+    )
+
+
     fun getCoordinatePoint(): CoordinatePoint {
         return point
     }

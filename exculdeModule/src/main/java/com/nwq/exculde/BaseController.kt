@@ -7,15 +7,14 @@ import com.nwq.imgtake.ImgTake
 import kotlinx.coroutines.delay
 import org.opencv.core.Mat
 
-class BaseController(
+abstract class BaseController(
     val acService: AccessibilityService,
 ) {
 
+    abstract val TAG:String
 
     private val imgTake = ImgTake.imgTake
-    private val takeScreenIn = 4000L
 
-    private var matMap = HashMap<CoordinateArea, Mat>()
 
 
 }
