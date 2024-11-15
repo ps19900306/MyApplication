@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">默认标题</string>
+    <string name="accessibility_service_label">Talker</string>
+    <string name="accessibility_service_description">Talker</string>
+    <string name="ok">确定</string>
+    <string name="clear">清除</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_immanager">IMmanagerActivity</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="harvest_setting">收菜设置</string>
+    <string name="task_setting">际遇设置</string>
+    <string name="daily_gifts">每日优惠礼物</string>
+    <string name="supply_materials">补给物资领取</string>
+    <string name="mining_setting">挖矿设置</string>
+    <string name="local_exception_setting">本地异常设置</string>
+    <string name="user_name">用户名</string>
+    <string name="base_menu_location">左边菜单的位置</string>
+    <string name="base_clone_location">克隆基地位置</string>
+    <string name="app_location_y">app行</string>
+    <string name="app_location_x">app列</string>
+    <string name="save">保存</string>
+    <string name="task_yi">际遇任务</string>
+    <string name="task_vi">收菜任务</string>
+    <string name="plant_count">中菜数量</string>
+    <string name="add_interval">添加时间的间隔</string>
+    <string name="complete_interval">收菜的间隔</string>
+    <string name="resetting">重置</string>
+    <string name="free_daily">每日免费</string>
+    <string name="daily_login_gifts">每日登录礼物</string>
+    <string name="agreement_gift">合作协议</string>
+    <string name="xiao_mi_discount">小米折扣卷</string>
+    <string name="start_opt_time">每天开始执行时间</string>
+</resources>
