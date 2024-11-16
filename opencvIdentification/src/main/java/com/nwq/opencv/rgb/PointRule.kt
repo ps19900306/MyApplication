@@ -15,13 +15,10 @@ class PointRule(val point: CoordinatePoint, val rule: ColorRule) : BIPR() {
         ColorRule.getSimple(r, g, b)
     )
 
-    fun getCoordinatePoint(): CoordinatePoint {
+    override fun getCoordinatePoint(): CoordinatePoint {
         return point
     }
 
-    fun getColorRule(): ColorRule {
-        return rule
-    }
 
     override fun checkBIpr(bitmap: Bitmap, offsetX: Int, offsetY: Int): Boolean {
         if (bitmap.width <= point.x + offsetX || bitmap.height <= point.y + offsetY) {

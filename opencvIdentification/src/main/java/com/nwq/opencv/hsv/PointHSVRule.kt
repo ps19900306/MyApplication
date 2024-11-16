@@ -25,5 +25,9 @@ class PointHSVRule(val point: CoordinatePoint, val rule: HSVRule) : MIPR() {
         return rule.verificationRule(array[0].toInt(), array[1].toInt(), array[2].toInt())
     }
 
+    override fun getCoordinatePoint(): CoordinatePoint {
+        return point
+    }
+
 
 }
