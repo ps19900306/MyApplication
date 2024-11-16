@@ -11,7 +11,7 @@ import org.opencv.core.Mat
 abstract class FindTargetHSV(
     tag: String,
     val prList: List<PointHSVRule>,
-    val finArea: CoordinateArea?,
+    val finArea: CoordinateArea?=null,
     val errorTolerance: Int = 0,
 ) : FindTarget(tag) {
 
@@ -20,16 +20,22 @@ abstract class FindTargetHSV(
     private val originArea by lazy {
         CoordinateUtils.calculateBoundingRectangle(prList.map { it.point })
     }
+    private val firstP by lazy {
+        prList.first().point
+    }
 
-    override fun findTarget(mat: Any): CoordinateArea? {
-        if (mat is Mat)
-            return findTargetBitmap(mat)
-        return null
+
+    override suspend fun findTarget(): CoordinateArea? {
+        if (prList.isEmpty()) {
+            return null
+        }
+        val srcMat = imgTake.getMat(finArea) ?: return null
+        return findTargetBitmap(srcMat)
     }
 
 
     //这里返回的区域是基于整个图标的
-    fun findTargetBitmap(mat: Mat): CoordinateArea? {
+    private fun findTargetBitmap(mat: Mat): CoordinateArea? {
         return if (checkImgTask(mat)) {
             if (finArea == null) {
                 CoordinateArea(lastOffsetX, lastOffsetY, originArea.width, originArea.height)
@@ -50,15 +56,11 @@ abstract class FindTargetHSV(
     protected fun checkImgTask(
         srcMat: Mat,
     ): Boolean {
-        if (prList.isEmpty()) {
-            return false
-        }
-        val areaToCheck = finArea?.let { it } ?: CoordinateArea(0, 0, srcMat.cols(), srcMat.rows())
-        for (i in areaToCheck.x until areaToCheck.width) {
-            for (j in areaToCheck.y until areaToCheck.height) {
+        for (i in 0 until srcMat.cols()) {
+            for (j in 0 until srcMat.rows()) {
                 var nowErrorCount = 0
                 prList.forEach lit@{
-                    if (!it.checkIpr(srcMat, i, j)) {
+                    if (!it.checkIpr(srcMat, i - firstP.x, j - firstP.y)) {
                         nowErrorCount++
                         if (nowErrorCount > errorTolerance) {
                             return@lit  // 从 lambda 表达式中返回

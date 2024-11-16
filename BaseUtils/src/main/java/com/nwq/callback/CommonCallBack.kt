@@ -1,6 +1,7 @@
-package com.nwq.baseutils
+package com.nwq.callback
 
 interface CommonCallBack<T> {
 
     fun callBack(): T
+
 }

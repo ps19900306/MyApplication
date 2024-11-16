@@ -35,7 +35,15 @@ abstract class ImgTake {
     private var lastMat: Mat? = null
 
 
-    suspend fun getMat(area: CoordinateArea): Mat? {
+    suspend fun getMat(area: CoordinateArea? = null): Mat? {
+        if (area == null) {
+            if (lastMat == null) {
+                lastMat = getLastImg()?.let { lastBit ->
+                    MatUtils.bitmapToHsvMat(lastBit)
+                }
+            }
+            return lastMat
+        }
         return hsvMatMap[area] ?: run {
             if (lastMat == null) {
                 lastMat = getLastImg()?.let { lastBit ->

@@ -13,16 +13,16 @@ abstract class FindTargetRgb(
     val errorTolerance: Int = 0,
 ) : FindTarget(tag) {
 
+
     private var lastOffsetX: Int = 0
     private var lastOffsetY: Int = 0
     private val originArea by lazy {
         CoordinateUtils.calculateBoundingRectangle(prList.map { it.point })
     }
 
-    override fun findTarget(bitmap: Any): CoordinateArea? {
-        if (bitmap is Bitmap)
-            return findTargetBitmap(bitmap)
-        return null
+    override suspend fun findTarget(): CoordinateArea? {
+        val  bitmap=imgTake.getLastImg()?:return null
+        return findTargetBitmap(bitmap)
     }
 
 

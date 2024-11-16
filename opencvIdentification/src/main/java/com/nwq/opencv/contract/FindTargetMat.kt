@@ -3,8 +3,8 @@ package com.nwq.opencv.contract
 import ImageDescriptorEntity
 import android.graphics.Bitmap
 import com.nwq.baseobj.CoordinateArea
-import com.nwq.baseutils.CommonCallBack
-import com.nwq.baseutils.CommonCallBack2
+import com.nwq.callback.CommonCallBack
+import com.nwq.callback.CommonCallBack2
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.db.IdentifyDatabase
 import org.opencv.android.Utils
@@ -26,7 +26,9 @@ abstract class FindTargetMat(
     tag: String,
     val bitmapTake: CommonCallBack<Bitmap>,
     val maskTake: CommonCallBack2<Bitmap, Mat>,
-    val saveDb: Boolean = true
+    val saveDb: Boolean = true,
+    val finArea: CoordinateArea?=null,
+
 ) : FindTarget(tag) {
 
     companion object {
@@ -53,10 +55,9 @@ abstract class FindTargetMat(
     private lateinit var mKeypoints: MatOfKeyPoint//这个是特征点的
 
 
-    override fun findTarget(any: Any): CoordinateArea? {
-        if (any is Mat)
-            return findTargetBitmap(any)
-        return null
+    override suspend fun findTarget(): CoordinateArea? {
+        val srcMat = imgTake.getMat(finArea) ?: return null
+        return findTargetBitmap(srcMat)
     }
 
 

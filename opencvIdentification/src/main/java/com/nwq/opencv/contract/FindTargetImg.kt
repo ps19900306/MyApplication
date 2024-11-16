@@ -2,7 +2,7 @@ package com.nwq.opencv.contract
 
 import android.graphics.Bitmap
 import com.nwq.baseobj.CoordinateArea
-import com.nwq.baseutils.CommonCallBack
+import com.nwq.callback.CommonCallBack
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
@@ -11,40 +11,32 @@ import org.opencv.imgproc.Imgproc
 
 
 //进行图片匹配
-abstract class FindTargetImg(tag: String, val bitmapTake: CommonCallBack<Bitmap>) :
+abstract class FindTargetImg(tag: String, val bitmapTake: CommonCallBack<Bitmap>, val finArea: CoordinateArea?=null,) :
     FindTarget(tag) {
 
 
-    companion object {
-        const val IMG_SUFFIX = "_img"
-    }
-    
-    override fun findTarget(bitmap: Any): CoordinateArea? {
-        if (bitmap is Bitmap)
-            return findTargetBitmap(bitmap)
-        return null
-    }
-
-    private val templateMat by lazy {
+    // 目标图片的 Mat 对象
+    private val targetMat by lazy {
         val templateMat = Mat()
         Utils.bitmapToMat(bitmapTake.callBack(), templateMat)
         templateMat
     }
 
+    override suspend fun findTarget(): CoordinateArea? {
+        val srcMat = imgTake.getMat(finArea) ?: return null
+        return findTargetBitmap(srcMat)
+    }
 
-    fun findTargetBitmap(sourceBitmap: Bitmap): CoordinateArea? {
-        // 将 Bitmap 转换为 OpenCV Mat
-        val sourceMat = Mat()
-        Utils.bitmapToMat(sourceBitmap, sourceMat)
 
 
+   private suspend fun findTargetBitmap(sourceMat: Mat): CoordinateArea? {
         // 创建输出结果 Mat，大小为 (source - template + 1)
-        val resultCols = sourceMat.cols() - templateMat.cols() + 1
-        val resultRows = sourceMat.rows() - templateMat.rows() + 1
+        val resultCols = sourceMat.cols() - targetMat.cols() + 1
+        val resultRows = sourceMat.rows() - targetMat.rows() + 1
         val resultMat = Mat(resultRows, resultCols, CvType.CV_32FC1)
 
         // 执行模板匹配
-        Imgproc.matchTemplate(sourceMat, templateMat, resultMat, Imgproc.TM_CCOEFF_NORMED)
+        Imgproc.matchTemplate(sourceMat, targetMat, resultMat, Imgproc.TM_CCOEFF_NORMED)
 
         // 寻找最大匹配值和它的对应位置
         val minMaxLocResult = Core.minMaxLoc(resultMat)
@@ -54,7 +46,7 @@ abstract class FindTargetImg(tag: String, val bitmapTake: CommonCallBack<Bitmap>
         if (minMaxLocResult.maxVal >= 0.8) {  // 假设匹配度大于 0.8 认为找到
             val coordinateArea = CoordinateArea(
                 matchLoc.x.toInt(), matchLoc.y.toInt(),
-                templateMat.width(), templateMat.height()
+                targetMat.width(), targetMat.height()
             )
             return coordinateArea
         }

@@ -1,4 +1,4 @@
-package com.nwq.baseutils
+package com.nwq.callback
 
 interface CommonCallBack2<D, T> {
 
