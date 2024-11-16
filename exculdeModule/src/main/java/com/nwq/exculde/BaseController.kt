@@ -11,8 +11,9 @@ abstract class BaseController(
     val acService: AccessibilityService,
 ) {
 
-    abstract val TAG:String
 
+
+    abstract val TAG:String
     private val imgTake = ImgTake.imgTake
 
 
