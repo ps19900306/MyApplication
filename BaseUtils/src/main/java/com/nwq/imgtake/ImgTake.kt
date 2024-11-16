@@ -2,6 +2,7 @@ package com.nwq.imgtake
 
 import android.graphics.Bitmap
 import com.nwq.baseobj.CoordinateArea
+import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
 import kotlinx.coroutines.delay
 import com.nwq.baseutils.isLandscape
@@ -21,8 +22,19 @@ abstract class ImgTake {
         const val TAKE_SCREEN_DELAY = 4000L
     }
 
+    private var hsvMatMap = HashMap<CoordinateArea, Mat>()
+    private var lastMat: Mat? = null
 
     abstract suspend fun takeScreenImg(): Bitmap?
+
+    protected var lastImg: Bitmap? = null
+
+    //将图片存为JPG格式在进行读取
+    suspend fun takeScreenImgBySaveJpeg(): Bitmap? {
+        val bitmap = takeScreenImg() ?: return null
+        lastImg = FileUtils.saveBitmapJpgAndRead(bitmap)
+        return lastImg
+    }
 
     //每次获取新的图片需要清楚掉原来的
     protected fun clearLastBitMapCache() {
@@ -30,9 +42,9 @@ abstract class ImgTake {
         hsvMatMap.clear()
     }
 
-    abstract suspend fun getLastImg(): Bitmap?
-    private var hsvMatMap = HashMap<CoordinateArea, Mat>()
-    private var lastMat: Mat? = null
+    suspend fun getLastImg(): Bitmap? {
+        return lastImg
+    }
 
 
     suspend fun getMat(area: CoordinateArea? = null): Mat? {

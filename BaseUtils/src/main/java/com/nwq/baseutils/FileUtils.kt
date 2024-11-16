@@ -3,10 +3,13 @@ package com.nwq.baseutils
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileWriter
@@ -87,16 +90,24 @@ object FileUtils {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
             }
             // 扫描文件，使其出现在图库中
-            MediaScannerConnection.scanFile(context, arrayOf(file.path), arrayOf("image/jpeg"), null)
+            MediaScannerConnection.scanFile(
+                context,
+                arrayOf(file.path),
+                arrayOf("image/jpeg"),
+                null
+            )
 
             // 将文件路径转换为Uri
-            val contentUri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+            val contentUri =
+                FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
             // 插入到MediaStore
-            context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues().apply {
-                put(MediaStore.Images.Media.DATA, file.absolutePath)
-                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            })
+            context.contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                ContentValues().apply {
+                    put(MediaStore.Images.Media.DATA, file.absolutePath)
+                    put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                    put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                })
 
             return true
         } catch (e: IOException) {
@@ -127,6 +138,25 @@ object FileUtils {
             true
         } catch (e: IOException) {
             false
+        }
+    }
+
+    //因为一些算法可能是通过JPG图训练的 所以这里做一下处理
+    suspend fun saveBitmapJpgAndRead(bitmap: Bitmap): Bitmap? {
+        val file = File(context.filesDir, "screenshot.jpg")
+        // 保存图片为 JPG 格式
+        try {
+            val fos = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+            fos.flush()
+            fos.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return null
+        }
+        // 读取图片为 Bitmap
+        return withContext(Dispatchers.IO) {
+            BitmapFactory.decodeFile(file.absolutePath)
         }
     }
 

@@ -40,15 +40,19 @@ android {
 
 dependencies {
 
+    implementation(project(":BaseUtils"))
+    implementation(project(":LogUitls"))
+    implementation(project(":opencvIdentification"))
+    implementation(project(":exculdeModule"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.lifecycle.livedata.ktx)
-    implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
+    implementation(libs.opencv)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
 }

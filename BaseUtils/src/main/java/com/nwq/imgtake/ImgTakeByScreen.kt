@@ -17,7 +17,7 @@ import kotlin.coroutines.suspendCoroutine
 class ImgTakeByScreen(val acService: AccessibilityService) : ImgTake() {
 
 
-    private var lastImg: Bitmap? = null
+
 
     @RequiresApi(Build.VERSION_CODES.R)
     override suspend fun takeScreenImg(): Bitmap? = suspendCoroutine {
@@ -46,9 +46,7 @@ class ImgTakeByScreen(val acService: AccessibilityService) : ImgTake() {
             })
     }
 
-    override suspend fun getLastImg(): Bitmap? {
-       return lastImg
-    }
+
 
 
 }

@@ -23,8 +23,6 @@ import java.nio.ByteBuffer
  */
 class ImgTakeByVideo : ImgTake() {
 
-    private var lastImg: Bitmap? = null
-
     // 最大图像数量
     private val maxImages = 10
 
@@ -89,9 +87,7 @@ class ImgTakeByVideo : ImgTake() {
         }
     }
 
-    override suspend fun getLastImg(): Bitmap? {
-        return lastImg
-    }
+
 
     override suspend fun takeScreenImg(): Bitmap? {
         clearLastBitMapCache()
