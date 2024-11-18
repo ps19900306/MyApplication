@@ -56,7 +56,7 @@ abstract class FindTargetMat(
 
 
     override suspend fun findTarget(): CoordinateArea? {
-        val srcMat = imgTake.getMat(finArea) ?: return null
+        val srcMat = imgTake.getHsvMat(finArea) ?: return null
         return findTargetBitmap(srcMat)
     }
 

@@ -1,10 +1,8 @@
 package com.nwq.opencv.contract
 
-import android.graphics.Bitmap
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.CoordinateUtils
 import com.nwq.opencv.hsv.PointHSVRule
-import com.nwq.opencv.rgb.PointRule
 import org.opencv.core.Mat
 
 //根据HSV进行匹配
@@ -29,7 +27,7 @@ abstract class FindTargetHSV(
         if (prList.isEmpty()) {
             return null
         }
-        val srcMat = imgTake.getMat(finArea) ?: return null
+        val srcMat = imgTake.getHsvMat(finArea) ?: return null
         return findTargetBitmap(srcMat)
     }
 

@@ -47,7 +47,7 @@ abstract class ImgTake {
     }
 
 
-    suspend fun getMat(area: CoordinateArea? = null): Mat? {
+    suspend fun getHsvMat(area: CoordinateArea? = null): Mat? {
         if (area == null) {
             if (lastMat == null) {
                 lastMat = getLastImg()?.let { lastBit ->

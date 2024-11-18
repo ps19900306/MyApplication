@@ -10,8 +10,12 @@ import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
 
 
-//进行图片匹配
-abstract class FindTargetImg(tag: String, val bitmapTake: CommonCallBack<Bitmap>, val finArea: CoordinateArea?=null,) :
+//进行图片匹配  需要考虑是否增加 蒙版
+abstract class FindTargetImg(
+    tag: String,
+    val bitmapTake: CommonCallBack<Bitmap>,
+    val finArea: CoordinateArea? = null,
+) :
     FindTarget(tag) {
 
 
@@ -23,13 +27,12 @@ abstract class FindTargetImg(tag: String, val bitmapTake: CommonCallBack<Bitmap>
     }
 
     override suspend fun findTarget(): CoordinateArea? {
-        val srcMat = imgTake.getMat(finArea) ?: return null
+        val srcMat = imgTake.getHsvMat(finArea) ?: return null
         return findTargetBitmap(srcMat)
     }
 
 
-
-   private suspend fun findTargetBitmap(sourceMat: Mat): CoordinateArea? {
+    private suspend fun findTargetBitmap(sourceMat: Mat): CoordinateArea? {
         // 创建输出结果 Mat，大小为 (source - template + 1)
         val resultCols = sourceMat.cols() - targetMat.cols() + 1
         val resultRows = sourceMat.rows() - targetMat.rows() + 1

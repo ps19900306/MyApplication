@@ -1,29 +1,26 @@
 package com.nwq.opencv.identification
 
+import com.nwq.baseobj.CoordinateArea
+import com.nwq.imgtake.ImgTake
 import org.opencv.core.Core
 import org.opencv.core.Mat
-import org.opencv.core.Rect
 
 //裁剪区域
 //阈值
-class StuckPointDetection(val diffThreshold:Long = 1000L, val cropRect:Rect= Rect(0, 0, 640, 480), val threshold:Int =3) {
+class StuckPointDetectionArea(
+    val coordinateArea: CoordinateArea? = null,
+    val threshold: Int = 3,
+    val diffThreshold: Long = 1000L,
+) : IStuckPointDetection {
 
     // 存储最近几张图像用于比较
     private val recentImages = mutableListOf<Mat>()
 
-    /**
-     * 检查当前帧是否处于静止状态
-     *
-     * 此函数的目的是通过比较当前视频帧与最近几个帧之间的差异来判断画面是否发生变化
-     * 如果画面变化小于设定的阈值，持续一定时间后，则认为画面可能卡住
-     *
-     * @param currentFrame 当前的视频帧
-     * @return 如果返回 -1，则表示当前帧数量不足以进行比较；如果返回大于等于0的值，则表示已经比较了的帧数，
-     *         用于判断画面是否卡住（通过与阈值比较）
-     */
-    private fun checkStuckPoint(currentFrame: Mat): Int {
+
+    // 检查当前帧与最近的几帧之间的差异，判断画面是否卡住
+    override suspend fun checkStuckPoint(): Int {
         // 根据预设的裁剪区域从当前帧中裁剪出感兴趣的区域
-        val croppedFrame = currentFrame.submat(cropRect)
+        val croppedFrame = ImgTake.imgTake.getHsvMat(coordinateArea) ?: return -1
         // 如果最近的图像帧数量小于阈值，直接添加当前帧并返回帧数不足的提示
         if (recentImages.size < threshold) {
             recentImages.add(croppedFrame)
@@ -35,7 +32,7 @@ class StuckPointDetection(val diffThreshold:Long = 1000L, val cropRect:Rect= Rec
             for (prev in recentImages) {
                 val diff = Mat()
                 // 计算当前帧与之前帧的差异
-                Core.absdiff(currentFrame, prev, diff)
+                Core.absdiff(croppedFrame, prev, diff)
                 // 累加所有差异值
                 diffSum += Core.sumElems(diff).`val`[0]
             }
@@ -52,6 +49,9 @@ class StuckPointDetection(val diffThreshold:Long = 1000L, val cropRect:Rect= Rec
         }
     }
 
+    override fun resetCount() {
+        recentImages.clear()
+    }
 
 
 }
