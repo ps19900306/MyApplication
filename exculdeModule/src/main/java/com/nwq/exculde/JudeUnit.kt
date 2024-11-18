@@ -6,8 +6,8 @@ import com.nwq.opencv.contract.FindTarget
 
 //判断单元 一个执行动作的判断单元
 abstract class JudeUnit() {
-    abstract val TAG: String
 
+    abstract val TAG: String
     abstract val findTargetList: List<FindTarget>
 
 
