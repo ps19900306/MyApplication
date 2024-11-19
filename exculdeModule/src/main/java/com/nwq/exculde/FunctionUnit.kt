@@ -116,7 +116,7 @@ abstract class FunctionUnit {
     }
 
     open suspend fun endFunction(int: Int) {
-
+        L.flushLogs()
     }
 
 
