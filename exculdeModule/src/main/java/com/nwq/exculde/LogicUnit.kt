@@ -9,15 +9,28 @@ abstract class LogicUnit() {
 
     abstract val TAG: String
     abstract val findTargetList: List<FindTarget>
+    private var lastCoordinateArea: CoordinateArea? = null
 
 
-    suspend fun jude(): CoordinateArea? {
+    suspend fun jude(): Boolean {
         findTargetList.forEach {
             val coordinateArea = it.findTarget()
             if (coordinateArea != null) {
-                return coordinateArea
+                lastCoordinateArea = coordinateArea
+                return true
             }
         }
-        return null
+        return false
     }
+
+    //当本次jude()返回为True 时，入本方法  count连续进入次数  Boolean是否进行错误上报
+    abstract suspend fun onJude(nowLogicUnitList: List<LogicUnit>, count: Int): Boolean
+
+    //当上一张图jude()返回为True时本张图进进入的不是次方法
+    abstract suspend fun hasChanged(nowLogicUnitList: List<LogicUnit>)
+
+    open suspend fun isEnd():Boolean{
+        return false
+    }
+
 }

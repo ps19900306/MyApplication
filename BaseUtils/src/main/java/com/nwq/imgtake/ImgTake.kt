@@ -7,6 +7,7 @@ import com.nwq.baseutils.MatUtils
 import kotlinx.coroutines.delay
 import com.nwq.baseutils.isLandscape
 import com.nwq.baseutils.isVertical
+import com.nwq.constant.ConstantTime
 import org.opencv.core.Mat
 
 /**
@@ -19,7 +20,7 @@ abstract class ImgTake {
     companion object {
         //这个必须初始化ImgTake的一个子类 并赋值
         lateinit var imgTake: ImgTake
-        const val TAKE_SCREEN_DELAY = 4000L
+
     }
 
     private var hsvMatMap = HashMap<CoordinateArea, Mat>()
@@ -81,7 +82,7 @@ abstract class ImgTake {
         do {
             bitmap = takeScreenImg()
             if (bitmap == null) {
-                delay(TAKE_SCREEN_DELAY)
+                delay(ConstantTime.TAKE_SCREEN_DELAY)
             }
         } while (bitmap == null)
         return bitmap.isLandscape()
@@ -96,7 +97,7 @@ abstract class ImgTake {
         do {
             bitmap = takeScreenImg()
             if (bitmap == null) {
-                delay(TAKE_SCREEN_DELAY)
+                delay(ConstantTime.TAKE_SCREEN_DELAY)
             }
         } while (bitmap == null)
         return bitmap.isVertical()
