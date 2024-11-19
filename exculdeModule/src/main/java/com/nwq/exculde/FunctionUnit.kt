@@ -1,7 +1,9 @@
 package com.nwq.exculde
 
 
+import android.util.Log
 import com.nwq.constant.ConstantTime.screenshotInterval
+import com.nwq.imgtake.ImgTake
 import com.nwq.loguitls.L
 import com.nwq.opencv.identification.IStuckPointDetection
 import kotlinx.coroutines.delay
@@ -31,6 +33,7 @@ abstract class FunctionUnit {
      */
     suspend fun startFunction() {
         // 执行启动功能前的准备工作
+        L.i(TAG, "startFunction")
         beforeStartFunction()
 
         // 初始化计数器为最大值
@@ -49,6 +52,7 @@ abstract class FunctionUnit {
                 val stuckCount = it.checkStuckPoint()
                 // 如果检测到卡点，则结束功能执行，并返回
                 if (isPointDetection(stuckCount)) {
+                    L.i(TAG, "endFunction STUCK_POINT_END")
                     endFunction(STUCK_POINT_END)
                     return
                 }
@@ -66,6 +70,7 @@ abstract class FunctionUnit {
                 } else {
                     // 如果当前逻辑单元未发生变化，并且当前逻辑单元的判断结果为真，则结束功能执行
                     if (nowLogicUnit?.onJude(logicUnitList, ++count) == true) {
+                        L.i(TAG, "endFunction STUCK_IMG_END ${nowLogicUnit.TAG}")
                         endFunction(STUCK_IMG_END)
                         return
                     }
@@ -82,17 +87,21 @@ abstract class FunctionUnit {
             nowLogicUnit?.let {
                 if (it.isEnd()) {
                     endFunction(NORMAL_END)
+                    L.i(TAG, "endFunction NORMAL_END ${nowLogicUnit.TAG}")
                     return
                 }
             }
         } while (count > 0) // 循环条件判断，计数器大于0时继续循环
 
         // 如果循环结束，则以时间结束条件结束功能执行
+        L.i(TAG, "endFunction TIME_END")
         endFunction(TIME_END)
     }
 
 
-    abstract suspend fun updateImg()
+    open suspend fun updateImg() {
+        ImgTake.imgTake.takeScreenImg()
+    }
 
     open suspend fun getIStuckPointDetection(): IStuckPointDetection? {
         return null
