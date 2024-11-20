@@ -22,7 +22,7 @@ abstract class FunctionUnit {
     }
 
     abstract val TAG: String
-    abstract val logicUnitList: List<LogicUnit>
+    abstract val logicUnitList: MutableList<LogicUnit>
     abstract val maxCount: Int
     protected var lastLogicUnit: LogicUnit? = null
 
