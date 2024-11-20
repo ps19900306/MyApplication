@@ -1,6 +1,9 @@
 package com.nwq.exculde
 
 import com.nwq.baseobj.CoordinateArea
+import com.nwq.exculde.click.ClickArea
+import com.nwq.exculde.click.ClickBuilderUtils
+import com.nwq.exculde.click.ClickExecuteUtils
 import com.nwq.opencv.contract.FindTarget
 
 
@@ -10,7 +13,7 @@ abstract class LogicUnit() {
     abstract val TAG: String
     abstract val findTargetList: List<FindTarget>
     private var lastCoordinateArea: CoordinateArea? = null
-    private var clickArea: CoordinateArea? = null
+    private var clickArea: ClickArea? = null
     abstract val errorCount: Int
 
     suspend fun jude(): Boolean {
@@ -29,6 +32,9 @@ abstract class LogicUnit() {
     suspend fun onJude(nowLogicUnitList: List<LogicUnit>, count: Int): Boolean {
         if (errorCount in 1..<count) {
             return true;
+        }
+        clickArea?.let {
+            ClickBuilderUtils.buildClick(lastCoordinateArea!!, clickArea!!,0)
         }
         return false
     }

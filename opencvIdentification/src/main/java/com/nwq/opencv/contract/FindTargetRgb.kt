@@ -11,6 +11,7 @@ abstract class FindTargetRgb(
     val prList: List<PointRule>,
     val finArea: CoordinateArea?,
     val errorTolerance: Int = 0,
+    val srcArea: CoordinateArea? = null,
 ) : FindTarget(tag) {
 
 
@@ -21,7 +22,7 @@ abstract class FindTargetRgb(
     }
 
     override suspend fun findTarget(): CoordinateArea? {
-        val  bitmap=imgTake.getLastImg()?:return null
+        val bitmap = imgTake.getLastImg() ?: return null
         return findTargetBitmap(bitmap)
     }
 

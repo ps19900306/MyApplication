@@ -11,6 +11,7 @@ abstract class FindTargetHSV(
     val prList: List<PointHSVRule>,
     val finArea: CoordinateArea?=null,
     val errorTolerance: Int = 0,
+    val srcArea: CoordinateArea? = null,
 ) : FindTarget(tag) {
 
     private var lastOffsetX: Int = 0
