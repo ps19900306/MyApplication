@@ -12,6 +12,7 @@ object ContextUtils {
         return context
     }
 
+    //Need int()
     fun init(context: Context) {
         this.context = context
     }

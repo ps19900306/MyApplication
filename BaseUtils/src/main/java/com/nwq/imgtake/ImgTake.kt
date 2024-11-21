@@ -18,7 +18,7 @@ import org.opencv.core.Mat
 abstract class ImgTake {
 
     companion object {
-        //这个必须初始化ImgTake的一个子类 并赋值
+        //Need int() 这个必须初始化ImgTake的一个子类并赋值
         lateinit var imgTake: ImgTake
 
     }

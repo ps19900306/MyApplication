@@ -8,12 +8,10 @@ import com.nwq.opencv.contract.FindTarget
 
 
 //判断单元 一个执行动作的判断单元
-abstract class LogicUnit() {
+abstract class LogicUnit(val errorCount: Int = 10) {
 
     abstract val TAG: String
     abstract val findTargetList: List<FindTarget>
-    abstract val errorCount: Int
-
     private var lastCoordinateArea: CoordinateArea? = null
     private var clickArea: ClickArea? = null
     private var nextList: List<LogicUnit>? = null
@@ -39,9 +37,12 @@ abstract class LogicUnit() {
         if (errorCount in 1..<count) {
             return true;
         }
-        clickArea?.let {
-            if (count % 2 == 1)
-                ClickBuilderUtils.buildClick(lastCoordinateArea!!, clickArea!!, 0)
+        clickArea?.let { area ->
+            if (count % 2 == 1) {
+                ClickBuilderUtils.buildClick(lastCoordinateArea!!, area, 0)?.let {
+                    ClickExecuteUtils.optClickTask(it)
+                }
+            }
         }
         return false
     }

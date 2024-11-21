@@ -5,25 +5,30 @@ import android.accessibilityservice.GestureDescription
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import java.lang.ref.SoftReference
+import java.lang.ref.WeakReference
 
 
-class ClickExecuteUtils {
+object ClickExecuteUtils {
 
     //准备
-    private val PREPARING = 1
-
+    private const val PREPARING = 1
     // 执行中
-    private val EXECUTING = 2
-
+    private const  val EXECUTING = 2
     // 执行失败
-    private val EXECUTION_FAILED = 4
-
+    private const val EXECUTION_FAILED = 4
     // 执行成功
-    private val EXECUTION_SUCCESS = 8
+    private const val EXECUTION_SUCCESS = 8
 
     private val runStateFlow: MutableStateFlow<Int> = MutableStateFlow(PREPARING)
     private var cancelDescription: GestureDescription.StrokeDescription? = null
-    lateinit var aService: AccessibilityService
+    //软引用AccessibilityService
+    private var aService: WeakReference<AccessibilityService>? = null
+
+    //Need int()
+    fun setActivityService(service: AccessibilityService) {
+        aService = WeakReference(service)
+    }
 
     /**
      * 暂停函数，用于发布点击任务
@@ -40,22 +45,23 @@ class ClickExecuteUtils {
         cancelDescription: GestureDescription.StrokeDescription? = null,
         interrupt: Boolean = false,
     ) {
+        aService ?: return
         // 检查当前执行状态，如果状态表明任务已经失败或更糟，则直接执行点击任务
         if (runStateFlow.value >= EXECUTION_FAILED) {
-            executeClick(aService, gesture)
+            executeClick(gesture)
             this.cancelDescription = cancelDescription
         } else {
             // 如果不允许中断，或者当前任务状态不允许中断，则等待状态变为EXECUTION_FAILED或更糟后执行点击任务
             if (interrupt) {
                 runStateFlow.value = PREPARING
-                executeClick(aService, gesture)
+                executeClick(gesture)
                 this.cancelDescription = cancelDescription
             } else {
                 // 等待状态变为EXECUTION_FAILED或更糟，然后执行点击任务
                 runStateFlow
                     .first { it >= EXECUTION_FAILED }
                     .let {
-                        executeClick(aService, gesture)
+                        executeClick(gesture)
                         this.cancelDescription = cancelDescription
                     }
             }
@@ -79,22 +85,23 @@ class ClickExecuteUtils {
         cancelDescription: GestureDescription.StrokeDescription? = null,
         interrupt: Boolean = true,
     ): Boolean {
+        aService ?: return false
         // 检查当前执行状态，如果状态表明任务已经失败或更糟，则直接执行点击任务
         if (runStateFlow.value >= EXECUTION_FAILED) {
-            executeClick(aService, gesture)
+            executeClick(gesture)
             this.cancelDescription = cancelDescription
         } else {
             // 如果不允许中断，或者当前任务状态不允许中断，则等待状态变为EXECUTION_FAILED或更糟后执行点击任务
             if (interrupt) {
                 runStateFlow.value = PREPARING
-                executeClick(aService, gesture)
+                executeClick(gesture)
                 this.cancelDescription = cancelDescription
             } else {
                 // 等待状态变为EXECUTION_FAILED或更糟，然后执行点击任务
                 runStateFlow
                     .first { it >= EXECUTION_FAILED }
                     .let {
-                        executeClick(aService, gesture)
+                        executeClick(gesture)
                         this.cancelDescription = cancelDescription
                     }
             }
@@ -116,13 +123,12 @@ class ClickExecuteUtils {
      * @param gesture 要执行的手势描述对象，包含了点击操作的具体信息
      */
     suspend fun executeClick(
-        aService: AccessibilityService,
         gesture: GestureDescription
     ) {
         // 在执行点击操作前，将运行状态设置为执行中
         runStateFlow.value = EXECUTING
         // 使用AccessibilityService派发手势，根据手势结果回调相应方法
-        aService.dispatchGesture(
+        aService?.get()?.dispatchGesture(
             gesture, object : AccessibilityService.GestureResultCallback() {
                 // 当手势操作被取消时调用
                 override fun onCancelled(gestureDescription: GestureDescription) {
@@ -148,7 +154,7 @@ class ClickExecuteUtils {
 
     private fun overPress() {
         cancelDescription?.let {
-            aService.dispatchGesture(
+            aService?.get()?.dispatchGesture(
                 GestureDescription.Builder().addStroke(it).build(), null, null
             )
         }
