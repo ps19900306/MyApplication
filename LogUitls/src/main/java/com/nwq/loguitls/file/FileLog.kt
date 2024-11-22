@@ -21,7 +21,7 @@ import kotlin.coroutines.CoroutineContext
 
 class FileLog(val log: LogFilterInfo? = null) : ILog, CoroutineScope {
 
-    private val MAX_LOG_COUNT = 300 // 缓存的最大日志数量
+    private val MAX_LOG_COUNT = 100 // 缓存的最大日志数量
     private val MAX_LOG_AGE_DAYS = 7 // 日志文件的最大保留天数
     private val logQueue = mutableListOf<Pair<Long, String>>()
     private val job = Job()
