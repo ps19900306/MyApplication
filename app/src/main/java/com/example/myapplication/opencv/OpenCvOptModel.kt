@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.ByteToIntUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.loguitls.L
@@ -35,6 +36,8 @@ class OpenCvOptModel : ViewModel() {
     val expendRange = 3;
 
     public var showBitmapFlow: MutableStateFlow<Bitmap?> = MutableStateFlow(null)
+
+    private var ss:CoordinateArea? = null
 
     fun setScrMap(it: Bitmap) {
         srcBitmap = it;

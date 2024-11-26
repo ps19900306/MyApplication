@@ -4,6 +4,7 @@ import com.nwq.base.BaseDialogFragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
@@ -18,7 +19,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
+class SetSHVFilterDialog(val dialogGravity: Int = Gravity.CENTER) :
+    BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
     private val TAG = SetSHVFilterDialog::class.java.simpleName
     private val viewModel by viewModels<OpenCvOptModel>({ requireActivity() })
     override fun createBinding(
@@ -28,6 +30,9 @@ class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBindin
         return FragmentSetSHVFilterDialogBinding.inflate(inflater)
     }
 
+    override fun getDialogGravity(): Int {
+        return dialogGravity
+    }
 
     override fun initData() {
         super.initData()
@@ -111,7 +116,7 @@ class SetSHVFilterDialog() : BaseDialogFragment<FragmentSetSHVFilterDialogBindin
                 val strValue = s.toString();
                 if (strValue.isEmpty())
                     return
-                
+
                 val value = strValue.toInt()
                 if (value in min..max) {
                     seekBar.progress = value

@@ -2,6 +2,7 @@ package com.nwq.base
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initData() // 初始化视图，设置监听器等
+
     }
 
     override fun onStart() {
@@ -43,11 +45,18 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
         val width = (screenWidth * getDialogWidthPercent()).toInt()
         val height = WindowManager.LayoutParams.WRAP_CONTENT
         dialog?.window?.setLayout(width, height)
+
     }
 
     open fun getDialogWidthPercent(): Float {
           return 0.75F
     }
+
+    open fun getDialogGravity():Int{
+        return Gravity.CENTER
+    }
+
+
 
     // 设置视图，子类可以重写这个方法来初始化视图
     open fun initData() {
@@ -77,6 +86,7 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.setCanceledOnTouchOutside(isCancelableOutside())
         dialog.window?.attributes?.windowAnimations = getDialogAnimation()
+        dialog?.window?.setGravity(getDialogGravity())
         return dialog
     }
 
