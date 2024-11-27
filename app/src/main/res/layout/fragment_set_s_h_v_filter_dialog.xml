@@ -33,7 +33,7 @@
         android:hint="0-180"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_hue_min"
+        app:layout_constraintTop_toTopOf="@id/tv_hue_min"
         app:layout_constraintWidth_percent="0.3" />
 
     <!-- Hue 区间最大值选择 -->
@@ -64,7 +64,7 @@
         android:hint="0-180"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_hue_max"
+        app:layout_constraintTop_toTopOf="@id/tv_hue_max"
         app:layout_constraintWidth_percent="0.3" />
 
     <!-- Saturation 区间最小值选择 -->
@@ -95,7 +95,7 @@
         android:hint="0-255"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_saturation_min"
+        app:layout_constraintTop_toTopOf="@id/tv_saturation_min"
         app:layout_constraintWidth_percent="0.3" />
 
     <!-- Saturation 区间最大值选择 -->
@@ -126,7 +126,7 @@
         android:hint="0-255"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_saturation_max"
+        app:layout_constraintTop_toTopOf="@id/tv_saturation_max"
         app:layout_constraintWidth_percent="0.3" />
 
     <!-- Value 区间最小值选择 -->
@@ -157,7 +157,7 @@
         android:hint="0-255"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_value_min"
+        app:layout_constraintTop_toTopOf="@id/tv_value_min"
         app:layout_constraintWidth_percent="0.3" />
 
     <!-- Value 区间最大值选择 -->
@@ -188,11 +188,19 @@
         android:hint="0-255"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_value_max"
+        app:layout_constraintTop_toTopOf="@id/tv_value_max"
         app:layout_constraintWidth_percent="0.3" />
 
-
-    <!-- Value 区间最大值选择 -->
+     <androidx.recyclerview.widget.RecyclerView
+         android:id="@+id/recycler"
+         tools:listitem="@layout/item_colors"
+         android:orientation="horizontal"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintTop_toBottomOf="@+id/et_value_max"
+         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+         android:layout_width="match_parent"
+         android:layout_height="50dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

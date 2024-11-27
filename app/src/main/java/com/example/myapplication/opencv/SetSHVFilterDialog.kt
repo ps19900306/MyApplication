@@ -14,12 +14,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.myapplication.R
+import com.example.myapplication.adapter.ColorAdapter
 import com.example.myapplication.databinding.FragmentSetSHVFilterDialogBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class SetSHVFilterDialog(val dialogGravity: Int = Gravity.CENTER) :
+class SetSHVFilterDialog(val dGravity: Int = Gravity.CENTER) :
     BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
     private val TAG = SetSHVFilterDialog::class.java.simpleName
     private val viewModel by viewModels<OpenCvOptModel>({ requireActivity() })
@@ -31,7 +32,7 @@ class SetSHVFilterDialog(val dialogGravity: Int = Gravity.CENTER) :
     }
 
     override fun getDialogGravity(): Int {
-        return dialogGravity
+        return dGravity
     }
 
     override fun initData() {
@@ -81,6 +82,14 @@ class SetSHVFilterDialog(val dialogGravity: Int = Gravity.CENTER) :
             255,
             viewModel::upDataMaxVFlow
         )
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.colorsList.collectLatest {
+                    binding.recycler.adapter = ColorAdapter(it)
+                }
+            }
+        }
     }
 
 

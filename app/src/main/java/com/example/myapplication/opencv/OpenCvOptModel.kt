@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.data.ColorItem
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.ByteToIntUtils
 import com.nwq.baseutils.MatUtils
@@ -36,8 +37,8 @@ class OpenCvOptModel : ViewModel() {
     val expendRange = 3;
 
     public var showBitmapFlow: MutableStateFlow<Bitmap?> = MutableStateFlow(null)
+    public val colorsList = MutableStateFlow(listOf<ColorItem>())
 
-    private var ss:CoordinateArea? = null
 
     fun setScrMap(it: Bitmap) {
         srcBitmap = it;
@@ -95,6 +96,7 @@ class OpenCvOptModel : ViewModel() {
         bitmap
     }
 
+
     private fun getOrCreateShowBitmap(
         minH: Int,
         maxH: Int,
@@ -103,6 +105,7 @@ class OpenCvOptModel : ViewModel() {
         minV: Int,
         maxV: Int
     ): Bitmap? {
+        updateColorsList(minH, maxH, minS, maxS, minV, maxV)
         val bitmap = if (getOrCreateHsvMat() == null) {
             null
         } else {
@@ -111,6 +114,31 @@ class OpenCvOptModel : ViewModel() {
             MatUtils.hsvMatToBitmap(maskMat)
         }
         return bitmap
+    }
+
+    private fun updateColorsList(
+        minH: Int,
+        maxH: Int,
+        minS: Int,
+        maxS: Int,
+        minV: Int,
+        maxV: Int
+    ) {
+        val list = mutableListOf<ColorItem>()
+        // 生成所有组合
+        list.add(ColorItem(floatArrayOf(minH.toFloat(), maxS.toFloat(), maxV.toFloat())))
+        list.add(ColorItem(floatArrayOf(maxH.toFloat(), maxS.toFloat(), maxV.toFloat())))
+        list.add(ColorItem(floatArrayOf(minH.toFloat(), minS.toFloat(), maxV.toFloat())))
+        list.add(ColorItem(floatArrayOf(maxH.toFloat(), minS.toFloat(), maxV.toFloat())))
+
+        list.add(ColorItem(floatArrayOf(minH.toFloat(), maxS.toFloat(), minV.toFloat())))
+        list.add(ColorItem(floatArrayOf(maxH.toFloat(), maxS.toFloat(), minV.toFloat())))
+
+        list.add(ColorItem(floatArrayOf(minH.toFloat(), minS.toFloat(), minV.toFloat())))
+        list.add(ColorItem(floatArrayOf(maxH.toFloat(), minS.toFloat(), minV.toFloat())))
+
+
+        colorsList.value = list
     }
 
 

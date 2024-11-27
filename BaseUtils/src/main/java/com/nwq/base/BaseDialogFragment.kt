@@ -49,7 +49,7 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
     }
 
     open fun getDialogWidthPercent(): Float {
-          return 0.75F
+          return 0.6F
     }
 
     open fun getDialogGravity():Int{
