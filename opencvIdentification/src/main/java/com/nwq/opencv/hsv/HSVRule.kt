@@ -1,6 +1,6 @@
 package com.nwq.opencv.hsv
 
-abstract class HSVRule(
+open class HSVRule(
     val minH: Int,
     val maxH: Int,
     val minS: Int,

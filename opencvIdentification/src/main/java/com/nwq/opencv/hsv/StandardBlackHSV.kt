@@ -1,4 +1,4 @@
 package com.nwq.opencv.hsv
 
-class StandardBlackHSV : HSVRule(0, 180, 0, 255, 0, 46){
+class StandardBlackHSV : HSVRule(0, 180, 0, 255, 0, 30) {
 }
