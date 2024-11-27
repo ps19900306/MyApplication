@@ -1,5 +1,6 @@
 package com.example.myapplication.opencv
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MatUtils
@@ -10,15 +11,14 @@ import org.opencv.core.Point
 class AutoCodeModel : ViewModel() {
 
     private var selectArea: CoordinateArea? = null
+    private var srcBitmap: Bitmap? = null
     private var selectMat: Mat? = null   //hsvMat图
     private var clickArea: CoordinateArea? = null
-
     private var hSVRuleList: MutableList<HSVRule> = mutableListOf()
 
     private fun clearHSVRuleList() {
         hSVRuleList.clear()
     }
-
 
 
     fun addHSVRule(x: Int, y: Int) {
@@ -33,13 +33,21 @@ class AutoCodeModel : ViewModel() {
 
     fun performAutomaticEncoding() {
         val mat = selectMat ?: return
+        val bitmap = srcBitmap ?: return
+        var area = selectArea ?: return
         val pointList = mutableListOf<Point>()
         hSVRuleList.forEach {
             val list =
                 MatUtils.getCornerPoint(mat, it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV)
             pointList.addAll(list)
         }
+
     }
+
+    private fun buildRgbFindTarget(){
+
+    }
+
 
     fun addHSVRule(rule: HSVRule) {
         hSVRuleList.add(rule)
