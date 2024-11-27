@@ -42,9 +42,16 @@ class AutoCodeModel : ViewModel() {
             pointList.addAll(list)
         }
 
+        buildRgbFindTarget(pointList)
+        buildHsvFindTarget(pointList)
+
     }
 
-    private fun buildRgbFindTarget(){
+    private fun buildHsvFindTarget(pointList: MutableList<Point>) {
+
+    }
+
+    private fun buildRgbFindTarget(pointList: MutableList<Point>) {
 
     }
 
