@@ -7,6 +7,12 @@ import com.nwq.imgtake.ImgTake
 abstract class FindTarget(val tag: String, val targetOriginalArea: CoordinateArea) {
 
 
+    companion object {
+        const val HSV_POINT_TYPE = 0
+
+
+    }
+
     protected val imgTake: ImgTake
         get() = ImgTake.imgTake
 
