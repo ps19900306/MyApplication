@@ -9,6 +9,9 @@ import org.opencv.core.Mat
 //单点对应单色
 class PointHSVRule(val point: CoordinatePoint, val rule: HSVRule) : MIPR() {
 
+
+
+
     override fun checkBIpr(srcMat: Mat, offsetX: Int, offsetY: Int): Boolean {
         // 检查点是否超出矩阵边界
         if (point.x + offsetX < 0 || point.x + offsetX >= srcMat.cols() || point.y + offsetY < 0 || point.y + offsetY >= srcMat.rows()) {
