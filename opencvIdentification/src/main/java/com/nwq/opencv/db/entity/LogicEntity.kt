@@ -14,8 +14,7 @@ class LogicEntity {
 
     var keyTag: String = ""
 
-    @TypeConverters(KeyPointConverters::class)
-    private var clickArea: ClickArea? = null
+    var clickKeyTag: String? = null
 
 
 }

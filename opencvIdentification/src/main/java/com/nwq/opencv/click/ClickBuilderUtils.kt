@@ -9,33 +9,34 @@ import com.nwq.opencv.exhaustion.OptRange
 import com.nwq.opencv.exhaustion.OptSlide
 import android.graphics.Path
 
+//点击事件构造 尽量保证功能单一性
 object ClickBuilderUtils {
 
-    fun buildClick(
-        coordinateArea: CoordinateArea,
-        clickArea: ClickArea,
-        delayTime: Long = 0L
+
+    fun buildClickGestureDescription(
+        x: Int,
+        y: Int,
+        with: Int,
+        height: Int,
+        isRound: Boolean,
+        delayTime: Long
     ): GestureDescription? {
         val parameter = ExhaustionControl.getClickParameter()
-        val point1 = if (!clickArea.isRound) {
+        val coordinateArea = CoordinateArea(
+            x,
+            y,
+            with,
+            height,
+        )
+        val point1 = if (!isRound) {
             builderSquare(
                 parameter,
-                CoordinateArea(
-                    coordinateArea.x + clickArea.offsetX,
-                    coordinateArea.y + clickArea.offsetY,
-                    clickArea.width,
-                    clickArea.height,
-                )
+                coordinateArea
             )
         } else {
             builderRotundity(
                 parameter,
-                CoordinateArea(
-                    coordinateArea.x + clickArea.offsetX,
-                    coordinateArea.y + clickArea.offsetY,
-                    clickArea.width,
-                    clickArea.height,
-                )
+                coordinateArea
             )
         }
         val list = mutableListOf<CoordinatePoint>()
@@ -55,7 +56,6 @@ object ClickBuilderUtils {
         )
         return builder.build()
     }
-
 
     private fun builderSquare(
         parameter: ClickParameter, coordinateArea: CoordinateArea
@@ -107,7 +107,7 @@ object ClickBuilderUtils {
         }
     }
 
-   private fun getRandomRangePoint(
+    private fun getRandomRangePoint(
         optRange: Int,
         x: Int,
         y: Int,

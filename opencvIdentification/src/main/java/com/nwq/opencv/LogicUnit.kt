@@ -39,9 +39,9 @@ abstract class LogicUnit(val errorCount: Int = 10) {
         }
         clickArea?.let { area ->
             if (count % 2 == 1) {
-                ClickBuilderUtils.buildClick(lastCoordinateArea!!, area, 0)?.let {
-                    ClickExecuteUtils.optClickTask(it)
-                }
+//                ClickBuilderUtils.buildClick(lastCoordinateArea!!, area, 0)?.let {
+//                    ClickExecuteUtils.optClickTask(it)
+//                }
             }
         }
         return false
