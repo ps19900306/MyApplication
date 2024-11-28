@@ -9,8 +9,6 @@ abstract class FindTarget(val tag: String, val targetOriginalArea: CoordinateAre
 
     companion object {
         const val HSV_POINT_TYPE = 0
-
-
     }
 
     protected val imgTake: ImgTake
