@@ -1,6 +1,6 @@
-package com.nwq.opencv.contract
+package com.nwq.opencv.find_target
 
-import ImageDescriptorEntity
+import com.nwq.opencv.db.entity.ImageDescriptorEntity
 import android.graphics.Bitmap
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.callback.CommonCallBack
@@ -24,12 +24,13 @@ import org.opencv.imgproc.Imgproc
 //进行特征点匹配
 abstract class FindTargetMat(
     tag: String,
+    srcArea: CoordinateArea,
     val bitmapTake: CommonCallBack<Bitmap>,
     val maskTake: CommonCallBack2<Bitmap, Mat>,
     val saveDb: Boolean = true,
     val finArea: CoordinateArea?=null,
 
-) : FindTarget(tag) {
+) : FindTarget(tag,srcArea) {
 
     companion object {
         const val MAT_SUFFIX = "_mat"

@@ -1,7 +1,8 @@
+package com.nwq.opencv.db.entity
+
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 import org.opencv.core.KeyPoint
 import org.opencv.core.MatOfKeyPoint
 import org.opencv.core.Point

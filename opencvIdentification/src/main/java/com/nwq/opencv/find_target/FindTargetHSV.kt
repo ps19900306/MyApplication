@@ -1,4 +1,4 @@
-package com.nwq.opencv.contract
+package com.nwq.opencv.find_target
 
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.CoordinateUtils
@@ -8,11 +8,11 @@ import org.opencv.core.Mat
 //根据HSV进行匹配
 abstract class FindTargetHSV(
     tag: String,
+    srcArea: CoordinateArea,
     val prList: List<PointHSVRule>,
     val finArea: CoordinateArea?=null,
     val errorTolerance: Int = 0,
-    val srcArea: CoordinateArea? = null,
-) : FindTarget(tag) {
+) : FindTarget(tag,srcArea) {
 
     private var lastOffsetX: Int = 0
     private var lastOffsetY: Int = 0

@@ -1,6 +1,6 @@
-package com.nwq.opencv.db
+package com.nwq.opencv.db.dao
 
-import ImageDescriptorEntity
+import com.nwq.opencv.db.entity.ImageDescriptorEntity
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query

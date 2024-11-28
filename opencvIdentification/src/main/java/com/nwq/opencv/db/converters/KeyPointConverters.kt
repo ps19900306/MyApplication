@@ -1,12 +1,13 @@
 package com.nwq.opencv.db.converters
 
 import androidx.room.TypeConverter
+import androidx.room.TypeConverters
 import org.opencv.core.KeyPoint
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 
-class KeyPointConverters {
+class KeyPointConverters (){
 
     // 将 List<KeyPoint> 转换为 JSON 字符串
     @TypeConverter

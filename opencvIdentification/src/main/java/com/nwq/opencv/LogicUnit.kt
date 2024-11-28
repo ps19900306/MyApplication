@@ -1,9 +1,9 @@
-package com.nwq.exculde
+package com.nwq.opencv
 
 import com.nwq.baseobj.CoordinateArea
-import com.nwq.exculde.click.ClickArea
-import com.nwq.exculde.click.ClickBuilderUtils
-import com.nwq.exculde.click.ClickExecuteUtils
+import com.nwq.opencv.click.ClickArea
+import com.nwq.opencv.click.ClickBuilderUtils
+import com.nwq.opencv.click.ClickExecuteUtils
 import com.nwq.opencv.find_target.FindTarget
 
 

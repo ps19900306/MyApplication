@@ -1,10 +1,10 @@
-package com.nwq.opencv.contract
+package com.nwq.opencv.find_target
 
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.imgtake.ImgTake
 
 
-abstract class FindTarget(val tag: String) {
+abstract class FindTarget(val tag: String, val targetOriginalArea: CoordinateArea) {
 
 
     protected val imgTake: ImgTake

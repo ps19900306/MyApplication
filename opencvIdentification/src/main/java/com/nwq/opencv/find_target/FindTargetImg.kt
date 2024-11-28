@@ -1,4 +1,4 @@
-package com.nwq.opencv.contract
+package com.nwq.opencv.find_target
 
 import android.graphics.Bitmap
 import com.nwq.baseobj.CoordinateArea
@@ -13,10 +13,11 @@ import org.opencv.imgproc.Imgproc
 //进行图片匹配  需要考虑是否增加 蒙版
 abstract class FindTargetImg(
     tag: String,
+    srcArea: CoordinateArea,
     val bitmapTake: CommonCallBack<Bitmap>,
     val finArea: CoordinateArea? = null,
 ) :
-    FindTarget(tag) {
+    FindTarget(tag,srcArea) {
 
 
     // 目标图片的 Mat 对象
