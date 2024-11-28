@@ -25,7 +25,7 @@ import org.opencv.imgproc.Imgproc
 abstract class FindTargetMat(
     tag: String,
     srcArea: CoordinateArea,
-    val bitmapTake: CommonCallBack<Bitmap>,
+    val bitmapTake: CommonCallBack<Bitmap>,//这个是
     val maskTake: CommonCallBack2<Bitmap, Mat>,
     val saveDb: Boolean = true,
     val finArea: CoordinateArea?=null,
