@@ -20,7 +20,7 @@ import org.opencv.imgproc.Imgproc
 
 
 @Entity(tableName = "find_target_img")
-data class FindTargetImgEntity(
+data class FindTargetMatEntity(
 
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,

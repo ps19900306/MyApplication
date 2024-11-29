@@ -20,7 +20,7 @@ data class FindTargetHsvEntity(
     val id: Int = 0,
 
     //识别标签 比如"主菜单","位置菜单"
-    val tag: String,
+    val keyTag: String,
 
     //进行生成时候选的区域
     val targetOriginalArea: CoordinateArea,

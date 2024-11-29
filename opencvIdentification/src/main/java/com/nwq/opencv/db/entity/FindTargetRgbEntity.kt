@@ -10,6 +10,7 @@ import com.nwq.baseutils.CoordinateUtils
 import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.db.converters.CoordinateAreaConverters
 import com.nwq.opencv.db.converters.PointHSVRuleConverters
+import com.nwq.opencv.db.converters.PointRuleConverters
 import com.nwq.opencv.hsv.PointHSVRule
 import com.nwq.opencv.rgb.PointRule
 import org.opencv.core.Mat
@@ -22,7 +23,7 @@ data class FindTargetRgbEntity(
     val id: Int = 0,
 
     //识别标签 比如"主菜单","位置菜单"
-    val tag: String,
+    val keyTag: String,
 
     //进行生成时候选的区域
     val targetOriginalArea: CoordinateArea,
@@ -31,7 +32,7 @@ data class FindTargetRgbEntity(
     var findArea: CoordinateArea? = null,
 
     //识别规则 这里的坐标信息是基于全图的
-    @TypeConverters(PointHSVRuleConverters::class)
+    @TypeConverters(PointRuleConverters::class)
     val prList: List<PointRule>,
 
     //点识别使用时候又几个容错
