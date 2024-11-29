@@ -7,6 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.nwq.baseutils.ContextUtils
+import com.nwq.opencv.db.converters.CoordinateAreaConverters
 import com.nwq.opencv.db.converters.KeyPointConverters
 import com.nwq.opencv.db.converters.PointConverters
 import com.nwq.opencv.db.dao.ImageDescriptorDao
@@ -14,7 +15,7 @@ import java.io.FileOutputStream
 import java.io.InputStream
 
 @Database(entities = [ImageDescriptorEntity::class], version = 1)
-@TypeConverters(KeyPointConverters::class, PointConverters::class)
+@TypeConverters(KeyPointConverters::class, PointConverters::class, CoordinateAreaConverters::class)
 abstract class IdentifyDatabase: RoomDatabase() {
 
     abstract fun imageDescriptorDao(): ImageDescriptorDao

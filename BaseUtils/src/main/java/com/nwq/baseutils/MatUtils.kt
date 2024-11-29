@@ -14,9 +14,42 @@ import org.opencv.core.Scalar
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import java.nio.ByteBuffer
-import kotlin.math.log
 
 object MatUtils {
+
+    const val STORAGE_ASSET_TYPE = 0
+    const val STORAGE_EXTERNAL_TYPE = 1
+
+    /**
+     * 读取并转换HSV色彩空间的Mat对象
+     *
+     * 根据指定的类型和文件名，从资产目录或外部存储中读取图像，并将其转换为HSV色彩空间的Mat对象
+     *
+     * @param type 图像存储类型，决定从哪里读取图像（资产目录或外部存储）
+     * @param fileName 图像文件名
+     * @return 成功读取并转换后返回Mat对象，否则返回null
+     */
+    fun readHsvMat(type: Int, fileName: String): Mat? {
+        // 根据存储类型处理不同的图像读取逻辑
+        when (type) {
+            STORAGE_ASSET_TYPE -> {
+                // 从资产目录读取位图，如果失败则返回null
+                val bitmap = FileUtils.readBitmapFromAsset(fileName) ?: return null
+                // 将位图转换为HSV色彩空间的Mat对象
+                return bitmapToHsvMat(bitmap)
+            }
+            STORAGE_EXTERNAL_TYPE -> {
+                // 从外部存储读取位图，如果失败则返回null
+                val bitmap = FileUtils.readBitmapFromRootImg(fileName) ?: return null
+                // 将位图转换为HSV色彩空间的Mat对象
+                return bitmapToHsvMat(bitmap)
+            }
+            else -> {
+                // 对于不支持的存储类型，返回null
+                return null
+            }
+        }
+    }
 
     fun matToByteArray(mat: Mat): ByteArray {
         val size = (mat.total() * mat.elemSize()).toInt()

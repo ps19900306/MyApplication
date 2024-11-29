@@ -32,6 +32,112 @@ object FileUtils {
         }
     }
 
+
+    /**
+     * 保存bitmap到根目录/img/@fileName.jpg
+     *
+     * @param bitmap 要保存的Bitmap对象
+     * @param fileName 文件名
+     * @return 保存是否成功
+     */
+    fun saveBitmapToRootImg(bitmap: Bitmap, fileName: String): Boolean {
+        // 检查外部存储是否可用
+        val state = Environment.getExternalStorageState()
+        if (state != Environment.MEDIA_MOUNTED) {
+            return false
+        }
+
+        // 获取根目录下的 img 文件夹
+        val directory = File(Environment.getExternalStorageDirectory(), "img")
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+
+        // 创建文件对象
+        val file = File(directory, "$fileName.jpg")
+        if (!file.parentFile.exists()) {
+            file.parentFile.mkdirs()
+        }
+
+        // 将Bitmap保存到文件
+        try {
+            file.outputStream().use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            }
+            // 扫描文件，使其出现在图库中
+            MediaScannerConnection.scanFile(
+                context,
+                arrayOf(file.path),
+                arrayOf("image/jpeg"),
+                null
+            )
+
+            // 将文件路径转换为Uri
+            val contentUri =
+                FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+            // 插入到MediaStore
+            context.contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                ContentValues().apply {
+                    put(MediaStore.Images.Media.DATA, file.absolutePath)
+                    put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                    put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                })
+
+            return true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
+    /**
+     * 从根目录/img/读取Bitmap
+     *
+     * @param fileName 文件名
+     * @return 读取的Bitmap对象，如果读取失败则返回null
+     */
+    fun readBitmapFromRootImg( fileName: String): Bitmap? {
+        // 获取根目录下的 img 文件夹
+        val directory = File(Environment.getExternalStorageDirectory(), "img")
+        if (!directory.exists()) {
+            return null
+        }
+
+        // 创建文件对象
+        val file = File(directory, "$fileName.jpg")
+
+        // 检查文件是否存在
+        if (!file.exists()) {
+            return null
+        }
+
+        // 读取文件为Bitmap
+        return try {
+            BitmapFactory.decodeFile(file.absolutePath)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /**
+     * 从Asset读取Bitmap
+     *
+     * @param fileName 文件名
+     * @return 读取的Bitmap对象，如果读取失败则返回null
+     */
+    fun readBitmapFromAsset(fileName: String): Bitmap? {
+        return try {
+            val inputStream = context.assets.open("$fileName.jpg")
+            BitmapFactory.decodeStream(inputStream)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+
     /**
      * @param data 要保存的数据
      * @param fileName 文件名
