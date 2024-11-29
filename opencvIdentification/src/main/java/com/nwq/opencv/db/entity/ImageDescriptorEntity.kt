@@ -17,6 +17,7 @@ data class ImageDescriptorEntity(
     val matRows: Int,
     val matType: Int,
     val descriptors: ByteArray,
+
     var keyPointList: List<KeyPoint>,
     var pointList: List<Point>,
     //这些是记录的
