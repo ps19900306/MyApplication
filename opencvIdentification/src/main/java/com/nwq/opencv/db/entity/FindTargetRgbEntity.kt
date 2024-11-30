@@ -45,9 +45,7 @@ data class FindTargetRgbEntity(
     @Ignore
     private var lastOffsetY: Int = 0
 
-    private val originArea by lazy {
-        CoordinateUtils.calculateBoundingRectangle(prList.map { it.point })
-    }
+
 
     override suspend fun findTarget(): CoordinateArea? {
         var bitmap = imgTake.getLastImg() ?: return null
@@ -63,13 +61,13 @@ data class FindTargetRgbEntity(
     fun findTargetBitmap(bitmap: Bitmap): CoordinateArea? {
         return if (checkImgTask(bitmap)) {
             if (findArea == null) {
-                CoordinateArea(lastOffsetX, lastOffsetY, originArea.width, originArea.height)
+                CoordinateArea(lastOffsetX, lastOffsetY, targetOriginalArea.width, targetOriginalArea.height)
             } else {
                 CoordinateArea(
                     lastOffsetX + findArea!!.x,
                     lastOffsetY + findArea!!.y,
-                    originArea.width,
-                    originArea.height
+                    targetOriginalArea.width,
+                    targetOriginalArea.height
                 )
             }
         } else {
