@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 import com.nwq.opencv.click.ClickArea
 import com.nwq.opencv.db.converters.KeyPointConverters
 
-// 数据库中的 KeyPoint 数据结构
+//
 @Entity(tableName = "logic_unit")
 class LogicEntity {
     @PrimaryKey(autoGenerate = true)
