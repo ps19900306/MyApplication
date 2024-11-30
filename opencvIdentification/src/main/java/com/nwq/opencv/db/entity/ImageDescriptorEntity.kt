@@ -10,18 +10,19 @@ import org.opencv.core.Point
 @Entity(tableName = "image_descriptors")
 data class ImageDescriptorEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val keyTag: String,
+    var id: Int = 0,
+    var keyTag: String,
     //这些是Mat的
-    val matCols: Int,
-    val matRows: Int,
-    val matType: Int,
-    val descriptors: ByteArray,
+    var matCols: Int,
+    var matRows: Int,
+    var matType: Int,
+    var descriptors: ByteArray,
 
     var keyPointList: List<KeyPoint>,
     var pointList: List<Point>,
+
     //这些是记录的
-    val detectionType: String = "",
+    var detectionType: String = "",
     var checkNumber: Int = 0,
     var passNumber: Int = 0,
     var errorNumber: Int = 0,
@@ -36,7 +37,7 @@ data class ImageDescriptorEntity(
 
     public fun getMatOfKeyPoint(): MatOfKeyPoint {
         if (mMatOfKeyPoint == null) {
-            val points = keyPointList.toTypedArray()
+            var points = keyPointList.toTypedArray()
             mMatOfKeyPoint = MatOfKeyPoint(*points)
         }
         return mMatOfKeyPoint!!

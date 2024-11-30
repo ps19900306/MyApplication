@@ -17,20 +17,20 @@ import org.opencv.core.Mat
 data class FindTargetHsvEntity(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    var id: Int = 0,
 
     //识别标签 比如"主菜单","位置菜单"
-    val keyTag: String,
+    var keyTag: String,
 
     //进行生成时候选的区域
-    val targetOriginalArea: CoordinateArea,
+    var targetOriginalArea: CoordinateArea,
 
     //这个是找图范围
     var findArea: CoordinateArea? = null,
 
     //识别规则 这里的坐标信息是基于全图的
     @TypeConverters(PointHSVRuleConverters::class)
-    val prList: List<PointHSVRule>,
+    var prList: List<PointHSVRule>,
 
     //点识别使用时候又几个容错
     var errorTolerance: Int = 0,

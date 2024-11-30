@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "keypoints_table")
 data class KeyPointEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    var id: Long = 0,
 
     // 将 `KeyPoint` 序列化为 JSON 字符串存储
-    val keypointJson: String
+    var keypointJson: String
 )

@@ -45,7 +45,7 @@ data class FindTargetMatEntity(
     var findArea: CoordinateArea? = null,
 
     //这个文件存放的类型现在考虑放外部存储或者asset文件夹 测试时候考虑为外部 打包时候考虑放asset
-    val storageType: Int = 0,
+    val storageType: Int = MatUtils.STORAGE_ASSET_TYPE,
 
     //生成匹配蒙版的类型
     val maskType: Int = 0,
@@ -54,8 +54,6 @@ data class FindTargetMatEntity(
 
 
     companion object {
-        const val MAT_SUFFIX = "_mat"
-        const val DB_SUFFIX = "_db"
 
         // 创建SIFT检测器 可以根据需求替换提取器
         val feature2D: Feature2D = SIFT.create()
@@ -71,24 +69,22 @@ data class FindTargetMatEntity(
         val templateMat = MatUtils.readHsvMat(storageType, keyTag)
         templateMat
     }
+
     //mask图标
     private val maskMat by lazy {
         MaskUtils.getMaskMat(targetMat, maskType)
     }
 
-
-
-
-
-    val dbKeyTag = "$keyTag$DB_SUFFIX"
-    private val matKeyTag = "$keyTag$DB_SUFFIX"
+    //描述信息
     private val descriptorMat by lazy {
         builderTargetMat()
     }
 
-    //builderTargetMat 会初始化这下面个值
-    private lateinit var points: Array<Point> //这个是原图像的大小
-    private lateinit var mKeypoints: MatOfKeyPoint//这个是特征点的
+    @Ignore
+    private lateinit var points: Array<Point> //这个是原图像的大小 用来还原大小
+
+    @Ignore
+    private lateinit var mKeypoints: MatOfKeyPoint//这个是特征点的 用来
 
 
     override suspend fun findTarget(): CoordinateArea? {
@@ -97,18 +93,26 @@ data class FindTargetMatEntity(
     }
 
 
-    fun findTargetBitmap(mat: Mat): CoordinateArea? {
+    override fun release() {
+
+    }
+
+
+    private fun findTargetBitmap(srcMat: Mat): CoordinateArea? {
+        // 如果描述信息为空，则返回 null
+        descriptorMat ?: return null
 
         // 查找图A和图B的关键点和描述符
-        val keypointsA = MatOfKeyPoint()
-        val descriptorsA = Mat()
-        feature2D.detectAndCompute(mat, Mat(), keypointsA, descriptorsA)
+        val keypointSrc = MatOfKeyPoint()
+        val descriptorsSrc = Mat()
+
+        feature2D.detectAndCompute(srcMat, Mat(), keypointSrc, descriptorsSrc)
 
 
         // 使用BFMatcher进行特征点匹配
         val bfMatcher = BFMatcher.create(Core.NORM_HAMMING, true)
         val matches = MatOfDMatch()
-        bfMatcher.match(descriptorMat, descriptorsA, matches)
+        bfMatcher.match(descriptorMat, descriptorsSrc, matches)
 
         // 对匹配点进行过滤（选择最佳匹配）
         val matchesList = matches.toList().sortedBy { it.distance }.take(50)
@@ -121,7 +125,7 @@ data class FindTargetMatEntity(
         val srcPoints =
             MatOfPoint2f(*matchesList.map { mKeypoints.toArray()[it.queryIdx].pt }.toTypedArray())
         val dstPoints =
-            MatOfPoint2f(*matchesList.map { keypointsA.toArray()[it.trainIdx].pt }.toTypedArray())
+            MatOfPoint2f(*matchesList.map { keypointSrc.toArray()[it.trainIdx].pt }.toTypedArray())
 
         // 计算图B在图A中的透视变换矩阵
         val homography = Calib3d.findHomography(srcPoints, dstPoints, Calib3d.RANSAC, 5.0)
@@ -138,8 +142,8 @@ data class FindTargetMatEntity(
         val resultPoints = dstCorners.toArray()
 
         // 计算边界框
-        val x = resultPoints.minOf { it.x }.toInt()
-        val y = resultPoints.minOf { it.y }.toInt()
+        val x = resultPoints.minOf { it.x }.toInt() + (findArea?.x ?: 0)
+        val y = resultPoints.minOf { it.y }.toInt() + (findArea?.y ?: 0)
         val w = (resultPoints.maxOf { it.x } - x).toInt()
         val h = (resultPoints.maxOf { it.y } - y).toInt()
 
@@ -147,10 +151,10 @@ data class FindTargetMatEntity(
     }
 
 
-    private fun builderTargetMat(): Mat {
-        val imageDescriptorEntity = bImageDescriptorDao.getDescriptor(dbKeyTag)
-        if (imageDescriptorEntity == null) {
-            val descriptor = buildImageDescriptorEntity(targetMat, maskMat, true)
+    private fun builderTargetMat(): Mat? {
+        val imageDescriptorEntity = bImageDescriptorDao.getDescriptor(keyTag)
+        return if (imageDescriptorEntity == null) {
+            val descriptor = buildImageDescriptorEntity(targetMat!!, maskMat!!)
             descriptor
         } else {
             mKeypoints = imageDescriptorEntity.getMatOfKeyPoint();
@@ -166,7 +170,7 @@ data class FindTargetMatEntity(
 
 
     // 根据传入的数据获取到描述
-    private fun buildImageDescriptorEntity(mat: Mat?, mask: Mat?, saveDb: Boolean): Mat {
+    private fun buildImageDescriptorEntity(mat: Mat, mask: Mat): Mat {
         points = arrayOf(
             Point(0.0, 0.0),
             Point(mat.cols().toDouble(), 0.0),
@@ -185,26 +189,22 @@ data class FindTargetMatEntity(
         feature2D.detectAndCompute(mat, mask, keypoints, descriptors)
         mKeypoints = keypoints
 
-        if (saveDb) {
-            val keypointList = keypoints.toArray().toList()
-            val imageDescriptorEntity = ImageDescriptorEntity(
-                keyTag = dbKeyTag,
-                descriptors = MatUtils.matToByteArray(descriptors),
-                matType = descriptors.type(),
-                matRows = descriptors.rows(),
-                matCols = descriptors.cols(),
-                keyPointList = keypointList,
-                pointList = points.toList()
-            )
-            bImageDescriptorDao.insertDescriptor(imageDescriptorEntity)
-        }
+//        if (saveDb) {
+//            val keypointList = keypoints.toArray().toList()
+//            val imageDescriptorEntity = ImageDescriptorEntity(
+//                keyTag = keyTag,
+//                descriptors = MatUtils.matToByteArray(descriptors),
+//                matType = descriptors.type(),
+//                matRows = descriptors.rows(),
+//                matCols = descriptors.cols(),
+//                keyPointList = keypointList,
+//                pointList = points.toList()
+//            )
+//            bImageDescriptorDao.insertDescriptor(imageDescriptorEntity)
+//        }
         return descriptors
     }
 
-
-    override fun release() {
-        TODO("Not yet implemented")
-    }
 
 }
 

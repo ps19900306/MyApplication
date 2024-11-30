@@ -20,20 +20,20 @@ import org.opencv.core.Mat
 data class FindTargetRgbEntity(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    var id: Int = 0,
 
     //识别标签 比如"主菜单","位置菜单"
-    val keyTag: String,
+    var keyTag: String,
 
     //进行生成时候选的区域
-    val targetOriginalArea: CoordinateArea,
+    var targetOriginalArea: CoordinateArea,
 
     //这个是找图范围
     var findArea: CoordinateArea? = null,
 
     //识别规则 这里的坐标信息是基于全图的
     @TypeConverters(PointRuleConverters::class)
-    val prList: List<PointRule>,
+    var prList: List<PointRule>,
 
     //点识别使用时候又几个容错
     var errorTolerance: Int = 0,
@@ -50,7 +50,7 @@ data class FindTargetRgbEntity(
     }
 
     override suspend fun findTarget(): CoordinateArea? {
-        val bitmap = imgTake.getLastImg() ?: return null
+        var bitmap = imgTake.getLastImg() ?: return null
         return findTargetBitmap(bitmap)
     }
 
@@ -84,7 +84,7 @@ data class FindTargetRgbEntity(
         if (prList.isEmpty()) {
             return false
         }
-        val areaToCheck = findArea?.let { it } ?: CoordinateArea(0, 0, bitmap.width, bitmap.height)
+        var areaToCheck = findArea?.let { it } ?: CoordinateArea(0, 0, bitmap.width, bitmap.height)
         for (i in areaToCheck.x until areaToCheck.width) {
             for (j in areaToCheck.y until areaToCheck.height) {
                 var nowErrorCount = 0

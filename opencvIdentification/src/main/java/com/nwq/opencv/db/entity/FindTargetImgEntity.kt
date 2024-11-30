@@ -23,22 +23,22 @@ import org.opencv.imgproc.Imgproc
 data class FindTargetImgEntity(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    var id: Int = 0,
 
     //识别标签 比如"主菜单","位置菜单"
-    val keyTag: String,
+    var keyTag: String,
 
     //进行生成时候选的区域
-    val targetOriginalArea: CoordinateArea,
+    var targetOriginalArea: CoordinateArea,
 
     //这个是找图范围
     var findArea: CoordinateArea? = null,
 
     //这个文件存放的类型现在考虑放外部存储或者asset文件夹 测试时候考虑为外部 打包时候考虑放asset
-    val storageType: Int = 0,
+    var storageType: Int = MatUtils.STORAGE_ASSET_TYPE,
 
     //生成匹配蒙版的类型
-    val maskType: Int = 0,
+    var maskType: Int = 0,
 
     ) : IFindTarget {
 
