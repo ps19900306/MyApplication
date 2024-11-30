@@ -15,7 +15,7 @@ import java.io.FileOutputStream
 import java.io.InputStream
 
 @Database(entities = [ImageDescriptorEntity::class], version = 1)
-@TypeConverters(KeyPointConverters::class, PointConverters::class, CoordinateAreaConverters::class)
+@TypeConverters(CoordinateAreaConverters::class)
 abstract class IdentifyDatabase: RoomDatabase() {
 
     abstract fun imageDescriptorDao(): ImageDescriptorDao

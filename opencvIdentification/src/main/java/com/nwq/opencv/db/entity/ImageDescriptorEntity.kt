@@ -3,6 +3,10 @@ package com.nwq.opencv.db.entity
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.nwq.opencv.db.converters.CoordinateAreaConverters
+import com.nwq.opencv.db.converters.KeyPointConverters
+import com.nwq.opencv.db.converters.PointConverters
 import org.opencv.core.KeyPoint
 import org.opencv.core.MatOfKeyPoint
 import org.opencv.core.Point
@@ -17,8 +21,9 @@ data class ImageDescriptorEntity(
     var matRows: Int,
     var matType: Int,
     var descriptors: ByteArray,
-
+    @TypeConverters(KeyPointConverters::class)
     var keyPointList: List<KeyPoint>,
+    @TypeConverters(PointConverters::class)
     var pointList: List<Point>,
 
     //这些是记录的
