@@ -15,6 +15,7 @@ import com.nwq.opencv.db.dao.FindTargetImgDao
 import com.nwq.opencv.db.dao.FindTargetMatDao
 import com.nwq.opencv.db.dao.FindTargetRgbDao
 import com.nwq.opencv.db.dao.ImageDescriptorDao
+import com.nwq.opencv.db.dao.LogicDao
 import com.nwq.opencv.db.entity.FindTargetRgbEntity
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -33,6 +34,7 @@ abstract class IdentifyDatabase : RoomDatabase() {
 
     abstract fun findTargetMatDao(): FindTargetMatDao
 
+    abstract fun logicDao(): LogicDao
 
     companion object {
         @Volatile
