@@ -10,7 +10,6 @@ import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.db.IdentifyDatabase
-import com.nwq.opencv.db.dao.FindTargetHsvDao
 import com.nwq.opencv.db.entity.FindTargetHsvEntity
 import com.nwq.opencv.db.entity.FindTargetImgEntity
 import com.nwq.opencv.db.entity.FindTargetMatEntity
@@ -84,9 +83,7 @@ class AutoFindRuleModel : ViewModel() {
     private var maskType: Int = MaskUtils.UN_SET_MASK
     private var keyTag: String? = null //描述显示信息
     private var clickKeyTag: String? = null // 未设置则使用keyTag
-    private val mFindTargetHsvDao: FindTargetHsvDao by lazy {
-        IdentifyDatabase.getDatabase().findTargetHsvDao()
-    }
+
 
     fun performAutoFindRule() {
         val mat = selectMat ?: return
