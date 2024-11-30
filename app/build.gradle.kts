@@ -53,7 +53,8 @@ dependencies {
     implementation(libs.opencv)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
+    annotationProcessor(libs.room.compiler)
+    implementation(libs.room.ktx)
     implementation("io.github.lucksiege:pictureselector:v3.11.0")
     implementation("io.github.lucksiege:compress:v3.10.9")
 

@@ -3,6 +3,7 @@ package com.nwq.opencv.hsv
 
 import com.nwq.baseobj.CoordinatePoint
 import com.nwq.opencv.point_rule.MIPR
+import com.nwq.opencv.rgb.ColorRule
 import org.opencv.core.Mat
 
 
@@ -10,7 +11,10 @@ import org.opencv.core.Mat
 class PointHSVRule(val point: CoordinatePoint, val rule: HSVRule) : MIPR() {
 
 
-
+    constructor(x: Int, y: Int, h: Int, s: Int, v: Int) : this(
+        CoordinatePoint(x, y),
+        HSVRule.getSimple(h, s, v)
+    )
 
     override fun checkBIpr(srcMat: Mat, offsetX: Int, offsetY: Int): Boolean {
         // 检查点是否超出矩阵边界

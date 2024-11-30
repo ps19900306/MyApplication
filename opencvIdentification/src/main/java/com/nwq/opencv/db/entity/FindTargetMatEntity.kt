@@ -54,10 +54,8 @@ data class FindTargetMatEntity(
 
 
     companion object {
-
         // 创建SIFT检测器 可以根据需求替换提取器
         val feature2D: Feature2D = SIFT.create()
-
         private val bImageDescriptorDao by lazy {
             IdentifyDatabase.getDatabase().imageDescriptorDao()
         }
@@ -170,23 +168,31 @@ data class FindTargetMatEntity(
 
 
     // 根据传入的数据获取到描述
-    private fun buildImageDescriptorEntity(mat: Mat, mask: Mat): Mat {
+    private fun buildImageDescriptorEntity(hsvMat: Mat, mask: Mat): Mat {
         points = arrayOf(
             Point(0.0, 0.0),
-            Point(mat.cols().toDouble(), 0.0),
-            Point(mat.cols().toDouble(), mat.rows().toDouble()),
-            Point(0.0, mat.rows().toDouble())
+            Point(hsvMat.cols().toDouble(), 0.0),
+            Point(hsvMat.cols().toDouble(), hsvMat.rows().toDouble()),
+            Point(0.0, hsvMat.rows().toDouble())
         )
 
         // 2. 将图像转换为灰度图（很多特征提取算法要求灰度图像）
-        Imgproc.cvtColor(mat, mat, Imgproc.COLOR_BGR2GRAY)
+        // 创建一个用于存储 BGR 图像的 Mat 对象
+        val bgrMat = Mat()
+        // 创建一个用于存储灰度图的 Mat 对象
+        val grayMat = Mat()
+        // 先将 HSV 图像转换为 BGR 图像
+        Imgproc.cvtColor(hsvMat, bgrMat, Imgproc.COLOR_HSV2BGR)
+        // 再将 BGR 图像转换为灰度图
+        Imgproc.cvtColor(bgrMat, grayMat, Imgproc.COLOR_BGR2GRAY)
+
 
         // 4. 用于保存关键点和描述符
         val keypoints = MatOfKeyPoint()
         val descriptors = Mat()
 
         // 5. 检测关键点并提取描述符
-        feature2D.detectAndCompute(mat, mask, keypoints, descriptors)
+        feature2D.detectAndCompute(grayMat, mask, keypoints, descriptors)
         mKeypoints = keypoints
 
 //        if (saveDb) {

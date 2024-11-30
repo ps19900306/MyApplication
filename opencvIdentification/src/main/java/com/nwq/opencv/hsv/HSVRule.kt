@@ -1,5 +1,6 @@
 package com.nwq.opencv.hsv
 
+
 open class HSVRule(
     var minH: Int,
     var maxH: Int,
@@ -25,13 +26,20 @@ open class HSVRule(
             StandardPurpleHSV(),
             StandardPinkHSV()
         )
+
+
+        fun getSimple(
+            h: Int,
+            s: Int,
+            v: Int,
+        ): HSVRule {
+            return HSVRule(h, h, s, s, v, v)
+        }
     }
 
     fun verificationRule(h: Int, s: Int, v: Int): Boolean {
         return h in minH..maxH && s in minS..maxS && v in minV..maxV
     }
-
-
 
 
 }

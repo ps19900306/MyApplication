@@ -38,7 +38,7 @@ data class FindTargetImgEntity(
     var storageType: Int = MatUtils.STORAGE_ASSET_TYPE,
 
     //生成匹配蒙版的类型
-    var maskType: Int = 0,
+    var maskType: Int = MaskUtils.UN_SET_MASK,
 
     ) : IFindTarget {
 
