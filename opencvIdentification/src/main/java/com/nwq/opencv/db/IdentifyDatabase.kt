@@ -10,15 +10,29 @@ import com.nwq.baseutils.ContextUtils
 import com.nwq.opencv.db.converters.CoordinateAreaConverters
 import com.nwq.opencv.db.converters.KeyPointConverters
 import com.nwq.opencv.db.converters.PointConverters
+import com.nwq.opencv.db.dao.FindTargetHsvDao
+import com.nwq.opencv.db.dao.FindTargetImgDao
+import com.nwq.opencv.db.dao.FindTargetMatDao
+import com.nwq.opencv.db.dao.FindTargetRgbDao
 import com.nwq.opencv.db.dao.ImageDescriptorDao
+import com.nwq.opencv.db.entity.FindTargetRgbEntity
 import java.io.FileOutputStream
 import java.io.InputStream
 
 @Database(entities = [ImageDescriptorEntity::class], version = 1)
 @TypeConverters(CoordinateAreaConverters::class)
-abstract class IdentifyDatabase: RoomDatabase() {
+abstract class IdentifyDatabase : RoomDatabase() {
 
     abstract fun imageDescriptorDao(): ImageDescriptorDao
+
+    abstract fun findTargetHsvDao(): FindTargetHsvDao
+
+    abstract fun findTargetRgbDao(): FindTargetRgbDao
+
+    abstract fun findTargetImgDao(): FindTargetImgDao
+
+    abstract fun findTargetMatDao(): FindTargetMatDao
+
 
     companion object {
         @Volatile

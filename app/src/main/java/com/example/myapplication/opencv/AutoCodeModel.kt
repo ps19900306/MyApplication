@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MatUtils
+import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.hsv.HSVRule
 import org.opencv.core.Mat
 import org.opencv.core.Point
@@ -16,8 +17,18 @@ class AutoCodeModel : ViewModel() {
     private var clickArea: CoordinateArea? = null
     private var hSVRuleList: MutableList<HSVRule> = mutableListOf()
 
+    private var isBuildHsv: Boolean = true
+    private var isBuildRgb: Boolean = true
+    private var keyTag: String? = null //描述显示信息
+    private var clickKeyTag: String? = null // 未设置则使用keyTag
+
+
     private fun clearHSVRuleList() {
         hSVRuleList.clear()
+    }
+
+    private val mFindTargetHsvDao by lazy {
+        IdentifyDatabase.getDatabase().findTargetHsvDao()
     }
 
 
@@ -48,7 +59,9 @@ class AutoCodeModel : ViewModel() {
     }
 
     private fun buildHsvFindTarget(pointList: MutableList<Point>) {
+        if (isBuildHsv) {
 
+        }
     }
 
     private fun buildRgbFindTarget(pointList: MutableList<Point>) {

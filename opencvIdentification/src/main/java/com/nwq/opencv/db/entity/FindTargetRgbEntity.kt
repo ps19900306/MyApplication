@@ -16,7 +16,7 @@ import com.nwq.opencv.rgb.PointRule
 import org.opencv.core.Mat
 
 
-@Entity(tableName = "find_target_hsv")
+@Entity(tableName = "find_target_rgb")
 data class FindTargetRgbEntity(
 
     @PrimaryKey(autoGenerate = true)
