@@ -44,7 +44,7 @@ class FindTargetModel : ViewModel() {
     }.flowOn(Dispatchers.IO)
 
      fun updateSearchStr(string: String) {
-        queryFlow.value = string
+         queryFlow.value = string
     }
 
 
