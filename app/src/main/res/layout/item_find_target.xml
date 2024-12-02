@@ -1,13 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:name="com.example.myapplication.opencv.FindTartgetListFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
-    tools:context=".opencv.FindTartgetListFragment"
-    tools:listitem="@layout/fragment_find_tartget_list" />
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+
+    <TextView
+        android:id="@+id/nameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="4dp"
+        tools:text="name" />
+
+    <TextView
+        android:id="@+id/deleteTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="4dp"
+        android:textColor="#ff0000"
+        android:text="删除" />
+
+    <Button
+        android:id="@+id/hsvBtn"
+        app:layout_constraintTop_toBottomOf="@+id/nameTv"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="6dp"
+        android:gravity="center"
+        android:text="hsv" />
+
+    <Button
+        android:id="@+id/rgbBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="6dp"
+        android:gravity="center"
+        android:text="rgb"
+        app:layout_constraintTop_toTopOf="@+id/hsvBtn"
+        app:layout_constraintStart_toEndOf="@+id/hsvBtn"
+       />
+
+    <Button
+        android:id="@+id/imgBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="6dp"
+        android:gravity="center"
+        android:text="img"
+        app:layout_constraintTop_toTopOf="@+id/hsvBtn"
+        app:layout_constraintStart_toEndOf="@+id/rgbBtn"
+        />
+
+    <Button
+        android:id="@+id/matBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="6dp"
+        android:gravity="center"
+        android:text="mat"
+        app:layout_constraintTop_toTopOf="@+id/hsvBtn"
+        app:layout_constraintStart_toEndOf="@+id/imgBtn"
+       />
+</androidx.constraintlayout.widget.ConstraintLayout>
