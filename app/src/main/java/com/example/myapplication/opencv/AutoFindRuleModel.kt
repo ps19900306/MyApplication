@@ -1,14 +1,17 @@
 package com.example.myapplication.opencv
 
 import android.graphics.Bitmap
+import android.text.TextUtils
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
+import com.nwq.baseutils.T
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.FindTargetHsvEntity
 import com.nwq.opencv.db.entity.FindTargetImgEntity
@@ -18,6 +21,8 @@ import com.nwq.opencv.db.entity.ImageDescriptorEntity
 import com.nwq.opencv.hsv.HSVRule
 import com.nwq.opencv.hsv.PointHSVRule
 import com.nwq.opencv.rgb.PointRule
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 import org.opencv.core.MatOfKeyPoint
 import org.opencv.core.Point
@@ -89,18 +94,29 @@ class AutoFindRuleModel : ViewModel() {
         val mat = selectMat ?: return
         val bitmap = srcBitmap ?: return
         var area = selectArea ?: return
-        keyTag ?: return
-        val pointList = mutableListOf<Point>()
-        hSVRuleList.forEach {
-            val list =
-                MatUtils.getCornerPoint(mat, it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV)
-            pointList.addAll(list)
+        if (TextUtils.isEmpty(keyTag)){
+            T.show("请先设置描述")
+            return
         }
-        //这里获取到的点坐标是基于mat的
-        buildRgbFindTarget(pointList)
-        buildHsvFindTarget(pointList)
-        buildImgFindTarget()
-        buildMatFindTarget()
+        viewModelScope.launch(Dispatchers.IO){
+            val  record = IdentifyDatabase.getDatabase().findTargetRecordDao().findByKeyTag(keyTag!!)
+            if (record != null){
+                T.show("已存在该描述")
+            }else{
+                val pointList = mutableListOf<Point>()
+                hSVRuleList.forEach {
+                    val list =
+                        MatUtils.getCornerPoint(mat, it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV)
+                    pointList.addAll(list)
+                }
+                //这里获取到的点坐标是基于mat的
+                buildRgbFindTarget(pointList)
+                buildHsvFindTarget(pointList)
+                buildImgFindTarget()
+                buildMatFindTarget()
+                T.show("构建成功")
+            }
+        }
     }
 
 

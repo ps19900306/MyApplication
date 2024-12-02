@@ -3,7 +3,6 @@ package com.example.myapplication.opencv
 import com.nwq.base.BaseDialogFragment
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -23,7 +22,7 @@ import kotlinx.coroutines.launch
 class SetSHVFilterDialog(val dGravity: Int = Gravity.CENTER) :
     BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
     private val TAG = SetSHVFilterDialog::class.java.simpleName
-    private val viewModel by viewModels<OpenCvOptModel>({ requireActivity() })
+    private val viewModel by viewModels<OpenCvPreviewModel>({ requireActivity() })
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?

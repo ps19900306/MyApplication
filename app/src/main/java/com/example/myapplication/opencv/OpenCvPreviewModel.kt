@@ -1,27 +1,23 @@
 package com.example.myapplication.opencv
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.ColorItem
-import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.ByteToIntUtils
 import com.nwq.baseutils.MatUtils
-import com.nwq.loguitls.L
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 
-class OpenCvOptModel : ViewModel() {
+//主要进行预览操作相关的
+class OpenCvPreviewModel : ViewModel() {
 
-    private val TAG = OpenCvOptModel::class.java.simpleName
+    private val TAG = OpenCvPreviewModel::class.java.simpleName
 
     // 图片
     private var srcBitmap: Bitmap? = null;

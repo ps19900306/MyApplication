@@ -8,15 +8,13 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.nwq.baseutils.ContextUtils
 import com.nwq.opencv.db.converters.CoordinateAreaConverters
-import com.nwq.opencv.db.converters.KeyPointConverters
-import com.nwq.opencv.db.converters.PointConverters
 import com.nwq.opencv.db.dao.FindTargetHsvDao
 import com.nwq.opencv.db.dao.FindTargetImgDao
 import com.nwq.opencv.db.dao.FindTargetMatDao
+import com.nwq.opencv.db.dao.FindTargetRecordDao
 import com.nwq.opencv.db.dao.FindTargetRgbDao
 import com.nwq.opencv.db.dao.ImageDescriptorDao
 import com.nwq.opencv.db.dao.LogicDao
-import com.nwq.opencv.db.entity.FindTargetRgbEntity
 import java.io.FileOutputStream
 import java.io.InputStream
 
@@ -33,6 +31,8 @@ abstract class IdentifyDatabase : RoomDatabase() {
     abstract fun findTargetImgDao(): FindTargetImgDao
 
     abstract fun findTargetMatDao(): FindTargetMatDao
+
+    abstract fun findTargetRecordDao(): FindTargetRecordDao
 
     abstract fun logicDao(): LogicDao
 

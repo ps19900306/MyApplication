@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
     private val TAG =PreviewImgActivity::class.java.simpleName
-    private val viewModel by viewModels<OpenCvOptModel>()
+    private val viewModel by viewModels<OpenCvPreviewModel>()
     override fun createBinding(inflater: LayoutInflater): ActivityPreviewImgBinding {
         return ActivityPreviewImgBinding.inflate(layoutInflater)
     }
