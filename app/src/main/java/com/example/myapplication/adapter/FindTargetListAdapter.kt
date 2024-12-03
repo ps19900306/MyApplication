@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.example.myapplication.databinding.ItemFindTargetBinding
+import com.nwq.baseutils.singleClick
 import com.nwq.opencv.db.entity.FindTargetHsvEntity
 import com.nwq.opencv.db.entity.FindTargetImgEntity
 import com.nwq.opencv.db.entity.FindTargetMatEntity
@@ -19,6 +20,12 @@ class FindTargetListAdapter(
 
     private val values = mutableListOf<FindTargetRecord>()
 
+    private var mFindTargetListLister: FindTargetListLister? = null
+
+    fun setFindTargetListLister(ll: FindTargetListLister) {
+        mFindTargetListLister = ll
+    }
+
     fun updateData(list: List<FindTargetRecord>) {
         this.values.clear()
         this.values.addAll(list)
@@ -26,7 +33,7 @@ class FindTargetListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
+        return ViewHolder(mFindTargetListLister,
             ItemFindTargetBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -43,15 +50,31 @@ class FindTargetListAdapter(
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(val binding: ItemFindTargetBinding) :
+    inner class ViewHolder(val ll: FindTargetListLister? ,val binding: ItemFindTargetBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-
+            binding.deleteTv.singleClick {
+                ll?.ondDelete(data!!)
+            }
+            binding.hsvBtn.singleClick {
+                ll?.onHsvBtn(data!!)
+            }
+            binding.rgbBtn.singleClick {
+                ll?.onRgbBtn(data!!)
+            }
+            binding.imgBtn.singleClick {
+                ll?.onImgBtn(data!!)
+            }
+            binding.matBtn.singleClick {
+                ll?.onMatBtn(data!!)
+            }
         }
 
-        fun bindData(item: FindTargetRecord) {
+        var data: FindTargetRecord? = null
 
+        fun bindData(item: FindTargetRecord) {
+            data=item
             binding.rgbBtn.visibility = View.GONE
             binding.hsvBtn.visibility = View.GONE
             binding.imgBtn.visibility = View.GONE
@@ -78,8 +101,7 @@ class FindTargetListAdapter(
             }
         }
 
-
-
     }
+
 
 }
