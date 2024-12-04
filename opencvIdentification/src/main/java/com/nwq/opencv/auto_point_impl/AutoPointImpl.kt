@@ -1,29 +1,18 @@
-package com.nwq.opencv.db.entity
+package com.nwq.opencv.auto_point_impl
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.IAutoRulePoint
-import com.nwq.opencv.db.converters.PointHSVRuleConverters
 import com.nwq.opencv.hsv.HSVRule
-import com.nwq.opencv.hsv.PointHSVRule
 import org.opencv.core.Mat
 import org.opencv.core.Point
 
-@Entity(tableName = "auto_rule_point")
-data class AutoRulePointEntity(
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0,
-    var keyTag: String,
-    //识别规则 这里的坐标信息是基于全图的
-    @TypeConverters(PointHSVRuleConverters::class)
-    var prList: List<HSVRule>,
-) : IAutoRulePoint {
+abstract class AutoPointImpl(val tagStr: String) : IAutoRulePoint {
+
+    abstract fun getHSVRuleList(): List<HSVRule>
 
     override suspend fun autoPoint(hsvMat: Mat): List<Point> {
         val pointList = mutableListOf<Point>()
-        prList.forEach {
+        getHSVRuleList().forEach {
             val list =
                 MatUtils.getCornerPoint(
                     hsvMat,
@@ -40,6 +29,6 @@ data class AutoRulePointEntity(
     }
 
     override fun getTag(): String {
-        return keyTag
+        return tagStr
     }
 }
