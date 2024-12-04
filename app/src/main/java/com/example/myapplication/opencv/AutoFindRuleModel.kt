@@ -62,16 +62,25 @@ class AutoFindRuleModel : ViewModel() {
     private fun getHighSvRule() {
         val list = mutableListOf<HSVRule>()
         for (i in 0..175 step 5) {
-            val rule = HSVRule(i, i + 5, 180, 255, 220, 255)
+            val rule = HSVRule(i, i + 5, 195, 255, 220, 255)
             list.add(rule)
         }
     }
 
-    // 获取高亮区域
+    //获取浅色
     private fun getHighSvRule2() {
         val list = mutableListOf<HSVRule>()
         for (i in 0..175 step 5) {
-            val rule = HSVRule(i, i + 5, 100, 180, 220, 255)
+            val rule = HSVRule(i, i + 5, 135, 195, 220, 255)
+            list.add(rule)
+        }
+    }
+
+    //获取颜色偏黑色
+    private fun getHighSvRule3() {
+        val list = mutableListOf<HSVRule>()
+        for (i in 0..175 step 5) {
+            val rule = HSVRule(i, i + 5, 135, 255, 160, 220)
             list.add(rule)
         }
     }
@@ -94,19 +103,27 @@ class AutoFindRuleModel : ViewModel() {
         val mat = selectMat ?: return
         val bitmap = srcBitmap ?: return
         var area = selectArea ?: return
-        if (TextUtils.isEmpty(keyTag)){
+        if (TextUtils.isEmpty(keyTag)) {
             T.show("请先设置描述")
             return
         }
-        viewModelScope.launch(Dispatchers.IO){
-            val  record = IdentifyDatabase.getDatabase().findTargetRecordDao().findByKeyTag(keyTag!!)
-            if (record != null){
+        viewModelScope.launch(Dispatchers.IO) {
+            val record = IdentifyDatabase.getDatabase().findTargetRecordDao().findByKeyTag(keyTag!!)
+            if (record != null) {
                 T.show("已存在该描述")
-            }else{
+            } else {
                 val pointList = mutableListOf<Point>()
                 hSVRuleList.forEach {
                     val list =
-                        MatUtils.getCornerPoint(mat, it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV)
+                        MatUtils.getCornerPoint(
+                            mat,
+                            it.minH,
+                            it.maxH,
+                            it.minS,
+                            it.maxS,
+                            it.minV,
+                            it.maxV
+                        )
                     pointList.addAll(list)
                 }
                 //这里获取到的点坐标是基于mat的

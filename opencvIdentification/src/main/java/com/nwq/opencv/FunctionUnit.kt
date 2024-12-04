@@ -22,9 +22,9 @@ abstract class FunctionUnit {
     }
 
     abstract val TAG: String
-    abstract val logicUnitList: MutableList<LogicUnit>
+    abstract val logicUnitList: MutableList<ILogicUnit>
     abstract val maxCount: Int
-    protected var lastLogicUnit: LogicUnit? = null
+    protected var lastILogicUnit: ILogicUnit? = null
 
 
     /**
@@ -59,35 +59,35 @@ abstract class FunctionUnit {
             }
 
             // 查找当前符合条件的逻辑单元
-            val nowLogicUnit = logicUnitList.find { it.jude() }
+            val nowILogicUnit = logicUnitList.find { it.jude() }
 
             // 如果上一个逻辑单元存在，则根据当前逻辑单元是否变化执行相应的逻辑
-            if (lastLogicUnit != null) {
-                if (nowLogicUnit != lastLogicUnit) {
+            if (lastILogicUnit != null) {
+                if (nowILogicUnit != lastILogicUnit) {
                     // 如果当前逻辑单元发生变化，则通知上一个逻辑单元变化，并初始化当前逻辑单元
-                    lastLogicUnit?.hasChanged(logicUnitList)
-                    nowLogicUnit?.onJude(logicUnitList, 0)
+                    lastILogicUnit?.hasChanged(logicUnitList)
+                    nowILogicUnit?.onJude(logicUnitList, 0)
                 } else {
                     // 如果当前逻辑单元未发生变化，并且当前逻辑单元的判断结果为真，则结束功能执行
-                    if (nowLogicUnit?.onJude(logicUnitList, ++count) == true) {
-                        L.i(TAG, "endFunction STUCK_IMG_END ${nowLogicUnit.TAG}")
+                    if (nowILogicUnit?.onJude(logicUnitList, ++count) == true) {
+                        L.i(TAG, "endFunction STUCK_IMG_END ${nowILogicUnit.getTag()}")
                         endFunction(STUCK_IMG_END)
                         return
                     }
                 }
                 // 更新上一个逻辑单元为当前逻辑单元
-                lastLogicUnit = nowLogicUnit
+                lastILogicUnit = nowILogicUnit
             } else {
                 // 如果上一个逻辑单元不存在，则初始化计数器，并执行当前逻辑单元的判断逻辑
                 count = 0
-                nowLogicUnit?.onJude(logicUnitList, count)
+                nowILogicUnit?.onJude(logicUnitList, count)
             }
 
             // 如果当前逻辑单元存在，并且其执行结束条件为真，则结束功能执行
-            nowLogicUnit?.let {
+            nowILogicUnit?.let {
                 if (it.isEnd()) {
                     endFunction(NORMAL_END)
-                    L.i(TAG, "endFunction NORMAL_END ${nowLogicUnit.TAG}")
+                    L.i(TAG, "endFunction NORMAL_END ${nowILogicUnit.getTag()}")
                     return
                 }
             }

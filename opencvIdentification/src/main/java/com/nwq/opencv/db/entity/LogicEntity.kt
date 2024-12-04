@@ -3,14 +3,11 @@ package com.nwq.opencv.db.entity
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.opencv.IFindTarget
-import com.nwq.opencv.LogicUnit
-import com.nwq.opencv.click.ClickArea
+import com.nwq.opencv.ILogicUnit
 import com.nwq.opencv.db.IdentifyDatabase
-import com.nwq.opencv.db.converters.KeyPointConverters
-import com.nwq.opencv.find_target.FindTarget
+
 
 //
 @Entity(tableName = "logic_unit")
@@ -25,7 +22,7 @@ data class LogicEntity(
     var judeTime: Int = -1,
     var isEnd: Boolean = false,
     var errorCount: Int = 10
-) {
+): ILogicUnit {
 
     val findTargetList by lazy {
         val list = mutableListOf<IFindTarget>()
@@ -52,7 +49,7 @@ data class LogicEntity(
     @Ignore
     private var lastCoordinateArea: CoordinateArea? = null
 
-    suspend fun jude(): Boolean {
+   override suspend fun jude(): Boolean {
         if (judeTime == 0) {
             return false
         }
@@ -68,7 +65,7 @@ data class LogicEntity(
 
 
     //当本次jude()返回为True 时，入本方法  count连续进入次数  Boolean是否进行错误上报
-    open suspend fun onJude(nowLogicUnitList: List<LogicUnit>, count: Int): Boolean {
+    override suspend fun onJude(nowLogicUnitList: List<ILogicUnit>, count: Int): Boolean {
         if (errorCount in 1..<count) {
             return true;
         }
@@ -83,7 +80,7 @@ data class LogicEntity(
     }
 
     //当上一张图jude()返回为True时本张图进进入的不是次方法
-    open suspend fun hasChanged(nowLogicUnitList: MutableList<LogicEntity>) {
+    override suspend fun hasChanged(nowLogicUnitList: MutableList<ILogicUnit>) {
         // 如果存在下一个逻辑单元列表，则将其全部添加到当前列表中
         nextList?.forEach { id ->
             IdentifyDatabase.getDatabase().logicDao().findByKeyId(id)?.let {
@@ -100,8 +97,12 @@ data class LogicEntity(
         }
     }
 
-    open suspend fun isEnd(): Boolean {
+    override suspend fun isEnd(): Boolean {
         return isEnd
+    }
+
+    override suspend fun getTag():String {
+        return keyTag
     }
 
 }
