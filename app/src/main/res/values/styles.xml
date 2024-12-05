@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="FullscreenAttrs">
+        <attr name="fullscreenBackgroundColor" format="color" />
+        <attr name="fullscreenTextColor" format="color" />
+    </declare-styleable>
+
+
+    <declare-styleable name="PreviewImageView">
+        <attr name="dotSize" format="dimension" />
+        <attr name="dotColor" format="color" />
+        <attr name="oblongSize" format="dimension" />
+        <attr name="oblongColor" format="color" />
+    </declare-styleable>
+
+
+    <style name="normalTitleTv">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:minWidth">60dp</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+
+
+</resources>

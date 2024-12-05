@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_height="wrap_content">
+    <CheckBox
+        android:id="@+id/cBox"
+        style="@style/normalTitleTv"
+        android:clickable="false"
+        android:focusable="false"
+        android:layout_marginStart="1dp"
+        android:text="@string/auto_exc"/>
+</FrameLayout>
