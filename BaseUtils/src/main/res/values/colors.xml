@@ -9,4 +9,7 @@
     <color name="text_color">#191B21</color>
     <color name="white">#FFFFFFFF</color>
     <color name="select_user">#2200F000</color>
+
+    <color name="button_normal">#4CAF50</color> <!-- 绿色 -->
+    <color name="button_pressed">#388E3C</color> <!-- 深绿色 -->
 </resources>
