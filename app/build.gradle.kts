@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.room.ktx)
     implementation("io.github.lucksiege:pictureselector:v3.11.0")
     implementation("io.github.lucksiege:compress:v3.10.9")
+    implementation("com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.11")
 
 
 
