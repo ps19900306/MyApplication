@@ -7,11 +7,16 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityPreviewImgBinding
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
@@ -84,4 +89,19 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
     }
 
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        //我希望把事件传递给 currentFragment
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+//        val currentFragment = navHostFragment.childFragmentManager.fragments.firstOrNull()
+//        if (currentFragment != null) {
+//            when (currentFragment) {
+//                is FragmentA -> Log.d("CurrentFragment", "当前是 FragmentA")
+//                is FragmentB -> Log.d("CurrentFragment", "当前是 FragmentB")
+//                else -> Log.d("CurrentFragment", "未知 Fragment")
+//            }
+//        }
+
+        return super.onTouchEvent(event)
+
+    }
 }
