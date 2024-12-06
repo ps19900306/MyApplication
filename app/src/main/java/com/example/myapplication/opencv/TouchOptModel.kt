@@ -14,6 +14,7 @@ class TouchOptModel : ViewModel() {
 
     companion object {
 
+
         const val FULL_SCREEN =-1
 
         //不拦截的事件
