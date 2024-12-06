@@ -8,8 +8,12 @@ import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.WindowManager
 import android.widget.SeekBar
 import androidx.activity.viewModels
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -32,6 +36,30 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
     override fun createBinding(inflater: LayoutInflater): ActivityPreviewImgBinding {
         return ActivityPreviewImgBinding.inflate(layoutInflater)
     }
+    lateinit var controller: WindowInsetsControllerCompat
+
+    override fun beforeSetContentView() {
+        super.beforeSetContentView()
+        controller = WindowInsetsControllerCompat(window, window.decorView)
+        fullScreen()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val params = window.attributes
+        params.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        window.attributes = params
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fullScreen()
+    }
+
+    private fun fullScreen(){
+        controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
+        controller.hide(WindowInsetsCompat.Type.navigationBars())
+    }
+
+
 
     override fun initData() {
         lifecycleScope.launch {
@@ -45,9 +73,12 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.showBitmapFlow.collectLatest {
-                    Log.i(TAG, "showBitmapFlow collectLatest: $it")
-                    binding.bgImg.setImageBitmap(it)
+                mTouchOptModel.touchType.collectLatest {
+                    if (it == TouchOptModel.FULL_SCREEN){
+                        fullScreen()
+                    }else{
+                        nowMode = it
+                    }
                 }
             }
         }

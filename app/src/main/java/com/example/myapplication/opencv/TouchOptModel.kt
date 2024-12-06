@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.first
 class TouchOptModel : ViewModel() {
 
     companion object {
+
+        const val FULL_SCREEN =-1
+
         //不拦截的事件
         const val NORMAL_TYPE = 0
 

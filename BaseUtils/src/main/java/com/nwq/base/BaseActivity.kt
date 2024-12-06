@@ -18,9 +18,14 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        beforeSetContentView()
         _binding = createBinding(layoutInflater)
         setContentView(binding.root)
         initData()
+    }
+
+    open fun beforeSetContentView() {
+
     }
 
     abstract fun initData()
@@ -45,7 +50,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
                 permissionsToRequest.add(permission)
             }
         }
-
         if (permissionsToRequest.isNotEmpty()) {
             ActivityCompat.requestPermissions(this, permissionsToRequest.toTypedArray(), REQUEST_CODE_PERMISSION)
         } else {
