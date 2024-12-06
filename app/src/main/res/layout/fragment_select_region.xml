@@ -9,5 +9,4 @@
     tools:context=".opencv.SelectRegionFragment">
 
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

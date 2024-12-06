@@ -10,10 +10,10 @@ import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 
 class KeyTextAdapter(
-    val mCallBack: CallBack<Int>,
     val list: List<IKeyText>,
-    val layoutId: Int,
-    val textId: Int
+    val mCallBack: CallBack<Int>? = null,
+    private val layoutId: Int = R.layout.item_text,
+    private val textId: Int = R.id.textTv,
 ) :
     RecyclerView.Adapter<KeyTextAdapter.ViewHolder>() {
 
@@ -43,7 +43,7 @@ class KeyTextAdapter(
         init {
             itemView.singleClick {
                 mIKeyText?.let {
-                    mCallBack.onCallBack(it.getKey())
+                    mCallBack?.onCallBack(it.getKey())
                 }
             }
             mTextView = itemView.findViewById(textId)

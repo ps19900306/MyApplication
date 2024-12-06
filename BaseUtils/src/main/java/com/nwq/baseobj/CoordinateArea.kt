@@ -1,6 +1,26 @@
 package com.nwq.baseobj
 
-open class CoordinateArea(val x: Int, val y: Int, val width: Int, val height: Int){
+open class CoordinateArea(val x: Int, val y: Int, val width: Int, val height: Int, var isRound: Boolean = false):ICoordinate{
+
+
+    constructor(x: Double, y: Double, width: Double, height: Double, isRound: Boolean = false) : this(x.toInt(), y.toInt(), width.toInt(), height.toInt(),isRound)
+    constructor(x: Float, y: Float, width: Float, height: Float, isRound: Boolean = false) : this(x.toInt(), y.toInt(), width.toInt(), height.toInt(),isRound)
+
+    val xF by lazy {
+         x.toFloat()
+    }
+
+    val yF by lazy {
+        y.toFloat()
+    }
+
+    val xD by lazy {
+        x.toDouble()
+    }
+
+    val yD by lazy {
+        y.toDouble()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
