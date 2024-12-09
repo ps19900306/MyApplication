@@ -27,7 +27,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>() {
 
     private fun getList():List<ResStrKeyText>{
         val  list = mutableListOf<ResStrKeyText>()
-
+        list.add(R.string,)
         return list
     }
 }
