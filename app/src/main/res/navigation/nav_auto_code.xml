@@ -2,7 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph2">
+    app:startDestination="@+id/selectRegionFragment"
+    android:id="@+id/nav_auto_code">
 
 
 
@@ -12,9 +13,6 @@
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_select_region">
 
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
     </fragment>
 
 </navigation>
