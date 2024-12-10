@@ -41,4 +41,10 @@ open class CoordinateArea(val x: Int, val y: Int, val width: Int, val height: In
         result = 31 * result + height
         return result
     }
+
+    override fun toString(): String {
+        return "CoordinateArea(x=$x, y=$y, width=$width, height=$height, isRound=$isRound)"
+    }
+
+
 }

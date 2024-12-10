@@ -23,7 +23,8 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
 
     private var itemCount = 3
     private val mTouchOptModel by viewModels<TouchOptModel>({ requireActivity() })
-
+    private val autoFindRuleModel by viewModels<AutoFindRuleModel>({ requireActivity() })
+    private val openCvPreviewModel by viewModels<OpenCvPreviewModel>()
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?

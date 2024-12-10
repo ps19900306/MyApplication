@@ -89,6 +89,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
                         checkPermission()
                         mTouchOptModel.resetTouchOptFlag()
                     }
+
                     TouchOptModel.RECT_AREA_TYPE,
                     TouchOptModel.CIRCLE_AREA_TYPE,
                     TouchOptModel.SINGLE_CLICK_TYPE,
@@ -202,7 +203,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
                                 createCoordinateArea(starX, starY, ev.x, ev.y, isCircle)
                             binding.previewView.setArea(coordinateArea)
                             mTouchOptModel.updateICoordinate(coordinateArea)
-                            } else {
+                        } else {
                             binding.previewView.clearArea()
                         }
                         isFirst = true
@@ -250,10 +251,8 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
         y2: Float,
         b: Boolean = false
     ): CoordinateArea {
-        return if (x1 + y1 > x2 + y2) {
-            CoordinateArea(x2, y2, x1, y1, b)
-        } else {
-            CoordinateArea(x1, y1, x2, y2, b)
-        }
+        val sX = if (x1 > x2) x2 else x1
+        val sY = if (y1 > y2) y2 else y1
+        return CoordinateArea(sX, sY, Math.abs(x1 - x2), Math.abs(y1 - y2), b)
     }
 }
