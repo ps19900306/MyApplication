@@ -8,6 +8,7 @@ import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import androidx.activity.viewModels
@@ -36,6 +37,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
     override fun createBinding(inflater: LayoutInflater): ActivityPreviewImgBinding {
         return ActivityPreviewImgBinding.inflate(layoutInflater)
     }
+
     lateinit var controller: WindowInsetsControllerCompat
 
     override fun beforeSetContentView() {
@@ -54,11 +56,10 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
         fullScreen()
     }
 
-    private fun fullScreen(){
+    private fun fullScreen() {
         controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
         controller.hide(WindowInsetsCompat.Type.navigationBars())
     }
-
 
 
     override fun initData() {
@@ -72,22 +73,37 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
         }
 
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mTouchOptModel.touchType.collectLatest {
-                    if (it == TouchOptModel.FULL_SCREEN){
+            mTouchOptModel.touchType.collectLatest {
+                when (it) {
+                    TouchOptModel.NORMAL_TYPE -> {
+                        binding.navContain.visibility = View.VISIBLE
+                        nowMode = it
+                    }
+
+                    TouchOptModel.FULL_SCREEN -> {
                         fullScreen()
-                    }else{
+                        mTouchOptModel.resetTouchOptFlag()
+                    }
+
+                    TouchOptModel.SELECT_PICTURE -> {
+                        checkPermission()
+                        mTouchOptModel.resetTouchOptFlag()
+                    }
+                    TouchOptModel.RECT_AREA_TYPE,
+                    TouchOptModel.CIRCLE_AREA_TYPE,
+                    TouchOptModel.SINGLE_CLICK_TYPE,
+                    TouchOptModel.MEASURE_DISTANCE_TYPE,
+                    -> {
+                        binding.navContain.visibility = View.INVISIBLE
                         nowMode = it
                     }
                 }
             }
         }
-        binding.button.singleClick {
-            checkPermission()
-        }
-        binding.button2.singleClick {
-            SetSHVFilterDialog().show(supportFragmentManager, "SHV");
-        }
+
+//        binding.button2.singleClick {
+//            SetSHVFilterDialog().show(supportFragmentManager, "SHV");
+//        }
 
         binding.sbHNearby.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -171,7 +187,9 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
                         starY = ev.y
                         isFirst = false
                         lastTime = System.currentTimeMillis()
+
                     }
+
                 } else {
                     val isCircle = nowMode == TouchOptModel.CIRCLE_AREA_TYPE
                     if (ev.action == MotionEvent.ACTION_MOVE) {
@@ -184,7 +202,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
                                 createCoordinateArea(starX, starY, ev.x, ev.y, isCircle)
                             binding.previewView.setArea(coordinateArea)
                             mTouchOptModel.updateICoordinate(coordinateArea)
-                        } else {
+                            } else {
                             binding.previewView.clearArea()
                         }
                         isFirst = true
@@ -214,7 +232,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
                             )
                             binding.previewView.setLine(coordinateLine)
                             mTouchOptModel.updateICoordinate(coordinateLine)
-                        }else{
+                        } else {
                             binding.previewView.clearLine()
                         }
                         isFirst = true

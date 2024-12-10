@@ -15,7 +15,8 @@ class TouchOptModel : ViewModel() {
     companion object {
 
 
-        const val FULL_SCREEN =-1
+        const val FULL_SCREEN = Int.MAX_VALUE
+        const val SELECT_PICTURE = Int.MAX_VALUE -1
 
         //不拦截的事件
         const val NORMAL_TYPE = 0
@@ -41,6 +42,18 @@ class TouchOptModel : ViewModel() {
 
      fun updateICoordinate( datae :ICoordinate){
         _touchCoordinate.value = datae
+    }
+
+    fun fullScreen(){
+        _touchType.value = FULL_SCREEN
+    }
+
+   fun selectPicture(){
+       _touchType.value = SELECT_PICTURE
+   }
+
+    fun resetTouchOptFlag() {
+        _touchType.value = NORMAL_TYPE
     }
 
     suspend fun getPoint(): CoordinatePoint {
