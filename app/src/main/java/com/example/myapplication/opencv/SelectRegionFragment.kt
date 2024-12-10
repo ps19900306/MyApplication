@@ -78,7 +78,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
     private fun selectCriticalArea(){
         lifecycleScope.launch {
             val rectArea = mTouchOptModel.getRectArea()
-            Log.i("selectCriticalArea","rectArea:$rectArea")
+            openCvPreviewModel
         }
     }
 
