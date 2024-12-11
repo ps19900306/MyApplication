@@ -74,23 +74,8 @@ class AutoFindRuleModel : ViewModel() {
     private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
     private val mAutoRulePointDao = IdentifyDatabase.getDatabase().autoRulePointDao()
 
-    // 获取高亮区域
-    private fun getHighSvRule() {
-        val list = mutableListOf<HSVRule>()
-        for (i in 0..175 step 5) {
-            val rule = HSVRule(i, i + 5, 195, 255, 220, 255)
-            list.add(rule)
-        }
-    }
 
-    //获取浅色
-    private fun getHighSvRule2() {
-        val list = mutableListOf<HSVRule>()
-        for (i in 0..175 step 5) {
-            val rule = HSVRule(i, i + 5, 135, 195, 220, 255)
-            list.add(rule)
-        }
-    }
+
 
     // 合并查询逻辑
     val resultsFlow: Flow<List<IAutoRulePoint>> = queryFlow.debounce(1000).flatMapLatest { query ->
@@ -116,14 +101,6 @@ class AutoFindRuleModel : ViewModel() {
     }
 
 
-    //获取颜色偏黑色
-    private fun getHighSvRule3() {
-        val list = mutableListOf<HSVRule>()
-        for (i in 0..175 step 5) {
-            val rule = HSVRule(i, i + 5, 135, 255, 160, 220)
-            list.add(rule)
-        }
-    }
 
 
     /**
