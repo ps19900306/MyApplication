@@ -19,6 +19,8 @@
     <string name="preview">预览</string>
     <string name="preview1">预览区域</string>
     <string name="attribute">属性</string>
+    <string name="create_new">新增</string>
+    <string name="filter_rule">过滤规则</string>
 
     <string name="select_picture">选择图片</string>
     <string name="select_critical_area">选择关键区域</string>

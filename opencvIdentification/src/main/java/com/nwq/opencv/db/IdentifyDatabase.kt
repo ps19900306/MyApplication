@@ -8,6 +8,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.nwq.baseutils.ContextUtils
 import com.nwq.opencv.db.converters.CoordinateAreaConverters
+import com.nwq.opencv.db.dao.AutoRulePointDao
 import com.nwq.opencv.db.dao.FindTargetHsvDao
 import com.nwq.opencv.db.dao.FindTargetImgDao
 import com.nwq.opencv.db.dao.FindTargetMatDao
@@ -33,6 +34,9 @@ abstract class IdentifyDatabase : RoomDatabase() {
     abstract fun findTargetMatDao(): FindTargetMatDao
 
     abstract fun findTargetRecordDao(): FindTargetRecordDao
+
+    abstract fun autoRulePointDao(): AutoRulePointDao
+
 
     abstract fun logicDao(): LogicDao
 

@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.IAutoRulePoint
+import com.nwq.opencv.db.converters.HSVRuleConverters
 import com.nwq.opencv.db.converters.PointHSVRuleConverters
 import com.nwq.opencv.hsv.HSVRule
 import com.nwq.opencv.hsv.PointHSVRule
@@ -17,7 +18,7 @@ data class AutoRulePointEntity(
     var id: Long = 0,
     var keyTag: String,
     //识别规则 这里的坐标信息是基于全图的
-    @TypeConverters(PointHSVRuleConverters::class)
+    @TypeConverters(HSVRuleConverters::class)
     var prList: List<HSVRule>,
 ) : IAutoRulePoint {
 

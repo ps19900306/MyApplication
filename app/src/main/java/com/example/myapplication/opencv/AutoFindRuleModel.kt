@@ -12,16 +12,24 @@ import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
+import com.nwq.opencv.IAutoRulePoint
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.FindTargetHsvEntity
 import com.nwq.opencv.db.entity.FindTargetImgEntity
 import com.nwq.opencv.db.entity.FindTargetMatEntity
+import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.opencv.db.entity.FindTargetRgbEntity
 import com.nwq.opencv.db.entity.ImageDescriptorEntity
 import com.nwq.opencv.hsv.HSVRule
 import com.nwq.opencv.hsv.PointHSVRule
 import com.nwq.opencv.rgb.PointRule
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 import org.opencv.core.MatOfKeyPoint
@@ -55,9 +63,17 @@ class AutoFindRuleModel : ViewModel() {
         hSVRuleList.add(rule)
     }
 
+    fun getList() {
+        IdentifyDatabase.getDatabase().findTargetRecordDao()
+    }
+
+
     /**
-     * 生成不同的规则SvRule 进行取点
+     *  下面这些谁HSV过滤规则相关的
      */
+    private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
+    private val mAutoRulePointDao = IdentifyDatabase.getDatabase().autoRulePointDao()
+
     // 获取高亮区域
     private fun getHighSvRule() {
         val list = mutableListOf<HSVRule>()
@@ -75,6 +91,30 @@ class AutoFindRuleModel : ViewModel() {
             list.add(rule)
         }
     }
+
+    // 合并查询逻辑
+    val resultsFlow: Flow<List<IAutoRulePoint>> = queryFlow.debounce(1000).flatMapLatest { query ->
+        if (query.isEmpty()) {
+            mAutoRulePointDao.findAll() // 如果输入为空，查询整个表
+        } else {
+            mAutoRulePointDao.findByKeyTagLike(query) // 如果输入不为空，进行模糊查询
+        }
+    }.onEach {
+        val list = getIAutoRulePoint()
+        list.addAll(it)
+        list
+    }.flowOn(Dispatchers.IO)
+
+    fun updateSearchStr(string: String) {
+        queryFlow.value = string
+    }
+
+
+    private fun getIAutoRulePoint(): MutableList<IAutoRulePoint> {
+        val list = mutableListOf<IAutoRulePoint>()
+        return list
+    }
+
 
     //获取颜色偏黑色
     private fun getHighSvRule3() {
@@ -114,16 +154,9 @@ class AutoFindRuleModel : ViewModel() {
             } else {
                 val pointList = mutableListOf<Point>()
                 hSVRuleList.forEach {
-                    val list =
-                        MatUtils.getCornerPoint(
-                            mat,
-                            it.minH,
-                            it.maxH,
-                            it.minS,
-                            it.maxS,
-                            it.minV,
-                            it.maxV
-                        )
+                    val list = MatUtils.getCornerPoint(
+                        mat, it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV
+                    )
                     pointList.addAll(list)
                 }
                 //这里获取到的点坐标是基于mat的
@@ -142,8 +175,7 @@ class AutoFindRuleModel : ViewModel() {
         val list = mutableListOf<PointRule>()
         pointList.forEach {
             val rgbInt = srcBitmap!!.getPixel(
-                (it.x + selectArea!!.x).toInt(),
-                (it.y + selectArea!!.y).toInt()
+                (it.x + selectArea!!.x).toInt(), (it.y + selectArea!!.y).toInt()
             )
             val pointRule = PointRule(
                 (it.x + selectArea!!.x).toInt(),
@@ -178,10 +210,7 @@ class AutoFindRuleModel : ViewModel() {
             list.add(pointRule)
         }
         val data = FindTargetHsvEntity(
-            keyTag = keyTag!!,
-            targetOriginalArea = selectArea!!,
-            findArea = findArea,
-            prList = list
+            keyTag = keyTag!!, targetOriginalArea = selectArea!!, findArea = findArea, prList = list
         )
         IdentifyDatabase.getDatabase().findTargetHsvDao().insert(data)
     }
@@ -261,4 +290,6 @@ class AutoFindRuleModel : ViewModel() {
         )
         IdentifyDatabase.getDatabase().imageDescriptorDao().insertDescriptor(imageDescriptorEntity)
     }
+
+
 }

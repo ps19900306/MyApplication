@@ -16,8 +16,6 @@ interface FindTargetHsvDao {
     fun findByKeyTag(keyTag: String): FindTargetHsvEntity?
 
 
-
-
     // 删除指定的实体
     @Delete
     fun delete(entity: FindTargetHsvEntity)
