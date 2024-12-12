@@ -2,11 +2,13 @@ package com.example.myapplication.opencv
 
 import android.graphics.Bitmap
 import android.text.TextUtils
+import android.util.Log
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nwq.adapter.CheckKeyText
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MaskUtils
@@ -70,12 +72,16 @@ class AutoFindRuleModel : ViewModel() {
      */
     private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
     private val mAutoRulePointDao by lazy{ IdentifyDatabase.getDatabase().autoRulePointDao() }
-    private val getIAutoRuleDef by lazy {
+    val iAutoRuleDef by lazy {
         val list = mutableListOf<IAutoRulePoint>()
         list.add(HighLightAutoPointImpl())
         list
     }
-
+    val defCheckKeyTextList by lazy {
+        iAutoRuleDef.map { t ->
+            CheckKeyText(0, t.getTag(), false)
+        }
+    }
 
     // 合并查询逻辑
     val resultsFlow: Flow<List<IAutoRulePoint>> = queryFlow.debounce(1000).flatMapLatest { query ->
@@ -85,10 +91,7 @@ class AutoFindRuleModel : ViewModel() {
             mAutoRulePointDao.findByKeyTagLike(query) // 如果输入不为空，进行模糊查询
         }
     }.onEach {
-        val list = mutableListOf<IAutoRulePoint>()
-        list.addAll(it)
-        list.addAll(getIAutoRuleDef)
-        list
+
     }.flowOn(Dispatchers.IO)
 
     fun updateSearchStr(string: String) {

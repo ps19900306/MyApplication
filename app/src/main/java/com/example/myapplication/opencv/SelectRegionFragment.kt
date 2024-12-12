@@ -23,6 +23,7 @@ import com.nwq.adapter.KeyTextCheckAdapter
 import com.nwq.adapter.ResStrKeyText
 import com.nwq.base.BaseFragment
 import com.nwq.callback.CallBack
+import com.nwq.opencv.IAutoRulePoint
 import kotlinx.coroutines.launch
 
 
@@ -85,10 +86,11 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 autoFindRuleModel.resultsFlow.collect {
-                    var i = 0;
-                    val adapterList = it.map { t ->
-                        CheckKeyText(i++, t.getTag(), false)
-                    }
+                    val adapterList = mutableListOf<CheckKeyText>()
+                    adapterList.addAll(autoFindRuleModel.defCheckKeyTextList)
+                    adapterList.addAll(it.map { t ->
+                        CheckKeyText(1, t.getTag(), false)
+                    })
                     mKeyTextCheckAdapter =
                         KeyTextCheckAdapter(list = adapterList, isSingle = true)
                     binding.hsvRecyclerView.adapter = mKeyTextCheckAdapter!!
