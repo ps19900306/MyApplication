@@ -3,57 +3,64 @@ package com.nwq.opencv.db.entity
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.ILogicUnit
 import com.nwq.opencv.db.IdentifyDatabase
+import com.nwq.opencv.db.converters.KeyPointConverters
+import com.nwq.opencv.db.converters.LongListConverters
 
 
 //
 @Entity(tableName = "logic_unit")
 data class LogicEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    var id: Long = 0,
 
     var keyTag: String = "",  //描述此逻辑单元用来做什么的
     var findTag: String = "", //判断模块的Tag
     var clickKeyTag: String? = null, //点击事件的Tag
+    @TypeConverters(LongListConverters::class)
     var nextList: List<Long>? = null,
     var judeTime: Int = -1,
     var isEnd: Boolean = false,
     var errorCount: Int = 10
-): ILogicUnit {
+) : ILogicUnit {
 
-    val findTargetList by lazy {
-        val list = mutableListOf<IFindTarget>()
-        val database = IdentifyDatabase.getDatabase()
-        database.findTargetRgbDao().findByKeyTag(findTag)?.let {
-            list.add(it)
+    @Ignore
+    private var findTargetList: List<IFindTarget>? = null
+
+    fun getTargetList(): List<IFindTarget>? {
+        if (findTargetList == null) {
+            val list = mutableListOf<IFindTarget>()
+            val database = IdentifyDatabase.getDatabase()
+            database.findTargetRgbDao().findByKeyTag(findTag)?.let {
+                list.add(it)
+            }
+            database.findTargetHsvDao().findByKeyTag(findTag)?.let {
+                list.add(it)
+            }
+            database.findTargetImgDao().findByKeyTag(findTag)?.let {
+                list.add(it)
+            }
+            database.findTargetMatDao().findByKeyTag(findTag)?.let {
+                list.add(it)
+            }
+            findTargetList = list
         }
-        database.findTargetHsvDao().findByKeyTag(findTag)?.let {
-            list.add(it)
-        }
-        database.findTargetImgDao().findByKeyTag(findTag)?.let {
-            list.add(it)
-        }
-        database.findTargetMatDao().findByKeyTag(findTag)?.let {
-            list.add(it)
-        }
-        list
+        return findTargetList
     }
 
-//    val clickArea: ClickEntity? by lazy {
-//        IdentifyDatabase.getDatabase().
-//    }
 
     @Ignore
     private var lastCoordinateArea: CoordinateArea? = null
 
-   override suspend fun jude(): Boolean {
+    override suspend fun jude(): Boolean {
         if (judeTime == 0) {
             return false
         }
-        findTargetList.forEach {
+        getTargetList()?.forEach {
             val coordinateArea = it.findTarget()
             if (coordinateArea != null) {
                 lastCoordinateArea = coordinateArea
@@ -101,7 +108,7 @@ data class LogicEntity(
         return isEnd
     }
 
-    override suspend fun getTag():String {
+    override suspend fun getTag(): String {
         return keyTag
     }
 

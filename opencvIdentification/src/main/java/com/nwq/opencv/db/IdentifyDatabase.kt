@@ -8,6 +8,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.nwq.baseutils.ContextUtils
 import com.nwq.opencv.db.converters.CoordinateAreaConverters
+import com.nwq.opencv.db.converters.HSVRuleConverters
+import com.nwq.opencv.db.converters.KeyPointConverters
+import com.nwq.opencv.db.converters.LongListConverters
+import com.nwq.opencv.db.converters.PointConverters
+import com.nwq.opencv.db.converters.PointHSVRuleConverters
+import com.nwq.opencv.db.converters.PointRuleConverters
 import com.nwq.opencv.db.dao.AutoRulePointDao
 import com.nwq.opencv.db.dao.FindTargetHsvDao
 import com.nwq.opencv.db.dao.FindTargetImgDao
@@ -16,11 +22,26 @@ import com.nwq.opencv.db.dao.FindTargetRecordDao
 import com.nwq.opencv.db.dao.FindTargetRgbDao
 import com.nwq.opencv.db.dao.ImageDescriptorDao
 import com.nwq.opencv.db.dao.LogicDao
+import com.nwq.opencv.db.entity.AutoRulePointEntity
+import com.nwq.opencv.db.entity.ClickEntity
+import com.nwq.opencv.db.entity.FindTargetHsvEntity
+import com.nwq.opencv.db.entity.FindTargetImgEntity
+import com.nwq.opencv.db.entity.FindTargetMatEntity
+import com.nwq.opencv.db.entity.FindTargetRecord
+import com.nwq.opencv.db.entity.FindTargetRgbEntity
+import com.nwq.opencv.db.entity.KeyPointEntity
+import com.nwq.opencv.db.entity.LogicEntity
 import java.io.FileOutputStream
 import java.io.InputStream
 
-@Database(entities = [ImageDescriptorEntity::class], version = 1)
-@TypeConverters(CoordinateAreaConverters::class)
+@Database(entities = [AutoRulePointEntity::class, ClickEntity::class, FindTargetHsvEntity::class
+    , FindTargetImgEntity::class , FindTargetMatEntity::class , FindTargetRecord::class ,
+    FindTargetRgbEntity::class , ImageDescriptorEntity::class , KeyPointEntity::class , LogicEntity::class],
+    version = 1,exportSchema = false)
+@TypeConverters(CoordinateAreaConverters::class,HSVRuleConverters::class, KeyPointConverters::class, LongListConverters::class,
+    PointConverters::class,
+    PointHSVRuleConverters::class,
+    PointRuleConverters::class,)
 abstract class IdentifyDatabase : RoomDatabase() {
 
     abstract fun imageDescriptorDao(): ImageDescriptorDao
@@ -52,7 +73,7 @@ abstract class IdentifyDatabase : RoomDatabase() {
                     "identify_database"
                 ).build()
 
-                // 检查数据库是否已初始化
+         //        检查数据库是否已初始化
                 if (!isDatabaseInitialized(context)) {
                     // 从assets目录中导入数据库文件
                     importDatabaseFromAssets(context)

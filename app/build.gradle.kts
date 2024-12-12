@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
@@ -55,8 +56,10 @@ dependencies {
     implementation(libs.opencv)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    annotationProcessor(libs.room.compiler)
+    kapt(libs.room.compiler)
+    implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.room.paging)
     implementation("io.github.lucksiege:pictureselector:v3.11.0")
     implementation("io.github.lucksiege:compress:v3.10.9")
     implementation("io.github.cymchad:BaseRecyclerViewAdapterHelper4:4.1.4")

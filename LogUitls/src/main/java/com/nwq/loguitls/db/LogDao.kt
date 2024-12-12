@@ -10,10 +10,10 @@ import com.nwq.loguitls.LogLevel
 @Dao
 interface LogDao {
     @Insert
-    suspend fun insert(log: LogEntity)
+    fun insert(log: LogEntity)
 
     @Insert
-    suspend fun insert(log: List<LogEntity>)
+    fun insertList(log: List<LogEntity>)
 
     // 删除所有 createTime 小于指定时间的日志记录
     @Query("DELETE FROM logs WHERE recordTime < :timeThreshold")

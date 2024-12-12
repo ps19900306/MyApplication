@@ -84,16 +84,14 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                val job = launch {
-                    autoFindRuleModel.resultsFlow.collect {
-                        var i = 0;
-                        val adapterList = it.map { t ->
-                            CheckKeyText(i++, t.getTag(), false)
-                        }
-                        mKeyTextCheckAdapter =
-                            KeyTextCheckAdapter(list = adapterList, isSingle = true)
-                        binding.hsvRecyclerView.adapter = mKeyTextCheckAdapter!!
+                autoFindRuleModel.resultsFlow.collect {
+                    var i = 0;
+                    val adapterList = it.map { t ->
+                        CheckKeyText(i++, t.getTag(), false)
                     }
+                    mKeyTextCheckAdapter =
+                        KeyTextCheckAdapter(list = adapterList, isSingle = true)
+                    binding.hsvRecyclerView.adapter = mKeyTextCheckAdapter!!
                 }
             }
         }

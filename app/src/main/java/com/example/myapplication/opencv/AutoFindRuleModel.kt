@@ -13,6 +13,7 @@ import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.opencv.IAutoRulePoint
+import com.nwq.opencv.auto_point_impl.HighLightAutoPointImpl
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.FindTargetHsvEntity
 import com.nwq.opencv.db.entity.FindTargetImgEntity
@@ -63,18 +64,17 @@ class AutoFindRuleModel : ViewModel() {
         hSVRuleList.add(rule)
     }
 
-    fun getList() {
-        IdentifyDatabase.getDatabase().findTargetRecordDao()
-    }
-
 
     /**
      *  下面这些谁HSV过滤规则相关的
      */
     private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
-    private val mAutoRulePointDao = IdentifyDatabase.getDatabase().autoRulePointDao()
-
-
+    private val mAutoRulePointDao by lazy{ IdentifyDatabase.getDatabase().autoRulePointDao() }
+    private val getIAutoRuleDef by lazy {
+        val list = mutableListOf<IAutoRulePoint>()
+        list.add(HighLightAutoPointImpl())
+        list
+    }
 
 
     // 合并查询逻辑
@@ -85,8 +85,9 @@ class AutoFindRuleModel : ViewModel() {
             mAutoRulePointDao.findByKeyTagLike(query) // 如果输入不为空，进行模糊查询
         }
     }.onEach {
-        val list = getIAutoRulePoint()
+        val list = mutableListOf<IAutoRulePoint>()
         list.addAll(it)
+        list.addAll(getIAutoRuleDef)
         list
     }.flowOn(Dispatchers.IO)
 
@@ -95,21 +96,13 @@ class AutoFindRuleModel : ViewModel() {
     }
 
 
-    private fun getIAutoRulePoint(): MutableList<IAutoRulePoint> {
-        val list = mutableListOf<IAutoRulePoint>()
-        return list
-    }
-
-
-
-
     /**
      * 构造数据存入数据库
      */
     private var isBuildHsv: Boolean = true
     private var isBuildRgb: Boolean = true
-    private var isBuildImg: Boolean = true
-    private var isBuildMat: Boolean = true
+    private var isBuildImg: Boolean = false
+    private var isBuildMat: Boolean = false
 
     private var maskType: Int = MaskUtils.UN_SET_MASK
     private var keyTag: String? = null //描述显示信息

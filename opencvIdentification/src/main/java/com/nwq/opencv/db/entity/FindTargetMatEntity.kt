@@ -33,7 +33,7 @@ import org.opencv.imgproc.Imgproc
 data class FindTargetMatEntity(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    var id: Int = 0,
 
     //识别标签 比如"主菜单","位置菜单"
     val keyTag: String,
@@ -62,21 +62,37 @@ data class FindTargetMatEntity(
     }
 
 
-    // 目标图片的 Mat 对象
-    private val targetMat by lazy {
-        val templateMat = MatUtils.readHsvMat(storageType, keyTag)
-        templateMat
+    @Ignore
+    private var targetMat:Mat?=null
+
+    private fun getTargetMat():Mat?{
+        if (targetMat == null) {
+            targetMat= MatUtils.readHsvMat(storageType, keyTag)
+        }
+        return targetMat
+    }
+    @Ignore
+    private var maskMat:Mat?=null
+
+    private fun getMaskMat():Mat?{
+        if (maskMat == null) {
+            maskMat= MaskUtils.getMaskMat(getTargetMat(),maskType)
+        }
+        return maskMat
     }
 
-    //mask图标
-    private val maskMat by lazy {
-        MaskUtils.getMaskMat(targetMat, maskType)
+    @Ignore
+    private var descriptorMat:Mat?=null
+
+
+    private fun getDescriptorMat():Mat?{
+        if (descriptorMat == null) {
+            descriptorMat=  builderTargetMat()
+        }
+        return descriptorMat
     }
 
-    //描述信息
-    private val descriptorMat by lazy {
-        builderTargetMat()
-    }
+
 
     @Ignore
     private lateinit var points: Array<Point> //这个是原图像的大小 用来还原大小
@@ -98,7 +114,7 @@ data class FindTargetMatEntity(
 
     private fun findTargetBitmap(srcMat: Mat): CoordinateArea? {
         // 如果描述信息为空，则返回 null
-        descriptorMat ?: return null
+        getDescriptorMat() ?: return null
 
         // 查找图A和图B的关键点和描述符
         val keypointSrc = MatOfKeyPoint()
@@ -110,7 +126,7 @@ data class FindTargetMatEntity(
         // 使用BFMatcher进行特征点匹配
         val bfMatcher = BFMatcher.create(Core.NORM_HAMMING, true)
         val matches = MatOfDMatch()
-        bfMatcher.match(descriptorMat, descriptorsSrc, matches)
+        bfMatcher.match(getDescriptorMat(), descriptorsSrc, matches)
 
         // 对匹配点进行过滤（选择最佳匹配）
         val matchesList = matches.toList().sortedBy { it.distance }.take(50)
@@ -152,7 +168,7 @@ data class FindTargetMatEntity(
     private fun builderTargetMat(): Mat? {
         val imageDescriptorEntity = bImageDescriptorDao.getDescriptor(keyTag)
         return if (imageDescriptorEntity == null) {
-            val descriptor = buildImageDescriptorEntity(targetMat!!, maskMat!!)
+            val descriptor = buildImageDescriptorEntity(getTargetMat()!!, getMaskMat()!!)
             descriptor
         } else {
             mKeypoints = imageDescriptorEntity.getMatOfKeyPoint();

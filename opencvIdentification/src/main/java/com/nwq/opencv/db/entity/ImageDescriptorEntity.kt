@@ -23,6 +23,7 @@ data class ImageDescriptorEntity(
     var descriptors: ByteArray,
     @TypeConverters(KeyPointConverters::class)
     var keyPointList: List<KeyPoint>,
+
     @TypeConverters(PointConverters::class)
     var pointList: List<Point>,
 

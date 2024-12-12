@@ -3,16 +3,10 @@ package com.nwq.opencv.db.entity
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
-import com.nwq.baseutils.CoordinateUtils
 import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.IFindTarget
-import com.nwq.opencv.db.converters.CoordinateAreaConverters
-import com.nwq.opencv.db.converters.PointHSVRuleConverters
-import com.nwq.opencv.hsv.PointHSVRule
-import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
@@ -44,14 +38,25 @@ data class FindTargetImgEntity(
 
 
     // 目标图片的 Mat 对象
-    private val targetMat by lazy {
-        val templateMat = MatUtils.readHsvMat(storageType, keyTag)
-        templateMat
+    @Ignore
+    private var targetMat:Mat?=null
+
+    private fun getTargetMat():Mat?{
+        if (targetMat == null) {
+            targetMat= MatUtils.readHsvMat(storageType, keyTag)
+        }
+        return targetMat
+    }
+    @Ignore
+    private var maskMat:Mat?=null
+
+    private fun getMaskMat():Mat?{
+        if (maskMat == null) {
+            maskMat= MaskUtils.getMaskMat(getTargetMat(),maskType)
+        }
+        return maskMat
     }
 
-    private val maskMat by lazy {
-        MaskUtils.getMaskMat(targetMat,maskType)
-    }
 
     override suspend fun findTarget(): CoordinateArea? {
         val srcMat = imgTake.getHsvMat(findArea) ?: return null
@@ -64,17 +69,17 @@ data class FindTargetImgEntity(
 
 
     private suspend fun findTargetBitmap(sourceMat: Mat): CoordinateArea? {
-        targetMat?:return null
+        getTargetMat()?:return null
         // 创建输出结果 Mat，大小为 (source - template + 1)
-        val resultCols = sourceMat.cols() - targetMat!!.cols() + 1
-        val resultRows = sourceMat.rows() - targetMat!!.rows() + 1
+        val resultCols = sourceMat.cols() - getTargetMat()!!.cols() + 1
+        val resultRows = sourceMat.rows() - getTargetMat()!!.rows() + 1
         val resultMat = Mat(resultRows, resultCols, CvType.CV_32FC1)
 
         // 执行模板匹配
-        if (maskMat != null) {
-            Imgproc.matchTemplate(sourceMat, targetMat, resultMat, Imgproc.TM_CCOEFF_NORMED, maskMat)
+        if (getMaskMat() != null) {
+            Imgproc.matchTemplate(sourceMat, getTargetMat(), resultMat, Imgproc.TM_CCOEFF_NORMED, getMaskMat())
         }else{
-            Imgproc.matchTemplate(sourceMat, targetMat, resultMat, Imgproc.TM_CCOEFF_NORMED)
+            Imgproc.matchTemplate(sourceMat, getTargetMat(), resultMat, Imgproc.TM_CCOEFF_NORMED)
         }
         // 寻找最大匹配值和它的对应位置
         val minMaxLocResult = Core.minMaxLoc(resultMat)
@@ -84,7 +89,7 @@ data class FindTargetImgEntity(
         if (minMaxLocResult.maxVal >= 0.8) {  // 假设匹配度大于 0.8 认为找到
             val coordinateArea = CoordinateArea(
                 matchLoc.x.toInt(), matchLoc.y.toInt(),
-                targetMat!!.width(), targetMat!!.height()
+                getTargetMat()!!.width(), getTargetMat()!!.height()
             )
             return coordinateArea
         }

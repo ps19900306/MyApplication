@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.nwq.baseutils.ContextUtils
 
-@Database(entities = [LogEntity::class], version = 1)
+@Database(entities = [LogEntity::class], version = 1,exportSchema = false)
 abstract class LogDatabase : RoomDatabase() {
     abstract fun logDao(): LogDao
 

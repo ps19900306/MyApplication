@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
@@ -45,8 +46,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.opencv)
 
-    annotationProcessor(libs.room.compiler)
+    kapt(libs.room.compiler)
+    implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.room.paging)
 
     implementation(libs.gson)
     implementation(libs.text.recognition )

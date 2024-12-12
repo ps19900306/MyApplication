@@ -10,13 +10,13 @@ class CoordinateAreaConverters {
 
 
     @TypeConverter
-    fun fromKeyPointList(area: CoordinateArea): String {
+    fun fromCoordinateArea(area: CoordinateArea): String {
         return Gson().toJson(area)
     }
 
     // 将 JSON 字符串转换回 List<KeyPoint>
     @TypeConverter
-    fun toKeyPointList(areaJson: String): CoordinateArea {
+    fun toCoordinateArea(areaJson: String): CoordinateArea {
         val keyPointType = object : TypeToken<CoordinateArea>() {}.type
         return Gson().fromJson(areaJson, keyPointType)
     }

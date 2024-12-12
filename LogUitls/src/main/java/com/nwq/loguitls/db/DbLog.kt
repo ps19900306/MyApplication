@@ -58,7 +58,7 @@ class DbLog(val log: LogFilterInfo? = null) : ILog, CoroutineScope {
         }
         launch {
             val dao = LogDatabase.getDatabase().logDao()
-            dao.insert(logsToWrite)
+            dao.insertList(logsToWrite)
         }
     }
 
