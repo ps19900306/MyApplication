@@ -12,4 +12,8 @@ interface IAutoRulePoint {
     fun boundaryMinDistance(): Int {
         return 0
     }
+
+    fun getMaxTakePointNumber(): Int {
+        return 30
+    }
 }
