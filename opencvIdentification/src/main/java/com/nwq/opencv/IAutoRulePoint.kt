@@ -5,9 +5,11 @@ import org.opencv.core.Point
 
 interface IAutoRulePoint {
 
-    suspend  fun autoPoint(hsvMat: Mat):List<Point>
+    suspend fun autoPoint(hsvMat: Mat): List<Point>
 
-    fun getTag():String
+    fun getTag(): String
 
-
+    fun boundaryMinDistance(): Int {
+        return 0
+    }
 }

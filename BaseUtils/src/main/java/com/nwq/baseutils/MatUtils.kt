@@ -1,7 +1,6 @@
 package com.nwq.baseutils
 
 import android.graphics.Bitmap
-import android.health.connect.datatypes.units.Length
 import android.util.Log
 import com.nwq.baseobj.CoordinateArea
 import org.opencv.android.Utils
@@ -38,12 +37,14 @@ object MatUtils {
                 // 将位图转换为HSV色彩空间的Mat对象
                 return bitmapToHsvMat(bitmap)
             }
+
             STORAGE_EXTERNAL_TYPE -> {
                 // 从外部存储读取位图，如果失败则返回null
                 val bitmap = FileUtils.readBitmapFromRootImg(fileName) ?: return null
                 // 将位图转换为HSV色彩空间的Mat对象
                 return bitmapToHsvMat(bitmap)
             }
+
             else -> {
                 // 对于不支持的存储类型，返回null
                 return null
@@ -132,7 +133,25 @@ object MatUtils {
     }
 
 
-    //通过传入的这些参数对一张图进行得到一张二值化的图,然后对二值化的图像获取轮廓，进行腐蚀操作，然后获取角点坐标并返回
+    /**
+     * 检测图像中的角点
+     *
+     * 该函数通过将图像转换到HSV颜色空间，并根据指定的HSV范围进行二值化，随后使用轮廓检测和腐蚀运算来识别和提取角点
+     * 主要应用于计算机视觉任务中，用于识别图像中的关键点
+     *
+     * @param srcMat 输入的图像矩阵，代表原始图像
+     * @param minH HSV中色调的最小值
+     * @param maxH HSV中色调的最大值
+     * @param minS HSV中饱和度的最小值
+     * @param maxS HSV中饱和度的最大值
+     * @param minV HSV中明度的最小值
+     * @param maxV HSV中明度的最大值
+     * @param boundaryMinDistance 边界最小距离，用于过滤靠近图像边界的角点，默认为0
+     * @param digits 腐蚀运算核大小，默认为3
+     * @return 返回检测到的角点列表
+     *
+     * 注意：该函数依赖于OpenCV库，用于图像处理操作
+     */
     fun getCornerPoint(
         srcMat: Mat,
         minH: Int,
@@ -141,6 +160,7 @@ object MatUtils {
         maxS: Int,
         minV: Int,
         maxV: Int,
+        boundaryMinDistance: Int = 0,
         digits: Int = 3 // 腐蚀运算核大小
     ): List<Point> {
         // 确保传入的参数合法
@@ -195,6 +215,11 @@ object MatUtils {
             cornerPoints.add(Point(data[0], data[1]))
         }
 
+        // 如果指定了边界最小距离，则进一步过滤角点
+        if (boundaryMinDistance > 0) {
+            filterPoints(cornerPoints, srcMat, boundaryMinDistance)
+        }
+
         // 释放内存
         hsvMat.release()
         binaryMat.release()
@@ -203,6 +228,63 @@ object MatUtils {
         hierarchy.release()
 
         return cornerPoints
+    }
+
+
+    /**
+     * 根据给定的距离阈值过滤掉矩阵外的点
+     * 此函数的目的是从一个点列表中筛选出那些与矩阵边界距离大于等于指定阈值的点
+     * 这在需要对矩阵内部的点进行分析或处理，同时忽略靠近边界的点时特别有用
+     *
+     * @param points 点列表，表示待过滤的点集合
+     * @param mat 图像矩阵，提供了矩阵的宽度和高度信息，用于确定边界
+     * @param distance 距离阈值，定义了点到矩阵边界的最小距离
+     * @return 过滤后的点列表，仅包含与矩阵边界距离大于等于指定阈值的点
+     */
+    fun filterPoints(points: List<Point>, mat: Mat, distance: Int): List<Point> {
+        // 定义矩阵的左边界
+        val left = 0
+        // 定义矩阵的右边界，即矩阵的宽度
+        val right = mat.cols()
+        // 定义矩阵的上边界
+        val top = 0
+        // 定义矩阵的下边界，即矩阵的高度
+        val bottom = mat.rows()
+        // 过滤点列表，保留与边界距离大于等于指定阈值的点
+        return points.filter { point -> isPointWithinDistance(left, right, top, bottom, point, distance) }
+    }
+
+
+    /**
+     * 判断点是否在指定区域范围内
+     *
+     * 该函数用于检查一个点是否位于一个由左、右、上、下边界定义的矩形区域之内
+     * 点的位置由其坐标（x, y）确定，而矩形区域则由其四周边界的坐标定义
+     * 此外，函数还考虑了一个距离因素，用于扩展或收缩矩形区域的边界
+     * 这对于在一定容差范围内判断点是否接近矩形区域边缘很有用
+     *
+     * @param left 矩形区域的左边界
+     * @param right 矩形区域的右边界
+     * @param top 矩形区域的上边界
+     * @param bottom 矩形区域的下边界
+     * @param point 待检测的点
+     * @param distance 扩展或收缩矩形区域边界的距离
+     * @return 如果点在扩展后的矩形区域内，则返回true；否则返回false
+     */
+    fun isPointWithinDistance(
+        left: Int,
+        right: Int,
+        top: Int,
+        bottom: Int,
+        point: Point,
+        distance: Int
+    ): Boolean {
+        // 判断点是否在扩展后的矩形区域内
+        val extendedLeft = left + distance
+        val extendedRight = right - distance
+        val extendedTop = top + distance
+        val extendedBottom = bottom - distance
+        return point.x.toInt() in extendedLeft..extendedRight && point.y.toInt() in extendedTop..extendedBottom
     }
 
 

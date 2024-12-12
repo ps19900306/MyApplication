@@ -1,5 +1,7 @@
 package com.nwq.opencv.auto_point_impl
 
+import com.nwq.baseobj.CoordinateArea
+import com.nwq.baseobj.CoordinatePoint
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.IAutoRulePoint
 import com.nwq.opencv.hsv.HSVRule
@@ -21,7 +23,8 @@ abstract class AutoPointImpl() : IAutoRulePoint {
                     it.minS,
                     it.maxS,
                     it.minV,
-                    it.maxV
+                    it.maxV,
+                    boundaryMinDistance(),
                 )
             pointList.addAll(list)
         }
@@ -63,10 +66,9 @@ abstract class AutoPointImpl() : IAutoRulePoint {
     }
 
 
-    data class Point(val x: Int, val y: Int)
-    data class Area(val x: Int, val y: Int, val width: Int, val height: Int)
 
-    fun isPointWithinDistance(point: Point, area: Area, distance: Int): Boolean {
+
+    fun isPointWithinDistance(point: CoordinatePoint, area: CoordinateArea, distance: Int): Boolean {
         // 计算矩形边界
         val left = area.x
         val right = area.x + area.width
@@ -82,21 +84,5 @@ abstract class AutoPointImpl() : IAutoRulePoint {
         return point.x in extendedLeft..extendedRight && point.y in extendedTop..extendedBottom
     }
 
-    fun filterPoints(points: List<Point>, area: Area, distance: Int): List<Point> {
-        return points.filter { point -> !isPointWithinDistance(point, area, distance) }
-    }
 
-    fun main() {
-        val points = listOf(
-            Point(1, 1),
-            Point(5, 5),
-            Point(10, 10),
-            Point(15, 15)
-        )
-        val area = Area(5, 5, 10, 10)
-        val distance = 3
-
-        val filteredPoints = filterPoints(points, area, distance)
-        println(filteredPoints)
-    }
 }
