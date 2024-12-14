@@ -49,6 +49,15 @@ class AutoFindRuleModel : ViewModel() {
     private var selectMat: Mat? = null   //hsvMat图 是已经裁剪了的
     private var clickArea: CoordinateArea? = null
     private var hSVRuleList: MutableList<HSVRule> = mutableListOf()
+
+
+    public fun intBaseData(bitmap: Bitmap, area: CoordinateArea){
+        srcBitmap=bitmap
+        selectArea=area
+        selectMat = MatUtils.bitmapToMat(bitmap,area)
+    }
+
+
     private fun clearHSVRuleList() {
         hSVRuleList.clear()
     }
@@ -90,8 +99,6 @@ class AutoFindRuleModel : ViewModel() {
         } else {
             mAutoRulePointDao.findByKeyTagLike(query) // 如果输入不为空，进行模糊查询
         }
-    }.onEach {
-
     }.flowOn(Dispatchers.IO)
 
     fun updateSearchStr(string: String) {
@@ -112,7 +119,7 @@ class AutoFindRuleModel : ViewModel() {
     private var clickKeyTag: String? = null // 未设置则使用keyTag
 
 
-    fun performAutoFindRule() {
+    fun performAutoFindRule(iAutoRulePoint:IAutoRulePoint) {
         val mat = selectMat ?: return
         val bitmap = srcBitmap ?: return
         var area = selectArea ?: return
@@ -120,18 +127,22 @@ class AutoFindRuleModel : ViewModel() {
             T.show("请先设置描述")
             return
         }
+
+
+
         viewModelScope.launch(Dispatchers.IO) {
             val record = IdentifyDatabase.getDatabase().findTargetRecordDao().findByKeyTag(keyTag!!)
             if (record != null) {
                 T.show("已存在该描述")
             } else {
-                val pointList = mutableListOf<Point>()
-                hSVRuleList.forEach {
-                    val list = MatUtils.getCornerPoint(
-                        mat, it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV
-                    )
-                    pointList.addAll(list)
-                }
+                val pointList =  iAutoRulePoint.autoPoint(mat)
+
+//                hSVRuleList.forEach {
+//                    val list = MatUtils.getCornerPoint(
+//                        mat, it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV
+//                    )
+//                    pointList.addAll(list)
+//                }
                 //这里获取到的点坐标是基于mat的
                 buildRgbFindTarget(pointList)
                 buildHsvFindTarget(pointList)

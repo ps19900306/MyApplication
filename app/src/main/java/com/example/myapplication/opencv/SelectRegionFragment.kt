@@ -17,11 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentSelectRegionBinding
+import com.luck.picture.lib.utils.ToastUtils
 import com.nwq.adapter.CheckKeyText
 import com.nwq.adapter.KeyTextAdapter
 import com.nwq.adapter.KeyTextCheckAdapter
 import com.nwq.adapter.ResStrKeyText
 import com.nwq.base.BaseFragment
+import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.opencv.IAutoRulePoint
 import kotlinx.coroutines.launch
@@ -136,9 +138,13 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
 
 
     private fun selectCriticalArea() {
+        if (openCvPreviewModel.srcBitmap == null) {
+            T.show("请先选择原始图片")
+            return
+        }
         lifecycleScope.launch {
             val rectArea = mTouchOptModel.getRectArea()
-            openCvPreviewModel
+            autoFindRuleModel.intBaseData(openCvPreviewModel.srcBitmap!!, rectArea)
         }
     }
 

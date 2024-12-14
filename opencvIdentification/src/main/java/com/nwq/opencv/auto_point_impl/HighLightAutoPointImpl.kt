@@ -34,7 +34,7 @@ class HighLightAutoPointImpl() : IAutoRulePoint {
         return 3
     }
 
-    override suspend fun autoPoint(hsvMat: Mat): List<Point> {
+    override suspend fun autoPoint(hsvMat: Mat): MutableList<Point> {
         val pointList = mutableListOf<Point>()
         mHighSvRule.forEach {
             val list =

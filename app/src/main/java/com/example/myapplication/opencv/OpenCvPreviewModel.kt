@@ -19,8 +19,8 @@ class OpenCvPreviewModel : ViewModel() {
 
     private val TAG = OpenCvPreviewModel::class.java.simpleName
 
-    // 图片
-    private var srcBitmap: Bitmap? = null;
+    // 原始图片
+    public var srcBitmap: Bitmap? = null;
 
     //
     private var srcMat: Mat? = null;

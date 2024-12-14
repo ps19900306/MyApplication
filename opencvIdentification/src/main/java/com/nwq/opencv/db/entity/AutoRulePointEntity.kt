@@ -22,7 +22,7 @@ data class AutoRulePointEntity(
     var prList: List<HSVRule>,
 ) : IAutoRulePoint {
 
-    override suspend fun autoPoint(hsvMat: Mat): List<Point> {
+    override suspend fun autoPoint(hsvMat: Mat): MutableList<Point> {
         val pointList = mutableListOf<Point>()
         prList.forEach {
             val list =

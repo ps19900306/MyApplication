@@ -288,7 +288,7 @@ object MatUtils {
     }
 
 
-    fun bitmapToMat(bitmap: Bitmap): Mat {
+    fun bitmapToMat(bitmap: Bitmap,coordinateArea: CoordinateArea? =null): Mat {
         // 创建一个 Mat 对象
         val mat = Mat()
         // 使用 OpenCV 的 Utils 类将 Bitmap 转换为 Mat
@@ -299,17 +299,26 @@ object MatUtils {
             Imgproc.cvtColor(mat, rgbMat, Imgproc.COLOR_RGBA2RGB)
             return rgbMat
         }
-        return mat
+        return  if (coordinateArea!=null){
+            cropMat(mat,coordinateArea)
+        }else{
+            mat
+        }
     }
 
-    fun bitmapToHsvMat(bitmap: Bitmap): Mat {
+
+    fun bitmapToHsvMat(bitmap: Bitmap,coordinateArea: CoordinateArea? =null): Mat {
         // 将 Bitmap 转换为 Mat
         val mat = bitmapToMat(bitmap)
         // 创建一个 HSV 格式的 Mat 对象
         val hsvMat = Mat(mat.size(), CvType.CV_8UC3)
         // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
         Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_RGB2HSV)
-        return hsvMat
+        return  if (coordinateArea!=null){
+            cropMat(hsvMat,coordinateArea)
+        }else{
+            hsvMat
+        }
     }
 
 

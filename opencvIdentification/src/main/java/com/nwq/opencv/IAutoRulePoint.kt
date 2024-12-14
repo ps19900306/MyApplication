@@ -5,7 +5,7 @@ import org.opencv.core.Point
 
 interface IAutoRulePoint {
 
-    suspend fun autoPoint(hsvMat: Mat): List<Point>
+    suspend fun autoPoint(hsvMat: Mat): MutableList<Point>
 
     fun getTag(): String
 
