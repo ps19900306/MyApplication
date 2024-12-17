@@ -44,7 +44,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class MainActivity : BaseActivity<ActivityPreviewImgBinding>() {
+
     private val TAG = PreviewImgActivity::class.java.simpleName
+
     private val viewModel by viewModels<OpenCvPreviewModel>()
     private val mTouchOptModel by viewModels<TouchOptModel>()
     override fun createBinding(inflater: LayoutInflater): ActivityPreviewImgBinding {

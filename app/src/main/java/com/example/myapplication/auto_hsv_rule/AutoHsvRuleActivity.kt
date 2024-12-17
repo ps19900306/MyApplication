@@ -1,4 +1,4 @@
-package com.example.myapplication.opencv
+package com.example.myapplication.auto_hsv_rule
 
 import com.nwq.base.BaseActivity
 import android.Manifest
@@ -18,7 +18,9 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.myapplication.databinding.ActivityPreviewImgBinding
+import com.example.myapplication.databinding.ActivityAutoHsvRuleBinding
+import com.example.myapplication.opencv.OpenCvPreviewModel
+import com.example.myapplication.opencv.TouchOptModel
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
@@ -29,12 +31,13 @@ import com.nwq.baseobj.CoordinatePoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
-    private val TAG = PreviewImgActivity::class.java.simpleName
+class AutoHsvRuleActivity :BaseActivity<ActivityAutoHsvRuleBinding>() {
+
+    private val TAG = AutoHsvRuleActivity::class.java.simpleName
     private val viewModel by viewModels<OpenCvPreviewModel>()
     private val mTouchOptModel by viewModels<TouchOptModel>()
-    override fun createBinding(inflater: LayoutInflater): ActivityPreviewImgBinding {
-        return ActivityPreviewImgBinding.inflate(layoutInflater)
+    override fun createBinding(inflater: LayoutInflater): ActivityAutoHsvRuleBinding {
+        return ActivityAutoHsvRuleBinding.inflate(layoutInflater)
     }
 
     lateinit var controller: WindowInsetsControllerCompat
@@ -105,14 +108,14 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 //            SetSHVFilterDialog().show(supportFragmentManager, "SHV");
 //        }
 
-        binding.sbHNearby.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewModel.upDataHFlow(progress);
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+//        binding.sbHNearby.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+//            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+//                viewModel.upDataHFlow(progress);
+//            }
+//
+//            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+//            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+//        })
 
     }
 
