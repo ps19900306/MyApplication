@@ -1,16 +1,15 @@
 package com.example.myapplication.auto_hsv_rule
 
-import com.nwq.base.BaseActivity
 import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -25,11 +24,13 @@ import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.nwq.base.BaseActivity
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinateLine
 import com.nwq.baseobj.CoordinatePoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+
 
 class AutoHsvRuleActivity :BaseActivity<ActivityAutoHsvRuleBinding>() {
 
@@ -147,6 +148,15 @@ class AutoHsvRuleActivity :BaseActivity<ActivityAutoHsvRuleBinding>() {
             })
     }
 
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            // 处理回车键的按下事件
+            Log.d("KeyEvent", "Enter key pressed")
+            return true // 如果你处理了事件，不需要进一步传播
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 
     /**
      * 这个是进行点和区域选取的
