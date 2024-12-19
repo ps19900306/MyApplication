@@ -3,6 +3,7 @@ package com.nwq.opencv.db.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.nwq.opencv.db.entity.AutoRulePointEntity
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,14 @@ interface AutoRulePointDao {
     // 删除指定的实体
     @Delete
     fun delete(entity: AutoRulePointEntity)
+
+    // 删除指定的实体
+    @Delete
+    fun delete(entity: List<AutoRulePointEntity>)
+
+    // 更新指定的实体
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun update(entity: AutoRulePointEntity)
 
     // 插入新的实体
     @Insert

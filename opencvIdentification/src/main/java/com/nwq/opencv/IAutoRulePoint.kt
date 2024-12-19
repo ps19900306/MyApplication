@@ -23,5 +23,12 @@ interface IAutoRulePoint {
         return null
     }
 
+    fun getIsSelected(isSelected:Boolean): Boolean {
+        return false
+    }
+
+    fun setIsSelected(isSelected:Boolean){
+
+    }
 
 }

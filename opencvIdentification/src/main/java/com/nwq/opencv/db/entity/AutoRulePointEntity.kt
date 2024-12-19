@@ -1,6 +1,7 @@
 package com.nwq.opencv.db.entity
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseutils.MatUtils
@@ -44,5 +45,16 @@ data class AutoRulePointEntity(
 
     override fun getTag(): String {
         return keyTag
+    }
+
+    @Ignore
+    private var mSelected = false
+
+    override fun getIsSelected(isSelected: Boolean): Boolean {
+        return mSelected
+    }
+
+    override fun setIsSelected(isSelected: Boolean) {
+        mSelected = isSelected
     }
 }
