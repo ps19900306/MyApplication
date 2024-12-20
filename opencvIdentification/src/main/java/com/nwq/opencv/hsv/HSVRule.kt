@@ -1,6 +1,8 @@
 package com.nwq.opencv.hsv
 
 
+
+
 open class HSVRule(
     var minH: Int,
     var maxH: Int,
@@ -41,5 +43,16 @@ open class HSVRule(
         return h in minH..maxH && s in minS..maxS && v in minV..maxV
     }
 
+    // 这个字段将不会被序列化和反序列化
+    @Transient
+    private var mSelected = false
+
+    fun getIsSelected(): Boolean {
+        return mSelected
+    }
+
+     fun setIsSelected(isSelected: Boolean) {
+        mSelected = isSelected
+    }
 
 }

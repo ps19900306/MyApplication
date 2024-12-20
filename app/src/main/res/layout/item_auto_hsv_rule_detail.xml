@@ -10,15 +10,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <ImageView
-        android:id="@+id/srcImg"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
-
     <TextView
         android:id="@+id/tv"
+        android:gravity="center_vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:textSize="15sp"
         tools:text="TextView" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/colorList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </LinearLayout>

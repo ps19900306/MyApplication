@@ -4,19 +4,22 @@ package com.example.myapplication.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.databinding.ItemAutoHsvRuleDetailBinding
 import com.example.myapplication.databinding.ItemAutoHsvRuleListBinding
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.opencv.IAutoRulePoint
+import com.nwq.opencv.hsv.HSVRule
 
 
-class AutoHsvRuleAdapter(val isSingCheck:Boolean = false) : RecyclerView.Adapter<AutoHsvRuleAdapter.ViewHolder>() {
+class HsvRuleAdapter(val isSingCheck: Boolean = false) :
+    RecyclerView.Adapter<HsvRuleAdapter.ViewHolder>() {
 
-    private val list = mutableListOf<IAutoRulePoint>()
+    private val list = mutableListOf<HSVRule>()
     private var lastSelectPoint = -1;
-    private var itemClickListener:CallBack<IAutoRulePoint?>?=null
+    private var itemClickListener: CallBack<IAutoRulePoint?>? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemAutoHsvRuleListBinding.inflate(
+        val binding = ItemAutoHsvRuleDetailBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -24,11 +27,11 @@ class AutoHsvRuleAdapter(val isSingCheck:Boolean = false) : RecyclerView.Adapter
         return ViewHolder(binding)
     }
 
-    fun setItemClickListener(itemClickListener:CallBack<IAutoRulePoint?>){
+    fun setItemClickListener(itemClickListener: CallBack<IAutoRulePoint?>) {
         this.itemClickListener = itemClickListener
     }
 
-    fun updateData(list: List<IAutoRulePoint>) {
+    fun updateData(list: List<HSVRule>) {
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
@@ -46,24 +49,25 @@ class AutoHsvRuleAdapter(val isSingCheck:Boolean = false) : RecyclerView.Adapter
 
 
     inner class ViewHolder(
-        val binding: ItemAutoHsvRuleListBinding,
+        val binding: ItemAutoHsvRuleDetailBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         private var mIAutoRulePoint: IAutoRulePoint? = null
+        private var mColorAdapter: ColorAdapter? = null
 
         init {
             binding.cBox.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (isSingCheck){
-                    if (lastSelectPoint==bindingAdapterPosition){
+                if (isSingCheck) {
+                    if (lastSelectPoint == bindingAdapterPosition) {
                         mIAutoRulePoint?.setIsSelected(isChecked)
-                    }else{
+                    } else {
                         list.getOrNull(lastSelectPoint)?.let {
                             it.setIsSelected(false)
                             notifyItemChanged(lastSelectPoint)
                         }
                         mIAutoRulePoint?.setIsSelected(true)
-                        lastSelectPoint=bindingAdapterPosition
+                        lastSelectPoint = bindingAdapterPosition
                     }
-                }else{
+                } else {
                     mIAutoRulePoint?.setIsSelected(isChecked)
                 }
             }
@@ -75,12 +79,12 @@ class AutoHsvRuleAdapter(val isSingCheck:Boolean = false) : RecyclerView.Adapter
 
         }
 
-        fun bindData(item: IAutoRulePoint) {
+        fun bindData(item: HSVRule) {
             binding.cBox.isChecked = item.getIsSelected()
-            binding.tv.text = item.getTag()
-            item.getStandardBitmap()?.let {
-                binding.srcImg.setImageBitmap(it)
-            }
+//            binding.tv.text = item.getTag()
+//            item.getStandardBitmap()?.let {
+//                binding.srcImg.setImageBitmap(it)
+//            }
         }
 
     }
