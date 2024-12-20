@@ -17,6 +17,10 @@ interface AutoRulePointDao {
     fun findByKeyTag(keyTag: String): AutoRulePointEntity?
 
     // 根据 keyTag 查询
+    @Query("SELECT * FROM auto_rule_point WHERE keyTag = :keyTag")
+    fun findByKeyTagFlow(keyTag: String): Flow<AutoRulePointEntity>?
+
+    // 根据 keyTag 查询
     @Query("SELECT * FROM auto_rule_point WHERE id = :id")
     fun findByKeyId(id: Long): AutoRulePointEntity?
 

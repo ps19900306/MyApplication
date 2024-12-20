@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/autoHsvRuleListFragment"
+    app:startDestination="@+id/selectRegionFragment">
+
+
+    <fragment
+        android:id="@+id/autoHsvRuleListFragment"
+        android:name="com.example.myapplication.auto_hsv_rule.AutoHsvRuleListFragment"
+        android:label="AutoHsvRuleListFragment"
+        tools:layout="@layout/fragment_auto_hsv_rule_list">
+        <action
+            android:id="@+id/action_autoHsvRuleListFragment_to_autoHsvRuleCreateFragment"
+            app:destination="@id/autoHsvRuleCreateFragment" />
+        <action
+            android:id="@+id/action_autoHsvRuleListFragment_to_autoHsvRuleDetailFragment"
+            app:destination="@id/autoHsvRuleDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/autoHsvRuleCreateFragment"
+        android:name="com.example.myapplication.auto_hsv_rule.AutoHsvRuleCreateFragment"
+        android:label="AutoHsvRuleCreateFragment"
+        tools:layout="@layout/fragment_auto_hsv_rule_create">
+        <action
+            android:id="@+id/action_autoHsvRuleCreateFragment_to_autoHsvRuleDetailFragment"
+            app:destination="@id/autoHsvRuleDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/autoHsvRuleDetailFragment"
+        android:name="com.example.myapplication.auto_hsv_rule.AutoHsvRuleDetailFragment"
+        android:label="AutoHsvRuleDetailFragment"
+        tools:layout="@layout/fragment_auto_hsv_rule_detail">
+        <argument
+            android:name="autoHsvRuleTag"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
+
+</navigation>

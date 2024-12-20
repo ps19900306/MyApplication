@@ -5,22 +5,34 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.ItemAutoHsvRuleListBinding
+import com.nwq.baseutils.singleClick
+import com.nwq.callback.CallBack
 import com.nwq.opencv.IAutoRulePoint
+import com.nwq.opencv.db.entity.FindTargetRecord
 
 
-class AutoHsvRuleAdapter : RecyclerView.Adapter<AutoHsvRuleAdapter.ViewHolder>() {
+class AutoHsvRuleAdapter(val isSingCheck:Boolean = false) : RecyclerView.Adapter<AutoHsvRuleAdapter.ViewHolder>() {
 
     private val list = mutableListOf<IAutoRulePoint>()
-    private val mSelectList = mutableListOf<IAutoRulePoint>()
-    private val isSingCheck = false
+    private var lastSelectPoint = -1;
+    private var itemClickListener:CallBack<IAutoRulePoint?>?=null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemAutoHsvRuleListBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
+        return ViewHolder(binding)
+    }
 
-        return ViewHolder(binding, mSelectList, isSingCheck)
+    fun setItemClickListener(itemClickListener:CallBack<IAutoRulePoint?>){
+        this.itemClickListener = itemClickListener
+    }
+
+    fun updateData(list: List<IAutoRulePoint>) {
+        this.list.clear()
+        this.list.addAll(list)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
@@ -36,23 +48,40 @@ class AutoHsvRuleAdapter : RecyclerView.Adapter<AutoHsvRuleAdapter.ViewHolder>()
 
     inner class ViewHolder(
         val binding: ItemAutoHsvRuleListBinding,
-        val selectList: MutableList<IAutoRulePoint>,
-        val isSingCheck: Boolean,
     ) : RecyclerView.ViewHolder(binding.root) {
         private var mIAutoRulePoint: IAutoRulePoint? = null
 
         init {
             binding.cBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isSingCheck){
-
+                    if (lastSelectPoint==bindingAdapterPosition){
+                        mIAutoRulePoint?.setIsSelected(isChecked)
+                    }else{
+                        list.getOrNull(lastSelectPoint)?.let {
+                            it.setIsSelected(false)
+                            notifyItemChanged(lastSelectPoint)
+                        }
+                        mIAutoRulePoint?.setIsSelected(true)
+                        lastSelectPoint=bindingAdapterPosition
+                    }
                 }else{
                     mIAutoRulePoint?.setIsSelected(isChecked)
                 }
             }
+
+            binding.root.singleClick {
+                itemClickListener?.onCallBack(mIAutoRulePoint)
+            }
+
+
         }
 
         fun bindData(item: IAutoRulePoint) {
-
+            binding.cBox.isChecked = item.getIsSelected()
+            binding.tv.text = item.getTag()
+            item.getStandardBitmap()?.let {
+                binding.srcImg.setImageBitmap(it)
+            }
         }
 
     }

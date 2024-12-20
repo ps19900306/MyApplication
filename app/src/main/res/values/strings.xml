@@ -8,6 +8,8 @@
     <string name="previous">Previous</string>
 
     <string name="delete">删除</string>
+    <string name="delete_select">删除选中</string>
+    <string name="delete_all">删除全部</string>
     <string name="delete_point">删除点</string>
     <string name="boundary">边界</string>
     <string name="expand">展开</string>

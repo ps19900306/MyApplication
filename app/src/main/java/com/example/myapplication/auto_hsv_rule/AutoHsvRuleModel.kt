@@ -2,14 +2,16 @@ package com.example.myapplication.auto_hsv_rule
 
 import androidx.lifecycle.ViewModel
 import com.nwq.opencv.db.IdentifyDatabase
+import com.nwq.opencv.db.entity.AutoRulePointEntity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 
-class AutoHsvRuleModel: ViewModel() {
+class AutoHsvRuleModel : ViewModel() {
     private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 
     private val mAutoRulePointDao = IdentifyDatabase.getDatabase().autoRulePointDao()
@@ -27,5 +29,7 @@ class AutoHsvRuleModel: ViewModel() {
         queryFlow.value = string
     }
 
-
+    fun getByTagFlow(tag: String): Flow<AutoRulePointEntity>? {
+        return mAutoRulePointDao.findByKeyTagFlow(tag);
+    }
 }

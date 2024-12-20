@@ -50,7 +50,7 @@ data class AutoRulePointEntity(
     @Ignore
     private var mSelected = false
 
-    override fun getIsSelected(isSelected: Boolean): Boolean {
+    override fun getIsSelected(): Boolean {
         return mSelected
     }
 
