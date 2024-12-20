@@ -55,4 +55,9 @@ open class HSVRule(
         mSelected = isSelected
     }
 
+    override fun toString(): String {
+        return "HSVRule(minH=$minH, maxH=$maxH, minS=$minS, maxS=$maxS, minV=$minV, maxV=$maxV)"
+    }
+
+
 }

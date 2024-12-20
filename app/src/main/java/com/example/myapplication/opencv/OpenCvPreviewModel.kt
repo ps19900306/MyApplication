@@ -3,8 +3,9 @@ package com.example.myapplication.opencv
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.data.ColorItem
+import com.nwq.data.ColorItem
 import com.nwq.baseutils.ByteToIntUtils
+import com.nwq.baseutils.HsvRuleUtils
 import com.nwq.baseutils.MatUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -120,21 +121,7 @@ class OpenCvPreviewModel : ViewModel() {
         minV: Int,
         maxV: Int
     ) {
-        val list = mutableListOf<ColorItem>()
-        // 生成所有组合
-        list.add(ColorItem(floatArrayOf(minH.toFloat(), maxS.toFloat(), maxV.toFloat())))
-        list.add(ColorItem(floatArrayOf(maxH.toFloat(), maxS.toFloat(), maxV.toFloat())))
-        list.add(ColorItem(floatArrayOf(minH.toFloat(), minS.toFloat(), maxV.toFloat())))
-        list.add(ColorItem(floatArrayOf(maxH.toFloat(), minS.toFloat(), maxV.toFloat())))
-
-        list.add(ColorItem(floatArrayOf(minH.toFloat(), maxS.toFloat(), minV.toFloat())))
-        list.add(ColorItem(floatArrayOf(maxH.toFloat(), maxS.toFloat(), minV.toFloat())))
-
-        list.add(ColorItem(floatArrayOf(minH.toFloat(), minS.toFloat(), minV.toFloat())))
-        list.add(ColorItem(floatArrayOf(maxH.toFloat(), minS.toFloat(), minV.toFloat())))
-
-
-        colorsList.value = list
+        colorsList.value = HsvRuleUtils.getColorsList(minH, maxH, minS, maxS, minV, maxV)
     }
 
 

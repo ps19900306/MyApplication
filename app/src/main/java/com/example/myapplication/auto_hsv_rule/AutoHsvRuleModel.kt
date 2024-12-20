@@ -3,6 +3,7 @@ package com.example.myapplication.auto_hsv_rule
 import androidx.lifecycle.ViewModel
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.AutoRulePointEntity
+import com.nwq.opencv.hsv.HSVRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +16,7 @@ class AutoHsvRuleModel : ViewModel() {
     private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 
     private val mAutoRulePointDao = IdentifyDatabase.getDatabase().autoRulePointDao()
+    var nowHsv: HSVRule? = null
 
     // 合并查询逻辑
     val resultsFlow = queryFlow.debounce(1000).flatMapLatest { query ->
@@ -32,4 +34,6 @@ class AutoHsvRuleModel : ViewModel() {
     fun getByTagFlow(tag: String): Flow<AutoRulePointEntity>? {
         return mAutoRulePointDao.findByKeyTagFlow(tag);
     }
+
+
 }

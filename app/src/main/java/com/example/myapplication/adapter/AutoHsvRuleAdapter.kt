@@ -8,6 +8,7 @@ import com.example.myapplication.databinding.ItemAutoHsvRuleListBinding
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.opencv.IAutoRulePoint
+import com.nwq.opencv.hsv.HSVRule
 
 
 class AutoHsvRuleAdapter(val isSingCheck:Boolean = false) : RecyclerView.Adapter<AutoHsvRuleAdapter.ViewHolder>() {
@@ -23,6 +24,11 @@ class AutoHsvRuleAdapter(val isSingCheck:Boolean = false) : RecyclerView.Adapter
         )
         return ViewHolder(binding)
     }
+
+    fun getSelectList(): List<IAutoRulePoint> {
+        return list.filter { it.getIsSelected() }
+    }
+
 
     fun setItemClickListener(itemClickListener:CallBack<IAutoRulePoint?>){
         this.itemClickListener = itemClickListener

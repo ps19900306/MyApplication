@@ -1,4 +1,4 @@
-package com.example.myapplication.opencv
+package com.example.myapplication.auto_hsv_rule
 
 import com.nwq.base.BaseDialogFragment
 import android.text.Editable
@@ -20,9 +20,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class SetSHVFilterDialog(val dGravity: Int = Gravity.CENTER) :
+class ModifyHsvDialog(val dGravity: Int = Gravity.CENTER) :
     BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
-    private val TAG = SetSHVFilterDialog::class.java.simpleName
+    private val TAG = ModifyHsvDialog::class.java.simpleName
     private val viewModel by viewModels<OpenCvPreviewModel>({ requireActivity() })
     override fun createBinding(
         inflater: LayoutInflater,

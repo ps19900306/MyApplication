@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.data.ColorItem
+import com.nwq.data.ColorItem
 
 class ColorAdapter(private val colorList: List<ColorItem>) : RecyclerView.Adapter<ColorAdapter.ColorViewHolder>() {
 

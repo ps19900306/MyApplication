@@ -1,3 +1,3 @@
-package com.example.myapplication.data
+package com.nwq.data
 
 data class ColorItem(val hsv: FloatArray)

@@ -26,6 +26,10 @@ class FindTargetListAdapter(
         mFindTargetListLister = ll
     }
 
+
+
+
+
     fun updateData(list: List<FindTargetRecord>) {
         this.values.clear()
         this.values.addAll(list)
