@@ -16,14 +16,23 @@ import com.example.myapplication.R
 import com.example.myapplication.adapter.ColorAdapter
 import com.example.myapplication.databinding.FragmentSetSHVFilterDialogBinding
 import com.example.myapplication.opencv.OpenCvPreviewModel
+import com.nwq.baseutils.HsvRuleUtils
+import com.nwq.baseutils.singleClick
+import com.nwq.callback.CallBack
+import com.nwq.opencv.hsv.HSVRule
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 
-class ModifyHsvDialog(val dGravity: Int = Gravity.CENTER) :
+class ModifyHsvDialog(val defaultHsv: HSVRule, val callBack: CallBack<HSVRule>) :
     BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
     private val TAG = ModifyHsvDialog::class.java.simpleName
-    private val viewModel by viewModels<OpenCvPreviewModel>({ requireActivity() })
+    private var nowHsv: MutableStateFlow<HSVRule> = MutableStateFlow(defaultHsv).apply {
+        debounce(1000)
+    }
+
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -31,66 +40,78 @@ class ModifyHsvDialog(val dGravity: Int = Gravity.CENTER) :
         return FragmentSetSHVFilterDialogBinding.inflate(inflater)
     }
 
-    override fun getDialogGravity(): Int {
-        return dGravity
-    }
 
     override fun initData() {
         super.initData()
-        binding.etHueMin.setText("${viewModel.getMinH()}")
-        binding.etHueMax.setText("${viewModel.getMaxH()}")
-        binding.etSaturationMin.setText("${viewModel.getMinS()}")
-        binding.etSaturationMax.setText("${viewModel.getMaxS()}")
-        binding.etValueMin.setText("${viewModel.getMinV()}")
-        binding.etValueMax.setText("${viewModel.getMaxV()}")
+        binding.etHueMin.setText("${defaultHsv.minH}")
+        binding.etHueMax.setText("${defaultHsv.maxH}")
+        binding.etSaturationMin.setText("${defaultHsv.minS}")
+        binding.etSaturationMax.setText("${defaultHsv.maxS}")
+        binding.etValueMin.setText("${defaultHsv.minV}")
+        binding.etValueMax.setText("${defaultHsv.maxV}")
 
-        binding.sbHueMin.progress = viewModel.getMinH()
-        binding.sbHueMax.progress = viewModel.getMaxH()
-        binding.sbSaturationMin.progress = viewModel.getMinS()
-        binding.sbSaturationMax.progress = viewModel.getMaxS()
-        binding.sbValueMin.progress = viewModel.getMinV()
-        binding.sbValueMax.progress = viewModel.getMaxV()
+        binding.sbHueMin.progress = defaultHsv.minH
+        binding.sbHueMax.progress = defaultHsv.maxH
+        binding.sbSaturationMin.progress = defaultHsv.minS
+        binding.sbSaturationMax.progress = defaultHsv.maxS
+        binding.sbValueMin.progress = defaultHsv.minV
+        binding.sbValueMax.progress = defaultHsv.maxV
+        binding.saveBtn.singleClick {
+            callBack.onCallBack(nowHsv.value)
+            dismissDialog()
+        }
 
-
-        setupSeekBarAndEditText(R.id.sb_hue_min, R.id.et_hue_min, 0, 180, viewModel::upDataMinHFlow)
-        setupSeekBarAndEditText(R.id.sb_hue_max, R.id.et_hue_max, 0, 180, viewModel::upDataMaxHFlow)
+        setupSeekBarAndEditText(R.id.sb_hue_min, R.id.et_hue_min, 0, 180)
+        { i ->
+            nowHsv.value = HSVRule( i, defaultHsv.maxH, defaultHsv.minS, defaultHsv.maxS, defaultHsv.minV, defaultHsv.maxV)
+        }
+        setupSeekBarAndEditText(R.id.sb_hue_max, R.id.et_hue_max, 0, 180)
+        { i ->
+            nowHsv.value = HSVRule( defaultHsv.minH, i, defaultHsv.minS, defaultHsv.maxS, defaultHsv.minV, defaultHsv.maxV)
+        }
         setupSeekBarAndEditText(
             R.id.sb_saturation_min,
             R.id.et_saturation_min,
             0,
             255,
-            viewModel::upDataMinSFlow
-        )
+        ){i->
+            nowHsv.value = HSVRule( defaultHsv.minH, defaultHsv.maxH, i, defaultHsv.maxS, defaultHsv.minV, defaultHsv.maxV)
+        }
         setupSeekBarAndEditText(
             R.id.sb_saturation_max,
             R.id.et_saturation_max,
             0,
             255,
-            viewModel::upDataMaxSFlow
-        )
+        ){i->
+            nowHsv.value = HSVRule( defaultHsv.minH, defaultHsv.maxH, defaultHsv.minS, i, defaultHsv.minV, defaultHsv.maxV)
+        }
         setupSeekBarAndEditText(
             R.id.sb_value_min,
             R.id.et_value_min,
             0,
             255,
-            viewModel::upDataMinVFlow
-        )
+        ){i->
+            nowHsv.value = HSVRule( defaultHsv.minH, defaultHsv.maxH, defaultHsv.minS, defaultHsv.maxS, i, defaultHsv.maxV)
+        }
         setupSeekBarAndEditText(
             R.id.sb_value_max,
             R.id.et_value_max,
             0,
             255,
-            viewModel::upDataMaxVFlow
-        )
+        ){
+            i->
+            nowHsv.value = HSVRule( defaultHsv.minH, defaultHsv.maxH, defaultHsv.minS, defaultHsv.maxS, defaultHsv.minV, i)
+        }
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.colorsList.collectLatest {
-                    binding.recycler.adapter = ColorAdapter(it)
+                nowHsv.collectLatest {
+                    binding.recycler.adapter = ColorAdapter(HsvRuleUtils.getColorsList(it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV))
                 }
             }
         }
     }
+
 
 
     private fun setupSeekBarAndEditText(
