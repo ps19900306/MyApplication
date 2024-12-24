@@ -3,7 +3,6 @@ package com.example.myapplication.find_target
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -12,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.myapplication.adapter.FindTargetListAdapter
 import com.example.myapplication.databinding.FragmentFindTartgetListBinding
-import com.example.myapplication.opencv.OpenCvPreviewModel
 import com.nwq.base.BaseFragment
 import com.nwq.baseutils.runOnUI
 import kotlinx.coroutines.flow.collectLatest
@@ -34,9 +32,9 @@ class FindTargetListFragment : BaseFragment<FragmentFindTartgetListBinding>() {
 
     override fun initData() {
         mAdapter = FindTargetListAdapter()
-        binding.targetRecyclerView.layoutManager =
+        binding.recyclerView.layoutManager =
             androidx.recyclerview.widget.LinearLayoutManager(requireContext())
-        binding.targetRecyclerView.adapter = FindTargetListAdapter()
+        binding.recyclerView.adapter = FindTargetListAdapter()
 
         binding.searchTv.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
