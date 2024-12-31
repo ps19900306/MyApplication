@@ -67,6 +67,10 @@ data class FindTargetImgEntity(
 
     }
 
+    override suspend fun checkVerifyResult(target: CoordinateArea): TargetVerifyResult? {
+        TODO("Not yet implemented")
+    }
+
 
     private suspend fun findTargetBitmap(sourceMat: Mat): CoordinateArea? {
         getTargetMat()?:return null

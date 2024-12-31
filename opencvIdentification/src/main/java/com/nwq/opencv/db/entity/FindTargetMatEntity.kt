@@ -111,6 +111,10 @@ data class FindTargetMatEntity(
 
     }
 
+    override suspend fun checkVerifyResult(target: CoordinateArea): TargetVerifyResult? {
+        TODO("Not yet implemented")
+    }
+
 
     private fun findTargetBitmap(srcMat: Mat): CoordinateArea? {
         // 如果描述信息为空，则返回 null

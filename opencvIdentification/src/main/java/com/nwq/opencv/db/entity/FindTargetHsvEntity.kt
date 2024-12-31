@@ -34,13 +34,11 @@ data class FindTargetHsvEntity(
 
     //点识别使用时候又几个容错
     var errorTolerance: Int = 0,
-) : IFindTarget {
 
     //上一次找到成功时候
-    @Ignore
-    private var lastOffsetX: Int = 0
-    @Ignore
-    private var lastOffsetY: Int = 0
+    var lastOffsetX: Int = 0,
+    var lastOffsetY: Int = 0
+) : IFindTarget {
 
 
     override suspend fun findTarget(): CoordinateArea? {
@@ -55,12 +53,21 @@ data class FindTargetHsvEntity(
 
     }
 
+    override suspend fun checkVerifyResult(target: CoordinateArea): TargetVerifyResult? {
+        TODO("Not yet implemented")
+    }
+
 
     //这里返回的区域是基于整个图标的  找到的位置
     private fun findTargetBitmap(mat: Mat): CoordinateArea? {
         return if (checkImgTask(mat)) {
             if (findArea == null) {
-                CoordinateArea(lastOffsetX, lastOffsetY, targetOriginalArea.width, targetOriginalArea.height)
+                CoordinateArea(
+                    lastOffsetX,
+                    lastOffsetY,
+                    targetOriginalArea.width,
+                    targetOriginalArea.height
+                )
             } else {
                 CoordinateArea(
                     lastOffsetX + findArea!!.x,

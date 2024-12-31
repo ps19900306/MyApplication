@@ -6,14 +6,10 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
-import com.nwq.baseutils.CoordinateUtils
+
 import com.nwq.opencv.IFindTarget
-import com.nwq.opencv.db.converters.CoordinateAreaConverters
-import com.nwq.opencv.db.converters.PointHSVRuleConverters
 import com.nwq.opencv.db.converters.PointRuleConverters
-import com.nwq.opencv.hsv.PointHSVRule
 import com.nwq.opencv.rgb.PointRule
-import org.opencv.core.Mat
 
 
 @Entity(tableName = "find_target_rgb")
@@ -37,15 +33,10 @@ data class FindTargetRgbEntity(
 
     //点识别使用时候又几个容错
     var errorTolerance: Int = 0,
-) : IFindTarget {
-
     //上一次找到成功时候
-    @Ignore
-    private var lastOffsetX: Int = 0
-    @Ignore
-    private var lastOffsetY: Int = 0
-
-
+    var lastOffsetX: Int = 0,
+    var lastOffsetY: Int = 0,
+) : IFindTarget {
 
     override suspend fun findTarget(): CoordinateArea? {
         var bitmap = imgTake.getLastImg() ?: return null
@@ -56,12 +47,21 @@ data class FindTargetRgbEntity(
 
     }
 
+    override suspend fun checkVerifyResult(target: CoordinateArea): TargetVerifyResult {
+        TODO("Not yet implemented")
+    }
+
 
     //这里返回的区域是基于整个图标的
     fun findTargetBitmap(bitmap: Bitmap): CoordinateArea? {
         return if (checkImgTask(bitmap)) {
             if (findArea == null) {
-                CoordinateArea(lastOffsetX, lastOffsetY, targetOriginalArea.width, targetOriginalArea.height)
+                CoordinateArea(
+                    lastOffsetX,
+                    lastOffsetY,
+                    targetOriginalArea.width,
+                    targetOriginalArea.height
+                )
             } else {
                 CoordinateArea(
                     lastOffsetX + findArea!!.x,
@@ -87,7 +87,7 @@ data class FindTargetRgbEntity(
             for (j in areaToCheck.y until areaToCheck.height) {
                 var nowErrorCount = 0
                 prList.forEach lit@{
-                    if (!it.checkIpr(bitmap, i, j)) {
+                    if (!it.checkIpr(bitmap, i - targetOriginalArea.x, j - targetOriginalArea.y)) {
                         nowErrorCount++
                         if (nowErrorCount > errorTolerance) {
                             return@lit  // 从 lambda 表达式中返回
