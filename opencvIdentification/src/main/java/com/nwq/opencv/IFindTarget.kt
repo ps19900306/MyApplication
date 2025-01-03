@@ -13,6 +13,6 @@ interface IFindTarget {
 
     fun release()
 
-    suspend fun checkVerifyResult(target: CoordinateArea): TargetVerifyResult?
+    suspend fun checkVerifyResult(): TargetVerifyResult?
 
 }

@@ -53,7 +53,7 @@ data class FindTargetHsvEntity(
 
     }
 
-    override suspend fun checkVerifyResult(target: CoordinateArea): TargetVerifyResult? {
+    override suspend fun checkVerifyResult(): TargetVerifyResult? {
         TODO("Not yet implemented")
     }
 

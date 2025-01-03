@@ -17,7 +17,6 @@ import com.nwq.opencv.db.converters.LongListConverters
 data class LogicEntity(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
-
     var keyTag: String = "",  //描述此逻辑单元用来做什么的
     var findTag: String = "", //判断模块的Tag
     var clickKeyTag: String? = null, //点击事件的Tag
