@@ -6,7 +6,9 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.CoordinateUtils
+import com.nwq.opencv.FindTargetType
 import com.nwq.opencv.IFindTarget
+import com.nwq.opencv.data.PointVerifyResult
 import com.nwq.opencv.db.converters.CoordinateAreaConverters
 import com.nwq.opencv.db.converters.PointHSVRuleConverters
 import com.nwq.opencv.hsv.PointHSVRule
@@ -32,6 +34,7 @@ data class FindTargetHsvEntity(
     @TypeConverters(PointHSVRuleConverters::class)
     var prList: List<PointHSVRule>,
 
+
     //点识别使用时候又几个容错
     var errorTolerance: Int = 0,
 
@@ -53,31 +56,114 @@ data class FindTargetHsvEntity(
 
     }
 
+    /**
+     * 检查验证结果的 suspend 函数
+     * 该函数用于检查当前图像与目标模板之间的匹配程度
+     * 它通过比较图像中每个可能的位置来寻找最佳匹配结果
+     *
+     * @return 如果找到匹配的结果，则返回 TargetVerifyResult 对象，否则返回 null
+     */
     override suspend fun checkVerifyResult(): TargetVerifyResult? {
-        TODO("Not yet implemented")
+        // 计算错误容忍度，每5个点允许有一个错误
+        val errorT = prList.size / 5
+        // 初始化最后一个验证结果为 null
+        var last: TargetVerifyResult? = null
+        // 获取处理后的 HSV Mat 对象，如果获取失败则直接返回 null
+        val srcMat = imgTake.getHsvMat(findArea) ?: return null
+        // 遍历图像的每一列
+        for (i in 0 until srcMat.cols() - targetOriginalArea.x) {
+            // 遍历图像的每一行
+            for (j in 0 until srcMat.rows() - targetOriginalArea.y) {
+                // 初始化当前错误计数
+                val nowResult = checkVerifyResult(srcMat, i, j, errorT)
+                // 如果当前结果通过验证，则直接返回该结果
+                if (nowResult?.isPass == true) {
+                    return nowResult
+                }
+                // 如果当前结果不为空，并且最后一个结果为空或者当前结果的通过计数大于最后一个结果，则更新最后一个结果
+                if (nowResult != null && (last == null || nowResult.passCount > last.passCount)) {
+                    last = nowResult
+                }
+            }
+        }
+        if (last==null){
+            last = TargetVerifyResult(
+                tag = keyTag,
+                isPass = false,
+                type = FindTargetType.HSV,
+            )
+        }
+        return last
+    }
+
+
+    private suspend fun checkVerifyResult(
+        srcMat: Mat,
+        offsetX: Int,
+        offsetY: Int,
+        errorT: Int
+    ): TargetVerifyResult? {
+        // 初始化当前错误计数
+        var nowErrorCount = 0
+        var passCount = 0
+        val list = mutableListOf<PointVerifyResult>()
+
+        // 遍历每个检查规则
+        prList.forEach {
+            val pointVerifyResult = it.checkBIpr(
+                srcMat,
+                offsetX - targetOriginalArea.x,
+                offsetY - targetOriginalArea.y,
+                findArea?.x ?: 0,
+                findArea?.y ?: 0
+            ) ?: return null
+            list.add(pointVerifyResult)
+            if (pointVerifyResult.isPass) {
+                passCount++
+            } else {
+                nowErrorCount++
+            }
+            if (nowErrorCount > errorT) {
+                return null
+            }
+        }
+        return TargetVerifyResult(
+            tag = keyTag,
+            isPass = nowErrorCount <= errorTolerance,
+            type = FindTargetType.HSV,
+            poinitInfo = list,
+            resultArea = getCoordinateArea(offsetX, offsetY),
+            passCount = passCount,
+            failCount = nowErrorCount,
+            totalCount = prList.size
+        )
     }
 
 
     //这里返回的区域是基于整个图标的  找到的位置
     private fun findTargetBitmap(mat: Mat): CoordinateArea? {
         return if (checkImgTask(mat)) {
-            if (findArea == null) {
-                CoordinateArea(
-                    lastOffsetX,
-                    lastOffsetY,
-                    targetOriginalArea.width,
-                    targetOriginalArea.height
-                )
-            } else {
-                CoordinateArea(
-                    lastOffsetX + findArea!!.x,
-                    lastOffsetY + findArea!!.y,
-                    targetOriginalArea.width,
-                    targetOriginalArea.height
-                )
-            }
+            getCoordinateArea(lastOffsetX, lastOffsetY)
         } else {
-            return null
+            null
+        }
+    }
+
+    private fun getCoordinateArea(offsetX: Int, offsetY: Int): CoordinateArea {
+        return if (findArea == null) {
+            CoordinateArea(
+                offsetX,
+                offsetY,
+                targetOriginalArea.width,
+                targetOriginalArea.height
+            )
+        } else {
+            CoordinateArea(
+                offsetX + findArea!!.x,
+                offsetY + findArea!!.y,
+                targetOriginalArea.width,
+                targetOriginalArea.height
+            )
         }
     }
 
@@ -94,9 +180,9 @@ data class FindTargetHsvEntity(
         srcMat: Mat,
     ): Boolean {
         // 遍历图像的每一列
-        for (i in 0 until srcMat.cols()) {
+        for (i in 0 until srcMat.cols() - targetOriginalArea.x) {
             // 遍历图像的每一行
-            for (j in 0 until srcMat.rows()) {
+            for (j in 0 until srcMat.rows() - targetOriginalArea.y) {
                 // 初始化当前错误计数
                 var nowErrorCount = 0
                 // 遍历每个检查规则

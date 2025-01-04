@@ -9,6 +9,7 @@ import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.CoordinateUtils
 import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
+import com.nwq.opencv.FindTargetType
 import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.converters.CoordinateAreaConverters
@@ -111,9 +112,18 @@ data class FindTargetMatEntity(
 
     }
 
-    override suspend fun checkVerifyResult(target: CoordinateArea): TargetVerifyResult? {
-        TODO("Not yet implemented")
+    override suspend fun checkVerifyResult(): TargetVerifyResult? {
+        val srcMat = imgTake.getHsvMat(findArea) ?: return null
+        val resultArea = findTargetBitmap(srcMat)
+        return TargetVerifyResult(
+            isPass = resultArea != null,
+            ImgName = keyTag,
+            type = FindTargetType.MAT,
+            resultArea = resultArea,
+        )
     }
+
+
 
 
     private fun findTargetBitmap(srcMat: Mat): CoordinateArea? {

@@ -11,10 +11,10 @@ import com.nwq.opencv.db.converters.PointVerifyResultConverters
 data class TargetVerifyResult(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
-    var tag: String,//这里存的的验证类型
-    var isPass: Boolean,
-    var ImgName: String,
-    var Type: Int,
+    var tag: String="",//这里存的的验证类型
+    var isPass: Boolean = false,
+    var ImgName: String= "",
+    var type: Int,
     @TypeConverters(PointVerifyResultConverters::class)
     var poinitInfo: List<PointVerifyResult>? = null,
     var resultArea: CoordinateArea? = null,

@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
+import com.nwq.opencv.FindTargetType
 import com.nwq.opencv.IFindTarget
 import org.opencv.core.Core
 import org.opencv.core.CvType
@@ -67,8 +68,15 @@ data class FindTargetImgEntity(
 
     }
 
-    override suspend fun checkVerifyResult(target: CoordinateArea): TargetVerifyResult? {
-        TODO("Not yet implemented")
+    override suspend fun checkVerifyResult(): TargetVerifyResult? {
+        val srcMat = imgTake.getHsvMat(findArea) ?: return null
+        val resultArea = findTargetBitmap(srcMat)
+        return TargetVerifyResult(
+            isPass = resultArea != null,
+            ImgName = keyTag,
+            type = FindTargetType.IMG,
+            resultArea = resultArea,
+        )
     }
 
 

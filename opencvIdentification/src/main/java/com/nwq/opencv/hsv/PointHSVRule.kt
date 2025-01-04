@@ -2,6 +2,7 @@ package com.nwq.opencv.hsv
 
 
 import com.nwq.baseobj.CoordinatePoint
+import com.nwq.opencv.data.PointVerifyResult
 import com.nwq.opencv.point_rule.MIPR
 import com.nwq.opencv.rgb.ColorRule
 import org.opencv.core.Mat
@@ -30,6 +31,30 @@ class PointHSVRule(val point: CoordinatePoint, val rule: HSVRule) : MIPR() {
 
         // 验证像素值
         return rule.verificationRule(array[0].toInt(), array[1].toInt(), array[2].toInt())
+    }
+
+    override fun checkBIpr(
+        srcMat: Mat,
+        offsetX: Int,
+        offsetY: Int,
+        x: Int,
+        y: Int
+    ): PointVerifyResult? {
+        // 检查点是否超出矩阵边界
+        if (point.x + offsetX < 0 || point.x + offsetX >= srcMat.cols() || point.y + offsetY < 0 || point.y + offsetY >= srcMat.rows()) {
+            return null
+        }
+
+        // 获取指定位置的像素值
+        val array = srcMat.get(point.y + offsetY, point.x + offsetX)
+        if (array == null || array.size != 3) {
+            return null
+        }
+
+        // 验证像素值
+        val isPass = rule.verificationRule(array[0].toInt(), array[1].toInt(), array[2].toInt())
+
+        return PointVerifyResult(point.x + offsetX+x,point.y + offsetY+y,array[0].toInt(), array[1].toInt(), array[2].toInt(),isPass)
     }
 
     override fun getCoordinatePoint(): CoordinatePoint {
