@@ -19,6 +19,7 @@ class FindTargetDetailFragment : BaseFragment<FragmentFindTargetDetailBinding>()
     }
 
 
+
 }
 
 
