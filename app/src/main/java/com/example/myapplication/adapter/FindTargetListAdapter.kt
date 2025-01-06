@@ -61,48 +61,13 @@ class FindTargetListAdapter(
             binding.deleteTv.singleClick {
                 ll?.ondDelete(data!!)
             }
-            binding.hsvBtn.singleClick {
-                ll?.onHsvBtn(data!!)
-            }
-            binding.rgbBtn.singleClick {
-                ll?.onRgbBtn(data!!)
-            }
-            binding.imgBtn.singleClick {
-                ll?.onImgBtn(data!!)
-            }
-            binding.matBtn.singleClick {
-                ll?.onMatBtn(data!!)
-            }
+
         }
 
         var data: FindTargetRecord? = null
 
         fun bindData(item: FindTargetRecord) {
             data=item
-            binding.rgbBtn.visibility = View.GONE
-            binding.hsvBtn.visibility = View.GONE
-            binding.imgBtn.visibility = View.GONE
-            binding.matBtn.visibility = View.GONE
-
-            item.list.forEach {
-                when (it) {
-                    is FindTargetRgbEntity -> {
-                        binding.rgbBtn.visibility = View.VISIBLE
-                    }
-
-                    is FindTargetHsvEntity -> {
-                        binding.hsvBtn.visibility = View.VISIBLE
-                    }
-
-                    is FindTargetImgEntity -> {
-                        binding.imgBtn.visibility = View.VISIBLE
-                    }
-
-                    is FindTargetMatEntity -> {
-                        binding.matBtn.visibility = View.VISIBLE
-                    }
-                }
-            }
         }
 
     }
