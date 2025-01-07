@@ -1,28 +1,43 @@
 package com.example.myapplication.verify_results
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
+
+
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import com.example.myapplication.R
-import com.example.myapplication.databinding.FragmentFindTargetDetailBinding
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.myapplication.databinding.FragmentVerificationResultBinding
 import com.nwq.base.BaseFragment
 
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [VerificationResultFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class VerificationResultFragment : BaseFragment<FragmentVerificationResultBinding>() {
+
+class VerificationResultFragment(id:Long) : BaseFragment<FragmentVerificationResultBinding>() {
+
+    private val mVerifyResultPViewModel by viewModels<VerifyResultPViewModel>()
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ): FragmentVerificationResultBinding {
-        TODO("Not yet implemented")
+       return FragmentVerificationResultBinding.inflate(inflater, container, false)
     }
 
+    override fun initData() {
+        super.initData()
+        //binding.verticalViewPager.adapter = VerificationResultAdapter()
+    }
+
+
+//    private class VerificationResultAdapter(
+//        private val fragmentList: List<Fragment>,
+//        fragmentManager: FragmentManager,
+//        lifecycle: androidx.lifecycle.Lifecycle
+//    ) : FragmentStateAdapter(fragmentManager, lifecycle) {
+//
+//        override fun getItemCount(): Int = fragmentList.size
+//
+//        override fun createFragment(position: Int): Fragment = fragmentList[position]
+//    }
 }
