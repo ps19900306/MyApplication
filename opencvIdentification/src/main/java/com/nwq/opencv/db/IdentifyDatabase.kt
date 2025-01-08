@@ -22,6 +22,7 @@ import com.nwq.opencv.db.dao.FindTargetRecordDao
 import com.nwq.opencv.db.dao.FindTargetRgbDao
 import com.nwq.opencv.db.dao.ImageDescriptorDao
 import com.nwq.opencv.db.dao.LogicDao
+import com.nwq.opencv.db.dao.TargetVerifyResultDao
 import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.opencv.db.entity.ClickEntity
 import com.nwq.opencv.db.entity.FindTargetHsvEntity
@@ -31,12 +32,13 @@ import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.opencv.db.entity.FindTargetRgbEntity
 import com.nwq.opencv.db.entity.KeyPointEntity
 import com.nwq.opencv.db.entity.LogicEntity
+import com.nwq.opencv.db.entity.TargetVerifyResult
 import java.io.FileOutputStream
 import java.io.InputStream
 
 @Database(entities = [AutoRulePointEntity::class, ClickEntity::class, FindTargetHsvEntity::class
     , FindTargetImgEntity::class , FindTargetMatEntity::class , FindTargetRecord::class ,
-    FindTargetRgbEntity::class , ImageDescriptorEntity::class , KeyPointEntity::class , LogicEntity::class],
+    FindTargetRgbEntity::class , ImageDescriptorEntity::class , KeyPointEntity::class , LogicEntity::class,TargetVerifyResult::class],
     version = 1,exportSchema = false)
 @TypeConverters(CoordinateAreaConverters::class,HSVRuleConverters::class, KeyPointConverters::class, LongListConverters::class,
     PointConverters::class,
@@ -58,6 +60,7 @@ abstract class IdentifyDatabase : RoomDatabase() {
 
     abstract fun autoRulePointDao(): AutoRulePointDao
 
+    abstract fun targetVerifyResultDao(): TargetVerifyResultDao
 
     abstract fun logicDao(): LogicDao
 

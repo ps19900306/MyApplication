@@ -12,7 +12,9 @@ data class TargetVerifyResult(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
     var tag: String="",//这里存的的验证类型
-    var isPass: Boolean = false,
+    var isPass: Boolean = false,//本次结果是否通过
+    var isEffective: Boolean = false,//本次结果是否有效 通过的结果是否正确
+    var isDo:Boolean =false,//
     var ImgName: String= "",
     var type: Int,
     @TypeConverters(PointVerifyResultConverters::class)
