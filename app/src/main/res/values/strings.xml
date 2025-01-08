@@ -67,6 +67,8 @@
     <string name="replace_img">替换图片</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="result_is_do">是否打标签</string>
+    <string name="result_is_effective">结果有效</string>
+    <string name="result_is_pass">通过的结果</string>
 
 </resources>
