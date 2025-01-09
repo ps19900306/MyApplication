@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/autoHsvRuleListFragment"
+    app:startDestination="@+id/selectRegionFragment">
+
+
+    <fragment
+        android:id="@+id/autoHsvRuleListFragment"
+        android:name="com.example.myapplication.verify_results.VerifyResultIndexFragment"
+        android:label="verifyResultIndexFragment"
+        tools:layout="@layout/fragment_verify_result_index">
+        <argument
+            android:name="FindTag"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
+
+
+
+</navigation>

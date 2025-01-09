@@ -18,57 +18,56 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="rercordTag" />
+
     <CheckBox
         android:id="@+id/isDoCb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/tagTv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/isEffectiveCb"
         android:text="@string/result_is_do"/>
+
     <CheckBox
         android:id="@+id/isEffectiveCb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tagTv"
-        app:layout_constraintStart_toEndOf="@+id/isDoCb"
-        app:layout_constraintEnd_toStartOf="@+id/isPassCb"
+        app:layout_constraintTop_toBottomOf="@+id/isDoCb"
+        app:layout_constraintStart_toStartOf="parent"
         android:text="@string/result_is_effective"/>
+
     <CheckBox
         android:id="@+id/isPassCb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tagTv"
-        app:layout_constraintStart_toEndOf="@+id/isEffectiveCb"
-        app:layout_constraintEnd_toStartOf="@+id/deleteCb"
+        app:layout_constraintTop_toBottomOf="@+id/isEffectiveCb"
+        app:layout_constraintStart_toStartOf="parent"
         android:text="@string/result_is_pass"/>
 
-
     <Button
-        android:id="@+id/deleteCb"
+        android:id="@+id/clearCb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/delete"
-        app:layout_constraintTop_toBottomOf="@+id/tagTv"
-        app:layout_constraintStart_toEndOf="@+id/isPassCb"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/isPassCb"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/typeRecyclerView"
-        app:layout_constraintTop_toBottomOf="@+id/isDoCb"
-        app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/isPassCb"
+        app:layout_constraintTop_toBottomOf="@+id/tagTv" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/resultRecyclerView"
-        app:layout_constraintTop_toBottomOf="@+id/typeRecyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/tagTv"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/typeRecyclerView"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
