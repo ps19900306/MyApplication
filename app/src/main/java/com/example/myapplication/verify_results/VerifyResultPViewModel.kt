@@ -25,7 +25,7 @@ class VerifyResultPViewModel(val tag: String) : ViewModel() {
     private val mTargetImgDao = IdentifyDatabase.getDatabase().findTargetImgDao()
     private val mTargetMatDao = IdentifyDatabase.getDatabase().findTargetMatDao()
 
-    private val resultFlow by lazy {
+    public val resultFlow by lazy {
         combine(selectedType, isPass, isEffective, isDo) { type, isPass, isEffective, isDo ->
             IdentifyDatabase.getDatabase().targetVerifyResultDao()
                 .findByTagTypeIsPassIsEffectiveIsDo(tag, type, isPass, isEffective, isDo)

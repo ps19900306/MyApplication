@@ -1,24 +1,16 @@
 package com.nwq.opencv.db.entity
 
-import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
-import com.nwq.baseutils.CoordinateUtils
 import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.FindTargetType
 import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.db.IdentifyDatabase
-import com.nwq.opencv.db.converters.CoordinateAreaConverters
-import com.nwq.opencv.db.converters.PointHSVRuleConverters
-import com.nwq.opencv.hsv.PointHSVRule
-import org.opencv.android.Utils
 import org.opencv.calib3d.Calib3d
 import org.opencv.core.Core
-import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.MatOfDMatch
 import org.opencv.core.MatOfKeyPoint
@@ -116,7 +108,7 @@ data class FindTargetMatEntity(
         val srcMat = imgTake.getHsvMat(findArea) ?: return null
         val resultArea = findTargetBitmap(srcMat)
         return TargetVerifyResult(
-            isPass = resultArea != null,
+            hasFind = resultArea != null,
             ImgName = keyTag,
             type = FindTargetType.MAT,
             resultArea = resultArea,

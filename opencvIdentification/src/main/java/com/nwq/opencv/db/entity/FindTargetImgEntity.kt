@@ -72,7 +72,7 @@ data class FindTargetImgEntity(
         val srcMat = imgTake.getHsvMat(findArea) ?: return null
         val resultArea = findTargetBitmap(srcMat)
         return TargetVerifyResult(
-            isPass = resultArea != null,
+            hasFind = resultArea != null,
             ImgName = keyTag,
             type = FindTargetType.IMG,
             resultArea = resultArea,

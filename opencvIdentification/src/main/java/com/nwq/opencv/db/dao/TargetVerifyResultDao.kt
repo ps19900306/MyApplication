@@ -22,7 +22,7 @@ interface TargetVerifyResultDao {
     @Query("SELECT * FROM target_verify_result WHERE tag = :tag and type = :type")
     fun findByTag(tag: String, type: Int): Flow<List<TargetVerifyResult>>
 
-    @Query("SELECT * FROM target_verify_result WHERE tag = :tag AND type = :type AND isPass = :isPass AND isEffective = :isEffective AND isDo = :isDo")
+    @Query("SELECT * FROM target_verify_result WHERE tag = :tag AND type = :type AND hasFind = :isPass AND isEffective = :isEffective AND isDo = :isDo")
     fun findByTagTypeIsPassIsEffectiveIsDo(
         tag: String,
         type: Int,

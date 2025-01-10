@@ -2,7 +2,6 @@ package com.nwq.opencv.db.entity
 
 import android.graphics.Bitmap
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
@@ -12,7 +11,6 @@ import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.data.PointVerifyResult
 import com.nwq.opencv.db.converters.PointRuleConverters
 import com.nwq.opencv.rgb.PointRule
-import org.opencv.core.Mat
 
 
 @Entity(tableName = "find_target_rgb")
@@ -62,7 +60,7 @@ data class FindTargetRgbEntity(
             for (j in areaToCheck.y until areaToCheck.height- targetOriginalArea.y) {
                 val nowResult = checkVerifyResult(bitmap, i, j, errorT)
                 // 如果当前结果通过验证，则直接返回该结果
-                if (nowResult?.isPass == true) {
+                if (nowResult?.hasFind == true) {
                     return nowResult
                 }
                 // 如果当前结果不为空，并且最后一个结果为空或者当前结果的通过计数大于最后一个结果，则更新最后一个结果
@@ -74,7 +72,7 @@ data class FindTargetRgbEntity(
         if (last==null){
             last = TargetVerifyResult(
                 tag = keyTag,
-                isPass = false,
+                hasFind = false,
                 type = FindTargetType.RGB,
             )
         }
@@ -131,7 +129,7 @@ data class FindTargetRgbEntity(
         // 返回验证结果对象，包含验证是否通过、验证类型、点信息、结果区域等
         return TargetVerifyResult(
             tag = keyTag,
-            isPass = nowErrorCount <= errorTolerance,
+            hasFind = nowErrorCount <= errorTolerance,
             type = FindTargetType.RGB,
             poinitInfo = list,
             resultArea = getCoordinateArea(offsetX, offsetY),

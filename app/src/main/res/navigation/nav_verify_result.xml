@@ -17,6 +17,19 @@
             app:nullable="false" />
     </fragment>
 
-
+    <fragment
+        android:id="@+id/VerifyResultListFragment"
+        android:name="com.example.myapplication.verify_results.VerifyResultListFragment"
+        android:label="verifyResultIndexFragment"
+        tools:layout="@layout/item_verify_result_index">
+        <argument
+            android:name="FindTag"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="startIndex"
+            app:argType="int"
+             />
+    </fragment>
 
 </navigation>

@@ -1,74 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".verify_results.VerifyResultListFragment">
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <TextView
-        android:id="@+id/tagTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        android:text="nameTv"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="rercordTag" />
-    <CheckBox
-        android:id="@+id/isDoCb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tagTv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/isEffectiveCb"
-        android:text="@string/result_is_do"/>
-    <CheckBox
-        android:id="@+id/isEffectiveCb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tagTv"
-        app:layout_constraintStart_toEndOf="@+id/isDoCb"
-        app:layout_constraintEnd_toStartOf="@+id/isPassCb"
-        android:text="@string/result_is_effective"/>
-    <CheckBox
-        android:id="@+id/isPassCb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tagTv"
-        app:layout_constraintStart_toEndOf="@+id/isEffectiveCb"
-        app:layout_constraintEnd_toStartOf="@+id/deleteCb"
-        android:text="@string/result_is_pass"/>
 
-
-    <Button
-        android:id="@+id/deleteCb"
+        android:id="@+id/pageTv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/delete"
-        app:layout_constraintTop_toBottomOf="@+id/tagTv"
-        app:layout_constraintStart_toEndOf="@+id/isPassCb"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/typeRecyclerView"
-        app:layout_constraintTop_toBottomOf="@+id/isDoCb"
-        app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_width="match_parent"
+        android:layout_gravity="end|top"
+        tools:text="10/12"
         android:layout_height="wrap_content"/>
+</FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/resultRecyclerView"
-        app:layout_constraintTop_toBottomOf="@+id/typeRecyclerView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"/>
-</androidx.constraintlayout.widget.ConstraintLayout>

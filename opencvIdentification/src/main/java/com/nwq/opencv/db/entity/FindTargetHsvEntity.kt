@@ -1,15 +1,12 @@
 package com.nwq.opencv.db.entity
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
-import com.nwq.baseutils.CoordinateUtils
 import com.nwq.opencv.FindTargetType
 import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.data.PointVerifyResult
-import com.nwq.opencv.db.converters.CoordinateAreaConverters
 import com.nwq.opencv.db.converters.PointHSVRuleConverters
 import com.nwq.opencv.hsv.PointHSVRule
 import org.opencv.core.Mat
@@ -77,7 +74,7 @@ data class FindTargetHsvEntity(
                 // 初始化当前错误计数
                 val nowResult = checkVerifyResult(srcMat, i, j, errorT)
                 // 如果当前结果通过验证，则直接返回该结果
-                if (nowResult?.isPass == true) {
+                if (nowResult?.hasFind == true) {
                     return nowResult
                 }
                 // 如果当前结果不为空，并且最后一个结果为空或者当前结果的通过计数大于最后一个结果，则更新最后一个结果
@@ -89,7 +86,7 @@ data class FindTargetHsvEntity(
         if (last==null){
             last = TargetVerifyResult(
                 tag = keyTag,
-                isPass = false,
+                hasFind = false,
                 type = FindTargetType.HSV,
             )
         }
@@ -129,7 +126,7 @@ data class FindTargetHsvEntity(
         }
         return TargetVerifyResult(
             tag = keyTag,
-            isPass = nowErrorCount <= errorTolerance,
+            hasFind = nowErrorCount <= errorTolerance,
             type = FindTargetType.HSV,
             poinitInfo = list,
             resultArea = getCoordinateArea(offsetX, offsetY),
