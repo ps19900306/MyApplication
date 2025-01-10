@@ -8,8 +8,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.myapplication.R
 import com.example.myapplication.adapter.TargetVerifyResultAdapter
+import com.example.myapplication.auto_hsv_rule.AutoHsvRuleDetailFragmentArgs
 import com.example.myapplication.databinding.FragmentVerifyResultIndexBinding
 import com.nwq.adapter.KeyTextAdapter
 import com.nwq.adapter.KeyTextCheckAdapter2
@@ -59,7 +62,7 @@ class VerifyResultIndexFragment : BaseFragment<FragmentVerifyResultIndexBinding>
         )
         mAdapter = TargetVerifyResultAdapter(object : CallBack<Int> {
             override fun onCallBack(data: Int) {
-
+                findNavController().navigate(R.id.action_autoHsvRuleListFragment_to_VerifyResultListFragment,  VerifyResultListFragmentArgs(args.FindTag, data).toBundle())
             }
         })
         binding.resultRecyclerView.layoutManager =

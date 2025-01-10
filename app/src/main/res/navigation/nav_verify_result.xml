@@ -15,13 +15,16 @@
             android:name="FindTag"
             app:argType="string"
             app:nullable="false" />
+        <action
+            android:id="@+id/action_autoHsvRuleListFragment_to_VerifyResultListFragment"
+            app:destination="@id/VerifyResultListFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/VerifyResultListFragment"
         android:name="com.example.myapplication.verify_results.VerifyResultListFragment"
         android:label="verifyResultIndexFragment"
-        tools:layout="@layout/item_verify_result_index">
+        tools:layout="@layout/fragment_verify_result_list">
         <argument
             android:name="FindTag"
             app:argType="string"
