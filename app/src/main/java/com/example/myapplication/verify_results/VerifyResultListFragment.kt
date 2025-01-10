@@ -70,7 +70,7 @@ class VerifyResultListFragment : BaseFragment<FragmentVerifyResultListBinding>()
 
         override fun createFragment(position: Int): Fragment {
             // 返回每个位置对应的 Fragment
-            return VerificationResultFragment(list.get(position).id)
+            return VerificationResultFragment(list[position],viewModel)
         }
     }
 }
