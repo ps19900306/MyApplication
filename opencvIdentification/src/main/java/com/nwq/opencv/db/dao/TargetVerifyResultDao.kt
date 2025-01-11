@@ -18,10 +18,6 @@ interface TargetVerifyResultDao {
     @Query("SELECT * FROM target_verify_result WHERE tag = :tag")
     fun findByTag(tag: String): List<TargetVerifyResult>
 
-    // 根据 tag 查询
-    @Query("SELECT * FROM target_verify_result WHERE tag = :tag and type = :type")
-    fun findByTag(tag: String, type: Int): Flow<List<TargetVerifyResult>>
-
     @Query("SELECT * FROM target_verify_result WHERE tag = :tag AND type = :type AND hasFind = :isPass AND isEffective = :isEffective AND isDo = :isDo")
     fun findByTagTypeIsPassIsEffectiveIsDo(
         tag: String,
@@ -50,4 +46,12 @@ interface TargetVerifyResultDao {
     // 清空表
     @Query("DELETE FROM target_verify_result")
     fun deleteAll()
+
+    // 清多余数据  根据他条件 isPass为false isEffective为true isDo为true 条件删除数据
+    @Query("DELETE FROM target_verify_result WHERE tag = :tag AND hasFind = false AND isEffective = true AND isDo = true")
+    fun deleteByIsPassIsEffectiveIsDo(tag: String )
+
+    // 根据 tag 查询
+    @Query("SELECT * FROM target_verify_result WHERE tag = :tag and type = :type")
+    fun findByTag(tag: String, type: Int): List<TargetVerifyResult>
 }
