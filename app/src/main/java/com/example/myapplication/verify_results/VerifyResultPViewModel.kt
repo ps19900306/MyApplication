@@ -93,5 +93,11 @@ class VerifyResultPViewModel(val tag: String) : ViewModel() {
         }
     }
 
+    //如果未找到图片 且 isEffective 为true  且没有点坐标则清除数据
+
+    //如果找到图片 且 isEffective 为false  则必须重新生成数据
+
+    //如果未找到图片 且 isEffective 为false  则看是否需要剔除一些点
+
 
 }

@@ -11,6 +11,7 @@ import org.opencv.core.MatOfPoint
 import org.opencv.core.Point
 import org.opencv.core.Scalar
 import org.opencv.core.Size
+import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 import java.nio.ByteBuffer
 
@@ -251,7 +252,16 @@ object MatUtils {
         // 定义矩阵的下边界，即矩阵的高度
         val bottom = mat.rows()
         // 过滤点列表，保留与边界距离大于等于指定阈值的点
-        return points.filter { point -> isPointWithinDistance(left, right, top, bottom, point, distance) }
+        return points.filter { point ->
+            isPointWithinDistance(
+                left,
+                right,
+                top,
+                bottom,
+                point,
+                distance
+            )
+        }
     }
 
 
@@ -288,7 +298,7 @@ object MatUtils {
     }
 
 
-    fun bitmapToMat(bitmap: Bitmap,coordinateArea: CoordinateArea? =null): Mat {
+    fun bitmapToMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
         // 创建一个 Mat 对象
         val mat = Mat()
         // 使用 OpenCV 的 Utils 类将 Bitmap 转换为 Mat
@@ -299,24 +309,24 @@ object MatUtils {
             Imgproc.cvtColor(mat, rgbMat, Imgproc.COLOR_RGBA2RGB)
             return rgbMat
         }
-        return  if (coordinateArea!=null){
-            cropMat(mat,coordinateArea)
-        }else{
+        return if (coordinateArea != null) {
+            cropMat(mat, coordinateArea)
+        } else {
             mat
         }
     }
 
 
-    fun bitmapToHsvMat(bitmap: Bitmap,coordinateArea: CoordinateArea? =null): Mat {
+    fun bitmapToHsvMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
         // 将 Bitmap 转换为 Mat
         val mat = bitmapToMat(bitmap)
         // 创建一个 HSV 格式的 Mat 对象
         val hsvMat = Mat(mat.size(), CvType.CV_8UC3)
         // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
         Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_RGB2HSV)
-        return  if (coordinateArea!=null){
-            cropMat(hsvMat,coordinateArea)
-        }else{
+        return if (coordinateArea != null) {
+            cropMat(hsvMat, coordinateArea)
+        } else {
             hsvMat
         }
     }
@@ -356,6 +366,121 @@ object MatUtils {
             coordinateArea.x + coordinateArea.width
         ).copyTo(dstMat)
         return dstMat
+    }
 
+
+    fun findExactHSVMatch(imagePaths: List<String>, outputPath: String) {
+        if (imagePaths.isEmpty()) {
+            println("没有提供图像路径！")
+            return
+        }
+
+        // 加载第一张图像并转换为 HSV
+        val baseImage = Imgcodecs.imread(imagePaths[0])
+        if (baseImage.empty()) {
+            println("无法加载图像: ${imagePaths[0]}")
+            return
+        }
+        val baseHSV = Mat()
+        Imgproc.cvtColor(baseImage, baseHSV, Imgproc.COLOR_BGR2HSV)
+
+        // 初始化结果矩阵（全黑）
+        val mask = Mat(baseHSV.size(), CvType.CV_8UC3, Scalar(0.0, 0.0, 0.0))
+
+        // 遍历其他图像
+        for (i in 1 until imagePaths.size) {
+            val nextImage = Imgcodecs.imread(imagePaths[i])
+            if (nextImage.empty()) {
+                println("无法加载图像: ${imagePaths[i]}")
+                continue
+            }
+
+            // 转换为 HSV 格式
+            val nextHSV = Mat()
+            Imgproc.cvtColor(nextImage, nextHSV, Imgproc.COLOR_BGR2HSV)
+
+            // 创建临时掩码矩阵
+            val tempMask = Mat(baseHSV.size(), CvType.CV_8UC3, Scalar(0.0, 0.0, 0.0))
+
+            // 比较 HSV 通道值
+            for (row in 0 until baseHSV.rows()) {
+                for (col in 0 until baseHSV.cols()) {
+                    val basePixel = baseHSV.get(row, col)
+                    val nextPixel = nextHSV.get(row, col)
+
+                    if (basePixel[0] == nextPixel[0] && basePixel[1] == nextPixel[1] && basePixel[2] == nextPixel[2]) {
+                        tempMask.put(row, col, *basePixel)
+                    }
+                }
+            }
+
+            // 更新主掩码
+            Core.bitwise_and(mask, tempMask, mask)
+        }
+
+        // 保存结果
+        Imgcodecs.imwrite(outputPath, mask)
+        println("完全匹配的 HSV 区域已保存到: $outputPath")
+    }
+
+    fun extractCommonHSVPoints(imagePaths: List<String>, outputPath: String) {
+        // 初始化 OpenCV
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+
+        if (imagePaths.isEmpty()) {
+            println("没有提供图像路径！")
+            return
+        }
+
+        // 加载所有图片并转换为 HSV 格式
+        val hsvImages = mutableListOf<Mat>()
+        for (path in imagePaths) {
+            val image = Imgcodecs.imread(path)
+            if (image.empty()) {
+                println("无法加载图像: $path")
+                return
+            }
+
+            val hsvImage = Mat()
+            Imgproc.cvtColor(image, hsvImage, Imgproc.COLOR_BGR2HSV)
+            hsvImages.add(hsvImage)
+        }
+
+        // 确保所有图像的尺寸一致
+        val baseSize = hsvImages[0].size()
+        if (hsvImages.any { it.size() != baseSize }) {
+            println("所有图像的尺寸必须一致！")
+            return
+        }
+
+        // 初始化结果图像（黑色背景）
+        val result = Mat(baseSize, hsvImages[0].type(), Scalar(0.0, 0.0, 0.0))
+
+        // 遍历每个像素点
+        for (row in 0 until hsvImages[0].rows()) {
+            for (col in 0 until hsvImages[0].cols()) {
+                // 获取第一个图像的像素值作为参考
+                val referencePixel = hsvImages[0].get(row, col)
+
+                // 检查所有图像的同一像素是否相同
+                var isCommon = true
+                for (i in 1 until hsvImages.size) {
+                    val currentPixel = hsvImages[i].get(row, col)
+                    if (!(referencePixel contentEquals currentPixel)) {
+                        isCommon = false
+                        break
+                    }
+                }
+
+                // 如果完全相同，写入结果图像
+                if (isCommon) {
+                    result.put(row, col, *referencePixel)
+                }
+            }
+        }
+
+        // 保存结果图像
+        Imgcodecs.imwrite(outputPath, result)
+        println("公共点图像已保存到: $outputPath")
     }
 }
