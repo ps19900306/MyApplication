@@ -100,7 +100,7 @@ class VerifyResultPViewModel(val tag: String) : ViewModel() {
     //如果未找到图片 且 isEffective 为false  则看是否需要剔除一些点
 
     public suspend fun dealData() {
-        //IdentifyDatabase.getDatabase().findTargetRecordDao()
+         IdentifyDatabase.getDatabase().findTargetRecordDao()
         //IdentifyDatabase.getDatabase().targetVerifyResultDao()
     }
 }
