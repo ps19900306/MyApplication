@@ -483,4 +483,30 @@ object MatUtils {
         Imgcodecs.imwrite(outputPath, result)
         println("公共点图像已保存到: $outputPath")
     }
+
+
+    /**
+     * 计算并返回一组图像的平均背景图像
+     * 此函数通过将所有输入图像的像素值相加，然后除以图像数量来计算平均背景
+     * 这种方法适用于视频监控等场景，其中背景是静态的，而前景对象是移动的
+     * 通过计算平均背景，可以用于背景减除技术，以检测场景中的运动对象
+     *
+     * @param images 一个包含多个OpenCV Mat对象的列表，代表一系列图像
+     * @return 返回一个Mat对象，代表计算出的平均背景图像
+     */
+    fun calculateBackground(images: List<Mat>): Mat {
+        // 初始化背景图像，大小和类型与第一张图像相同，初始值为黑色（所有通道值为0）
+        val background = Mat(images[0].size(), images[0].type(), Scalar(0.0))
+
+        // 遍历所有图像，将它们的像素值累加到背景图像中
+        for (image in images) {
+            Core.add(background, image, background)
+        }
+0
+        // 将累加后的背景图像除以图像数量，得到平均背景图像
+        Core.divide(background, Scalar(images.size.toDouble()), background)
+
+        // 返回计算出的平均背景图像
+        return background
+    }
 }
