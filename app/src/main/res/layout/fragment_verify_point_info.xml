@@ -34,13 +34,12 @@
         android:id="@+id/resultTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="nameTv"
         android:layout_marginTop="8dp"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@+id/tagTv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="rercordTag" />
+        tools:text="resultTv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

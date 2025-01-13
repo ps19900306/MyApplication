@@ -100,7 +100,30 @@ class VerifyResultPViewModel(val tag: String) : ViewModel() {
     //如果未找到图片 且 isEffective 为false  则看是否需要剔除一些点
 
     public suspend fun dealData() {
-         IdentifyDatabase.getDatabase().findTargetRecordDao()
-        //IdentifyDatabase.getDatabase().targetVerifyResultDao()
+        when (selectedType.value) {
+            FindTargetType.RGB -> {
+
+            }
+        }
+        IdentifyDatabase.getDatabase().findTargetRecordDao()
+
     }
+
+    private suspend fun dealRgbData() {
+        val rgb = IdentifyDatabase.getDatabase().findTargetRgbDao().findByKeyTag(tag) ?: return
+        val list = IdentifyDatabase.getDatabase().targetVerifyResultDao()
+            .findByTagTypeIsPassIsEffectiveIsDo(tag, FindTargetType.RGB, true, false, true)
+        if (!list.isEmpty()){
+            //这个需要弃用
+        }
+        val list2 = IdentifyDatabase.getDatabase().targetVerifyResultDao()
+            .findByTagTypeIsPassIsEffectiveIsDo(tag, FindTargetType.RGB, false, false, true)
+        if (!list.isEmpty()){
+            //这个表示目标都找到了
+        }
+
+
+
+    }
+
 }

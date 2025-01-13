@@ -18,11 +18,11 @@ interface TargetVerifyResultDao {
     @Query("SELECT * FROM target_verify_result WHERE tag = :tag")
     fun findByTag(tag: String): List<TargetVerifyResult>
 
-    @Query("SELECT * FROM target_verify_result WHERE tag = :tag AND type = :type AND hasFind = :isPass AND isEffective = :isEffective AND isDo = :isDo")
+    @Query("SELECT * FROM target_verify_result WHERE tag = :tag AND type = :type AND hasFind = :hasFind AND isEffective = :isEffective AND isDo = :isDo")
     fun findByTagTypeIsPassIsEffectiveIsDo(
         tag: String,
         type: Int,
-        isPass: Boolean,
+        hasFind: Boolean,
         isEffective: Boolean,
         isDo: Boolean
     ): List<TargetVerifyResult>
