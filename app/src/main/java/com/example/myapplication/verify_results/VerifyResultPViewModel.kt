@@ -2,6 +2,8 @@ package com.example.myapplication.verify_results
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.data.VerifyResultAllSummarize
+import com.example.myapplication.data.VerifyResultPointSummarize
 import com.nwq.adapter.CheckKeyText
 import com.nwq.adapter.IKeyText
 import com.nwq.adapter.KeyTextImp
@@ -102,27 +104,112 @@ class VerifyResultPViewModel(val tag: String) : ViewModel() {
     public suspend fun dealData() {
         when (selectedType.value) {
             FindTargetType.RGB -> {
-
+                dealRgbData()
+            }
+            FindTargetType.HSV -> {
+                dealHsvData()
+            }
+            FindTargetType.IMG -> {
+                dealImgData()
             }
         }
         IdentifyDatabase.getDatabase().findTargetRecordDao()
 
     }
 
-    private suspend fun dealRgbData() {
-        val rgb = IdentifyDatabase.getDatabase().findTargetRgbDao().findByKeyTag(tag) ?: return
+
+
+
+    private suspend fun dealRgbData(): VerifyResultAllSummarize {
+        val rgb = IdentifyDatabase.getDatabase().findTargetRgbDao().findByKeyTag(tag) ?: return VerifyResultAllSummarize()
         val list = IdentifyDatabase.getDatabase().targetVerifyResultDao()
             .findByTagTypeIsPassIsEffectiveIsDo(tag, FindTargetType.RGB, true, false, true)
-        if (!list.isEmpty()){
-            //这个需要弃用
+        if (list.isNotEmpty()) {
+            return VerifyResultAllSummarize()
         }
+        val result = VerifyResultAllSummarize(true)
         val list2 = IdentifyDatabase.getDatabase().targetVerifyResultDao()
             .findByTagTypeIsPassIsEffectiveIsDo(tag, FindTargetType.RGB, false, false, true)
-        if (!list.isEmpty()){
-            //这个表示目标都找到了
+        if (list2.isNotEmpty()) {
+            result.failList = rgb.prList.map { VerifyResultPointSummarize(pointRule = it) }
+            list2.forEach {
+                it.poinitInfo?.forEachIndexed { p, d ->
+                    result.failList?.getOrNull(p)?.let { x ->
+                        x.poinitInfo.add(d)
+                        if (d.isPass) {
+                            x.passCount += 1
+                        } else {
+                            x.failCount += 1
+                        }
+                    }
+                }
+            }
         }
 
+        val list3 = IdentifyDatabase.getDatabase().targetVerifyResultDao()
+            .findByTagTypeIsPassIsEffectiveIsDo(tag, FindTargetType.RGB, true, true, true)
+        if (list3.isNotEmpty()) {
+            result.passList= rgb.prList.map { VerifyResultPointSummarize(pointRule = it) }
+            list3.forEach {
+                it.poinitInfo?.forEachIndexed { p, d ->
+                    result.passList?.getOrNull(p)?.let { x ->
+                        x.poinitInfo.add(d)
+                        if (d.isPass) {
+                            x.passCount += 1
+                        } else {
+                            x.failCount += 1
+                        }
+                    }
+                }
+            }
+        }
+        return result
+    }
 
+    private fun dealHsvData(): VerifyResultAllSummarize {
+        val hsv = IdentifyDatabase.getDatabase().findTargetHsvDao().findByKeyTag(tag) ?: return VerifyResultAllSummarize()
+        val list = IdentifyDatabase.getDatabase().targetVerifyResultDao()
+            .findByTagTypeIsPassIsEffectiveIsDo(tag, FindTargetType.HSV, true, false, true)
+        if (list.isNotEmpty()) {
+            return VerifyResultAllSummarize()
+        }
+        val result = VerifyResultAllSummarize(true)
+        val list2 = IdentifyDatabase.getDatabase().targetVerifyResultDao()
+            .findByTagTypeIsPassIsEffectiveIsDo(tag,FindTargetType.HSV, false, false, true)
+        if (list2.isNotEmpty()) {
+            result.failList = hsv.prList.map { VerifyResultPointSummarize(pointHSVRule = it) }
+            list2.forEach {
+                it.poinitInfo?.forEachIndexed { p, d ->
+                    result.failList?.getOrNull(p)?.let { x ->
+                        x.poinitInfo.add(d)
+                        if (d.isPass) {
+                            x.passCount += 1
+                        } else{
+                            x.failCount += 1
+                        }
+                    }
+                }
+            }
+        }
+        val list3 = IdentifyDatabase.getDatabase().targetVerifyResultDao()
+            .findByTagTypeIsPassIsEffectiveIsDo(tag, FindTargetType.HSV, true, true, true)
+        if (list3.isNotEmpty()) {
+            result.passList = hsv.prList.map { VerifyResultPointSummarize(pointHSVRule = it) }
+            list3.forEach {
+                it.poinitInfo?.forEachIndexed { p, d ->
+                    result.passList?.getOrNull(p)?.let { x ->
+                        x.poinitInfo.add(d)
+                        if (d.isPass) {
+                            x.passCount += 1
+                        } else{}
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    private fun dealImgData() {
 
     }
 
