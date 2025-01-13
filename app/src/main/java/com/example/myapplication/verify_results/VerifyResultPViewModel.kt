@@ -112,6 +112,9 @@ class VerifyResultPViewModel(val tag: String) : ViewModel() {
             FindTargetType.IMG -> {
                 dealImgData()
             }
+            FindTargetType.MAT -> {
+
+            }
         }
         IdentifyDatabase.getDatabase().findTargetRecordDao()
 
