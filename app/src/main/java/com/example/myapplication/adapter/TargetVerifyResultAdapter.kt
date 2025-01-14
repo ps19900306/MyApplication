@@ -47,7 +47,6 @@ class TargetVerifyResultAdapter(
     }
 
     inner class ViewHolder(
-
         val binding: ItemVerifyResultIndexBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bindData(it: TargetVerifyResult) {

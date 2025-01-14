@@ -95,14 +95,9 @@ class VerifyResultPViewModel(val tag: String) : ViewModel() {
         }
     }
 
-    //如果未找到图片 且 isEffective 为true  且没有点坐标则清除数据
 
-    //如果找到图片 且 isEffective 为false  则必须重新生成数据
-
-    //如果未找到图片 且 isEffective 为false  则看是否需要剔除一些点
-
-    public suspend fun dealData() {
-        when (selectedType.value) {
+    public suspend fun dealData(): VerifyResultAllSummarize {
+        return when (selectedType.value) {
             FindTargetType.RGB -> {
                 dealRgbData()
             }
@@ -118,9 +113,11 @@ class VerifyResultPViewModel(val tag: String) : ViewModel() {
             FindTargetType.MAT -> {
                 dealMatData()
             }
-        }
-        IdentifyDatabase.getDatabase().findTargetRecordDao()
 
+            else -> {
+                VerifyResultAllSummarize()
+            }
+        }
     }
 
 
@@ -243,9 +240,9 @@ class VerifyResultPViewModel(val tag: String) : ViewModel() {
             .findByTagTypeIsPassIsEffectiveIsDo(tag, FindTargetType.MAT, false, false, true)
         val list3 = IdentifyDatabase.getDatabase().targetVerifyResultDao()
             .findByTagTypeIsPassIsEffectiveIsDo(tag, FindTargetType.MAT, true, true, true)
-        return if (list3.size > list2.size *5){
+        return if (list3.size > list2.size * 5) {
             VerifyResultAllSummarize(true)
-        }else{
+        } else {
             VerifyResultAllSummarize()
         }
     }
