@@ -3,6 +3,7 @@ package com.example.myapplication.opencv
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.luck.picture.lib.entity.LocalMedia
 import com.nwq.data.ColorItem
 import com.nwq.baseutils.ByteToIntUtils
 import com.nwq.baseutils.HsvRuleUtils
@@ -35,7 +36,7 @@ class OpenCvPreviewModel : ViewModel() {
 
     public var showBitmapFlow: MutableStateFlow<Bitmap?> = MutableStateFlow(null)
     public val colorsList = MutableStateFlow(listOf<ColorItem>())
-
+    public var result: ArrayList<LocalMedia?>? =null //如果需要获取多张图片的
 
     fun setScrMap(it: Bitmap) {
         srcBitmap = it;
