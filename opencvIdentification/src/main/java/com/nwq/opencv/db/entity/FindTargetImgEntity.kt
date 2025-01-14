@@ -35,25 +35,29 @@ data class FindTargetImgEntity(
     //生成匹配蒙版的类型
     var maskType: Int = MaskUtils.UN_SET_MASK,
 
-    ) : IFindTarget {
+    var thresholdValue: Float = 0.8f,//这个是找图通过的阈值
+
+    var thresholdValue2: Float = thresholdValue * 0.8f,//这个是找图修正使用的阈值
+) : IFindTarget {
 
 
     // 目标图片的 Mat 对象
     @Ignore
-    private var targetMat:Mat?=null
+    private var targetMat: Mat? = null
 
-    private fun getTargetMat():Mat?{
+    private fun getTargetMat(): Mat? {
         if (targetMat == null) {
-            targetMat= MatUtils.readHsvMat(storageType, keyTag)
+            targetMat = MatUtils.readHsvMat(storageType, keyTag)
         }
         return targetMat
     }
-    @Ignore
-    private var maskMat:Mat?=null
 
-    private fun getMaskMat():Mat?{
+    @Ignore
+    private var maskMat: Mat? = null
+
+    private fun getMaskMat(): Mat? {
         if (maskMat == null) {
-            maskMat= MaskUtils.getMaskMat(getTargetMat(),maskType)
+            maskMat = MaskUtils.getMaskMat(getTargetMat(), maskType)
         }
         return maskMat
     }
@@ -69,19 +73,8 @@ data class FindTargetImgEntity(
     }
 
     override suspend fun checkVerifyResult(): TargetVerifyResult? {
-        val srcMat = imgTake.getHsvMat(findArea) ?: return null
-        val resultArea = findTargetBitmap(srcMat)
-        return TargetVerifyResult(
-            hasFind = resultArea != null,
-            ImgName = keyTag,
-            type = FindTargetType.IMG,
-            resultArea = resultArea,
-        )
-    }
-
-
-    private suspend fun findTargetBitmap(sourceMat: Mat): CoordinateArea? {
-        getTargetMat()?:return null
+        val sourceMat = imgTake.getHsvMat(findArea) ?: return null
+        getTargetMat() ?: return null
         // 创建输出结果 Mat，大小为 (source - template + 1)
         val resultCols = sourceMat.cols() - getTargetMat()!!.cols() + 1
         val resultRows = sourceMat.rows() - getTargetMat()!!.rows() + 1
@@ -89,8 +82,60 @@ data class FindTargetImgEntity(
 
         // 执行模板匹配
         if (getMaskMat() != null) {
-            Imgproc.matchTemplate(sourceMat, getTargetMat(), resultMat, Imgproc.TM_CCOEFF_NORMED, getMaskMat())
-        }else{
+            Imgproc.matchTemplate(
+                sourceMat,
+                getTargetMat(),
+                resultMat,
+                Imgproc.TM_CCOEFF_NORMED,
+                getMaskMat()
+            )
+        } else {
+            Imgproc.matchTemplate(sourceMat, getTargetMat(), resultMat, Imgproc.TM_CCOEFF_NORMED)
+        }
+        // 寻找最大匹配值和它的对应位置
+        val minMaxLocResult = Core.minMaxLoc(resultMat)
+        val matchLoc = minMaxLocResult.maxLoc  // 匹配到的最大值位置（最可能的匹配区域）
+
+        var coordinateArea: CoordinateArea? = null
+        // 如果找到合适的匹配区域，返回矩形区域
+        if (minMaxLocResult.maxVal >= thresholdValue2) {  // 假设匹配度大于 0.8 认为找到
+            coordinateArea = CoordinateArea(
+                matchLoc.x.toInt(), matchLoc.y.toInt(),
+                getTargetMat()!!.width(), getTargetMat()!!.height()
+            )
+        }
+        var hasFind = if (minMaxLocResult.maxVal >= thresholdValue) {
+            true
+        } else {
+            false
+        }
+        return TargetVerifyResult(
+            hasFind = hasFind,
+            ImgName = keyTag,
+            type = FindTargetType.IMG,
+            resultArea = coordinateArea,
+            nowthreshold = minMaxLocResult.maxVal,
+        )
+    }
+
+
+    private suspend fun findTargetBitmap(sourceMat: Mat): CoordinateArea? {
+        getTargetMat() ?: return null
+        // 创建输出结果 Mat，大小为 (source - template + 1)
+        val resultCols = sourceMat.cols() - getTargetMat()!!.cols() + 1
+        val resultRows = sourceMat.rows() - getTargetMat()!!.rows() + 1
+        val resultMat = Mat(resultRows, resultCols, CvType.CV_32FC1)
+
+        // 执行模板匹配
+        if (getMaskMat() != null) {
+            Imgproc.matchTemplate(
+                sourceMat,
+                getTargetMat(),
+                resultMat,
+                Imgproc.TM_CCOEFF_NORMED,
+                getMaskMat()
+            )
+        } else {
             Imgproc.matchTemplate(sourceMat, getTargetMat(), resultMat, Imgproc.TM_CCOEFF_NORMED)
         }
         // 寻找最大匹配值和它的对应位置
@@ -98,7 +143,7 @@ data class FindTargetImgEntity(
         val matchLoc = minMaxLocResult.maxLoc  // 匹配到的最大值位置（最可能的匹配区域）
 
         // 如果找到合适的匹配区域，返回矩形区域
-        if (minMaxLocResult.maxVal >= 0.8) {  // 假设匹配度大于 0.8 认为找到
+        if (minMaxLocResult.maxVal >= thresholdValue) {  // 假设匹配度大于 0.8 认为找到
             val coordinateArea = CoordinateArea(
                 matchLoc.x.toInt(), matchLoc.y.toInt(),
                 getTargetMat()!!.width(), getTargetMat()!!.height()

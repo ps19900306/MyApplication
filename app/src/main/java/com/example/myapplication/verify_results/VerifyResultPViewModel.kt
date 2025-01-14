@@ -113,13 +113,12 @@ class VerifyResultPViewModel(val tag: String) : ViewModel() {
                 dealImgData()
             }
             FindTargetType.MAT -> {
-
+                dealMatData()
             }
         }
         IdentifyDatabase.getDatabase().findTargetRecordDao()
 
     }
-
 
 
 
@@ -212,7 +211,52 @@ class VerifyResultPViewModel(val tag: String) : ViewModel() {
         return result
     }
 
-    private fun dealImgData() {
+    private fun dealImgData(): VerifyResultAllSummarize {
+        val hsv = IdentifyDatabase.getDatabase().findTargetImgDao().findByKeyTag(tag) ?: return VerifyResultAllSummarize()
+        val list = IdentifyDatabase.getDatabase().targetVerifyResultDao()
+            .findByTagTypeIsPassIsEffectiveIsDo(tag, FindTargetType.IMG, true, false, true)
+        if (list.isNotEmpty()) {
+            return VerifyResultAllSummarize()
+        }
+        val result = VerifyResultAllSummarize(true)
+//        val list2 = IdentifyDatabase.getDatabase().targetVerifyResultDao()
+//            .findByTagTypeIsPassIsEffectiveIsDo(tag,FindTargetType.IMG, false, false, true)
+//
+//        if (list2.isNotEmpty()) {
+//            result.failList = hsv.prList.map { VerifyResultPointSummarize(pointHSVRule = it) }
+//            list2.forEach {
+//                it.poinitInfo?.forEachIndexed { p, d ->
+//                    result.failList?.getOrNull(p)?.let { x ->
+//                        x.poinitInfo.add(d)
+//                        if (d.isPass) {
+//                            x.passCount += 1
+//                        } else{
+//                            x.failCount += 1
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        val list3 = IdentifyDatabase.getDatabase().targetVerifyResultDao()
+//            .findByTagTypeIsPassIsEffectiveIsDo(tag, FindTargetType.IMG, true, true, true)
+//        if (list3.isNotEmpty()) {
+//            result.passList = hsv.prList.map { VerifyResultPointSummarize(pointHSVRule = it) }
+//            list3.forEach {
+//                it.poinitInfo?.forEachIndexed { p, d ->
+//                    result.passList?.getOrNull(p)?.let { x ->
+//                        x.poinitInfo.add(d)
+//                        if (d.isPass) {
+//                            x.passCount += 1
+//                        } else{}
+//                    }
+//                }
+//            }
+//        }
+        return result
+    }
+
+
+    private fun dealMatData() {
 
     }
 
