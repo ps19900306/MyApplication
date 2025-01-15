@@ -57,7 +57,7 @@ dependencies {
     implementation(libs.opencv)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    kapt(libs.room.compiler)
+    //kapt(libs.room.compiler)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.room.paging)

@@ -121,14 +121,14 @@ class MainActivity : BaseActivity<ActivityPreviewImgBinding>() {
 //            SetSHVFilterDialog().show(supportFragmentManager, "SHV");
 //        }
 
-        binding.sbHNearby.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewModel.upDataHFlow(progress);
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+//        binding.sbHNearby.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+//            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+//                viewModel.upDataHFlow(progress);
+//            }
+//
+//            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+//            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+//        })
 
     }
 
