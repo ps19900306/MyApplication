@@ -41,16 +41,23 @@
     </FrameLayout>
 
 
+<!--    binding.sbHNearby.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {-->
+<!--    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {-->
+<!--    viewModel.upDataHFlow(progress);-->
+<!--    }-->
 
-    <SeekBar
-        android:id="@+id/sb_h_nearby"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:visibility="gone"
-        android:layout_marginBottom="16dp"
-        android:max="180"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+<!--    override fun onStartTrackingTouch(seekBar: SeekBar?) {}-->
+<!--    override fun onStopTrackingTouch(seekBar: SeekBar?) {}-->
+<!--    })-->
+<!--    <SeekBar-->
+<!--        android:id="@+id/sb_h_nearby"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        android:max="180"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

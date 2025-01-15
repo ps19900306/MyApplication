@@ -33,11 +33,12 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
     private val TAG = PreviewImgActivity::class.java.simpleName
     private val viewModel by viewModels<OpenCvPreviewModel>()
     private val mTouchOptModel by viewModels<TouchOptModel>()
+    private lateinit var controller: WindowInsetsControllerCompat
     override fun createBinding(inflater: LayoutInflater): ActivityPreviewImgBinding {
         return ActivityPreviewImgBinding.inflate(layoutInflater)
     }
 
-    lateinit var controller: WindowInsetsControllerCompat
+
 
     override fun beforeSetContentView() {
         super.beforeSetContentView()
@@ -105,14 +106,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 //            SetSHVFilterDialog().show(supportFragmentManager, "SHV");
 //        }
 
-        binding.sbHNearby.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewModel.upDataHFlow(progress);
-            }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
 
     }
 
@@ -138,6 +132,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
                             viewModel.setScrMap(it)
                         }
                     }
+                    viewModel.result = result
                 }
 
                 override fun onCancel() {}

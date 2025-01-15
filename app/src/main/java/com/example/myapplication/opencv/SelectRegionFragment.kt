@@ -2,11 +2,16 @@ package com.example.myapplication.opencv
 
 
 import android.content.res.Configuration
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.PopupWindow
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -23,6 +28,7 @@ import com.nwq.adapter.KeyTextAdapter
 import com.nwq.adapter.KeyTextCheckAdapter
 import com.nwq.adapter.ResStrKeyText
 import com.nwq.base.BaseFragment
+import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.opencv.IAutoRulePoint
@@ -144,7 +150,31 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
         }
         lifecycleScope.launch {
             val rectArea = mTouchOptModel.getRectArea()
-            autoFindRuleModel.intBaseData(openCvPreviewModel.srcBitmap!!, rectArea)
+            val selectMat=openCvPreviewModel.getSelectMat(rectArea)
+            autoFindRuleModel.intBaseData(openCvPreviewModel.srcBitmap!!, rectArea,selectMat)
+
+            selectMat?.let {
+                val  selectBitmap= MatUtils.hsvMatToBitmap(selectMat)
+                //写一个PopupWindow 显示selectBitmap
+                val popupWindow = PopupWindow(requireContext())
+                val layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                val imageView = ImageView(requireContext())
+                imageView.layoutParams = layoutParams
+                imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+                imageView.setImageBitmap(selectBitmap)
+                popupWindow.contentView = imageView
+                popupWindow.showAtLocation(binding.root, Gravity.CENTER, 0, 0)
+                popupWindow.setOnDismissListener {
+                    Log.i("findImageArea", "popupWindow.setOnDismissListener")
+                }
+                val handler = Handler(Looper.getMainLooper())
+                handler.postDelayed({
+                    popupWindow.dismiss()
+                }, 3000)
+            }
         }
     }
 

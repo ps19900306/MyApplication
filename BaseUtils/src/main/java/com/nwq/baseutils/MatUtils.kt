@@ -369,17 +369,22 @@ object MatUtils {
     }
 
 
-    fun findExactHSVMatch(imagePaths: List<String>, outputPath: String) {
+    //chatgpt 提取共同的点
+    fun findExactHSVMatch(imagePaths: List<String>, outputPath: String,area: CoordinateArea?=null) {
         if (imagePaths.isEmpty()) {
             println("没有提供图像路径！")
             return
         }
 
         // 加载第一张图像并转换为 HSV
-        val baseImage = Imgcodecs.imread(imagePaths[0])
+        var baseImage =  Imgcodecs.imread(imagePaths[0])
         if (baseImage.empty()) {
             println("无法加载图像: ${imagePaths[0]}")
             return
+        }
+        //根据area 裁剪图片
+        area?.let {
+            baseImage = cropMat(baseImage,it)
         }
         val baseHSV = Mat()
         Imgproc.cvtColor(baseImage, baseHSV, Imgproc.COLOR_BGR2HSV)
@@ -389,12 +394,14 @@ object MatUtils {
 
         // 遍历其他图像
         for (i in 1 until imagePaths.size) {
-            val nextImage = Imgcodecs.imread(imagePaths[i])
+            var nextImage = Imgcodecs.imread(imagePaths[i])
             if (nextImage.empty()) {
                 println("无法加载图像: ${imagePaths[i]}")
                 continue
             }
-
+            area?.let {
+                nextImage = cropMat(nextImage,it)
+            }
             // 转换为 HSV 格式
             val nextHSV = Mat()
             Imgproc.cvtColor(nextImage, nextHSV, Imgproc.COLOR_BGR2HSV)
@@ -423,7 +430,8 @@ object MatUtils {
         println("完全匹配的 HSV 区域已保存到: $outputPath")
     }
 
-    fun extractCommonHSVPoints(imagePaths: List<String>, outputPath: String) {
+    //chatgpt 通义提供
+    fun extractCommonHSVPoints(imagePaths: List<String>, outputPath: String,area: CoordinateArea?=null) {
         // 初始化 OpenCV
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
 
@@ -435,10 +443,13 @@ object MatUtils {
         // 加载所有图片并转换为 HSV 格式
         val hsvImages = mutableListOf<Mat>()
         for (path in imagePaths) {
-            val image = Imgcodecs.imread(path)
+            var image = Imgcodecs.imread(path)
             if (image.empty()) {
                 println("无法加载图像: $path")
                 return
+            }
+            area?.let {
+                image = cropMat(image,it)
             }
 
             val hsvImage = Mat()

@@ -14,6 +14,7 @@ import com.nwq.opencv.db.converters.LongListConverters
 import com.nwq.opencv.db.converters.PointConverters
 import com.nwq.opencv.db.converters.PointHSVRuleConverters
 import com.nwq.opencv.db.converters.PointRuleConverters
+import com.nwq.opencv.db.converters.PointVerifyResultConverters
 import com.nwq.opencv.db.dao.AutoRulePointDao
 import com.nwq.opencv.db.dao.FindTargetHsvDao
 import com.nwq.opencv.db.dao.FindTargetImgDao
@@ -43,7 +44,8 @@ import java.io.InputStream
 @TypeConverters(CoordinateAreaConverters::class,HSVRuleConverters::class, KeyPointConverters::class, LongListConverters::class,
     PointConverters::class,
     PointHSVRuleConverters::class,
-    PointRuleConverters::class,)
+    PointRuleConverters::class,
+    PointVerifyResultConverters::class)
 abstract class IdentifyDatabase : RoomDatabase() {
 
     abstract fun imageDescriptorDao(): ImageDescriptorDao

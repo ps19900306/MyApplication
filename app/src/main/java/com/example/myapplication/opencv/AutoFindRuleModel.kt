@@ -8,6 +8,7 @@ import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.luck.picture.lib.entity.LocalMedia
 import com.nwq.adapter.CheckKeyText
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.FileUtils
@@ -51,10 +52,10 @@ class AutoFindRuleModel : ViewModel() {
     private var hSVRuleList: MutableList<HSVRule> = mutableListOf()
 
 
-    public fun intBaseData(bitmap: Bitmap, area: CoordinateArea){
+    public fun intBaseData(bitmap: Bitmap, area: CoordinateArea, sMat:Mat?=null,){
         srcBitmap=bitmap
         selectArea=area
-        selectMat = MatUtils.bitmapToMat(bitmap,area)
+        selectMat = sMat ?: MatUtils.bitmapToMat(bitmap,area)
     }
 
 

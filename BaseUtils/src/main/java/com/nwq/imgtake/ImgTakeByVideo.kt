@@ -2,6 +2,7 @@ package com.nwq.imgtake
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.PixelFormat
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.Image
@@ -182,7 +183,7 @@ class ImgTakeByVideo : ImgTake() {
     private fun createNewImageReader() {
         // 创建新的ImageReader实例
         mImageReader =
-            ImageReader.newInstance(width, height, 0x1, maxImages)
+            ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, maxImages)
         // 创建虚拟显示器，指定虚拟显示器的名称、宽度、高度、dpi 等参数
         mVirtualDisplay = mMediaProjection?.createVirtualDisplay(
             "ScreenCapture",

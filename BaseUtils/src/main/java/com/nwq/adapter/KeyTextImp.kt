@@ -1,11 +1,11 @@
 package com.nwq.adapter
 
-data class KeyTextImp(val text: String,val key:Int):IKeyText {
+data class KeyTextImp(val text1: String,val key1:Int):IKeyText {
     override fun getText(): String {
-         return text
+         return text1
     }
 
     override fun getKey(): Int {
-         return key
+         return key1
     }
 }
