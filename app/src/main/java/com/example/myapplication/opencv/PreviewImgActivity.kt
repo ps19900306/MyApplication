@@ -43,13 +43,12 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 
     override fun beforeSetContentView() {
         super.beforeSetContentView()
+
+
         controller = WindowInsetsControllerCompat(window, window.decorView)
         fullScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        val params = window.attributes
-        params.layoutInDisplayCutoutMode =
-            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-        window.attributes = params
+
     }
 
     override fun onResume() {
@@ -70,6 +69,11 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 
 
     override fun initData() {
+        val params = window.attributes
+        // 设置布局进入刘海区域
+        params.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        window.attributes = params
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showBitmapFlow.collectLatest {
