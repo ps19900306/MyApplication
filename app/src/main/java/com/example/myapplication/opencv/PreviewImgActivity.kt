@@ -26,11 +26,12 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinateLine
 import com.nwq.baseobj.CoordinatePoint
+import com.nwq.loguitls.L
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
-    private val TAG = PreviewImgActivity::class.java.simpleName
+    private val TAG = PreviewImgActivity::class.java.simpleName +"nwq"
     private val viewModel by viewModels<OpenCvPreviewModel>()
     private val mTouchOptModel by viewModels<TouchOptModel>()
     private lateinit var controller: WindowInsetsControllerCompat
@@ -53,6 +54,12 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 
     override fun onResume() {
         super.onResume()
+        //打印屏幕尺寸大小
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val width = displayMetrics.widthPixels
+        val height = displayMetrics.heightPixels
+        L.i(TAG, "onResume: screenWidth：$screenWidth width： $width height： $height")
         fullScreen()
     }
 
@@ -66,7 +73,12 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showBitmapFlow.collectLatest {
-                    Log.i(TAG, "showBitmapFlow collectLatest: $it")
+                    //打印Bitmap尺寸
+                    if (it != null) {
+                        val w = it.width
+                        val h = it.height
+                        L.i(TAG, "showBitmapFlow size: $w $h")
+                    }
                     binding.bgImg.setImageBitmap(it)
                 }
             }

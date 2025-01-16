@@ -1,25 +1,14 @@
 package com.example.myapplication
 
 import android.Manifest
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
-import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -27,7 +16,6 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.databinding.ActivityPreviewImgBinding
 import com.example.myapplication.opencv.OpenCvPreviewModel
 import com.example.myapplication.opencv.PreviewImgActivity
@@ -40,6 +28,7 @@ import com.nwq.base.BaseActivity
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinateLine
 import com.nwq.baseobj.CoordinatePoint
+import com.nwq.loguitls.L
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -68,6 +57,7 @@ class MainActivity : BaseActivity<ActivityPreviewImgBinding>() {
 
     override fun onResume() {
         super.onResume()
+
         fullScreen()
     }
 
@@ -81,7 +71,12 @@ class MainActivity : BaseActivity<ActivityPreviewImgBinding>() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showBitmapFlow.collectLatest {
-                    Log.i(TAG, "showBitmapFlow collectLatest: $it")
+                    //打印Bitmap尺寸
+                    if (it != null) {
+                        val w = it.width
+                        val h = it.height
+                        L.i(TAG, "showBitmapFlow size: $w $h")
+                    }
                     binding.bgImg.setImageBitmap(it)
                 }
             }
