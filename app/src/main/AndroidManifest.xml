@@ -27,7 +27,7 @@
         <activity
             android:name=".auto_hsv_rule.AutoHsvRuleActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.Fullscreen" />
         <activity
             android:name=".opencv.PreviewImgActivity"
             android:configChanges="screenLayout|orientation|screenSize"

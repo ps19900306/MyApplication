@@ -1,16 +1,13 @@
 package com.example.myapplication.opencv
 
-import com.nwq.base.BaseActivity
 import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -23,12 +20,14 @@ import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.nwq.base.BaseActivity
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinateLine
 import com.nwq.baseobj.CoordinatePoint
 import com.nwq.loguitls.L
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+
 
 class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
     private val TAG = PreviewImgActivity::class.java.simpleName +"nwq"
@@ -43,12 +42,14 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 
     override fun beforeSetContentView() {
         super.beforeSetContentView()
-
-
         controller = WindowInsetsControllerCompat(window, window.decorView)
         fullScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
+        val params = window.attributes
+        // 设置布局进入刘海区域
+        params.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        window.attributes = params
     }
 
     override fun onResume() {
@@ -69,11 +70,24 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 
 
     override fun initData() {
-        val params = window.attributes
-        // 设置布局进入刘海区域
-        params.layoutInDisplayCutoutMode =
-            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-        window.attributes = params
+        // 判断是否有刘海
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//            val decorView = window.decorView
+//            val layoutParams = window.attributes
+//
+//            // 延迟初始化，确保 rootWindowInsets 不为 null
+//            lifecycleScope.launch {
+//                lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+//                    val displayCutout = decorView.rootWindowInsets?.displayCutout
+//                    if (displayCutout != null) {
+//                        layoutParams.layoutInDisplayCutoutMode =
+//                            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+//                        window.attributes = layoutParams
+//                        decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                    }
+//                }
+//            }
+//        }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showBitmapFlow.collectLatest {
