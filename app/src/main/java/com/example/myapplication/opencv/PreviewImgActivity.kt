@@ -59,7 +59,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
         val screenWidth = displayMetrics.widthPixels
         val width = displayMetrics.widthPixels
         val height = displayMetrics.heightPixels
-        L.i(TAG, "onResume: screenWidth：$screenWidth width： $width height： $height")
+        L.i(TAG, "size: screenWidth：$screenWidth width： $width height： $height")
         fullScreen()
     }
 
@@ -70,24 +70,6 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 
 
     override fun initData() {
-        // 判断是否有刘海
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-//            val decorView = window.decorView
-//            val layoutParams = window.attributes
-//
-//            // 延迟初始化，确保 rootWindowInsets 不为 null
-//            lifecycleScope.launch {
-//                lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-//                    val displayCutout = decorView.rootWindowInsets?.displayCutout
-//                    if (displayCutout != null) {
-//                        layoutParams.layoutInDisplayCutoutMode =
-//                            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-//                        window.attributes = layoutParams
-//                        decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                    }
-//                }
-//            }
-//        }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showBitmapFlow.collectLatest {
@@ -95,7 +77,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
                     if (it != null) {
                         val w = it.width
                         val h = it.height
-                        L.i(TAG, "showBitmapFlow size: $w $h")
+                        L.i(TAG, "size: showBitmapFlow  $w $h")
                     }
                     binding.bgImg.setImageBitmap(it)
                 }
@@ -116,6 +98,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
                     }
 
                     TouchOptModel.SELECT_PICTURE -> {
+                        L.i(TAG, "selectPicture")
                         checkPermission()
                         mTouchOptModel.resetTouchOptFlag()
                     }
@@ -143,14 +126,17 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
     override fun getPermission(): Array<String>? {
         return arrayOf(
             Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO,
             Manifest.permission.READ_EXTERNAL_STORAGE
         )
     }
 
     override fun onPermissionPass() {
+        L.i(TAG, "onPermissionPass")
         PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
             .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
                 override fun onResult(result: ArrayList<LocalMedia?>?) {
+                    L.i(TAG, "onResult")
                     result?.getOrNull(0)?.let {
                         val opts = BitmapFactory.Options()
                         opts.outConfig = Bitmap.Config.ARGB_8888
@@ -162,7 +148,11 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
                     viewModel.result = result
                 }
 
-                override fun onCancel() {}
+                override fun onCancel() {
+                        L.i(TAG, "onCancel")
+                }
+
+
             })
     }
 
@@ -177,6 +167,8 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
     private var lastTime = 0L
     private val cancelInterval = 3000L
     override fun onTouchEvent(ev: MotionEvent): Boolean {
+        //打印位置
+        L.i(TAG, "onTouchEvent  ${ev.x}:: $${ev.y}")
         if (nowMode == TouchOptModel.NORMAL_TYPE) {
             return super.onTouchEvent(ev)
         }

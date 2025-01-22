@@ -1,7 +1,9 @@
 package com.nwq.base
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -51,6 +53,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
             }
         }
         if (permissionsToRequest.isNotEmpty()) {
+            Log.i("PreviewImgActivity", "onPermissionPass")
             ActivityCompat.requestPermissions(this, permissionsToRequest.toTypedArray(), REQUEST_CODE_PERMISSION)
         } else {
             onPermissionPass()
