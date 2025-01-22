@@ -370,17 +370,17 @@ object MatUtils {
 
 
     //chatgpt 提取共同的点
-    fun findExactHSVMatch(imagePaths: List<String>, outputPath: String,area: CoordinateArea?=null) {
+    fun findExactHSVMatch(imagePaths: List<String>, area: CoordinateArea?=null):Mat? {
         if (imagePaths.isEmpty()) {
             println("没有提供图像路径！")
-            return
+            return null
         }
 
         // 加载第一张图像并转换为 HSV
         var baseImage =  Imgcodecs.imread(imagePaths[0])
         if (baseImage.empty()) {
             println("无法加载图像: ${imagePaths[0]}")
-            return
+            return null
         }
         //根据area 裁剪图片
         area?.let {
@@ -414,7 +414,9 @@ object MatUtils {
                 for (col in 0 until baseHSV.cols()) {
                     val basePixel = baseHSV.get(row, col)
                     val nextPixel = nextHSV.get(row, col)
-
+                    //打印二点信息
+                    println("basePixel:${basePixel[0]},${basePixel[1]},${basePixel[2]}")
+                    println("nextPixel:${nextPixel[0]},${nextPixel[1]},${nextPixel[2]}")
                     if (basePixel[0] == nextPixel[0] && basePixel[1] == nextPixel[1] && basePixel[2] == nextPixel[2]) {
                         tempMask.put(row, col, *basePixel)
                     }
@@ -426,18 +428,19 @@ object MatUtils {
         }
 
         // 保存结果
-        Imgcodecs.imwrite(outputPath, mask)
-        println("完全匹配的 HSV 区域已保存到: $outputPath")
+        println("完全匹配的 HSV ")
+        return mask
+
     }
 
     //chatgpt 通义提供
-    fun extractCommonHSVPoints(imagePaths: List<String>, outputPath: String,area: CoordinateArea?=null) {
+    fun extractCommonHSVPoints(imagePaths: List<String>,area: CoordinateArea?=null):Mat? {
         // 初始化 OpenCV
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
 
         if (imagePaths.isEmpty()) {
             println("没有提供图像路径！")
-            return
+            return null
         }
 
         // 加载所有图片并转换为 HSV 格式
@@ -446,7 +449,7 @@ object MatUtils {
             var image = Imgcodecs.imread(path)
             if (image.empty()) {
                 println("无法加载图像: $path")
-                return
+                return null
             }
             area?.let {
                 image = cropMat(image,it)
@@ -461,7 +464,7 @@ object MatUtils {
         val baseSize = hsvImages[0].size()
         if (hsvImages.any { it.size() != baseSize }) {
             println("所有图像的尺寸必须一致！")
-            return
+            return null
         }
 
         // 初始化结果图像（黑色背景）
@@ -491,8 +494,7 @@ object MatUtils {
         }
 
         // 保存结果图像
-        Imgcodecs.imwrite(outputPath, result)
-        println("公共点图像已保存到: $outputPath")
+        return  result
     }
 
 

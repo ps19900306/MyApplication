@@ -1,6 +1,7 @@
 package com.example.myapplication.opencv
 
 import android.graphics.Bitmap
+import android.text.TextUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.entity.LocalMedia
@@ -45,9 +46,8 @@ class OpenCvPreviewModel : ViewModel() {
         return if (result==null || result!!.size<=1){
             MatUtils.bitmapToHsvMat(srcBitmap!!,are)
         }else{
-            MatUtils.bitmapToHsvMat(srcBitmap!!,are)
+            MatUtils.findExactHSVMatch(result!!.map { it?.realPath?:"" }.filter { !TextUtils.isEmpty(it) },are)
         }
-
 
     }
 
