@@ -43,9 +43,9 @@ class OpenCvPreviewModel : ViewModel() {
     fun getSelectMat(are:CoordinateArea): Mat? {
         srcBitmap?:return null
         return if (result==null || result!!.size<=1){
-            MatUtils.bitmapToMat(srcBitmap!!,are)
+            MatUtils.bitmapToHsvMat(srcBitmap!!,are)
         }else{
-            MatUtils.bitmapToMat(srcBitmap!!,are)
+            MatUtils.bitmapToHsvMat(srcBitmap!!,are)
         }
 
 

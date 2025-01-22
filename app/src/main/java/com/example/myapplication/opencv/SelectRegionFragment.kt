@@ -32,6 +32,7 @@ import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.opencv.IAutoRulePoint
+import com.nwq.view.SimpleImgFragment
 import kotlinx.coroutines.launch
 
 
@@ -40,7 +41,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
     private var itemCount = 3
     private val mTouchOptModel by viewModels<TouchOptModel>({ requireActivity() })
     private val autoFindRuleModel by viewModels<AutoFindRuleModel>({ requireActivity() })
-    private val openCvPreviewModel by viewModels<OpenCvPreviewModel>()
+    private val openCvPreviewModel by viewModels<OpenCvPreviewModel>({ requireActivity() })
     private var mKeyTextCheckAdapter: KeyTextCheckAdapter? = null
     override fun createBinding(
         inflater: LayoutInflater,
@@ -150,30 +151,14 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
         }
         lifecycleScope.launch {
             val rectArea = mTouchOptModel.getRectArea()
-            val selectMat=openCvPreviewModel.getSelectMat(rectArea)
+            Log.i("selectCriticalArea", "rectArea:$rectArea")
+            val selectMat = openCvPreviewModel.getSelectMat(rectArea)
             autoFindRuleModel.intBaseData(openCvPreviewModel.srcBitmap!!, rectArea,selectMat)
 
             selectMat?.let {
                 val  selectBitmap= MatUtils.hsvMatToBitmap(selectMat)
-                //写一个PopupWindow 显示selectBitmap
-                val popupWindow = PopupWindow(requireContext())
-                val layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                val imageView = ImageView(requireContext())
-                imageView.layoutParams = layoutParams
-                imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-                imageView.setImageBitmap(selectBitmap)
-                popupWindow.contentView = imageView
-                popupWindow.showAtLocation(binding.root, Gravity.CENTER, 0, 0)
-                popupWindow.setOnDismissListener {
-                    Log.i("findImageArea", "popupWindow.setOnDismissListener")
-                }
-                val handler = Handler(Looper.getMainLooper())
-                handler.postDelayed({
-                    popupWindow.dismiss()
-                }, 3000)
+                val  dialogFragment = SimpleImgFragment(selectBitmap);
+                dialogFragment.show(requireActivity().supportFragmentManager, "SimpleImgFragment")
             }
         }
     }
