@@ -11,11 +11,43 @@
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          android:layout_marginStart="18dp"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toStartOf="@+id/img2"
+         app:layout_constraintHorizontal_bias="0.0"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintVertical_bias="0.3"
+         tools:layout_height="100dp"
+         tools:layout_width="100dp" />
+
+
+     <ImageView
+         android:id="@+id/img2"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toStartOf="@+id/img3"
+         app:layout_constraintHorizontal_bias="0.0"
+         app:layout_constraintStart_toEndOf="@+id/img"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintVertical_bias="0.3"
+         android:visibility="gone"
+         tools:visibility="visible"
+         tools:layout_height="100dp"
+         tools:layout_width="100dp" />
+
+
+     <ImageView
+         android:id="@+id/img3"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
          android:layout_marginEnd="18dp"
+         android:visibility="gone"
+         tools:visibility="visible"
          app:layout_constraintBottom_toBottomOf="parent"
          app:layout_constraintEnd_toEndOf="parent"
          app:layout_constraintHorizontal_bias="0.0"
-         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintStart_toEndOf="@+id/img2"
          app:layout_constraintTop_toTopOf="parent"
          app:layout_constraintVertical_bias="0.3"
          tools:layout_height="100dp"
@@ -25,11 +57,10 @@
          android:id="@+id/sureBtn"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_marginTop="8dp"
+         android:layout_marginBottom="12dp"
          android:text="确定"
          app:layout_constraintBottom_toBottomOf="parent"
-         android:layout_marginBottom="12dp"
-         app:layout_constraintEnd_toEndOf="@+id/img"
+         app:layout_constraintEnd_toEndOf="parent"
          app:layout_constraintStart_toStartOf="@+id/img"
          app:layout_constraintTop_toBottomOf="@+id/img" />
 
