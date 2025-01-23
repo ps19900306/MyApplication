@@ -21,7 +21,7 @@ class SimpleImgFragment(val bitmap1: Bitmap, val bitmap2: Bitmap?=null, val bitm
         binding.img.setImageBitmap(bitmap1)
         bitmap2?.let {
             binding.img2.setImageBitmap(it)
-            binding.img2.isVisible = true
+            binding.img2.isVisible =  true
         }
         bitmap3?.let {
             binding.img3.setImageBitmap(it)
