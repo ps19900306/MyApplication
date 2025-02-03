@@ -8,7 +8,7 @@
 
      <ImageView
          android:id="@+id/img"
-         android:layout_width="match_parent"
+         android:layout_width="wrap_content"
          android:layout_height="match_parent"
          android:layout_marginStart="18dp"
          app:layout_constraintBottom_toBottomOf="parent"
@@ -23,7 +23,7 @@
 
      <ImageView
          android:id="@+id/img2"
-         android:layout_width="match_parent"
+         android:layout_width="wrap_content"
          android:layout_height="match_parent"
          app:layout_constraintBottom_toBottomOf="parent"
          app:layout_constraintEnd_toStartOf="@+id/img3"
@@ -39,7 +39,7 @@
 
      <ImageView
          android:id="@+id/img3"
-         android:layout_width="match_parent"
+         android:layout_width="wrap_content"
          android:layout_height="match_parent"
          android:layout_marginEnd="18dp"
          android:visibility="gone"

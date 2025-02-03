@@ -1,6 +1,7 @@
 package com.nwq.baseutils
 
 import android.graphics.Bitmap
+import android.text.TextUtils
 import android.util.Log
 import com.nwq.baseobj.CoordinateArea
 import org.opencv.android.Utils
@@ -19,7 +20,7 @@ object MatUtils {
 
     const val STORAGE_ASSET_TYPE = 0
     const val STORAGE_EXTERNAL_TYPE = 1
-
+    const val TAG="MatUtils"
     /**
      * 读取并转换HSV色彩空间的Mat对象
      *
@@ -370,21 +371,21 @@ object MatUtils {
 
 
     //chatgpt 提取共同的点
-    fun findExactHSVMatch(imagePaths: List<String>, area: CoordinateArea?=null):Mat? {
+    fun findExactHSVMatch(imagePaths: List<String>, area: CoordinateArea? = null): Mat? {
         if (imagePaths.isEmpty()) {
             println("没有提供图像路径！")
             return null
         }
 
         // 加载第一张图像并转换为 HSV
-        var baseImage =  Imgcodecs.imread(imagePaths[0])
+        var baseImage = Imgcodecs.imread(imagePaths[0])
         if (baseImage.empty()) {
             println("无法加载图像: ${imagePaths[0]}")
             return null
         }
         //根据area 裁剪图片
         area?.let {
-            baseImage = cropMat(baseImage,it)
+            baseImage = cropMat(baseImage, it)
         }
         val baseHSV = Mat()
         Imgproc.cvtColor(baseImage, baseHSV, Imgproc.COLOR_BGR2HSV)
@@ -400,7 +401,7 @@ object MatUtils {
                 continue
             }
             area?.let {
-                nextImage = cropMat(nextImage,it)
+                nextImage = cropMat(nextImage, it)
             }
             // 转换为 HSV 格式
             val nextHSV = Mat()
@@ -409,22 +410,26 @@ object MatUtils {
             // 创建临时掩码矩阵
             val tempMask = Mat(baseHSV.size(), CvType.CV_8UC3, Scalar(0.0, 0.0, 0.0))
 
+
             // 比较 HSV 通道值
             for (row in 0 until baseHSV.rows()) {
                 for (col in 0 until baseHSV.cols()) {
                     val basePixel = baseHSV.get(row, col)
                     val nextPixel = nextHSV.get(row, col)
                     //打印二点信息
-                    println("basePixel:${basePixel[0]},${basePixel[1]},${basePixel[2]}")
-                    println("nextPixel:${nextPixel[0]},${nextPixel[1]},${nextPixel[2]}")
-                    if (basePixel[0] == nextPixel[0] && basePixel[1] == nextPixel[1] && basePixel[2] == nextPixel[2]) {
+//                    Log.i(TAG,"basePixel:${basePixel[0]},${basePixel[1]},${basePixel[2]}")
+//                    Log.i(TAG,"nextPixel:${nextPixel[0]},${nextPixel[1]},${nextPixel[2]}")
+                    if (Math.abs(basePixel[0] - nextPixel[0]) <= 1 &&
+                        Math.abs(basePixel[1] - nextPixel[1]) <= 1 &&
+                        Math.abs(basePixel[2] - nextPixel[2]) <= 1) {
+                        Log.i(TAG, "添加点, $row  $col")
                         tempMask.put(row, col, *basePixel)
                     }
                 }
             }
 
             // 更新主掩码
-            Core.bitwise_and(mask, tempMask, mask)
+            Core.bitwise_and(baseHSV, tempMask, mask)
         }
 
         // 保存结果
@@ -434,11 +439,38 @@ object MatUtils {
     }
 
 
-    //chatgpt 通义提供
-    fun extractCommonHSVPoints(imagePaths: List<String>,area: CoordinateArea?=null):Mat? {
-        // 初始化 OpenCV
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+    /**
+     * 根据图像路径和可选的坐标区域，加载并处理图像，返回HSV色彩空间的图像矩阵
+     *
+     * @param imagePath 图像文件的路径
+     * @param area 可选参数，定义图像的坐标区域，用于裁剪图像
+     * @return 返回HSV色彩空间的图像矩阵，如果图像路径为空或处理失败则返回null
+     */
+    fun getMatFormPaths(imagePath: String, area: CoordinateArea? = null): Mat? {
+        Log.i("MatUtils", "getMatFormPaths: $imagePath")
+        // 检查图像路径是否为空，如果为空则直接返回null
+        if (TextUtils.isEmpty(imagePath)) {
+            return null
+        }
+        // 读取图像并将其存储在Mat对象中
+        val image = Imgcodecs.imread(imagePath)
+        // 根据是否提供了坐标区域参数，决定是否对图像进行裁剪
+        val nextImage = if (area != null) {
+            cropMat(image, area)
+        } else {
+            image
+        }
+        // 创建一个Mat对象用于存储转换后的HSV图像
+        val nextHSV = Mat()
+        // 将图像从BGR色彩空间转换为HSV色彩空间
+        Imgproc.cvtColor(nextImage, nextHSV, Imgproc.COLOR_BGR2HSV)
+        // 返回转换后的HSV图像矩阵
+        return nextHSV;
+    }
 
+
+    //chatgpt 通义提供
+    fun extractCommonHSVPoints(imagePaths: List<String>, area: CoordinateArea? = null): Mat? {
         if (imagePaths.isEmpty()) {
             println("没有提供图像路径！")
             return null
@@ -453,7 +485,7 @@ object MatUtils {
                 return null
             }
             area?.let {
-                image = cropMat(image,it)
+                image = cropMat(image, it)
             }
 
             val hsvImage = Mat()
@@ -495,7 +527,7 @@ object MatUtils {
         }
 
         // 保存结果图像
-        return  result
+        return result
     }
 
 
@@ -516,7 +548,7 @@ object MatUtils {
         for (image in images) {
             Core.add(background, image, background)
         }
-0
+        0
         // 将累加后的背景图像除以图像数量，得到平均背景图像
         Core.divide(background, Scalar(images.size.toDouble()), background)
 

@@ -154,12 +154,20 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
             Log.i("selectCriticalArea", "rectArea:$rectArea")
             val selectMat = openCvPreviewModel.getSelectMat(rectArea)
             autoFindRuleModel.intBaseData(openCvPreviewModel.srcBitmap!!, rectArea,selectMat)
-
             selectMat?.let {
                 val  selectBitmap= MatUtils.hsvMatToBitmap(selectMat)
                 val  dialogFragment = SimpleImgFragment(selectBitmap);
                 dialogFragment.show(requireActivity().supportFragmentManager, "SimpleImgFragment")
             }
+//            openCvPreviewModel.getSelectBitmaps({ bitmap, bitmap2, bitmap3 ->
+//                if (bitmap == null) {
+//                    T.show("未找到目标区域")
+//                    return@getSelectBitmaps
+//                }
+//                val  dialogFragment = SimpleImgFragment(bitmap, bitmap2, bitmap3);
+//                dialogFragment.show(requireActivity().supportFragmentManager, "SimpleImgFragment")
+//            },rectArea)
+
         }
     }
 

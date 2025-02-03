@@ -10,6 +10,7 @@ import com.nwq.data.ColorItem
 import com.nwq.baseutils.ByteToIntUtils
 import com.nwq.baseutils.HsvRuleUtils
 import com.nwq.baseutils.MatUtils
+import com.nwq.loguitls.L
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,18 +39,57 @@ class OpenCvPreviewModel : ViewModel() {
 
     public var showBitmapFlow: MutableStateFlow<Bitmap?> = MutableStateFlow(null)
     public val colorsList = MutableStateFlow(listOf<ColorItem>())
-    public var result: ArrayList<LocalMedia?>? =null //如果需要获取多张图片的
+    public var result: ArrayList<LocalMedia?>? = null //如果需要获取多张图片的
 
 
-    fun getSelectMat(are:CoordinateArea): Mat? {
-        srcBitmap?:return null
-        return if (result==null || result!!.size<=1){
-            MatUtils.bitmapToHsvMat(srcBitmap!!,are)
-        }else{
-            MatUtils.findExactHSVMatch(result!!.map { it?.realPath?:"" }.filter { !TextUtils.isEmpty(it) },are)
+    fun getSelectMat(are: CoordinateArea): Mat? {
+        srcBitmap ?: return null
+        return if (result == null || result!!.size <= 1) {
+            MatUtils.bitmapToHsvMat(srcBitmap!!, are)
+        } else {
+            MatUtils.findExactHSVMatch(result!!.map { it?.realPath ?: "" }
+                .filter { !TextUtils.isEmpty(it) }, are)
         }
-
     }
+
+    fun getSelectBitmaps(
+        next: (bitmap: Bitmap?, bitmap2: Bitmap?, bitmap3: Bitmap?) -> Unit,
+        are: CoordinateArea
+    ) {
+        srcBitmap ?: return
+        if (result == null || result!!.size <= 1) {
+            L.d(TAG, "单图片 ");
+            val bitmap1 = MatUtils.hsvMatToBitmap(MatUtils.bitmapToMat(srcBitmap!!, are))
+            next.invoke(bitmap1, null, null)
+        } else {
+            //
+            var bitmap1:Bitmap? = null
+            var bitmap2:Bitmap? = null
+            var bitmap3:Bitmap? = null
+            for (i in 0 until Math.min(3, result!!.size)) {
+                if (i == 0) {
+                    MatUtils.getMatFormPaths(result!![i]!!.realPath, are)?.let {
+                        bitmap1 =MatUtils.hsvMatToBitmap(it)
+                    }
+                    L.d(TAG, "多单图片 1");
+                }
+                if (i == 1) {
+                    MatUtils.getMatFormPaths(result!![i]!!.realPath, are)?.let {
+                        bitmap2 =MatUtils.hsvMatToBitmap(it)
+                    }
+                    L.d(TAG, "多单图片 2");
+                }
+                if (i == 2) {
+                    MatUtils.getMatFormPaths(result!![i]!!.realPath, are)?.let {
+                        bitmap3 =MatUtils.hsvMatToBitmap(it)
+                    }
+                    L.d(TAG, "多单图片 3");
+                }
+            }
+            next.invoke(bitmap1, bitmap2, bitmap3)
+        }
+    }
+
 
     fun setScrMap(it: Bitmap) {
         srcBitmap = it;

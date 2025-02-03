@@ -1,6 +1,7 @@
 package com.nwq.view
 
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -9,6 +10,8 @@ import com.nwq.baseutils.databinding.FragmentSimpleImgBinding
 
 
 class SimpleImgFragment(val bitmap1: Bitmap, val bitmap2: Bitmap?=null, val bitmap3: Bitmap?=null) : BaseDialogFragment<FragmentSimpleImgBinding>() {
+
+    private val TAG = SimpleImgFragment::class.java.simpleName
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -22,10 +25,13 @@ class SimpleImgFragment(val bitmap1: Bitmap, val bitmap2: Bitmap?=null, val bitm
         bitmap2?.let {
             binding.img2.setImageBitmap(it)
             binding.img2.isVisible =  true
+            Log.i(TAG,"setbitmap2")
+
         }
         bitmap3?.let {
             binding.img3.setImageBitmap(it)
             binding.img3.isVisible = true
+            Log.i(TAG,"setbitmap3")
         }
         binding.sureBtn.setOnClickListener {
             dismissDialog()
