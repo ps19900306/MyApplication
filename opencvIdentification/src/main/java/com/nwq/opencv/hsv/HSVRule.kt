@@ -37,6 +37,7 @@ open class HSVRule(
         ): HSVRule {
             return HSVRule(h, h, s, s, v, v)
         }
+
     }
 
     fun verificationRule(h: Int, s: Int, v: Int): Boolean {

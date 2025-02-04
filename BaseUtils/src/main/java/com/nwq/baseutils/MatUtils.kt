@@ -4,6 +4,9 @@ import android.graphics.Bitmap
 import android.text.TextUtils
 import android.util.Log
 import com.nwq.baseobj.CoordinateArea
+import com.nwq.checkhsv.CheckHSVSame
+import com.nwq.checkhsv.CheckHSVSame1
+import com.nwq.checkhsv.CheckHSVSame2
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
@@ -371,42 +374,22 @@ object MatUtils {
 
 
     //chatgpt 提取共同的点
-    fun findExactHSVMatch(imagePaths: List<String>, area: CoordinateArea? = null): Mat? {
+    fun findExactHSVMatch(imagePaths: List<String>, area: CoordinateArea? = null,checkHSVSame: CheckHSVSame= CheckHSVSame1()): Mat? {
         if (imagePaths.isEmpty()) {
             println("没有提供图像路径！")
             return null
         }
 
         // 加载第一张图像并转换为 HSV
-        var baseImage = Imgcodecs.imread(imagePaths[0])
-        if (baseImage.empty()) {
-            println("无法加载图像: ${imagePaths[0]}")
-            return null
-        }
-        //根据area 裁剪图片
-        area?.let {
-            baseImage = cropMat(baseImage, it)
-        }
-        val baseHSV = Mat()
-        Imgproc.cvtColor(baseImage, baseHSV, Imgproc.COLOR_BGR2HSV)
+        var baseHSV = getMatFormPaths(imagePaths[0], area)?:return null
 
         // 初始化结果矩阵（全黑）
         val mask = Mat(baseHSV.size(), CvType.CV_8UC3, Scalar(0.0, 0.0, 0.0))
 
         // 遍历其他图像
         for (i in 1 until imagePaths.size) {
-            var nextImage = Imgcodecs.imread(imagePaths[i])
-            if (nextImage.empty()) {
-                println("无法加载图像: ${imagePaths[i]}")
-                continue
-            }
-            area?.let {
-                nextImage = cropMat(nextImage, it)
-            }
             // 转换为 HSV 格式
-            val nextHSV = Mat()
-            Imgproc.cvtColor(nextImage, nextHSV, Imgproc.COLOR_BGR2HSV)
-
+            val nextHSV = getMatFormPaths(imagePaths[i], area)?:return null
             // 创建临时掩码矩阵
             val tempMask = Mat(baseHSV.size(), CvType.CV_8UC3, Scalar(0.0, 0.0, 0.0))
 
@@ -416,12 +399,9 @@ object MatUtils {
                 for (col in 0 until baseHSV.cols()) {
                     val basePixel = baseHSV.get(row, col)
                     val nextPixel = nextHSV.get(row, col)
-                    //打印二点信息
-//                    Log.i(TAG,"basePixel:${basePixel[0]},${basePixel[1]},${basePixel[2]}")
-//                    Log.i(TAG,"nextPixel:${nextPixel[0]},${nextPixel[1]},${nextPixel[2]}")
-                    if (Math.abs(basePixel[0] - nextPixel[0]) <= 1 &&
-                        Math.abs(basePixel[1] - nextPixel[1]) <= 1 &&
-                        Math.abs(basePixel[2] - nextPixel[2]) <= 1) {
+
+                    if (checkHSVSame.checkHSVSame(basePixel[0],basePixel[1],basePixel[2]
+                            ,nextPixel[0],nextPixel[1],nextPixel[2])) {
                         Log.i(TAG, "添加点, $row  $col")
                         tempMask.put(row, col, *basePixel)
                     }
