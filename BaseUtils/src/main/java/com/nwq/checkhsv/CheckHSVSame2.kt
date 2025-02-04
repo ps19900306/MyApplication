@@ -16,10 +16,10 @@ class CheckHSVSame2 : CheckHSVSame {
         }
 
         //白色的时候允许的误差变大
-        if (v1 > 230 && v2 > 230 && s1 < 20 && s2 < 20) {
+        if (v1 > 210 && v2 > 210 && s1 < 20 && s2 < 20) {
             return abs(h1 - h2) <= 10 &&
-                    abs(s1 - s2) <= 5 &&
-                    abs(v1 - v2) <= 5
+                    abs(s1 - s2) <= 10 &&
+                    abs(v1 - v2) <= 20
         }
 
         return abs(h1 - h2) <= 1 &&

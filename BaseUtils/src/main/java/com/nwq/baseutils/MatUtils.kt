@@ -374,7 +374,7 @@ object MatUtils {
 
 
     //chatgpt 提取共同的点
-    fun findExactHSVMatch(imagePaths: List<String>, area: CoordinateArea? = null,checkHSVSame: CheckHSVSame= CheckHSVSame1()): Mat? {
+    fun findExactHSVMatch(imagePaths: List<String>, area: CoordinateArea? = null,checkHSVSame: CheckHSVSame= CheckHSVSame2()): Mat? {
         if (imagePaths.isEmpty()) {
             println("没有提供图像路径！")
             return null
