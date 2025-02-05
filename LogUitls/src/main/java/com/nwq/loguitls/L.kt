@@ -9,6 +9,7 @@ object L : ILog {
 
     private val list = mutableListOf<ILog>()
 
+
     //初始化打印哪些日志
     init {
         // list.add(FileLog(LogFilterInfo(level = LogLevel.INFO))) //日志文件  默认不开启
