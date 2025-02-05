@@ -7,6 +7,7 @@ import com.nwq.baseobj.CoordinateArea
 import com.nwq.checkhsv.CheckHSVSame
 import com.nwq.checkhsv.CheckHSVSame1
 import com.nwq.checkhsv.CheckHSVSame2
+import com.nwq.checkhsv.CheckHSVSame3
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
@@ -374,7 +375,7 @@ object MatUtils {
 
 
     //chatgpt 提取共同的点
-    fun findExactHSVMatch(imagePaths: List<String>, area: CoordinateArea? = null,checkHSVSame: CheckHSVSame= CheckHSVSame2()): Mat? {
+    fun findExactHSVMatch(imagePaths: List<String>, area: CoordinateArea? = null,checkHSVSame: CheckHSVSame= CheckHSVSame3()): Mat? {
         if (imagePaths.isEmpty()) {
             println("没有提供图像路径！")
             return null
