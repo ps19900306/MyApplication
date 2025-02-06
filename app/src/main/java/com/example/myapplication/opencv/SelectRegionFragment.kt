@@ -131,7 +131,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
             }
 
             R.string.take_img -> {
-                // mTouchOptModel.fullScreen()
+                openCvPreviewModel.takeImage()
             }
 
             R.string.select_critical_area -> {

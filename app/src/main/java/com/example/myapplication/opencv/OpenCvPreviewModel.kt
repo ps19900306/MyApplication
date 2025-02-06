@@ -1,17 +1,22 @@
 package com.example.myapplication.opencv
 
 import android.graphics.Bitmap
+import android.provider.Settings.Global
 import android.text.TextUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.TakeImgAccessibilityService
 import com.luck.picture.lib.entity.LocalMedia
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.data.ColorItem
 import com.nwq.baseutils.ByteToIntUtils
+import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.HsvRuleUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.loguitls.L
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -280,6 +285,20 @@ class OpenCvPreviewModel : ViewModel() {
             }
         } else {
             srcHSVMat
+        }
+    }
+
+    fun takeImage() {
+        TakeImgAccessibilityService.takeImgTools?.let {
+            L.i(TAG, "takeImage")
+            GlobalScope.launch {
+                delay(5000)
+                val bitmap = it.onRequestParameter()
+                if (bitmap != null) {
+                    setScrMap(bitmap)
+                    FileUtils.saveBitmapToRootImg(bitmap, "autoCodeTake")
+                }
+            }
         }
     }
 }

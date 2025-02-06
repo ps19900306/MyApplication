@@ -54,7 +54,12 @@ object FileUtils {
         }
 
         // 创建文件对象
-        val file = File(directory, "$fileName.jpg")
+        val file = if (fileName.contains(".")) {
+            File(directory, fileName)
+        } else {
+            File(directory, "$fileName.jpg")
+        }
+
         if (!file.parentFile.exists()) {
             file.parentFile.mkdirs()
         }
@@ -97,7 +102,7 @@ object FileUtils {
      * @param fileName 文件名
      * @return 读取的Bitmap对象，如果读取失败则返回null
      */
-    fun readBitmapFromRootImg( fileName: String): Bitmap? {
+    fun readBitmapFromRootImg(fileName: String): Bitmap? {
         // 获取根目录下的 img 文件夹
         val directory = File(Environment.getExternalStorageDirectory(), "img")
         if (!directory.exists()) {

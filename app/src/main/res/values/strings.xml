@@ -65,8 +65,9 @@
     <string name="sort_by_x">x轴倒序</string>
     <string name="offset_value">底色取差</string>
     <string name="take_img">截图</string>
+    <string name="take_img_continue">连续截图</string>
     <string name="replace_img">替换图片</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="result_is_do">标签</string>
     <string name="result_is_effective">有效</string>
