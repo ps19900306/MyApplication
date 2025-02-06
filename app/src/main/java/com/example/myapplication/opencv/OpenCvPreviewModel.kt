@@ -296,7 +296,23 @@ class OpenCvPreviewModel : ViewModel() {
                 val bitmap = it.onRequestParameter()
                 if (bitmap != null) {
                     setScrMap(bitmap)
-                    FileUtils.saveBitmapToRootImg(bitmap, "autoCodeTake")
+                    FileUtils.saveBitmapToGallery(bitmap, "autoCodeTake")
+                }
+            }
+        }
+    }
+
+    fun takeImageS() {
+        TakeImgAccessibilityService.takeImgTools?.let {
+            L.i(TAG, "takeImage")
+            GlobalScope.launch {
+                for (i in 0..300){
+                    delay(5000)
+                    val bitmap = it.onRequestParameter()
+                    if (bitmap != null) {
+                        setScrMap(bitmap)
+                        FileUtils.saveBitmapToGallery(bitmap, "autoCodeTake$i")
+                    }
                 }
             }
         }

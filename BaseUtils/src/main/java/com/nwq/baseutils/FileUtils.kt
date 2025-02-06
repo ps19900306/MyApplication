@@ -5,9 +5,10 @@ import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import androidx.core.content.FileProvider
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -49,8 +50,8 @@ object FileUtils {
 
         // 获取根目录下的 img 文件夹
         val directory = File(Environment.getExternalStorageDirectory(), "img")
-        if (!directory.exists()) {
-            directory.mkdirs()
+        if (!directory.exists() && !directory.mkdirs()) {
+            return false
         }
 
         // 创建文件对象
@@ -60,15 +61,17 @@ object FileUtils {
             File(directory, "$fileName.jpg")
         }
 
-        if (!file.parentFile.exists()) {
-            file.parentFile.mkdirs()
+        // 确保父目录存在
+        if (!file.parentFile.exists() && !file.parentFile.mkdirs()) {
+            return false
         }
 
         // 将Bitmap保存到文件
-        try {
+        return try {
             file.outputStream().use { out ->
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
             }
+
             // 扫描文件，使其出现在图库中
             MediaScannerConnection.scanFile(
                 context,
@@ -77,22 +80,41 @@ object FileUtils {
                 null
             )
 
-            // 将文件路径转换为Uri
-            val contentUri =
-                FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
             // 插入到MediaStore
-            context.contentResolver.insert(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                ContentValues().apply {
-                    put(MediaStore.Images.Media.DATA, file.absolutePath)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val contentValues = ContentValues().apply {
                     put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
                     put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                })
+                    put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/img")
+                }
 
-            return true
+                val uri = context.contentResolver.insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    contentValues
+                )
+
+                uri?.let {
+                    context.contentResolver.openOutputStream(uri)?.use { out ->
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                    }
+                }
+            } else {
+
+
+                context.contentResolver.insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    ContentValues().apply {
+                        put(MediaStore.Images.Media.DATA, file.absolutePath)
+                        put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                    }
+                )
+            }
+
+            true
         } catch (e: IOException) {
             e.printStackTrace()
-            return false
+            false
         }
     }
 
@@ -110,7 +132,11 @@ object FileUtils {
         }
 
         // 创建文件对象
-        val file = File(directory, "$fileName.jpg")
+        val file = if (fileName.contains(".")) {
+            File(directory, fileName)
+        } else {
+            File(directory, "$fileName.jpg")
+        }
 
         // 检查文件是否存在
         if (!file.exists()) {
@@ -190,7 +216,11 @@ object FileUtils {
         val directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: return false
 
         // 创建文件对象
-        val file = File(directory, fileName)
+        val file = if (fileName.contains(".")) {
+            File(directory, fileName)
+        } else {
+            File(directory, "$fileName.jpg")
+        }
         if (!file.parentFile.exists()) {
             file.parentFile.mkdirs()
         }
@@ -208,9 +238,8 @@ object FileUtils {
                 null
             )
 
-            // 将文件路径转换为Uri
-            val contentUri =
-                FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+
+
             // 插入到MediaStore
             context.contentResolver.insert(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,

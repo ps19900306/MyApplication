@@ -114,6 +114,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
         list.add(ResStrKeyText(R.string.start_screen))
         list.add(ResStrKeyText(R.string.select_picture))
         list.add(ResStrKeyText(R.string.take_img))
+        list.add(ResStrKeyText(R.string.take_img_continue))
         list.add(ResStrKeyText(R.string.select_critical_area))
         list.add(ResStrKeyText(R.string.find_the_image_area))
         list.add(ResStrKeyText(R.string.hsv_filter))
@@ -133,7 +134,9 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
             R.string.take_img -> {
                 openCvPreviewModel.takeImage()
             }
-
+            R.string.take_img_continue->{
+                openCvPreviewModel.takeImageS()
+            }
             R.string.select_critical_area -> {
                 selectCriticalArea()
             }
@@ -141,6 +144,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
             R.string.find_the_image_area -> {
                 selectCriticalArea()
             }
+
             R.string.hsv_filter->{
                 val SetSHVFilterDialog = SetSHVFilterDialog()
                 SetSHVFilterDialog.show(requireActivity().supportFragmentManager, "SetSHVFilterDialog")
