@@ -306,7 +306,7 @@ class OpenCvPreviewModel : ViewModel() {
         TakeImgAccessibilityService.takeImgTools?.let {
             L.i(TAG, "takeImage")
             GlobalScope.launch {
-                for (i in 0..300){
+                for (i in 0..30){
                     delay(5000)
                     val bitmap = it.onRequestParameter()
                     if (bitmap != null) {

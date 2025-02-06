@@ -136,17 +136,15 @@ class AutoFindRuleModel : ViewModel() {
             if (record != null) {
                 T.show("已存在该描述")
             } else {
-                val pointList =  iAutoRulePoint.autoPoint(mat)
-
-//                hSVRuleList.forEach {
-//                    val list = MatUtils.getCornerPoint(
-//                        mat, it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV
-//                    )
-//                    pointList.addAll(list)
-//                }
+                //获取到关键点
+                val keyPointList =  iAutoRulePoint.autoPoint(mat)
                 //这里获取到的点坐标是基于mat的
-                buildRgbFindTarget(pointList)
-                buildHsvFindTarget(pointList)
+                buildRgbFindTarget(keyPointList)
+                buildHsvFindTarget(keyPointList)
+
+
+
+
                 buildImgFindTarget()
                 buildMatFindTarget()
                 T.show("构建成功")
