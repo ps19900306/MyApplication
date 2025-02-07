@@ -38,6 +38,10 @@
             android:name="autoHsvRuleTag"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="filePath"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 </navigation>
