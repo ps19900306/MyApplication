@@ -31,13 +31,13 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
 
     override fun initData() {
         super.initData()
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.RESUMED){
-                viewModel.getByTagFlow(args.autoHsvRuleTag)?.collect{
-                    initView(it)
-                }
-            }
-        }
+//        lifecycleScope.launch {
+//            lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.RESUMED){
+//                viewModel.getByTagFlow(args.autoHsvRuleTag)?.collect{
+//                    initView(it)
+//                }
+//            }
+//        }
     }
 
     private fun initView(autoRulePointEntity: AutoRulePointEntity) {

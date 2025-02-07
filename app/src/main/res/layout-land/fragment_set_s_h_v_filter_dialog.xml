@@ -4,12 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--纵向分割线 -->
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/guideline"
-        app:layout_constraintGuide_begin="50dp" />
+        app:layout_constraintGuide_percent="0.5"
+       />
     <!-- Hue 区间最小值选择 -->
     <TextView
         android:id="@+id/tv_hue_min"
@@ -37,19 +39,19 @@
         android:layout_margin="16dp"
         android:hint="0-180"
         android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@id/tv_hue_min"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.13" />
 
     <!-- Hue 区间最大值选择 -->
     <TextView
         android:id="@+id/tv_hue_max"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
         android:text="Hue Max (0-180)"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sb_hue_min" />
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@id/tv_hue_min" />
 
     <SeekBar
         android:id="@+id/sb_hue_max"
@@ -58,7 +60,7 @@
         android:layout_margin="16dp"
         android:max="180"
         app:layout_constraintEnd_toStartOf="@id/et_hue_max"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/tv_hue_max" />
 
     <EditText
@@ -70,7 +72,7 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_hue_max"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.13" />
 
     <!-- Saturation 区间最小值选择 -->
     <TextView
@@ -99,19 +101,19 @@
         android:layout_margin="16dp"
         android:hint="0-255"
         android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintTop_toTopOf="@id/tv_saturation_min"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.13" />
 
     <!-- Saturation 区间最大值选择 -->
     <TextView
         android:id="@+id/tv_saturation_max"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
         android:text="Saturation Max (0-255)"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sb_saturation_min" />
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@id/tv_saturation_min" />
 
     <SeekBar
         android:id="@+id/sb_saturation_max"
@@ -120,7 +122,7 @@
         android:layout_margin="16dp"
         android:max="255"
         app:layout_constraintEnd_toStartOf="@id/et_saturation_max"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/tv_saturation_max" />
 
     <EditText
@@ -132,7 +134,7 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_saturation_max"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.13" />
 
     <!-- Value 区间最小值选择 -->
     <TextView
@@ -161,19 +163,19 @@
         android:layout_margin="16dp"
         android:hint="0-255"
         android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintTop_toTopOf="@id/tv_value_min"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.13" />
 
     <!-- Value 区间最大值选择 -->
     <TextView
         android:id="@+id/tv_value_max"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
         android:text="Value Max (0-255)"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sb_value_min" />
+        app:layout_constraintTop_toTopOf="@id/tv_value_min" />
 
     <SeekBar
         android:id="@+id/sb_value_max"
@@ -182,7 +184,7 @@
         android:layout_margin="16dp"
         android:max="255"
         app:layout_constraintEnd_toStartOf="@id/et_value_max"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/tv_value_max" />
 
     <EditText
@@ -194,7 +196,7 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_value_max"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.13" />
 
      <androidx.recyclerview.widget.RecyclerView
          android:id="@+id/recycler"
@@ -207,15 +209,29 @@
          android:layout_width="match_parent"
          android:layout_height="50dp"/>
 
+    <ImageView
+        android:id="@+id/srcImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/saveBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler"
+        tools:layout_height="100dp"
+        tools:layout_width="100dp"
+        tools:visibility="visible" />
+
     <Button
         android:id="@+id/saveBtn"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_height="wrap_content"
-        android:text=""
-        tools:layout_editor_absoluteX="164dp" />
+        android:text="@string/save"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/srcImg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/srcImg"
+        app:layout_constraintTop_toTopOf="@+id/srcImg"
+        tools:visibility="visible" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

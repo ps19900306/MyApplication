@@ -37,7 +37,7 @@
         <argument
             android:name="autoHsvRuleTag"
             app:argType="string"
-            app:nullable="false" />
+            app:nullable="true" />
     </fragment>
 
 </navigation>
