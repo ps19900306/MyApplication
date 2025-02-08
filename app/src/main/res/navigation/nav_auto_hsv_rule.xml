@@ -12,22 +12,10 @@
         android:label="AutoHsvRuleListFragment"
         tools:layout="@layout/fragment_auto_hsv_rule_list">
         <action
-            android:id="@+id/action_autoHsvRuleListFragment_to_autoHsvRuleCreateFragment"
-            app:destination="@id/autoHsvRuleCreateFragment" />
-        <action
             android:id="@+id/action_autoHsvRuleListFragment_to_autoHsvRuleDetailFragment"
             app:destination="@id/autoHsvRuleDetailFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/autoHsvRuleCreateFragment"
-        android:name="com.example.myapplication.auto_hsv_rule.AutoHsvRuleCreateFragment"
-        android:label="AutoHsvRuleCreateFragment"
-        tools:layout="@layout/fragment_auto_hsv_rule_create">
-        <action
-            android:id="@+id/action_autoHsvRuleCreateFragment_to_autoHsvRuleDetailFragment"
-            app:destination="@id/autoHsvRuleDetailFragment" />
-    </fragment>
 
     <fragment
         android:id="@+id/autoHsvRuleDetailFragment"

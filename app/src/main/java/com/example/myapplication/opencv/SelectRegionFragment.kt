@@ -28,9 +28,11 @@ import com.nwq.adapter.KeyTextAdapter
 import com.nwq.adapter.KeyTextCheckAdapter
 import com.nwq.adapter.ResStrKeyText
 import com.nwq.base.BaseFragment
+import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
+import com.nwq.constant.ConstantKeyStr
 import com.nwq.opencv.IAutoRulePoint
 import com.nwq.view.SimpleImgFragment
 import kotlinx.coroutines.launch
@@ -118,6 +120,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
         list.add(ResStrKeyText(R.string.select_critical_area))
         list.add(ResStrKeyText(R.string.find_the_image_area))
         list.add(ResStrKeyText(R.string.hsv_filter))
+        list.add(ResStrKeyText(R.string.add_hsv_filter))
         return list
     }
 
@@ -149,7 +152,20 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
                 val SetSHVFilterDialog = SetSHVFilterDialog()
                 SetSHVFilterDialog.show(requireActivity().supportFragmentManager, "SetSHVFilterDialog")
             }
+            R.string.add_hsv_filter->{
+                addHsvFilter()
+            }
+        }
+    }
 
+    private fun addHsvFilter() {
+        if (openCvPreviewModel.srcBitmap == null) {
+            T.show("请先选择原始图片")
+            return
+        }
+        lifecycleScope.launch {
+            val rectArea = mTouchOptModel.getRectArea()
+            FileUtils.saveBitmapToGallery(openCvPreviewModel.srcBitmap!!, ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME, rectArea)
         }
     }
 

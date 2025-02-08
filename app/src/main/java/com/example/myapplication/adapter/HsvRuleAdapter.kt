@@ -11,6 +11,7 @@ import com.nwq.callback.CallBack
 import com.nwq.opencv.hsv.HSVRule
 
 
+//
 class HsvRuleAdapter(val isSingCheck: Boolean = false) :
     RecyclerView.Adapter<HsvRuleAdapter.ViewHolder>() {
 

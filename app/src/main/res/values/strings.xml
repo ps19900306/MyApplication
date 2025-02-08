@@ -34,6 +34,7 @@
     <string name="rich_color_image_recognition">富颜色识别</string>
     <string name="calculate_space">测距</string>
     <string name="hsv_filter">hsv过滤</string>
+    <string name="add_hsv_filter">添加HSV过滤规则</string>
 
     <string name="merge">合并</string>
     <string name="background">设为底色</string>

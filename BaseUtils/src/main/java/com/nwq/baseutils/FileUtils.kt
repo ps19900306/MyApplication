@@ -8,6 +8,7 @@ import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import com.nwq.baseobj.CoordinateArea
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -85,7 +86,10 @@ object FileUtils {
                 val contentValues = ContentValues().apply {
                     put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
                     put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                    put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/img")
+                    put(
+                        MediaStore.Images.Media.RELATIVE_PATH,
+                        Environment.DIRECTORY_PICTURES + "/img"
+                    )
                 }
 
                 val uri = context.contentResolver.insert(
@@ -205,12 +209,28 @@ object FileUtils {
      * @param fileName 文件名
      * @return 保存是否成功
      */
-    fun saveBitmapToGallery(bitmap: Bitmap, fileName: String): Boolean {
+    fun saveBitmapToGallery(
+        srBitmap: Bitmap,
+        fileName: String,
+        coordinateArea: CoordinateArea? = null
+    ): Boolean {
         // 检查外部存储是否可用
         val state = Environment.getExternalStorageState()
         if (state != Environment.MEDIA_MOUNTED) {
             return false
         }
+        val bitmap = if (coordinateArea != null) {
+            Bitmap.createBitmap(
+                srBitmap,
+                coordinateArea.x,
+                coordinateArea.y,
+                coordinateArea.width,
+                coordinateArea.height
+            )
+        } else {
+            srBitmap
+        }
+
 
         // 获取外部存储目录
         val directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: return false
@@ -237,7 +257,6 @@ object FileUtils {
                 arrayOf("image/jpeg"),
                 null
             )
-
 
 
             // 插入到MediaStore

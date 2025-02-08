@@ -1,6 +1,8 @@
 package com.example.myapplication.auto_hsv_rule
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
@@ -31,15 +33,33 @@ import com.nwq.baseobj.CoordinatePoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+/**
+ * AutoHsvRuleActivity 类继承自 BaseActivity，主要用于生成 进行点筛选的规则
+ * 该类负责初始化与 ActivityAutoHsvRuleBinding 绑定的活动界面元素
+ * 通过这个绑定，可以轻松地访问和操作界面中的视图，而无需使用 findViewById 方法
+ */
+class AutoHsvRuleActivity : BaseActivity<ActivityAutoHsvRuleBinding>() {
 
-class AutoHsvRuleActivity :BaseActivity<ActivityAutoHsvRuleBinding>() {
+    companion object {
+       private const val IS_CREATE = "isCreate"
+
+        fun startActivityList(activity: Activity) {
+            activity.startActivity(Intent(activity, AutoHsvRuleActivity::class.java).putExtra(IS_CREATE,false))
+        }
+
+        fun startActivityCreate(activity: Activity) {
+            activity.startActivity(Intent(activity, AutoHsvRuleActivity::class.java).putExtra(IS_CREATE,true))
+        }
+    }
 
     private val TAG = AutoHsvRuleActivity::class.java.simpleName
+
     private val viewModel by viewModels<OpenCvPreviewModel>()
     private val mTouchOptModel by viewModels<TouchOptModel>()
     override fun createBinding(inflater: LayoutInflater): ActivityAutoHsvRuleBinding {
         return ActivityAutoHsvRuleBinding.inflate(layoutInflater)
     }
+
 
     lateinit var controller: WindowInsetsControllerCompat
 
@@ -54,6 +74,7 @@ class AutoHsvRuleActivity :BaseActivity<ActivityAutoHsvRuleBinding>() {
         window.attributes = params
     }
 
+
     override fun onResume() {
         super.onResume()
         fullScreen()
@@ -66,20 +87,16 @@ class AutoHsvRuleActivity :BaseActivity<ActivityAutoHsvRuleBinding>() {
 
 
     override fun initData() {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.showBitmapFlow.collectLatest {
-                    Log.i(TAG, "showBitmapFlow collectLatest: $it")
-                    binding.bgImg.setImageBitmap(it)
-                }
-            }
+        if ( intent.getBooleanExtra(IS_CREATE,false)){
+
         }
+
 
         lifecycleScope.launch {
             mTouchOptModel.touchType.collectLatest {
                 when (it) {
                     TouchOptModel.NORMAL_TYPE -> {
-                        binding.navContain.visibility = View.VISIBLE
+                    //    binding.navContain.visibility = View.VISIBLE
                         nowMode = it
                     }
 
@@ -98,54 +115,13 @@ class AutoHsvRuleActivity :BaseActivity<ActivityAutoHsvRuleBinding>() {
                     TouchOptModel.SINGLE_CLICK_TYPE,
                     TouchOptModel.MEASURE_DISTANCE_TYPE,
                     -> {
-                        binding.navContain.visibility = View.INVISIBLE
+                    //    binding.navContain.visibility = View.INVISIBLE
                         nowMode = it
                     }
                 }
             }
         }
 
-//        binding.button2.singleClick {
-//            SetSHVFilterDialog().show(supportFragmentManager, "SHV");
-//        }
-
-//        binding.sbHNearby.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-//            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-//                viewModel.upDataHFlow(progress);
-//            }
-//
-//            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-//            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-//        })
-
-    }
-
-    override fun getPermission(): Array<String>? {
-        return arrayOf(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Manifest.permission.READ_MEDIA_IMAGES
-            } else {
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            }
-        )
-    }
-
-    override fun onPermissionPass() {
-        PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
-            .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
-                override fun onResult(result: ArrayList<LocalMedia?>?) {
-                    result?.getOrNull(0)?.let {
-                        val opts = BitmapFactory.Options()
-                        opts.outConfig = Bitmap.Config.ARGB_8888
-                        opts.inMutable = true
-                        BitmapFactory.decodeFile(it.realPath, opts)?.let {
-                            viewModel.setScrMap(it)
-                        }
-                    }
-                }
-
-                override fun onCancel() {}
-            })
     }
 
 
@@ -208,7 +184,7 @@ class AutoHsvRuleActivity :BaseActivity<ActivityAutoHsvRuleBinding>() {
                     if (ev.action == MotionEvent.ACTION_MOVE) {
                         val coordinateArea =
                             createCoordinateArea(starX, starY, ev.x, ev.y, isCircle)
-                        binding.previewView.setArea(coordinateArea)
+                       binding.previewView.setArea(coordinateArea)
                     } else if (ev.action == MotionEvent.ACTION_UP) {
                         if (System.currentTimeMillis() - lastTime < cancelInterval) {
                             val coordinateArea =
