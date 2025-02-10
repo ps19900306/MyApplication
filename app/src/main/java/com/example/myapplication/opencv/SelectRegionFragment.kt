@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.auto_hsv_rule.AutoHsvRuleActivity
 import com.example.myapplication.databinding.FragmentSelectRegionBinding
 import com.luck.picture.lib.utils.ToastUtils
 import com.nwq.adapter.CheckKeyText
@@ -166,6 +167,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
         lifecycleScope.launch {
             val rectArea = mTouchOptModel.getRectArea()
             FileUtils.saveBitmapToGallery(openCvPreviewModel.srcBitmap!!, ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME, rectArea)
+            AutoHsvRuleActivity.startActivityCreate(requireActivity());
         }
     }
 

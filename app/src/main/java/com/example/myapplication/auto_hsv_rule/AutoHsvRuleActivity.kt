@@ -19,6 +19,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
+import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityAutoHsvRuleBinding
 import com.example.myapplication.opencv.OpenCvPreviewModel
 import com.example.myapplication.opencv.TouchOptModel
@@ -87,9 +89,15 @@ class AutoHsvRuleActivity : BaseActivity<ActivityAutoHsvRuleBinding>() {
 
 
     override fun initData() {
-        if ( intent.getBooleanExtra(IS_CREATE,false)){
-
+        val navController = findNavController(R.id.nav_host_fragment)
+        //我希望使用nav_auto_hsv_rule这个导航文件
+        if (intent.getBooleanExtra(IS_CREATE,false)){
+            navController.navigate(R.id.action_autoHsvRuleListFragment_to_autoHsvRuleDetailFragment)
         }
+//        else{
+//            // 显示这个autoHsvRuleListFragment
+//            navController.navigate(R.id.autoHsvRuleListFragment)
+//        }
 
 
         lifecycleScope.launch {

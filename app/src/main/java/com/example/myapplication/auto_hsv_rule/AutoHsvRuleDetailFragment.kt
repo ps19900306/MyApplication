@@ -14,6 +14,7 @@ import com.example.myapplication.adapter.HsvRuleAdapter
 import com.example.myapplication.databinding.FragmentAutoHsvRuleDetailBinding
 import com.nwq.base.BaseFragment
 import com.nwq.baseutils.FileUtils
+import com.nwq.constant.ConstantKeyStr
 import com.nwq.opencv.db.entity.AutoRulePointEntity
 import kotlinx.coroutines.launch
 
@@ -47,13 +48,10 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
                     }
                 }
             }
-        } else if (!TextUtils.isEmpty(args.filePath)) {
-            val bitmap = FileUtils.readBitmapFromRootImg(args.filePath!!)
+        } else  {
+            val bitmap = FileUtils.readBitmapFromRootImg(ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME)?:return
             binding.srcImg.setImageBitmap(bitmap)
             autoRulePointEntity = AutoRulePointEntity()
-        } else {
-            Log.e("AutoHsvRuleDetailFragment", "initData: filePath is null")
-            return
         }
     }
 
