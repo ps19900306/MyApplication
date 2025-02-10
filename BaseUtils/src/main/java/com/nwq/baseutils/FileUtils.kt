@@ -216,7 +216,7 @@ object FileUtils {
      * 将Bitmap保存到相册
      *
      * @param srBitmap 要保存的Bitmap对象
-     * @param fileName 保存后的文件名，可以包含扩展名
+     * @param fileNameStr 保存后的文件名，可以包含扩展名
      * @param coordinateArea 可选参数，指定Bitmap的裁剪区域
      * @return 如果保存成功返回true，否则返回false
      */
@@ -225,6 +225,7 @@ object FileUtils {
         fileNameStr: String,
         coordinateArea: CoordinateArea? = null
     ): Boolean {
+        // 如果文件名不包含扩展名，则默认添加.jpg扩展名
         val fileName = if (fileNameStr.contains(".")) {
             fileNameStr
         } else {
@@ -244,30 +245,35 @@ object FileUtils {
             srBitmap
         }
 
-        // 保存Bitmap到相册
+        // 准备ContentValues以插入MediaStore
         val contentValues = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            // 从Android Q开始，需要指定相对路径
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
             }
         }
 
+        // 获取ContentResolver以进行后续操作
         val resolver = context.contentResolver
         var outputStream: OutputStream? = null
         var uri: Uri? = null
 
         try {
+            // 插入MediaStore并获取URI
             uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
             if (uri == null) {
                 return false
             }
 
+            // 打开输出流以写入数据
             outputStream = resolver.openOutputStream(uri)
             if (outputStream == null) {
                 return false
             }
 
+            // 将Bitmap压缩为JPEG格式并写入输出流
             bitmapToSave.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
             Log.i(TAG, "saveBitmapToGallery 成功")
             return true
@@ -276,18 +282,29 @@ object FileUtils {
             Log.i(TAG, "saveBitmapToGallery 失败")
             return false
         } finally {
+            // 确保输出流被正确关闭
             outputStream?.close()
         }
     }
 
 
+    /**
+     * 从相册中加载位图
+     *
+     * @param fileNameStr 图片文件名的字符串表示，可以不包含扩展名
+     * @return 如果成功找到并加载图片，则返回Bitmap对象；否则返回null
+     */
     fun loadBitmapFromGallery(fileNameStr: String): Bitmap? {
+        // 获取内容解析器
         val contentResolver: ContentResolver = ContextUtils.getContext().contentResolver
+
+        // 确保文件名包含扩展名
         val fileName = if (fileNameStr.contains(".")) {
             fileNameStr
         } else {
             "$fileNameStr.jpg"
         }
+
         // 查询相册中的图片
         val projection = arrayOf(MediaStore.Images.Media._ID)
         val selection = "${MediaStore.Images.Media.DISPLAY_NAME} = ?"
@@ -303,6 +320,7 @@ object FileUtils {
 
         cursor?.use {
             if (it.moveToFirst()) {
+                // 获取图片ID
                 val idColumnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
                 val imageId = it.getLong(idColumnIndex)
 
