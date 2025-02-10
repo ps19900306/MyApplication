@@ -89,16 +89,6 @@ class AutoHsvRuleActivity : BaseActivity<ActivityAutoHsvRuleBinding>() {
 
 
     override fun initData() {
-        val navController = findNavController(R.id.nav_host_fragment)
-        //我希望使用nav_auto_hsv_rule这个导航文件
-        if (intent.getBooleanExtra(IS_CREATE,false)){
-            navController.navigate(R.id.action_autoHsvRuleListFragment_to_autoHsvRuleDetailFragment)
-        }
-//        else{
-//            // 显示这个autoHsvRuleListFragment
-//            navController.navigate(R.id.autoHsvRuleListFragment)
-//        }
-
 
         lifecycleScope.launch {
             mTouchOptModel.touchType.collectLatest {

@@ -49,7 +49,7 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
                 }
             }
         } else  {
-            val bitmap = FileUtils.readBitmapFromRootImg(ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME)?:return
+            val bitmap = FileUtils.loadBitmapFromGallery(ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME)?:return
             binding.srcImg.setImageBitmap(bitmap)
             autoRulePointEntity = AutoRulePointEntity()
         }

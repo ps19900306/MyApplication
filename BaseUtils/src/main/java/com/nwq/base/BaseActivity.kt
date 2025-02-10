@@ -1,4 +1,5 @@
 package com.nwq.base
+
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,8 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     protected val binding: VB get() = _binding!!
 
     private val REQUEST_CODE_PERMISSION = 1001
+
+    protected var hasPermission = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,18 +47,33 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     }
 
     protected fun checkPermission() {
-        val permissions = getPermission() ?: return
+        if (hasPermission)
+            return
+        val permissions = getPermission()
+        if (permissions.isNullOrEmpty()) {
+            hasPermission = true
+            return
+        }
         val permissionsToRequest = mutableListOf<String>()
 
         for (permission in permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 permissionsToRequest.add(permission)
             }
         }
         if (permissionsToRequest.isNotEmpty()) {
             Log.i("PreviewImgActivity", "onPermissionPass")
-            ActivityCompat.requestPermissions(this, permissionsToRequest.toTypedArray(), REQUEST_CODE_PERMISSION)
+            ActivityCompat.requestPermissions(
+                this,
+                permissionsToRequest.toTypedArray(),
+                REQUEST_CODE_PERMISSION
+            )
         } else {
+            hasPermission=true
             onPermissionPass()
         }
     }
@@ -76,6 +94,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
                 }
             }
             if (allPermissionsGranted) {
+                hasPermission=true
                 onPermissionPass()
             } else {
                 onPermissionFail()
@@ -90,7 +109,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     protected open fun onPermissionFail() {
         // 默认实现，子类可以重写
     }
-
 
 
 }

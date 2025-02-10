@@ -34,6 +34,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
     private val viewModel by viewModels<OpenCvPreviewModel>()
     private val mTouchOptModel by viewModels<TouchOptModel>()
     private lateinit var controller: WindowInsetsControllerCompat
+
     override fun createBinding(inflater: LayoutInflater): ActivityPreviewImgBinding {
         return ActivityPreviewImgBinding.inflate(layoutInflater)
     }
@@ -99,7 +100,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 
                     TouchOptModel.SELECT_PICTURE -> {
                         L.i(TAG, "selectPicture")
-                        checkPermission()
+                        selectPicture()
                         mTouchOptModel.resetTouchOptFlag()
                     }
 
@@ -119,7 +120,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
 //            SetSHVFilterDialog().show(supportFragmentManager, "SHV");
 //        }
 
-
+        checkPermission()
 
     }
 
@@ -131,8 +132,12 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
         )
     }
 
-    override fun onPermissionPass() {
-        L.i(TAG, "onPermissionPass")
+    private fun selectPicture() {
+        if (!hasPermission){
+            checkPermission()
+            return
+        }
+        L.i(TAG, "selectPicture")
         PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
             .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
                 override fun onResult(result: ArrayList<LocalMedia?>?) {
@@ -149,11 +154,17 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
                 }
 
                 override fun onCancel() {
-                        L.i(TAG, "onCancel")
+                    L.i(TAG, "onCancel")
                 }
 
 
             })
+    }
+
+
+    override fun onPermissionPass() {
+        L.i(TAG, "onPermissionPass")
+
     }
 
 

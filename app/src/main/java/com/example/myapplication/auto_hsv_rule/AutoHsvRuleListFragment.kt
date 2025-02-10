@@ -17,6 +17,7 @@ import com.example.myapplication.adapter.FindTargetListAdapter
 import com.example.myapplication.databinding.FragmentAutoHsvRuleListBinding
 import com.nwq.base.BaseFragment
 import com.nwq.baseutils.runOnUI
+import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.opencv.IAutoRulePoint
 import kotlinx.coroutines.flow.collectLatest
@@ -79,6 +80,10 @@ class AutoHsvRuleListFragment : BaseFragment<FragmentAutoHsvRuleListBinding>() {
                 }
             }
         })
+
+        binding.createBtn.singleClick {
+            findNavController().navigate(R.id.action_autoHsvRuleListFragment_to_autoHsvRuleDetailFragment,  AutoHsvRuleDetailFragmentArgs(null).toBundle())
+        }
     }
 
 }

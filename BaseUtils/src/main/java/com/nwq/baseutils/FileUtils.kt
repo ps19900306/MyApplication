@@ -1,13 +1,17 @@
 package com.nwq.baseutils
 
 import android.annotation.SuppressLint
+import android.content.ContentResolver
 import android.content.ContentValues
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import com.nwq.baseobj.CoordinateArea
 
 import kotlinx.coroutines.Dispatchers
@@ -16,10 +20,14 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.FileWriter
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 
 @SuppressLint("StaticFieldLeak")
 object FileUtils {
     private val context = ContextUtils.getContext()
+
+    private val TAG = "FileUtils"
 
     /**
      * 保存字符串到指定文件
@@ -202,24 +210,29 @@ object FileUtils {
     }
 
 
+
+
     /**
-     * 将Bitmap保存到图库
+     * 将Bitmap保存到相册
      *
-     * @param bitmap 要保存的Bitmap对象
-     * @param fileName 文件名
-     * @return 保存是否成功
+     * @param srBitmap 要保存的Bitmap对象
+     * @param fileName 保存后的文件名，可以包含扩展名
+     * @param coordinateArea 可选参数，指定Bitmap的裁剪区域
+     * @return 如果保存成功返回true，否则返回false
      */
     fun saveBitmapToGallery(
         srBitmap: Bitmap,
-        fileName: String,
+        fileNameStr: String,
         coordinateArea: CoordinateArea? = null
     ): Boolean {
-        // 检查外部存储是否可用
-        val state = Environment.getExternalStorageState()
-        if (state != Environment.MEDIA_MOUNTED) {
-            return false
+        val fileName = if (fileNameStr.contains(".")) {
+            fileNameStr
+        } else {
+            "$fileNameStr.jpg"
         }
-        val bitmap = if (coordinateArea != null) {
+
+        // 裁剪Bitmap（如果指定了裁剪区域）
+        val bitmapToSave = if (coordinateArea != null) {
             Bitmap.createBitmap(
                 srBitmap,
                 coordinateArea.x,
@@ -231,49 +244,87 @@ object FileUtils {
             srBitmap
         }
 
-
-        // 获取外部存储目录
-        val directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: return false
-
-        // 创建文件对象
-        val file = if (fileName.contains(".")) {
-            File(directory, fileName)
-        } else {
-            File(directory, "$fileName.jpg")
-        }
-        if (!file.parentFile.exists()) {
-            file.parentFile.mkdirs()
-        }
-
-        // 将Bitmap保存到文件
-        try {
-            file.outputStream().use { out ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+        // 保存Bitmap到相册
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
             }
-            // 扫描文件，使其出现在图库中
-            MediaScannerConnection.scanFile(
-                context,
-                arrayOf(file.path),
-                arrayOf("image/jpeg"),
-                null
-            )
+        }
 
+        val resolver = context.contentResolver
+        var outputStream: OutputStream? = null
+        var uri: Uri? = null
 
-            // 插入到MediaStore
-            context.contentResolver.insert(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                ContentValues().apply {
-                    put(MediaStore.Images.Media.DATA, file.absolutePath)
-                    put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-                    put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                })
+        try {
+            uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            if (uri == null) {
+                return false
+            }
 
+            outputStream = resolver.openOutputStream(uri)
+            if (outputStream == null) {
+                return false
+            }
+
+            bitmapToSave.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            Log.i(TAG, "saveBitmapToGallery 成功")
             return true
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
+            Log.i(TAG, "saveBitmapToGallery 失败")
             return false
+        } finally {
+            outputStream?.close()
         }
     }
+
+
+    fun loadBitmapFromGallery(fileNameStr: String): Bitmap? {
+        val contentResolver: ContentResolver = ContextUtils.getContext().contentResolver
+        val fileName = if (fileNameStr.contains(".")) {
+            fileNameStr
+        } else {
+            "$fileNameStr.jpg"
+        }
+        // 查询相册中的图片
+        val projection = arrayOf(MediaStore.Images.Media._ID)
+        val selection = "${MediaStore.Images.Media.DISPLAY_NAME} = ?"
+        val selectionArgs = arrayOf(fileName)
+
+        val cursor = contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            projection,
+            selection,
+            selectionArgs,
+            null
+        )
+
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val idColumnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+                val imageId = it.getLong(idColumnIndex)
+
+                // 通过 ID 获取图片的 Uri
+                val imageUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId.toString())
+
+                // 加载 Bitmap
+                var inputStream: InputStream? = null
+                try {
+                    inputStream = contentResolver.openInputStream(imageUri)
+                    return BitmapFactory.decodeStream(inputStream)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    inputStream?.close()
+                }
+            }
+        }
+
+        return null // 如果未找到文件或读取失败，返回 null
+    }
+
 
 
     /**

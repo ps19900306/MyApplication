@@ -161,7 +161,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
 
     private fun addHsvFilter() {
         if (openCvPreviewModel.srcBitmap == null) {
-            T.show("请先选择原始图片")
+            AutoHsvRuleActivity.startActivityCreate(requireActivity());
             return
         }
         lifecycleScope.launch {
