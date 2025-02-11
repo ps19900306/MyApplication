@@ -58,6 +58,14 @@ object FileUtils {
        return saveBitmapToGallery(srBitmap, fileNameStr, coordinateArea,"imgs")
     }
 
+    fun saveBitmapToGalleryRule(
+        srBitmap: Bitmap,
+        fileNameStr: String,
+    ): Boolean {
+        return saveBitmapToGallery(srBitmap, fileNameStr, null,"rules")
+    }
+
+
     fun saveBitmapToGalleryCheck(
         srBitmap: Bitmap,
         fileNameStr: String,

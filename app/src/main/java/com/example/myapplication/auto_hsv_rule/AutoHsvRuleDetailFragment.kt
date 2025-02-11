@@ -15,6 +15,7 @@ import com.example.myapplication.adapter.HsvRuleAdapter
 import com.example.myapplication.databinding.FragmentAutoHsvRuleDetailBinding
 import com.nwq.base.BaseFragment
 import com.nwq.baseutils.FileUtils
+import com.nwq.baseutils.T
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.constant.ConstantKeyStr
@@ -35,12 +36,12 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
     private val args: AutoHsvRuleDetailFragmentArgs by navArgs()
     private val viewModel by viewModels<AutoHsvRuleModel>({ requireActivity() })
     private val hsvRuleAdapter = HsvRuleAdapter()
-    private lateinit var autoRulePointEntity: AutoRulePointEntity
+    private var autoRulePointEntity: AutoRulePointEntity? = null
     private var srcBitmap: Bitmap? = null
     private val hsvList by lazy {
         mutableListOf<HSVRule>()
     }
-    private lateinit var adapter:HsvRuleAdapter
+    private lateinit var adapter: HsvRuleAdapter
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -66,18 +67,37 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
                 FileUtils.loadBitmapFromGallery(ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME) ?: return
             binding.srcImg.setImageBitmap(bitmap)
             srcBitmap = bitmap
-            autoRulePointEntity = AutoRulePointEntity()
         }
         binding.addBtn.singleClick {
             addHsvRule()
         }
         binding.recycler.layoutManager = LinearLayoutManager(requireContext())
         binding.recycler.adapter = adapter
+        binding.saveBtn.singleClick {
+            saveHsvRule()
+        }
     }
 
     private fun addHsvRule() {
         val dialog = ModifyHsvDialog(HSVRule(), srcBitmap, this)
         dialog.show(childFragmentManager, "ModifyHsvDialog")
+    }
+
+    private fun saveHsvRule() {
+        if (autoRulePointEntity == null) {
+            val tag = binding.tagText.text
+            if (TextUtils.isEmpty(tag)){
+                T.show("请输入标签")
+                return
+            }
+            if (hsvList.isEmpty()){
+                T.show("请添加HSV规则")
+                return
+            }
+            viewModel.saveHsvRule(tag.toString(), hsvList, srcBitmap!!)
+        } else {
+
+        }
     }
 
 
