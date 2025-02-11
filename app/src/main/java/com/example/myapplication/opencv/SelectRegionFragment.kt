@@ -166,7 +166,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
         }
         lifecycleScope.launch {
             val rectArea = mTouchOptModel.getRectArea()
-            FileUtils.saveBitmapToGallery(openCvPreviewModel.srcBitmap!!, ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME, rectArea)
+            FileUtils.saveBitmapToExternalStorageImg(openCvPreviewModel.srcBitmap!!, ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME, rectArea)
             AutoHsvRuleActivity.startActivityCreate(requireActivity());
         }
     }

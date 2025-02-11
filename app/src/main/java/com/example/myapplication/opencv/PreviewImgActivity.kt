@@ -129,7 +129,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
             Manifest.permission.READ_MEDIA_IMAGES,
             Manifest.permission.READ_MEDIA_VIDEO,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
         )
     }
 

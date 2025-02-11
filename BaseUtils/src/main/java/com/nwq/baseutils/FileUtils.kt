@@ -50,84 +50,12 @@ object FileUtils {
      * @param fileName 文件名
      * @return 保存是否成功
      */
-    fun saveBitmapToRootImg(bitmap: Bitmap, fileName: String): Boolean {
-        // 检查外部存储是否可用
-        val state = Environment.getExternalStorageState()
-        if (state != Environment.MEDIA_MOUNTED) {
-            return false
-        }
-
-        // 获取根目录下的 img 文件夹
-        val directory = File(Environment.getExternalStorageDirectory(), "img")
-        if (!directory.exists() && !directory.mkdirs()) {
-            return false
-        }
-
-        // 创建文件对象
-        val file = if (fileName.contains(".")) {
-            File(directory, fileName)
-        } else {
-            File(directory, "$fileName.jpg")
-        }
-
-        // 确保父目录存在
-        if (!file.parentFile.exists() && !file.parentFile.mkdirs()) {
-            return false
-        }
-
-        // 将Bitmap保存到文件
-        return try {
-            file.outputStream().use { out ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-            }
-
-            // 扫描文件，使其出现在图库中
-            MediaScannerConnection.scanFile(
-                context,
-                arrayOf(file.path),
-                arrayOf("image/jpeg"),
-                null
-            )
-
-            // 插入到MediaStore
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val contentValues = ContentValues().apply {
-                    put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-                    put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                    put(
-                        MediaStore.Images.Media.RELATIVE_PATH,
-                        Environment.DIRECTORY_PICTURES + "/img"
-                    )
-                }
-
-                val uri = context.contentResolver.insert(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    contentValues
-                )
-
-                uri?.let {
-                    context.contentResolver.openOutputStream(uri)?.use { out ->
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-                    }
-                }
-            } else {
-
-
-                context.contentResolver.insert(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    ContentValues().apply {
-                        put(MediaStore.Images.Media.DATA, file.absolutePath)
-                        put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-                        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                    }
-                )
-            }
-
-            true
-        } catch (e: IOException) {
-            e.printStackTrace()
-            false
-        }
+    fun saveBitmapToExternalStorageImg(
+        srBitmap: Bitmap,
+        fileNameStr: String,
+        coordinateArea: CoordinateArea? = null
+    ): Boolean {
+       return saveBitmapToGallery(srBitmap, fileNameStr, coordinateArea,"imgs")
     }
 
     /**
@@ -213,7 +141,7 @@ object FileUtils {
 
 
     /**
-     * 将Bitmap保存到相册
+     * 将Bitmap保存到相册 的Imgs文件夹下 如果文件夹不存在则创建文件夹
      *
      * @param srBitmap 要保存的Bitmap对象
      * @param fileNameStr 保存后的文件名，可以包含扩展名
@@ -223,7 +151,8 @@ object FileUtils {
     fun saveBitmapToGallery(
         srBitmap: Bitmap,
         fileNameStr: String,
-        coordinateArea: CoordinateArea? = null
+        coordinateArea: CoordinateArea? = null,
+        parentPath:String? = null
     ): Boolean {
         // 如果文件名不包含扩展名，则默认添加.jpg扩展名
         val fileName = if (fileNameStr.contains(".")) {
@@ -251,7 +180,11 @@ object FileUtils {
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
             // 从Android Q开始，需要指定相对路径
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                if (parentPath != null){
+                    put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator +parentPath)
+                }else{
+                    put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                }
             }
         }
 

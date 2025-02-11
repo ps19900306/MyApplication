@@ -202,7 +202,7 @@ class AutoFindRuleModel : ViewModel() {
         if (!isBuildImg) return
         //保存图片
         val bitmap = MatUtils.hsvMatToBitmap(selectMat!!)
-        FileUtils.saveBitmapToRootImg(bitmap, keyTag!!)
+        FileUtils.saveBitmapToExternalStorageImg(bitmap, keyTag!!)
 
         val data = FindTargetImgEntity(
             keyTag = keyTag!!,
@@ -218,7 +218,7 @@ class AutoFindRuleModel : ViewModel() {
         if (!isBuildMat) return
         if (!isBuildImg) {
             val bitmap = MatUtils.hsvMatToBitmap(selectMat!!)
-            FileUtils.saveBitmapToRootImg(bitmap, keyTag!!)
+            FileUtils.saveBitmapToExternalStorageImg(bitmap, keyTag!!)
         }
         //将特征点保存到数据库
         buildImageDescriptorEntity(selectMat!!, MaskUtils.getMaskMat(selectMat, maskType))
