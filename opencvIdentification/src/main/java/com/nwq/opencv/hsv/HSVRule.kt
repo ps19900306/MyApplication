@@ -4,12 +4,12 @@ package com.nwq.opencv.hsv
 
 
 open class HSVRule(
-    var minH: Int,
-    var maxH: Int,
-    var minS: Int,
-    var maxS: Int,
-    var minV: Int,
-    var maxV: Int
+    var minH: Int=0,
+    var maxH: Int=180,
+    var minS: Int=0,
+    var maxS: Int=255,
+    var minV: Int=0,
+    var maxV: Int=255
 ) {
 
 

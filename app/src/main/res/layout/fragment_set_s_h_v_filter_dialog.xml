@@ -206,7 +206,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/saveBtn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recycler"
         tools:layout_height="100dp"
@@ -219,10 +219,9 @@
         android:layout_height="wrap_content"
         android:text="@string/save"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/srcImg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/srcImg"
-        app:layout_constraintTop_toTopOf="@+id/srcImg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/srcImg"
         tools:visibility="visible" />
 
 

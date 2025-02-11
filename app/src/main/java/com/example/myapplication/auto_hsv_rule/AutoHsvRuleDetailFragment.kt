@@ -14,8 +14,11 @@ import com.example.myapplication.adapter.HsvRuleAdapter
 import com.example.myapplication.databinding.FragmentAutoHsvRuleDetailBinding
 import com.nwq.base.BaseFragment
 import com.nwq.baseutils.FileUtils
+import com.nwq.baseutils.singleClick
+import com.nwq.callback.CallBack
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.opencv.db.entity.AutoRulePointEntity
+import com.nwq.opencv.hsv.HSVRule
 import kotlinx.coroutines.launch
 
 
@@ -24,12 +27,18 @@ import kotlinx.coroutines.launch
  * Use the [AutoHsvRuleDetailFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>() {
+class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>(),
+    CallBack<HSVRule> {
 
     private val args: AutoHsvRuleDetailFragmentArgs by navArgs()
     private val viewModel by viewModels<AutoHsvRuleModel>({ requireActivity() })
     private val hsvRuleAdapter = HsvRuleAdapter()
     private lateinit var autoRulePointEntity: AutoRulePointEntity
+    private var srcBitmap: Bitmap? = null
+    private val hsvList by lazy {
+        mutableListOf<HSVRule>()
+    }
+
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -48,14 +57,29 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
                     }
                 }
             }
-        } else  {
-            val bitmap = FileUtils.loadBitmapFromGallery(ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME)?:return
+        } else {
+            val bitmap =
+                FileUtils.loadBitmapFromGallery(ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME) ?: return
             binding.srcImg.setImageBitmap(bitmap)
+            srcBitmap = bitmap
             autoRulePointEntity = AutoRulePointEntity()
+        }
+        binding.addBtn.singleClick {
+            addHsvRule()
         }
     }
 
+    private fun addHsvRule() {
+        val dialog = ModifyHsvDialog(HSVRule(), srcBitmap, this)
+        dialog.show(childFragmentManager, "ModifyHsvDialog")
+    }
+
+
     private fun initView(autoRulePointEntity: AutoRulePointEntity) {
         hsvRuleAdapter.updateData(autoRulePointEntity.prList)
+    }
+
+    override fun onCallBack(data: HSVRule) {
+        hsvList.addAll(hsvList)
     }
 }

@@ -58,6 +58,15 @@ object FileUtils {
        return saveBitmapToGallery(srBitmap, fileNameStr, coordinateArea,"imgs")
     }
 
+    fun saveBitmapToGalleryCheck(
+        srBitmap: Bitmap,
+        fileNameStr: String,
+        coordinateArea: CoordinateArea? = null
+    ): Boolean {
+        return saveBitmapToGallery(srBitmap, fileNameStr, coordinateArea,"check")
+    }
+
+
     /**
      * 从根目录/img/读取Bitmap
      *

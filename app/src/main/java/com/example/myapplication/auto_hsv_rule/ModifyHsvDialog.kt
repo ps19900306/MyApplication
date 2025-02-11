@@ -1,5 +1,6 @@
 package com.example.myapplication.auto_hsv_rule
 
+import android.graphics.Bitmap
 import com.nwq.base.BaseDialogFragment
 import android.text.Editable
 import android.text.TextWatcher
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.SeekBar
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -14,6 +16,7 @@ import com.example.myapplication.R
 import com.example.myapplication.adapter.ColorAdapter
 import com.example.myapplication.databinding.FragmentSetSHVFilterDialogBinding
 import com.nwq.baseutils.HsvRuleUtils
+import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.opencv.hsv.HSVRule
@@ -23,11 +26,18 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 
-class ModifyHsvDialog(val defaultHsv: HSVRule, val callBack: CallBack<HSVRule>) :
+class ModifyHsvDialog(val defaultHsv: HSVRule,val bitmap: Bitmap?=null, val callBack: CallBack<HSVRule>) :
     BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
     private val TAG = ModifyHsvDialog::class.java.simpleName
     private var nowHsv: MutableStateFlow<HSVRule> = MutableStateFlow(defaultHsv).apply {
         debounce(1000)
+    }
+    private val srcMat by lazy {
+        if (bitmap != null) {
+            MatUtils.bitmapToHsvMat(bitmap)
+        }else{
+            null
+        }
     }
 
     override fun createBinding(
@@ -104,8 +114,23 @@ class ModifyHsvDialog(val defaultHsv: HSVRule, val callBack: CallBack<HSVRule>) 
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 nowHsv.collectLatest {
                     binding.recycler.adapter = ColorAdapter(HsvRuleUtils.getColorsList(it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV))
+                    srcMat?.let { mat->
+                        val maskMat = MatUtils.filterByHsv(mat, it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV)
+                        val newBitmap = MatUtils.hsvMatToBitmap(maskMat)
+                        binding.srcImg.setImageBitmap(newBitmap)
+                    }
                 }
             }
+        }
+
+        binding.srcImg.isVisible =true
+        bitmap?.let {
+            binding.srcImg.setImageBitmap(it)
+        }
+        binding.saveBtn.isVisible =true
+        binding.saveBtn.singleClick {
+            callBack.onCallBack(nowHsv.value)
+            dismiss()
         }
     }
 

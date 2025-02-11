@@ -49,7 +49,12 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
     }
 
     open fun getDialogWidthPercent(): Float {
-          return 0.6F
+        //判断是否是横屏
+        return if (resources.configuration.orientation == 2) {
+            0.8F
+        }else{
+            0.7F
+        }
     }
 
     open fun getDialogGravity():Int{

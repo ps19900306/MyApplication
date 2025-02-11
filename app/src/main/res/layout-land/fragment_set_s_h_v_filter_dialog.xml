@@ -174,7 +174,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Value Max (0-255)"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toTopOf="@id/tv_value_min" />
 
     <SeekBar
