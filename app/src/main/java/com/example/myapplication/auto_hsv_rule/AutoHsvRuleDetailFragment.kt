@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.adapter.HsvRuleAdapter
 import com.example.myapplication.databinding.FragmentAutoHsvRuleDetailBinding
 import com.nwq.base.BaseFragment
@@ -30,6 +31,7 @@ import kotlinx.coroutines.launch
 class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>(),
     CallBack<HSVRule> {
 
+    private val TAG = "AutoHsvRuleDetailFragment"
     private val args: AutoHsvRuleDetailFragmentArgs by navArgs()
     private val viewModel by viewModels<AutoHsvRuleModel>({ requireActivity() })
     private val hsvRuleAdapter = HsvRuleAdapter()
@@ -38,6 +40,7 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
     private val hsvList by lazy {
         mutableListOf<HSVRule>()
     }
+    private lateinit var adapter:HsvRuleAdapter
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -48,6 +51,7 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
 
     override fun initData() {
         super.initData()
+        adapter = HsvRuleAdapter()
         if (!TextUtils.isEmpty(args.autoHsvRuleTag)) {
             lifecycleScope.launch {
                 lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.RESUMED) {
@@ -67,6 +71,8 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
         binding.addBtn.singleClick {
             addHsvRule()
         }
+        binding.recycler.layoutManager = LinearLayoutManager(requireContext())
+        binding.recycler.adapter = adapter
     }
 
     private fun addHsvRule() {
@@ -80,6 +86,8 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
     }
 
     override fun onCallBack(data: HSVRule) {
-        hsvList.addAll(hsvList)
+        Log.i(TAG, "添加新的HSVRule: $data")
+        hsvList.add(data)
+        adapter.updateData(hsvList)
     }
 }

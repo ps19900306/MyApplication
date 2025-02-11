@@ -123,15 +123,17 @@ class ModifyHsvDialog(val defaultHsv: HSVRule,val bitmap: Bitmap?=null, val call
             }
         }
 
-        binding.srcImg.isVisible =true
+
         bitmap?.let {
             binding.srcImg.setImageBitmap(it)
+            binding.srcImg.isVisible =true
+            binding.saveBtn.isVisible =true
+            binding.saveBtn.singleClick {
+                callBack.onCallBack(nowHsv.value)
+                dismiss()
+            }
         }
-        binding.saveBtn.isVisible =true
-        binding.saveBtn.singleClick {
-            callBack.onCallBack(nowHsv.value)
-            dismiss()
-        }
+
     }
 
 

@@ -1,24 +1,28 @@
 package com.example.myapplication.adapter
 
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.ItemAutoHsvRuleDetailBinding
-import com.nwq.baseutils.HsvRuleUtils
+
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.opencv.hsv.HSVRule
+
 
 
 //
 class HsvRuleAdapter(val isSingCheck: Boolean = false) :
     RecyclerView.Adapter<HsvRuleAdapter.ViewHolder>() {
 
+    private val TAG = "HsvRuleAdapter"
     private val list = mutableListOf<HSVRule>()
     private var lastSelectPoint = -1;
     private var itemClickListener: CallBack<HSVRule?>? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        Log.i(TAG, "onCreateViewHolder: ")
         val binding = ItemAutoHsvRuleDetailBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
@@ -42,6 +46,7 @@ class HsvRuleAdapter(val isSingCheck: Boolean = false) :
     }
 
     override fun getItemCount(): Int {
+        Log.i(TAG, "getItemCount: ${list.size}")
         return list.size
     }
 
@@ -84,8 +89,8 @@ class HsvRuleAdapter(val isSingCheck: Boolean = false) :
             with(item){
                 mIAutoRulePoint = this
                 binding.cBox.isChecked = getIsSelected()
-                binding.tv.text = "minH=$minH, maxH=$maxH, minS=$minS,\n maxS=$maxS, minV=$minV, maxV=$maxV"
-                binding.colorList.adapter = ColorAdapter(HsvRuleUtils.getColorsList(minH, maxH, minS, maxS, minV, maxV))
+                binding.tv.text = item.toString()
+                //binding.colorList.adapter = ColorAdapter(HsvRuleUtils.getColorsList(minH, maxH, minS, maxS, minV, maxV))
             }
         }
 
