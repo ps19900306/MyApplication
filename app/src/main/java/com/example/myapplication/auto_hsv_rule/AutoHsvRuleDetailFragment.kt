@@ -96,13 +96,14 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
             }
             viewModel.saveHsvRule(tag.toString(), hsvList, srcBitmap!!)
         } else {
-
+            viewModel.updateHsvRule(autoRulePointEntity!!, hsvList)
         }
     }
 
 
     private fun initView(autoRulePointEntity: AutoRulePointEntity) {
-        hsvRuleAdapter.updateData(autoRulePointEntity.prList)
+        hsvList.addAll(autoRulePointEntity.prList)
+        hsvRuleAdapter.updateData(hsvList)
     }
 
     override fun onCallBack(data: HSVRule) {
