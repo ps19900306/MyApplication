@@ -134,10 +134,6 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
     }
 
     private fun selectPicture() {
-        if (!hasPermission){
-            checkPermission()
-            return
-        }
         L.i(TAG, "selectPicture")
         PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
             .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {

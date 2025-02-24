@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.adapter.HsvRuleAdapter
@@ -16,6 +17,8 @@ import com.example.myapplication.databinding.FragmentAutoHsvRuleDetailBinding
 import com.nwq.base.BaseFragment
 import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.T
+import com.nwq.baseutils.runOnIO
+import com.nwq.baseutils.runOnUI
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.constant.ConstantKeyStr
@@ -94,7 +97,14 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
                 T.show("请添加HSV规则")
                 return
             }
-            viewModel.saveHsvRule(tag.toString(), hsvList, srcBitmap!!)
+            lifecycleScope.launch {
+                runOnIO {
+                    viewModel.saveHsvRule(tag.toString(), hsvList, srcBitmap!!)
+                    runOnUI {
+                         findNavController().popBackStack()
+                    }
+                }
+            }
         } else {
             viewModel.updateHsvRule(autoRulePointEntity!!, hsvList)
         }

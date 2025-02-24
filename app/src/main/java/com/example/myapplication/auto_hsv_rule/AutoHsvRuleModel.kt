@@ -40,16 +40,14 @@ class AutoHsvRuleModel : ViewModel() {
         return mAutoRulePointDao.findByKeyTagFlow(tag);
     }
 
-    fun saveHsvRule(tag: String, hsvRule: List<HSVRule>, bitmap: Bitmap) {
-        viewModelScope.launch(Dispatchers.IO) {
-            FileUtils.saveBitmapToGalleryRule(bitmap, tag);
-            val data = AutoRulePointEntity(
-                keyTag = tag,
-                prList = hsvRule,
-                storageType = MatUtils.STORAGE_EXTERNAL_TYPE
-            )
-            mAutoRulePointDao.insert(data)
-        }
+   suspend fun saveHsvRule(tag: String, hsvRule: List<HSVRule>, bitmap: Bitmap) {
+       FileUtils.saveBitmapToGalleryRule(bitmap, tag);
+       val data = AutoRulePointEntity(
+           keyTag = tag,
+           prList = hsvRule,
+           storageType = MatUtils.STORAGE_EXTERNAL_TYPE
+       )
+       mAutoRulePointDao.insert(data)
     }
 
     fun updateHsvRule(entity: AutoRulePointEntity, hsvRule: List<HSVRule>) {
