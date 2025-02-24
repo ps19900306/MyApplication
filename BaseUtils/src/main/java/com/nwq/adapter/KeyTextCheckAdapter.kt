@@ -1,5 +1,6 @@
 package com.nwq.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nwq.baseutils.R
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
+import kotlin.math.log
 
 /**
  * 通用的Key-Text-Check适配器
@@ -30,6 +32,7 @@ class KeyTextCheckAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
+
         return ViewHolder(view, textId)
     }
 
@@ -61,45 +64,57 @@ class KeyTextCheckAdapter(
         private var currentItem: CheckKeyText? = null
 
         init {
-            // 设置单击事件
-            itemView.singleClick {
-                currentItem?.let { item ->
-                    if (isSingle) {
-                        // 单选模式处理
+            checkBox.setOnCheckedChangeListener { _, isChecked ->
+                if (isSingle ) {
+                    if (isChecked){
                         if (selectedPosition != adapterPosition) {
                             val previousPosition = selectedPosition
                             selectedPosition = adapterPosition
-                            notifyItemChanged(previousPosition) // 更新之前选中的项
-                            notifyItemChanged(selectedPosition) // 更新当前选中的项
-                            mCallBack?.onCallBack(item.getKey())
+                            Log.i("KeyTextCheckAdapter", "onCheckedChanged: $previousPosition")
+                            if (previousPosition != -1)
+                            {
+                                notifyItemChanged(previousPosition)
+                            }
                         }
-                    } else {
-                        // 多选模式切换选中状态
-                        item.isChecked = !item.isChecked
-                        notifyItemChanged(adapterPosition)
-                        mCallBack?.onCallBack(item.getKey())
+                    }else{
+                        if (selectedPosition == adapterPosition){
+                            checkBox.isChecked = true
+                        }
                     }
-
+                }else{
+                    currentItem?.isChecked = isChecked
                 }
             }
+
+//            if (textId == itemView.id) {
+//
+//            } else {
+//                // 设置单击事件
+//                itemView.singleClick {
+//                    currentItem?.let { item ->
+//                        if (isSingle) {
+//                            // 单选模式处理
+//                            if (selectedPosition != adapterPosition) {
+//                                val previousPosition = selectedPosition
+//                                selectedPosition = adapterPosition
+//                                notifyItemChanged(previousPosition) // 更新之前选中的项
+//                                notifyItemChanged(selectedPosition) // 更新当前选中的项
+//                                mCallBack?.onCallBack(item.getKey())
+//                            }
+//                        } else {
+//                            // 多选模式切换选中状态
+//                            item.isChecked = !item.isChecked
+//                            notifyItemChanged(adapterPosition)
+//                            mCallBack?.onCallBack(item.getKey())
+//                        }
+//
+//                    }
+//                }
+//            }
+
 
             // 设置 CheckBox 的点击事件（防止与 itemView 点击冲突）
-            checkBox.setOnClickListener {
-                currentItem?.let { item ->
-                    if (isSingle) {
-                        if (selectedPosition != adapterPosition) {
-                            val previousPosition = selectedPosition
-                            selectedPosition = adapterPosition
-                            notifyItemChanged(adapterPosition)
-                            notifyItemChanged(selectedPosition)
-                            mCallBack?.onCallBack(item.getKey())
-                        }
-                    } else {
-                        item.isChecked = checkBox.isChecked
-                        mCallBack?.onCallBack(item.getKey())
-                    }
-                }
-            }
+
         }
 
         /**
