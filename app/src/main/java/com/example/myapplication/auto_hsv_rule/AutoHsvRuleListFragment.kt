@@ -43,7 +43,7 @@ class AutoHsvRuleListFragment : BaseFragment<FragmentAutoHsvRuleListBinding>() {
         mAdapter = AutoHsvRuleAdapter(true)
         binding.recyclerView.layoutManager =
             androidx.recyclerview.widget.LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = FindTargetListAdapter()
+        binding.recyclerView.adapter = mAdapter
         binding.searchTv.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 charSequence: CharSequence?,
