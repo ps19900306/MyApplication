@@ -37,6 +37,7 @@ import com.nwq.constant.ConstantKeyStr
 import com.nwq.opencv.IAutoRulePoint
 import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.view.SimpleImgFragment
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -166,8 +167,9 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
 
     private fun autoCode() {
         mKeyTextCheckAdapter?.getSelectedItem()?.getOrNull(0)?.let {
-                  // autoFindRuleModel.performAutoFindRule(it.tag)
-
+             lifecycleScope.launch(Dispatchers.IO) {
+                 autoFindRuleModel.performAutoFindRule(it.tag)
+             }
         }
 
     }

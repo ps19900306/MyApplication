@@ -44,6 +44,7 @@ import org.opencv.imgproc.Imgproc
 
 class AutoFindRuleModel : ViewModel() {
 
+    private val TAG = AutoFindRuleModel::class.simpleName
     private var selectArea: CoordinateArea? = null
     private var findArea: CoordinateArea? = null
     private var srcBitmap: Bitmap? = null //这个是整个图片是未裁剪的
@@ -121,41 +122,52 @@ class AutoFindRuleModel : ViewModel() {
     private var clickKeyTag: String? = null // 未设置则使用keyTag
 
 
-    suspend fun performAutoFindRule(tag: String) {
-        val defTag = iAutoRuleDef.find { it.getTag() == tag }
+    suspend fun performAutoFindRule(
+        autoRuleTag: String,
+        findKeyTag: String = "测试描述"
+    ): List<Point>? {
+        val defTag = iAutoRuleDef.find { it.getTag() == autoRuleTag }
         if (defTag != null) {
-            performAutoFindRule(defTag)
-            return
+            performAutoFindRule(defTag, findKeyTag)
+            return null
         }
-        val dbTag= mAutoRulePointDao.findByKeyTag(tag)
-        if (dbTag != null){
-            performAutoFindRule(dbTag)
-            return
+        val dbTag = mAutoRulePointDao.findByKeyTag(autoRuleTag)
+        if (dbTag != null) {
+            return performAutoFindRule(dbTag, findKeyTag)
+
         }
         T.show("未找到匹配规则")
+        return null
     }
 
-    suspend fun performAutoFindRule(iAutoRulePoint: IAutoRulePoint) {
-        val mat = selectMat ?: return
-        val bitmap = srcBitmap ?: return
-        var area = selectArea ?: return
+    suspend fun performAutoFindRule(
+        iAutoRulePoint: IAutoRulePoint,
+        findKeyTag: String
+    ): List<Point>? {
+        val mat = selectMat ?: return null
+        val bitmap = srcBitmap ?: return null
+        var area = selectArea ?: return null
+        keyTag = findKeyTag
         if (TextUtils.isEmpty(keyTag)) {
             T.show("请先设置描述")
-            return
+            return null
         }
 
         val record = IdentifyDatabase.getDatabase().findTargetRecordDao().findByKeyTag(keyTag!!)
         if (record != null) {
             T.show("已存在该描述")
+            return null
         } else {
             //获取到关键点
             val keyPointList = iAutoRulePoint.autoPoint(mat)
+            Log.i(TAG, "performAutoFindRuleSIZE: ${keyPointList.size}")
             //这里获取到的点坐标是基于mat的
             buildRgbFindTarget(keyPointList)
             buildHsvFindTarget(keyPointList)
 //                后面需要增加过滤规则进行过滤之后再进行匹配
 //                buildImgFindTarget()
 //                buildMatFindTarget()
+            return keyPointList
             T.show("构建成功")
         }
     }

@@ -26,12 +26,19 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         beforeSetContentView()
         _binding = createBinding(layoutInflater)
         setContentView(binding.root)
+        beforeInitData()
         initData()
     }
 
     open fun beforeSetContentView() {
 
     }
+
+    //建议基类 或者统一封装父类使用此方法  子类使用initData
+    open fun beforeInitData() {
+
+    }
+
 
     abstract fun initData()
 

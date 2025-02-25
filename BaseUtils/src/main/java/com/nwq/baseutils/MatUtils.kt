@@ -170,7 +170,7 @@ object MatUtils {
         digits: Int = 3 // 腐蚀运算核大小
     ): List<Point> {
         // 确保传入的参数合法
-        require(minH in 0..179 && maxH in 0..179 && minH <= maxH) { "Hue 范围非法" }
+        require(minH in 0..180 && maxH in 0..180 && minH <= maxH) { "Hue 范围非法" }
         require(minS in 0..255 && maxS in 0..255 && minS <= maxS) { "Saturation 范围非法" }
         require(minV in 0..255 && maxV in 0..255 && minV <= maxV) { "Value 范围非法" }
         require(digits > 0) { "腐蚀核大小必须大于 0" }

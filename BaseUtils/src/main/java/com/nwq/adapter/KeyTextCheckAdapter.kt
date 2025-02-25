@@ -28,7 +28,7 @@ class KeyTextCheckAdapter(
 ) : RecyclerView.Adapter<KeyTextCheckAdapter.ViewHolder>() {
 
     // 记录单选模式下的选中项位置
-    private var selectedPosition: Int = -1
+    private var selectedPosition: Int = if (isSingle)0 else -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
