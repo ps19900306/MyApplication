@@ -52,10 +52,10 @@ class AutoFindRuleModel : ViewModel() {
     private var hSVRuleList: MutableList<HSVRule> = mutableListOf()
 
 
-    public fun intBaseData(bitmap: Bitmap, area: CoordinateArea, sMat:Mat?=null,){
-        srcBitmap=bitmap
-        selectArea=area
-        selectMat = sMat ?: MatUtils.bitmapToMat(bitmap,area)
+    public fun intBaseData(bitmap: Bitmap, area: CoordinateArea, sMat: Mat? = null) {
+        srcBitmap = bitmap
+        selectArea = area
+        selectMat = sMat ?: MatUtils.bitmapToMat(bitmap, area)
     }
 
 
@@ -81,7 +81,8 @@ class AutoFindRuleModel : ViewModel() {
      *  下面这些谁HSV过滤规则相关的
      */
     private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
-    private val mAutoRulePointDao by lazy{ IdentifyDatabase.getDatabase().autoRulePointDao() }
+    private val mAutoRulePointDao by lazy { IdentifyDatabase.getDatabase().autoRulePointDao() }
+
     val iAutoRuleDef by lazy {
         val list = mutableListOf<IAutoRulePoint>()
         list.add(HighLightAutoPointImpl())
@@ -120,7 +121,21 @@ class AutoFindRuleModel : ViewModel() {
     private var clickKeyTag: String? = null // 未设置则使用keyTag
 
 
-    fun performAutoFindRule(iAutoRulePoint:IAutoRulePoint) {
+    suspend fun performAutoFindRule(tag: String) {
+        val defTag = iAutoRuleDef.find { it.getTag() == tag }
+        if (defTag != null) {
+            performAutoFindRule(defTag)
+            return
+        }
+        val dbTag= mAutoRulePointDao.findByKeyTag(tag)
+        if (dbTag != null){
+            performAutoFindRule(dbTag)
+            return
+        }
+        T.show("未找到匹配规则")
+    }
+
+    suspend fun performAutoFindRule(iAutoRulePoint: IAutoRulePoint) {
         val mat = selectMat ?: return
         val bitmap = srcBitmap ?: return
         var area = selectArea ?: return
@@ -129,26 +144,19 @@ class AutoFindRuleModel : ViewModel() {
             return
         }
 
-
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val record = IdentifyDatabase.getDatabase().findTargetRecordDao().findByKeyTag(keyTag!!)
-            if (record != null) {
-                T.show("已存在该描述")
-            } else {
-                //获取到关键点
-                val keyPointList =  iAutoRulePoint.autoPoint(mat)
-                //这里获取到的点坐标是基于mat的
-                buildRgbFindTarget(keyPointList)
-                buildHsvFindTarget(keyPointList)
-
-
-
-
-                buildImgFindTarget()
-                buildMatFindTarget()
-                T.show("构建成功")
-            }
+        val record = IdentifyDatabase.getDatabase().findTargetRecordDao().findByKeyTag(keyTag!!)
+        if (record != null) {
+            T.show("已存在该描述")
+        } else {
+            //获取到关键点
+            val keyPointList = iAutoRulePoint.autoPoint(mat)
+            //这里获取到的点坐标是基于mat的
+            buildRgbFindTarget(keyPointList)
+            buildHsvFindTarget(keyPointList)
+//                后面需要增加过滤规则进行过滤之后再进行匹配
+//                buildImgFindTarget()
+//                buildMatFindTarget()
+            T.show("构建成功")
         }
     }
 

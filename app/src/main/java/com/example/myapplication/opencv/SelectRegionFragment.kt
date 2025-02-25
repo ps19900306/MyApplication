@@ -35,6 +35,7 @@ import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.opencv.IAutoRulePoint
+import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.view.SimpleImgFragment
 import kotlinx.coroutines.launch
 
@@ -122,6 +123,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
         list.add(ResStrKeyText(R.string.find_the_image_area))
         list.add(ResStrKeyText(R.string.hsv_filter))
         list.add(ResStrKeyText(R.string.add_hsv_filter))
+        list.add(ResStrKeyText(R.string.auto_exc))
         return list
     }
 
@@ -156,7 +158,18 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
             R.string.add_hsv_filter->{
                 addHsvFilter()
             }
+            R.string.auto_exc->{
+                autoCode()
+            }
         }
+    }
+
+    private fun autoCode() {
+        mKeyTextCheckAdapter?.getSelectedItem()?.getOrNull(0)?.let {
+                  // autoFindRuleModel.performAutoFindRule(it.tag)
+
+        }
+
     }
 
     private fun addHsvFilter() {

@@ -14,7 +14,7 @@ class HighLightAutoPointImpl() : IAutoRulePoint {
     private val mHighSvRule by lazy {
         val list = mutableListOf<HSVRule>()
         for (i in 0..175 step 5) {
-            val rule = HSVRule(i, i + 5, 195, 255, 220, 255)
+            val rule = HSVRule(i, i + 5, 195, 255, 195, 255)
             list.add(rule)
         }
         list
@@ -24,7 +24,7 @@ class HighLightAutoPointImpl() : IAutoRulePoint {
     private val mSecondaryHSvRule by lazy {
         val list = mutableListOf<HSVRule>()
         for (i in 0..175 step 5) {
-            val rule = HSVRule(i, i + 5, 135, 195, 220, 255)
+            val rule = HSVRule(i, i + 5, 135, 195, 135, 255)
             list.add(rule)
         }
         list
