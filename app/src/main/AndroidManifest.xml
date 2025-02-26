@@ -20,6 +20,9 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
         tools:targetApi="31">
         <activity
+            android:name=".NavigationContainerActivity"
+            android:exported="false" />
+        <activity
             android:name=".find_target.FindTargetActivity"
             android:exported="false" />
         <activity

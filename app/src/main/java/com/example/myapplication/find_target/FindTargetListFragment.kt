@@ -10,7 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.myapplication.adapter.FindTargetListAdapter
-import com.example.myapplication.databinding.FragmentFindTartgetListBinding
+import com.example.myapplication.databinding.FragmentFindTargetListBinding
 import com.nwq.base.BaseFragment
 import com.nwq.baseutils.runOnUI
 import kotlinx.coroutines.flow.collectLatest
@@ -19,15 +19,15 @@ import kotlinx.coroutines.launch
 /**
  * A fragment representing a list of Items.
  */
-class FindTargetListFragment : BaseFragment<FragmentFindTartgetListBinding>() {
+class FindTargetListFragment : BaseFragment<FragmentFindTargetListBinding>() {
 
     private val viewModel by viewModels<FindTargetModel>({ requireActivity() })
     private lateinit var mAdapter: FindTargetListAdapter
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ): FragmentFindTartgetListBinding {
-        return FragmentFindTartgetListBinding.inflate(inflater, container, false)
+    ): FragmentFindTargetListBinding {
+        return FragmentFindTargetListBinding.inflate(inflater, container, false)
     }
 
     override fun initData() {

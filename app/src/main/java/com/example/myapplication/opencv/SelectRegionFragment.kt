@@ -2,6 +2,8 @@ package com.example.myapplication.opencv
 
 
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
@@ -20,9 +22,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.NavigationContainerActivity
 import com.example.myapplication.R
 import com.example.myapplication.auto_hsv_rule.AutoHsvRuleActivity
 import com.example.myapplication.databinding.FragmentSelectRegionBinding
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.config.SelectMimeType
+import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.utils.ToastUtils
 import com.nwq.adapter.CheckKeyText
 import com.nwq.adapter.KeyTextAdapter
@@ -34,6 +41,7 @@ import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.constant.ConstantKeyStr
+import com.nwq.loguitls.L
 import com.nwq.opencv.IAutoRulePoint
 import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.view.SimpleImgFragment
@@ -43,6 +51,7 @@ import kotlinx.coroutines.launch
 
 class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBack<Int> {
 
+    private val  TAG = SelectRegionFragment::class.java.simpleName
     private var itemCount = 3
     private val mTouchOptModel by viewModels<TouchOptModel>({ requireActivity() })
     private val autoFindRuleModel by viewModels<AutoFindRuleModel>({ requireActivity() })
@@ -125,6 +134,8 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
         list.add(ResStrKeyText(R.string.hsv_filter))
         list.add(ResStrKeyText(R.string.add_hsv_filter))
         list.add(ResStrKeyText(R.string.auto_exc))
+        list.add(ResStrKeyText(R.string.check_target_object))
+
         return list
     }
 
@@ -135,7 +146,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
             }
 
             R.string.select_picture -> {
-                mTouchOptModel.selectPicture()
+                selectPicture()
             }
 
             R.string.take_img -> {
@@ -161,6 +172,9 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
             }
             R.string.auto_exc->{
                 autoCode()
+            }
+            R.string.check_target_object-> {
+                NavigationContainerActivity.startNavigationContainerActivity(requireActivity(), R.navigation.nav_find_target)
             }
         }
     }
@@ -219,6 +233,29 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
             val rectArea = mTouchOptModel.getRectArea()
             Log.i("findImageArea", "rectArea:$rectArea")
         }
+    }
+
+    private fun selectPicture() {
+        L.i(TAG, "selectPicture")
+        PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
+            .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
+                override fun onResult(result: ArrayList<LocalMedia?>?) {
+                    L.i(TAG, "onResult")
+                    result?.getOrNull(0)?.let {
+                        val opts = BitmapFactory.Options()
+                        opts.outConfig = Bitmap.Config.ARGB_8888
+                        opts.inMutable = true
+                        BitmapFactory.decodeFile(it.realPath, opts)?.let {
+                            openCvPreviewModel.setScrMap(it)
+                        }
+                    }
+                    openCvPreviewModel.result = result
+                }
+
+                override fun onCancel() {
+                    L.i(TAG, "onCancel")
+                }
+            })
     }
 
 }

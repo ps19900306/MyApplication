@@ -159,9 +159,10 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
     }
 
 
+
+
     override fun onPermissionPass() {
         L.i(TAG, "onPermissionPass")
-
     }
 
 
