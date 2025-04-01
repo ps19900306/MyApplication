@@ -1,6 +1,7 @@
 package com.yola.networklib
 
 import android.text.TextUtils
+import com.yola.networklib.uitls.KeyGeneratorUtil
 
 /**
  *  code 0 表示成功，其他表示失败
@@ -18,8 +19,8 @@ class BaseNetSigResult<T>(
 
     fun verifySignature(): Boolean {
         if (TextUtils.isEmpty(signature))
-            return true
-        return true
+            return false
+        return KeyGeneratorUtil.verify(data, code, signature!!)
     }
 
 

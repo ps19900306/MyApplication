@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.yola.networklib"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     // TODO 没有构建不知道为什么 修复点1：buildFeatures 的正确语法
     buildFeatures {
@@ -13,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        minSdk = 24
+        minSdk = libs.versions.compileSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
@@ -55,5 +55,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation(libs.retrofit2.adapter.kotlin.coroutines)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation (libs.retrofit2.kotlin.coroutines.adapter)
 }
