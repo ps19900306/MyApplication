@@ -11,11 +11,11 @@ import com.yola.networklib.uitls.KeyGeneratorUtil
  *  默认使用这个区解析
  */
 class BaseNetSigResult<T>(
-    code: Int = 0,
-    msg: String? = null,
-    data: T? = null,
+    var code: Int = 0,
+    var msg: String? = null,
+    var data: T? = null,
     val signature: String? = null
-) : BaseNetResult<T>(code, msg, data) {
+)  {
 
 
     fun verifySignature(): Boolean {

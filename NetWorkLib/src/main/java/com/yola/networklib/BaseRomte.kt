@@ -3,6 +3,8 @@ package com.yola.networklib
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.yola.networklib.Interceptor.UnifiedHeaderInterceptor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -10,10 +12,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 
-abstract class BaseRemote<T> {
+abstract class BaseRemote<T>(val baseUrl: String) {
+
+    abstract fun getApi(): Class<T>
+
+    protected val api: T by lazy {
+        createApi()
+    }
 
     //
-    protected fun createApi(baseUrl: String, service: Class<T>): T {
+    protected fun createApi(): T {
         //Retrofit.Builder builder = Builder () //基础url
         return Retrofit.Builder()
             .client(getOkHttpClient())
@@ -21,11 +29,8 @@ abstract class BaseRemote<T> {
             .addConverterFactory(GsonConverterFactory.create())  // 将结果转换成一个实体类
             .addCallAdapterFactory(CoroutineCallAdapterFactory())// 将结果转换成协程
             .build()
-            .create(service)
+            .create(getApi())
     }
-
-
-
 
 
     private fun getOkHttpClient(): OkHttpClient {
@@ -39,5 +44,19 @@ abstract class BaseRemote<T> {
             .build()
     }
 
-
+    /**
+     * 通用的协程上下文切换工具函数
+     * @param block 需要在 IO 线程中执行的代码块
+     * @return 返回结果，并在主线程中处理
+     */
+    suspend fun <T> runOnIoAndReturnOnMain(block: suspend () -> BaseNetSigResult<T>): BaseNetSigResult<T> {
+        // 在 IO 线程中执行代码块
+        val result = withContext(Dispatchers.IO) {
+             block()
+        }
+        // 返回结果到主线程
+        return withContext(Dispatchers.Main) {
+            result
+        }
+    }
 }
