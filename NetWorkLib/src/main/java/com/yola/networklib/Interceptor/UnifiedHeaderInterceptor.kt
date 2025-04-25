@@ -6,16 +6,20 @@ import okhttp3.Response
 //增加统一的头文件
 class UnifiedHeaderInterceptor : Interceptor {
 
+    companion object{
+         public var token = ""
+    }
+
 
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val originalRequest = chain.request()
-        // 构建新的请求
-        val newRequest = originalRequest.newBuilder()
-            .header("App-Version", "213231")
-            .header("App-Type", "yola") // 根据实际情况设置
-            .header("App-Language",  "en")
+        val original = chain.request()
+
+        val request = original.newBuilder()
+            .header("Authorization", "Bearer $token")
             .build()
-        return chain.proceed(newRequest)
+
+        return chain.proceed(request)
     }
+
 }

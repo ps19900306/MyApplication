@@ -8,6 +8,7 @@ import com.yola.networklib.uitls.KeyGeneratorUtil
  *  data 返回结果
  *  msg  错误信息
  *  signature 签名信息
+ *  默认使用这个区解析
  */
 class BaseNetSigResult<T>(
     code: Int = 0,
@@ -18,6 +19,10 @@ class BaseNetSigResult<T>(
 
 
     fun verifySignature(): Boolean {
+        //数据为空时候不需要验证
+        if (data == null) {
+            return true
+        }
         if (TextUtils.isEmpty(signature))
             return false
         return KeyGeneratorUtil.verify(data, code, signature!!)

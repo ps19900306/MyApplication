@@ -2,21 +2,24 @@ package com.yola.networklib.Api
 
 
 import com.yola.networklib.BaseNetSigResult
-import com.yola.networklib.bean.UserBean
 
-interface UserApi {
+interface LoginApi {
 
-
-   suspend  fun login(
+    suspend fun login(
         username: String,
         password: String
-    ): BaseNetSigResult<UserBean>
+    ): BaseNetSigResult<String>
 
 
     suspend fun register(
         username: String,
         password: String
-    ): BaseNetSigResult<UserBean>
+    ): BaseNetSigResult<String>
+
+
+    suspend fun checkUserName(
+        username: String
+    ): BaseNetSigResult<String>
 
 
 }

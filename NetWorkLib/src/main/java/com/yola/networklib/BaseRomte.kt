@@ -24,6 +24,10 @@ abstract class BaseRemote<T> {
             .create(service)
     }
 
+
+
+
+
     private fun getOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)
@@ -34,7 +38,6 @@ abstract class BaseRemote<T> {
             .connectionPool(ConnectionPool(10, 10, TimeUnit.MINUTES))
             .build()
     }
-
 
 
 }
