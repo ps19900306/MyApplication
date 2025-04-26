@@ -27,6 +27,35 @@ class BaseNetSigResult<T>(
         }
     }
 
+    fun isSuccessNoNull(): Boolean {
+        if (data == null) {
+            code = ErrorCode.VERIFY_DATA_NULL
+            return false
+        }
+        if (code == 0) {
+            if (verifySignature()) {
+                return true
+            } else {
+                code = ErrorCode.VERIFY_SIGNATURE_FAIL
+                return false
+            }
+        }
+        return false
+    }
+
+    fun isSuccess(): Boolean {
+        if (code == 0) {
+            if (verifySignature()) {
+                return true
+            } else {
+                code = ErrorCode.VERIFY_SIGNATURE_FAIL
+                return false
+            }
+        }
+        return false
+    }
+
+
     fun verifySignature(): Boolean {
         //数据为空时候不需要验证
         if (data == null) {

@@ -7,19 +7,20 @@ import retrofit2.http.POST
 
 interface LoginApi {
 
-    @POST("user/info")
+    @POST("/api/auth/login")
     suspend fun login(
         username: String,
         password: String
     ): BaseNetSigResult<String>
 
-
+    @POST("/api/auth/register")
     suspend fun register(
         username: String,
-        password: String
+        password: String,
+        password2: String,
     ): BaseNetSigResult<String>
 
-
+    @POST("/api/auth/check")
     suspend fun checkUserName(
         username: String
     ): BaseNetSigResult<String>
