@@ -1,6 +1,7 @@
 package com.yola.networklib
 
 
+import android.net.http.HttpException
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.yola.networklib.Interceptor.UnifiedHeaderInterceptor
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +10,11 @@ import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLHandshakeException
 
 
 abstract class BaseRemote<T>(val baseUrl: String) {
@@ -52,7 +57,36 @@ abstract class BaseRemote<T>(val baseUrl: String) {
     suspend fun <T> runOnIoAndReturnOnMain(block: suspend () -> BaseNetSigResult<T>): BaseNetSigResult<T> {
         // 在 IO 线程中执行代码块
         val result = withContext(Dispatchers.IO) {
-             block()
+            try {
+                block()
+            } catch (e: Exception) {
+                // 处理各种异常情况
+                when (e) {
+                    is SocketTimeoutException -> {
+                        BaseNetSigResult.error<T>(ErrorCode.NETWORK_ERROR_CODE_TIME_OUT)
+                    }
+
+                    is ConnectException -> {
+                        BaseNetSigResult.error<T>(ErrorCode.NETWORK_ERROR_CODE_UNKNOWN_SOCKET)
+                    }
+
+                    is SSLHandshakeException -> {
+                        BaseNetSigResult.error<T>(ErrorCode.NETWORK_ERROR_CODE_UNKNOWN_SSL)
+                    }
+
+                    is HttpException -> {
+                        BaseNetSigResult.error<T>(ErrorCode.NETWORK_ERROR_CODE)
+                    }
+
+                    is IOException -> {
+                        BaseNetSigResult.error<T>(ErrorCode.NETWORK_ERROR_CODE_IO)
+                    }
+
+                    else -> {
+                        BaseNetSigResult.error<T>(ErrorCode.NETWORK_ERROR_CODE)
+                    }
+                }
+            }
         }
         // 返回结果到主线程
         return withContext(Dispatchers.Main) {

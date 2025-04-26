@@ -15,8 +15,17 @@ class BaseNetSigResult<T>(
     var msg: String? = null,
     var data: T? = null,
     val signature: String? = null
-)  {
+) {
 
+    companion object {
+        fun <T> success(data: T): BaseNetSigResult<T> {
+            return BaseNetSigResult(0, null, data)
+        }
+
+        fun <T> error(code: Int): BaseNetSigResult<T> {
+            return BaseNetSigResult(code, null, null)
+        }
+    }
 
     fun verifySignature(): Boolean {
         //数据为空时候不需要验证
