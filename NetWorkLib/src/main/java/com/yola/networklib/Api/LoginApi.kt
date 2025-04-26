@@ -2,9 +2,12 @@ package com.yola.networklib.Api
 
 
 import com.yola.networklib.BaseNetSigResult
+import retrofit2.http.POST
+
 
 interface LoginApi {
 
+    @POST("user/info")
     suspend fun login(
         username: String,
         password: String
