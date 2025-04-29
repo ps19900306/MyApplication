@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class VerifyResultListFragment : BaseFragment<FragmentVerifyResultListBinding>() {
 
     private val args: VerifyResultListFragmentArgs by navArgs()
-    private val viewModel: VerifyResultPViewModel by viewModels {
+    private val viewModel: VerifyResultPViewModel by viewModels({ requireActivity() }) {
         AutoHsvRuleDetailViewModelFactory(args.FindTag)
     }
 
