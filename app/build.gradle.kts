@@ -15,7 +15,8 @@ android {
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
-
+        // 修复点2：确保 BASE_URL 的转义正确
+        buildConfigField("String", "BASE_URL", "\"https://www.wanandroid.com/\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -26,7 +27,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // 可选：覆盖 debug 的 BASE_URL（如果需要）
+            buildConfigField("String", "BASE_URL", "\"https://www.wanandroid.com/\"")
             signingConfig = signingConfigs.getByName("debug")
+        }
+        // 修复点3：建议显式定义 debug 模式（可选）
+        debug {
+            buildConfigField("String", "BASE_URL", "\"http://localhost:8080/\"")
         }
     }
     compileOptions {
@@ -38,7 +45,9 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
+
 }
 
 dependencies {
@@ -46,6 +55,7 @@ dependencies {
     implementation(project(":LogUitls"))
     implementation(project(":opencvIdentification"))
     implementation(project(":exculdeModule"))
+    implementation(project(":NetWorkLib"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
