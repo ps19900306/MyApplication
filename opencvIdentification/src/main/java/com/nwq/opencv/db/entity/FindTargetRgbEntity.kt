@@ -12,7 +12,7 @@ import com.nwq.opencv.data.PointVerifyResult
 import com.nwq.opencv.db.converters.PointRuleConverters
 import com.nwq.opencv.rgb.PointRule
 
-
+//
 @Entity(tableName = "find_target_rgb")
 data class FindTargetRgbEntity(
 

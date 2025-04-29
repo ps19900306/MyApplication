@@ -1,4 +1,4 @@
-package com.example.myapplication.data
+package com.example.myapplication.verify_results.data
 
 data class VerifyResultAllSummarize(
     var isDeprecated: Boolean = false,//是否需要弃用

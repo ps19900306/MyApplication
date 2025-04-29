@@ -2,8 +2,8 @@ package com.example.myapplication.verify_results
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.data.VerifyResultAllSummarize
-import com.example.myapplication.data.VerifyResultPointSummarize
+import com.example.myapplication.verify_results.data.VerifyResultAllSummarize
+import com.example.myapplication.verify_results.data.VerifyResultPointSummarize
 import com.nwq.adapter.CheckKeyText
 import com.nwq.adapter.IKeyText
 import com.nwq.adapter.KeyTextImp

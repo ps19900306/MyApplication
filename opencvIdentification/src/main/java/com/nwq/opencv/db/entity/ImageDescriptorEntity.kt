@@ -11,6 +11,7 @@ import org.opencv.core.KeyPoint
 import org.opencv.core.MatOfKeyPoint
 import org.opencv.core.Point
 
+//如果使用特征值找目标 使用特征值则使用这个类存特征值
 @Entity(tableName = "image_descriptors")
 data class ImageDescriptorEntity(
     @PrimaryKey(autoGenerate = true)

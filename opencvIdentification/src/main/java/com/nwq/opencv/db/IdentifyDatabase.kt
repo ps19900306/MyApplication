@@ -21,6 +21,7 @@ import com.nwq.opencv.db.dao.FindTargetImgDao
 import com.nwq.opencv.db.dao.FindTargetMatDao
 import com.nwq.opencv.db.dao.FindTargetRecordDao
 import com.nwq.opencv.db.dao.FindTargetRgbDao
+import com.nwq.opencv.db.dao.FunctionDao
 import com.nwq.opencv.db.dao.ImageDescriptorDao
 import com.nwq.opencv.db.dao.LogicDao
 import com.nwq.opencv.db.dao.TargetVerifyResultDao
@@ -65,6 +66,9 @@ abstract class IdentifyDatabase : RoomDatabase() {
     abstract fun targetVerifyResultDao(): TargetVerifyResultDao
 
     abstract fun logicDao(): LogicDao
+
+    abstract fun functionDao(): FunctionDao
+
 
     companion object {
         @Volatile

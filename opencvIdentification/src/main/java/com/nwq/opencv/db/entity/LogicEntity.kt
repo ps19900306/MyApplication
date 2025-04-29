@@ -25,7 +25,7 @@ data class LogicEntity(
     @TypeConverters(LongListConverters::class)
     var nextList: List<Long>? = null,
     var judeTime: Int = -1,
-    var isEnd: Boolean = false,
+    var isEnd: Boolean = false,//如果是逻辑单元的最后一个节点 则为true 则会认为此逻辑正常结束
     var errorCount: Int = 10
 ) : ILogicUnit {
 

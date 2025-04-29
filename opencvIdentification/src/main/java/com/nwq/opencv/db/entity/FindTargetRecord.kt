@@ -14,6 +14,8 @@ data class FindTargetRecord(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
     var keyTag: String,
+    //描述信息
+    var description: String = "",
 ) {
     @Ignore
     public val list = mutableListOf<IFindTarget>()

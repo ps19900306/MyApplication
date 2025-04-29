@@ -7,6 +7,7 @@ import com.nwq.baseobj.CoordinateArea
 import com.nwq.opencv.data.PointVerifyResult
 import com.nwq.opencv.db.converters.PointVerifyResultConverters
 
+// 目标验证结果 现在是进行多图验证时候使用
 @Entity(tableName = "target_verify_result")
 data class TargetVerifyResult(
     @PrimaryKey(autoGenerate = true)

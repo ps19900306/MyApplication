@@ -14,6 +14,8 @@ class FindTargetModel : ViewModel() {
     private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 
     private val mTargetRecordDao = IdentifyDatabase.getDatabase().findTargetRecordDao()
+
+
     private val mTargetRgbDao = IdentifyDatabase.getDatabase().findTargetRgbDao()
     private val mTargetHsvDao = IdentifyDatabase.getDatabase().findTargetHsvDao()
     private val mTargetImgDao = IdentifyDatabase.getDatabase().findTargetImgDao()

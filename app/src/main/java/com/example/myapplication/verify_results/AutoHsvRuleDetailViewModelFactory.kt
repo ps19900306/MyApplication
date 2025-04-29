@@ -9,6 +9,7 @@ class AutoHsvRuleDetailViewModelFactory(private val tag: String) : ViewModelProv
             @Suppress("UNCHECKED_CAST")
             return VerifyResultPViewModel(tag) as T
         }
+
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

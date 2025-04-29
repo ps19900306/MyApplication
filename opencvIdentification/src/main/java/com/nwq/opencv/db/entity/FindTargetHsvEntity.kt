@@ -11,7 +11,7 @@ import com.nwq.opencv.db.converters.PointHSVRuleConverters
 import com.nwq.opencv.hsv.PointHSVRule
 import org.opencv.core.Mat
 
-
+//最高使用优先级 通过这种方式去找颜色
 @Entity(tableName = "find_target_hsv")
 data class FindTargetHsvEntity(
 

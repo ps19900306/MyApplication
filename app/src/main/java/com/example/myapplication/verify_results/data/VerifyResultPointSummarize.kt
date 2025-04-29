@@ -1,4 +1,4 @@
-package com.example.myapplication.data
+package com.example.myapplication.verify_results.data
 
 import com.nwq.opencv.data.PointVerifyResult
 import com.nwq.opencv.hsv.PointHSVRule
