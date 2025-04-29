@@ -18,8 +18,10 @@ data class LogicEntity(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
     var keyTag: String = "",  //描述此逻辑单元用来做什么的
+
     var findTag: String = "", //判断模块的Tag
     var clickKeyTag: String? = null, //点击事件的Tag
+
     @TypeConverters(LongListConverters::class)
     var nextList: List<Long>? = null,
     var judeTime: Int = -1,
@@ -75,13 +77,6 @@ data class LogicEntity(
         if (errorCount in 1..<count) {
             return true;
         }
-//        clickArea?.let { area ->
-//            if (count % 2 == 1) {
-////                ClickBuilderUtils.buildClick(lastCoordinateArea!!, area, 0)?.let {
-////                    ClickExecuteUtils.optClickTask(it)
-////                }
-//            }
-//        }
         return false
     }
 

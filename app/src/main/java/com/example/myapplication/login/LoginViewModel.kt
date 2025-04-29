@@ -1,9 +1,9 @@
 package com.example.myapplication.login
 
-import android.os.Build
+
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.BuildConfig
-import com.luck.picture.lib.utils.ToastUtils
+import com.nwq.baseutils.T
 import com.yola.networklib.remote.LoginRemote
 
 
@@ -16,8 +16,10 @@ class LoginViewModel : ViewModel() {
     private suspend fun login(username: String, password: String): Boolean {
         val result = mLoginRemote.login(username, password)
         if (result.isSuccess()) {
+            T.show("登录成功")
             return true
         } else {
+            T.show("失败:"+result.code)
             return false
         }
     }
