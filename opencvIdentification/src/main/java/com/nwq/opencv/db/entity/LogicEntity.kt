@@ -19,13 +19,18 @@ data class LogicEntity(
     var id: Long = 0,
     var keyTag: String = "",  //描述此逻辑单元用来做什么的
 
-    var functionId: Long = 0,
+    var functionId: Long = 0, //这个逻辑类是被哪个功能类启动的
 
     var findTag: String = "", //判断模块的Tag
     var clickKeyTag: String? = null, //点击事件的Tag
 
     @TypeConverters(LongListConverters::class)
-    var nextList: List<Long>? = null,
+    var nextLogicList: List<Long>? = null,
+
+    //当出现此判断 有可能需要进入下一个功能项目
+    var FunctionId: Long = 0,
+
+
     var judeTime: Int = -1,
     var isEnd: Boolean = false,//如果是逻辑单元的最后一个节点 则为true 则会认为此逻辑正常结束
     var errorCount: Int = 10
@@ -85,7 +90,7 @@ data class LogicEntity(
     //当上一张图jude()返回为True时本张图进进入的不是次方法
     override suspend fun hasChanged(nowLogicUnitList: MutableList<ILogicUnit>) {
         // 如果存在下一个逻辑单元列表，则将其全部添加到当前列表中
-        nextList?.forEach { id ->
+        nextLogicList?.forEach { id ->
             IdentifyDatabase.getDatabase().logicDao().findByKeyId(id)?.let {
                 nowLogicUnitList.add(it)
             }
