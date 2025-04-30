@@ -19,6 +19,8 @@ data class LogicEntity(
     var id: Long = 0,
     var keyTag: String = "",  //描述此逻辑单元用来做什么的
 
+    var functionId: Long = 0,
+
     var findTag: String = "", //判断模块的Tag
     var clickKeyTag: String? = null, //点击事件的Tag
 
