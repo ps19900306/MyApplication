@@ -7,6 +7,7 @@ import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.ILogicUnit
+import com.nwq.opencv.constant.LogicJudeResult
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.converters.KeyPointConverters
 import com.nwq.opencv.db.converters.LongListConverters
@@ -21,20 +22,26 @@ data class LogicEntity(
 
     var functionId: Long = 0, //这个逻辑类是被哪个功能类启动的
 
-    var findTag: String = "", //判断模块的Tag
-    var clickKeyTag: String? = null, //点击事件的Tag
+    var findTagId: Long = 0, //判断模块的Id
+    var clickKeyTag: Long = 0, //点击事件的Id
 
     @TypeConverters(LongListConverters::class)
     var nextLogicList: List<Long>? = null,
 
-    //当出现此判断 有可能需要进入下一个功能项目
-    var FunctionId: Long = 0,
+    @TypeConverters(LongListConverters::class)
+    var clearLogicList: List<Long>? = null,
 
+    //根据此条件逻辑进入下一个逻辑单元的列表
+    var nextFunctionId: Long = 0,
 
-    var judeTime: Int = -1,
-    var isEnd: Boolean = false,//如果是逻辑单元的最后一个节点 则为true 则会认为此逻辑正常结束
-    var errorCount: Int = 10
-) : ILogicUnit {
+    var priority: Int = 0,//逻辑单元的优先级别,越高会先进行识别
+
+    var isClearOther: Boolean = false,//如果是逻辑单元的最后一个节点 则为true 则会认为此逻辑正常结束
+
+    var consecutiveEntries: Int = -1,//连续进入此方法的最大次数  如果是一个正在运行的状态判断则调低优先级 设置为-1，
+
+    var judeOnFindResult: Int = LogicJudeResult.NORMAL,//如果值大于LogicJudeResult.NORMAL 则会再进入判断的时候进行操作
+) {
 
     @Ignore
     private var findTargetList: List<IFindTarget>? = null
@@ -43,17 +50,19 @@ data class LogicEntity(
         if (findTargetList == null) {
             val list = mutableListOf<IFindTarget>()
             val database = IdentifyDatabase.getDatabase()
-            database.findTargetRgbDao().findByKeyTag(findTag)?.let {
-                list.add(it)
-            }
-            database.findTargetHsvDao().findByKeyTag(findTag)?.let {
-                list.add(it)
-            }
-            database.findTargetImgDao().findByKeyTag(findTag)?.let {
-                list.add(it)
-            }
-            database.findTargetMatDao().findByKeyTag(findTag)?.let {
-                list.add(it)
+            database.findTargetRecordDao().findById(findTagId) ?: let {
+                database.findTargetRgbDao().findByKeyTag(it.keyTag)?.let {
+                    list.add(it)
+                }
+                database.findTargetHsvDao().findByKeyTag(it.keyTag)?.let {
+                    list.add(it)
+                }
+                database.findTargetImgDao().findByKeyTag(it.keyTag)?.let {
+                    list.add(it)
+                }
+                database.findTargetMatDao().findByKeyTag(it.keyTag)?.let {
+                    list.add(it)
+                }
             }
             findTargetList = list
         }
@@ -64,10 +73,7 @@ data class LogicEntity(
     @Ignore
     private var lastCoordinateArea: CoordinateArea? = null
 
-    override suspend fun jude(): Boolean {
-        if (judeTime == 0) {
-            return false
-        }
+    suspend fun jude(): Boolean {
         getTargetList()?.forEach {
             val coordinateArea = it.findTarget()
             if (coordinateArea != null) {
@@ -80,37 +86,38 @@ data class LogicEntity(
 
 
     //当本次jude()返回为True 时，入本方法  count连续进入次数  Boolean是否进行错误上报
-    override suspend fun onJude(nowLogicUnitList: List<ILogicUnit>, count: Int): Boolean {
-        if (errorCount in 1..<count) {
-            return true;
+    suspend fun onJude(nowLogicUnitList: List<LogicEntity>, count: Int): Int {
+        //如果发现此任务需要触发特定的事件
+        if (judeOnFindResult > LogicJudeResult.NORMAL) {
+            return LogicJudeResult.ENABLE_SUB_FUNCTIONS
         }
-        return false
+        if (consecutiveEntries < 0 || count in 1..<consecutiveEntries) {
+            //TODO 如果需要进行点击则出发点击事件
+            return LogicJudeResult.NORMAL;
+        }
+        return LogicJudeResult.TIME_OUT
     }
 
-    //当上一张图jude()返回为True时本张图进进入的不是次方法
-    override suspend fun hasChanged(nowLogicUnitList: MutableList<ILogicUnit>) {
+    //
+    suspend fun hasChanged(nowLogicUnitList: MutableList<LogicEntity>): Boolean {
+
+        if ((nextLogicList == null || nextLogicList!!.isEmpty()) && (clearLogicList == null || clearLogicList!!.isEmpty()))
+            return false
+
+
         // 如果存在下一个逻辑单元列表，则将其全部添加到当前列表中
         nextLogicList?.forEach { id ->
             IdentifyDatabase.getDatabase().logicDao().findByKeyId(id)?.let {
                 nowLogicUnitList.add(it)
             }
         }
-        // 如果判断次数大于0，则减少判断次数
-        if (judeTime > 0) {
-            judeTime--
+
+        nextLogicList?.forEach { data ->
+            nowLogicUnitList.removeIf { it.id == data }
         }
-        // 如果判断次数为0，表明已达到设定的判断次数，从当前列表中移除自身
-        if (judeTime == 0) {
-            nowLogicUnitList.remove(this)
-        }
+
+        return true
     }
 
-    override suspend fun isEnd(): Boolean {
-        return isEnd
-    }
-
-    override suspend fun getTag(): String {
-        return keyTag
-    }
 
 }

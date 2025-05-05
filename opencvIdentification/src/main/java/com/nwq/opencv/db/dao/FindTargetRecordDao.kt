@@ -12,6 +12,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FindTargetRecordDao {
 
+    // 根据 id 查询
+    @Query("SELECT * FROM find_target_all WHERE id = :id")
+    fun findById(id: Long): FindTargetRecord?
+
     // 根据 keyTag 查询
     @Query("SELECT * FROM find_target_all WHERE keyTag = :keyTag")
     fun findByKeyTag(keyTag: String): FindTargetRecord?
