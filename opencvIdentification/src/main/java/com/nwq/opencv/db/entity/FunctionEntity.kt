@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-//每一个都是一个可以执行的功能
+//每一个都是一个可以执行的功能 并不是一个独立的
 @Entity(tableName = "function_model")
 data class FunctionEntity(
 
@@ -14,10 +14,8 @@ data class FunctionEntity(
     //识别标签 比如"主菜单","位置菜单"
     var keyTag: String,
 
-    //上次结束时间
-    var lastEndTime: Long = 0,
+    //开始时候的功能模块
+    var logicList: MutableList<Long>,
 
-    //是否正常结束
-    var isEnd: Boolean = false,
 
     )

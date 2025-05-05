@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.opencv.IFindTarget
-import com.nwq.opencv.ILogicUnit
 import com.nwq.opencv.constant.LogicJudeResult
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.converters.KeyPointConverters
@@ -45,6 +44,8 @@ data class LogicEntity(
 
     @Ignore
     private var findTargetList: List<IFindTarget>? = null
+
+
 
     fun getTargetList(): List<IFindTarget>? {
         if (findTargetList == null) {
@@ -100,10 +101,8 @@ data class LogicEntity(
 
     //
     suspend fun hasChanged(nowLogicUnitList: MutableList<LogicEntity>): Boolean {
-
         if ((nextLogicList == null || nextLogicList!!.isEmpty()) && (clearLogicList == null || clearLogicList!!.isEmpty()))
             return false
-
 
         // 如果存在下一个逻辑单元列表，则将其全部添加到当前列表中
         nextLogicList?.forEach { id ->
