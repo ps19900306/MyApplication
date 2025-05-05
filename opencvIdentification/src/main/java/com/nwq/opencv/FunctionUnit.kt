@@ -1,12 +1,7 @@
 package com.nwq.opencv
 
 
-import android.util.Log
-import com.nwq.constant.ConstantTime.screenshotInterval
-import com.nwq.imgtake.ImgTake
-import com.nwq.loguitls.L
-import com.nwq.opencv.identification.IStuckPointDetection
-import kotlinx.coroutines.delay
+
 
 //这是一个功能模块 根据实际情况划分粒度
 abstract class FunctionUnit {
