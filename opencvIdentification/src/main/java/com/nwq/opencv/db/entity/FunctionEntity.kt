@@ -18,4 +18,8 @@ data class FunctionEntity(
     var logicList: MutableList<Long>,
 
 
-    )
+    ){
+
+}
+
+
