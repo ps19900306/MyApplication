@@ -2,6 +2,7 @@ package com.nwq.opencv.identification
 
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.imgtake.ImgTake
+import com.nwq.opencv.core.IStuckPointDetection
 import org.opencv.core.Core
 import org.opencv.core.Mat
 

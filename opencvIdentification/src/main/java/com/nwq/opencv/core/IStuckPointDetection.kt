@@ -1,4 +1,4 @@
-package com.nwq.opencv.identification
+package com.nwq.opencv.core
 
 interface IStuckPointDetection {
 

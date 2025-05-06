@@ -2,6 +2,7 @@ package com.nwq.opencv.identification
 
 import com.nwq.baseobj.CoordinatePoint
 import com.nwq.imgtake.ImgTake
+import com.nwq.opencv.core.IStuckPointDetection
 import kotlin.math.abs
 
 
@@ -29,7 +30,7 @@ class StuckPointDetectionPoint(
         val nowList = mutableListOf<Double>()
 
         // 遍历每个检测点，获取并记录当前帧这些点的HSV值
-        pointList.forEachIndexed { index, point ->
+        pointList.forEachIndexed { index, point -> //这里只比较了HSV的  H值
             nowList.add(croppedFrame[point.y, point.x][0])
         }
 

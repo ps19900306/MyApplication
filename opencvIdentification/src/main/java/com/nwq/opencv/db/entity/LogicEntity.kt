@@ -7,6 +7,7 @@ import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.constant.LogicJudeResult
+import com.nwq.opencv.core.ILogicUnit
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.converters.KeyPointConverters
 import com.nwq.opencv.db.converters.LongListConverters
@@ -40,11 +41,10 @@ data class LogicEntity(
     var consecutiveEntries: Int = -1,//连续进入此方法的最大次数  如果是一个正在运行的状态判断则调低优先级 设置为-1，
 
     var judeOnFindResult: Int = LogicJudeResult.NORMAL,//如果值大于LogicJudeResult.NORMAL 则会再进入判断的时候进行操作
-) {
+) : ILogicUnit {
 
     @Ignore
     private var findTargetList: List<IFindTarget>? = null
-
 
 
     fun getTargetList(): List<IFindTarget>? {
@@ -74,7 +74,7 @@ data class LogicEntity(
     @Ignore
     private var lastCoordinateArea: CoordinateArea? = null
 
-    suspend fun jude(): Boolean {
+    override suspend fun jude(): Boolean {
         getTargetList()?.forEach {
             val coordinateArea = it.findTarget()
             if (coordinateArea != null) {
@@ -87,7 +87,7 @@ data class LogicEntity(
 
 
     //当本次jude()返回为True 时，入本方法  count连续进入次数  Boolean是否进行错误上报
-    suspend fun onJude(nowLogicUnitList: List<LogicEntity>, count: Int): Int {
+    override suspend fun onJude(count: Int): Int {
         //如果发现此任务需要触发特定的事件
         if (judeOnFindResult > LogicJudeResult.NORMAL) {
             return LogicJudeResult.ENABLE_SUB_FUNCTIONS
@@ -100,9 +100,9 @@ data class LogicEntity(
     }
 
     //
-    suspend fun hasChanged(nowLogicUnitList: MutableList<LogicEntity>): Boolean {
+    override suspend fun hasChanged(nowLogicUnitList: MutableList<ILogicUnit>) {
         if ((nextLogicList == null || nextLogicList!!.isEmpty()) && (clearLogicList == null || clearLogicList!!.isEmpty()))
-            return false
+            return
 
         // 如果存在下一个逻辑单元列表，则将其全部添加到当前列表中
         nextLogicList?.forEach { id ->
@@ -112,11 +112,21 @@ data class LogicEntity(
         }
 
         nextLogicList?.forEach { data ->
-            nowLogicUnitList.removeIf { it.id == data }
+            nowLogicUnitList.removeIf { it.getKeyId() == data }
         }
-
-        return true
+        //如果数据有改动  则进行排序
+        nowLogicUnitList.sortBy { it.getPrioritySort() }
     }
 
+    override fun getKeyId(): Long {
+        return id
+    }
 
+    override fun getChildrenFunctionId(): Long {
+        return nextFunctionId
+    }
+
+    override fun getPrioritySort(): Int {
+        return priority
+    }
 }
