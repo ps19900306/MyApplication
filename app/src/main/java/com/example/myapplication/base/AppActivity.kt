@@ -1,7 +1,6 @@
-package com.example.myapplication
+package com.example.myapplication.base
 
 import android.view.MotionEvent
-import android.view.View
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
@@ -14,7 +13,6 @@ import com.nwq.base.BaseActivity
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinateLine
 import com.nwq.baseobj.CoordinatePoint
-import com.nwq.loguitls.L
 import com.nwq.view.PreviewImageView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

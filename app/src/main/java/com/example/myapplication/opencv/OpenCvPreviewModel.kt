@@ -1,11 +1,10 @@
 package com.example.myapplication.opencv
 
 import android.graphics.Bitmap
-import android.provider.Settings.Global
 import android.text.TextUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.TakeImgAccessibilityService
+import com.example.myapplication.base.TakeImgAccessibilityService
 import com.luck.picture.lib.entity.LocalMedia
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.data.ColorItem

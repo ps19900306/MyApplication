@@ -1,15 +1,11 @@
-package com.example.myapplication
+package com.example.myapplication.base
 
 import android.accessibilityservice.AccessibilityService
-import android.app.Service
-import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
-import android.os.IBinder
 import android.view.Display
 import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.RequiresApi
-import com.nwq.callback.CallBack
 import com.nwq.callback.RequestParameter
 import com.nwq.loguitls.L
 import kotlinx.coroutines.suspendCancellableCoroutine

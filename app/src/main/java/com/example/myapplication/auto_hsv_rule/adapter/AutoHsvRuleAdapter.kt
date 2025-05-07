@@ -1,4 +1,4 @@
-package com.example.myapplication.adapter
+package com.example.myapplication.auto_hsv_rule.adapter
 
 
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import com.example.myapplication.databinding.ItemAutoHsvRuleListBinding
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.opencv.IAutoRulePoint
-import com.nwq.opencv.hsv.HSVRule
 
 
 class AutoHsvRuleAdapter(val isSingCheck:Boolean = false) : RecyclerView.Adapter<AutoHsvRuleAdapter.ViewHolder>() {

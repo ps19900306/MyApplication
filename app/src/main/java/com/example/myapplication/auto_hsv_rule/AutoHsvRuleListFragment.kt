@@ -10,10 +10,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.example.myapplication.R
-import com.example.myapplication.adapter.AutoHsvRuleAdapter
-import com.example.myapplication.adapter.FindTargetListAdapter
+import com.example.myapplication.auto_hsv_rule.adapter.AutoHsvRuleAdapter
 import com.example.myapplication.databinding.FragmentAutoHsvRuleListBinding
 import com.nwq.base.BaseFragment
 import com.nwq.baseutils.runOnUI

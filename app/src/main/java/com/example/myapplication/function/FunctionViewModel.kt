@@ -1,6 +1,8 @@
 package com.example.myapplication.function
 
-class FunctionViewModel {
+import androidx.lifecycle.ViewModel
+
+class FunctionViewModel: ViewModel() {
 
 
 

@@ -4,17 +4,11 @@ package com.example.myapplication.opencv
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.PopupWindow
-import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -22,7 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.NavigationContainerActivity
+import com.example.myapplication.base.NavigationContainerActivity
 import com.example.myapplication.R
 import com.example.myapplication.auto_hsv_rule.AutoHsvRuleActivity
 import com.example.myapplication.databinding.FragmentSelectRegionBinding
@@ -30,7 +24,6 @@ import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
-import com.luck.picture.lib.utils.ToastUtils
 import com.nwq.adapter.CheckKeyText
 import com.nwq.adapter.KeyTextAdapter
 import com.nwq.adapter.KeyTextCheckAdapter
@@ -42,8 +35,6 @@ import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.loguitls.L
-import com.nwq.opencv.IAutoRulePoint
-import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.view.SimpleImgFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -73,7 +73,11 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
-    implementation("io.github.lucksiege:pictureselector:v3.11.0")
-    implementation("io.github.lucksiege:compress:v3.10.9")
+
+    //图形库 暂时先不用
+    //implementation(libs.dev.graphview)
+    //图片选择器
+    implementation(libs.pictureselector)
+    implementation(libs.compress)
 
 }
