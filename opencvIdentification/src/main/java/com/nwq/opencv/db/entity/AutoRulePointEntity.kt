@@ -20,10 +20,14 @@ data class AutoRulePointEntity(
     var keyTag: String ="",
     //识别规则 这里的坐标信息是基于全图的
     @TypeConverters(HSVRuleConverters::class)
+    @JvmField
     var prList: List<HSVRule> = listOf(),
     //这个文件存放的类型现在考虑放外部存储或者asset文件夹 测试时候考虑为外部 打包时候考虑放asset
     var storageType: Int = MatUtils.STORAGE_ASSET_TYPE,
 ) : IAutoRulePoint {
+
+    @Ignore
+    constructor() : this(id = 0) // 显式忽略无参构造函数
 
     override suspend fun autoPoint(hsvMat: Mat): MutableList<Point> {
         val pointList = mutableListOf<Point>()

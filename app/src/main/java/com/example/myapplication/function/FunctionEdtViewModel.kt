@@ -1,14 +1,12 @@
 package com.example.myapplication.function
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nwq.opencv.core.ILogicUnit
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.opencv.db.entity.LogicEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
+
 
 class FunctionEdtViewModel(val id: Long) : ViewModel() {
 
@@ -22,7 +20,7 @@ class FunctionEdtViewModel(val id: Long) : ViewModel() {
 
 
     val allLogicFlow: Flow<List<LogicEntity>> by lazy {
-        mLogicDao.findByFunctionId(id)
+        mLogicDao.findByFunctionIdFlow(id)
     }
 
     //触发了事件的逻辑单元
@@ -32,14 +30,14 @@ class FunctionEdtViewModel(val id: Long) : ViewModel() {
 
     public lateinit var mFunctionEntity: FunctionEntity
 
-
-    public suspend fun initData() {
+    public suspend fun initFunctionData() {
         mFunctionEntity = mFunctionDao.findByKeyId(id)
-        allLogicFlow.collectLatest {
-
-        }
-
+        val list = mutableListOf<LogicEntity>()
+        list.addAll(mLogicDao.findByFunctionId(id))
+        _nowLogicFlow.tryEmit(list)
     }
+
+
 
 
 }

@@ -20,9 +20,10 @@ interface LogicDao {
     fun findByKeyId(id: Long): LogicEntity?
 
     @Query("SELECT * FROM logic_unit WHERE functionId = :id")
-    fun findByFunctionId(id: Long): Flow<List<LogicEntity>>
+    fun findByFunctionId(id: Long):List<LogicEntity>
 
-
+    @Query("SELECT * FROM logic_unit WHERE functionId = :id")
+    fun findByFunctionIdFlow(id: Long): Flow<List<LogicEntity>>
 
     // 删除指定的实体
     @Delete
@@ -30,7 +31,7 @@ interface LogicDao {
 
     // 插入新的实体
     @Insert
-    fun insert(entity: LogicEntity)
+    fun insert(entity: LogicEntity):Long
 
     // 清空表
     @Query("DELETE FROM logic_unit")

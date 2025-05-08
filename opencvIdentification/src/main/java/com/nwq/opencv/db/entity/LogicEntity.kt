@@ -44,6 +44,9 @@ data class LogicEntity(
 ) : ILogicUnit {
 
     @Ignore
+    constructor() : this(id = 0) // 显式忽略无参构造函数
+
+    @Ignore
     private var findTargetList: List<IFindTarget>? = null
 
 

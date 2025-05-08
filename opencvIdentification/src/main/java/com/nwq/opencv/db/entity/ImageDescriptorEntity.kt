@@ -23,9 +23,11 @@ data class ImageDescriptorEntity(
     var matType: Int,
     var descriptors: ByteArray,
     @TypeConverters(KeyPointConverters::class)
+    @JvmField
     var keyPointList: List<KeyPoint>,
 
     @TypeConverters(PointConverters::class)
+    @JvmField
     var pointList: List<Point>,
 
     //这些是记录的
@@ -34,6 +36,8 @@ data class ImageDescriptorEntity(
     var passNumber: Int = 0,
     var errorNumber: Int = 0,
 ) {
+
+
 
     @Ignore
     private var mMatOfKeyPoint: MatOfKeyPoint? = null

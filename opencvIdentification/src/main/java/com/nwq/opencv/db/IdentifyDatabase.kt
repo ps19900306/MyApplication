@@ -32,6 +32,7 @@ import com.nwq.opencv.db.entity.FindTargetImgEntity
 import com.nwq.opencv.db.entity.FindTargetMatEntity
 import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.opencv.db.entity.FindTargetRgbEntity
+import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.opencv.db.entity.KeyPointEntity
 import com.nwq.opencv.db.entity.LogicEntity
 import com.nwq.opencv.db.entity.TargetVerifyResult
@@ -40,9 +41,12 @@ import java.io.InputStream
 
 @Database(entities = [AutoRulePointEntity::class, ClickEntity::class, FindTargetHsvEntity::class
     , FindTargetImgEntity::class , FindTargetMatEntity::class , FindTargetRecord::class ,
-    FindTargetRgbEntity::class , ImageDescriptorEntity::class , KeyPointEntity::class , LogicEntity::class,TargetVerifyResult::class],
+    FindTargetRgbEntity::class ,FunctionEntity::class, ImageDescriptorEntity::class , KeyPointEntity::class,  LogicEntity::class,TargetVerifyResult::class],
     version = 1,exportSchema = false)
-@TypeConverters(CoordinateAreaConverters::class,HSVRuleConverters::class, KeyPointConverters::class, LongListConverters::class,
+@TypeConverters(CoordinateAreaConverters::class,
+    HSVRuleConverters::class,
+    KeyPointConverters::class,
+    LongListConverters::class,
     PointConverters::class,
     PointHSVRuleConverters::class,
     PointRuleConverters::class,

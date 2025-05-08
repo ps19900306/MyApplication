@@ -14,7 +14,7 @@ import com.nwq.opencv.db.IdentifyDatabase
 
 
 //每一个都是一个可以执行的功能 并不是一个独立的
-@Entity(tableName = "function_model")
+@Entity(tableName = "function_entity")
 data class FunctionEntity(
 
     @PrimaryKey(autoGenerate = true)
