@@ -4,11 +4,9 @@ package com.example.myapplication.function
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.example.myapplication.databinding.FragmentEditFunctionTitleBinding
-import com.luck.picture.lib.utils.ToastUtils.showToast
 import com.nwq.base.BaseDialogFragment
 import com.nwq.baseutils.T
 import com.nwq.baseutils.singleClick
-import com.nwq.opencv.hsv.HSVRule
 
 
 class EditFunctionTitleFragment(

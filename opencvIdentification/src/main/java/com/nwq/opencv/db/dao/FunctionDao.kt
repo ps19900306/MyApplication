@@ -16,7 +16,7 @@ interface FunctionDao {
     fun findByKeyTagFlow(keyTag: String): Flow<FunctionEntity?>
 
     @Query("SELECT * FROM function_entity WHERE id = :id")
-    fun findByKeyId(id: Long): FunctionEntity
+    fun findByKeyIdFlow(id: Long): Flow<FunctionEntity?>
 
     @Query("SELECT * FROM function_entity WHERE keyTag LIKE '%' || :keyTag || '%'")
     fun findByKeyTagLike(keyTag: String): Flow<List<FunctionEntity>>

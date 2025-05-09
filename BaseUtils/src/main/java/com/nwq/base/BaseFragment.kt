@@ -5,7 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
+import kotlinx.coroutines.launch
 
 abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
@@ -28,6 +32,9 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initData() // 初始化视图，设置监听器等
     }
+
+
+
 
 
     // 设置视图，子类可以重写这个方法来初始化视图
