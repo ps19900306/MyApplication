@@ -16,5 +16,8 @@ class FunctionListFragment : BaseFragment<FragmentFunctionListBinding>() {
        return FragmentFunctionListBinding.inflate(inflater, container, false)
     }
 
+    override fun initData() {
+        super.initData()
 
+    }
 }

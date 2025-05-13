@@ -9,7 +9,7 @@ import com.nwq.baseutils.T
 import com.nwq.baseutils.singleClick
 
 
-class EditFunctionTitleFragment(
+class EditFunctionTitleDialog(
     val name: String? = null,
     val description: String? = null,
     val result: (name: String, description: String) -> Unit

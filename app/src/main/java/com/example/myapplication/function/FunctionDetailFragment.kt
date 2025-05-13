@@ -33,8 +33,6 @@ class FunctionDetailFragment : BaseFragment<FragmentFunctionDetailBinding>() {
 
     override fun initData() {
         super.initData()
-
-        repeatOnLifecycle(Lifecycle.State.STARTED,)
         viewModel.initFunctionData(args.functionId)
     }
 

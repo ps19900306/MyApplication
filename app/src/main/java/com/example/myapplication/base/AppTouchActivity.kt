@@ -17,7 +17,7 @@ import com.nwq.view.PreviewImageView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-abstract class AppActivity<VB : ViewBinding> : BaseActivity<VB>() {
+abstract class AppTouchActivity<VB : ViewBinding> : BaseActivity<VB>() {
 
     protected val mTouchOptModel by viewModels<TouchOptModel>()
 

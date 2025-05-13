@@ -9,7 +9,7 @@ import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityNavigationContainerBinding
 import com.nwq.baseutils.T
 
-class NavigationContainerActivity : AppActivity<ActivityNavigationContainerBinding>() {
+class NavigationContainerActivity : AppTouchActivity<ActivityNavigationContainerBinding>() {
 
     companion object {
         const val TAG = "NavigationContainerActivity"

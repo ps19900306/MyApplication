@@ -48,9 +48,6 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
 
 
-    override fun onStart() {
-        super.onStart()
-    }
 
 
 

@@ -12,9 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.myapplication.R
 import com.example.myapplication.adapter.TargetVerifyResultAdapter
-import com.example.myapplication.auto_hsv_rule.AutoHsvRuleDetailFragmentArgs
 import com.example.myapplication.databinding.FragmentVerifyResultIndexBinding
-import com.nwq.adapter.KeyTextAdapter
 import com.nwq.adapter.KeyTextCheckAdapter2
 import com.nwq.base.BaseFragment
 import com.nwq.baseutils.runOnUI
@@ -26,7 +24,7 @@ import kotlinx.coroutines.launch
 class VerifyResultIndexFragment : BaseFragment<FragmentVerifyResultIndexBinding>() {
 
     private val args: VerifyResultIndexFragmentArgs by navArgs()
-    private val viewModel: VerifyResultPViewModel by viewModels {
+    private val viewModel: VerifyResultPViewModel by viewModels({requireActivity()}) {
         AutoHsvRuleDetailViewModelFactory(args.FindTag)
     }
     private lateinit var mAdapter: TargetVerifyResultAdapter
