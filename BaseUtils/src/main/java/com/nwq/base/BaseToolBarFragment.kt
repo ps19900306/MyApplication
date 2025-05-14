@@ -2,6 +2,8 @@ package com.nwq.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -19,8 +21,6 @@ import com.nwq.baseutils.R
 abstract class BaseToolBarFragment<VB : ViewBinding>() : Fragment() {
 
 
-    abstract fun getLayoutId(): Int
-
 
     private var _binding: VB? = null
     protected val binding: VB get() = _binding!!
@@ -36,6 +36,11 @@ abstract class BaseToolBarFragment<VB : ViewBinding>() : Fragment() {
         val childView = inflater.inflate(getLayoutId(), rootView, false)
         toolbar = rootView.findViewById(R.id.toolbar)
         rootView.addView(childView)
+        val lp = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        rootView.layoutParams = lp
         _binding = DataBindingUtil.bind(childView);
         return rootView
     }
@@ -44,18 +49,38 @@ abstract class BaseToolBarFragment<VB : ViewBinding>() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initData() // 初始化视图，设置监听器等
-        toolbar.setTitle(getTitleRes())
-        toolbar.setNavigationOnClickListener(View.OnClickListener {
-            onBackPress()
-        })
-
+        setupActionBar()
     }
 
+
+    open fun setupActionBar() {
+        toolbar.title = getString(getTitleRes())
+        toolbar.setNavigationOnClickListener { onBackPress() }
+        if (getMenuRes() != 0) {
+            MenuInflater(requireContext()).apply {
+                inflate(getMenuRes(), toolbar.menu)
+            }
+            toolbar.setOnMenuItemClickListener { menuItem ->
+                onMenuItemClick(menuItem)
+                true
+            }
+        }
+    }
+
+
+
+    abstract fun getLayoutId(): Int
+    open fun getMenuRes(): Int {
+        return 0
+    }
+
+    open fun onMenuItemClick(menuItem: MenuItem) {
+
+    }
 
     abstract fun getTitleRes(): Int
 
     abstract fun onBackPress()
-
 
 
     // 设置视图，子类可以重写这个方法来初始化视图

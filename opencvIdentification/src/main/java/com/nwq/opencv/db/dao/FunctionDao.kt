@@ -27,6 +27,12 @@ interface FunctionDao {
     @Delete
     fun delete(entity: FunctionEntity)
 
+    @Delete
+    fun delete(entities: Array<out FunctionEntity>)
+
+
     @Insert
     fun insert(entity: FunctionEntity):Long
+
+
 }
