@@ -48,6 +48,7 @@ abstract class BaseToolBarFragment<VB : ViewBinding>() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         initData() // 初始化视图，设置监听器等
         setupActionBar()
     }
@@ -87,6 +88,12 @@ abstract class BaseToolBarFragment<VB : ViewBinding>() : Fragment() {
     open fun initData() {
 
     }
+
+    // 设置视图，子类可以重写这个方法来初始化视图
+    open fun initView() {
+
+    }
+
 
     fun <T : View> findViewById(id: Int): T {
         return binding.root.findViewById<T>(id)

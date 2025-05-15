@@ -21,7 +21,7 @@ import com.nwq.callback.CallBack
  * @property selectBgRes 选中状态下的背景资源，默认为 [R.drawable.bg_item_select]
  */
 class CheckTextAdapter<T>(
-    val list: List<ICheckText<T>>,
+    val list: MutableList<ICheckText<T>> = mutableListOf(),
     private val layoutId: Int = R.layout.item_text,
     private val textId: Int = R.id.textTv,
     private val normalBgRes: Int = R.drawable.bg_item_normal,
@@ -30,8 +30,15 @@ class CheckTextAdapter<T>(
 
 
     public fun getSelectedItem(): List<ICheckText<T>> {
-        return list.filter { it.isCheckStatus() }
+        return list.filter { it.isCheckStatus() } ?: listOf()
     }
+
+    public fun upData(list: List<ICheckText<T>>) {
+        this.list.clear()
+        this.list.addAll(list)
+        notifyDataSetChanged()
+    }
+
 
     /**
      * 创建并返回一个新的 ViewHolder 实例。

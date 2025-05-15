@@ -23,8 +23,9 @@ data class FunctionEntity(
     //识别标签 比如"主菜单","位置菜单"
     var keyTag: String,
 
+    var description: String,
     //开始时候的功能模块
-    var logicIdList: MutableList<Long>,
+    var logicIdList: MutableList<Long> = mutableListOf(),
 
     var maxNullCount: Int = 20
 ) : IFunctionUnit {
@@ -83,7 +84,7 @@ data class FunctionEntity(
                     result = nowLogicUnit.onJude(count)
                     if (result == ENABLE_SUB_FUNCTIONS) {//开启子模块
                         result =
-                            getChildrenFunctionUnit(nowLogicUnit.getChildrenFunctionId()).startFunction()
+                            getChildrenFunctionUnit(nowLogicUnit.getChildrenFunctionId())?.startFunction()?:ENABLE_SUB_FUNCTIONS
                     }
                 }
             }
@@ -93,7 +94,7 @@ data class FunctionEntity(
         return result
     }
 
-    private fun getChildrenFunctionUnit(functionID: Long): FunctionEntity {
+    private fun getChildrenFunctionUnit(functionID: Long): FunctionEntity? {
         return IdentifyDatabase.getDatabase().functionDao().findByKeyId(functionID)
     }
 
