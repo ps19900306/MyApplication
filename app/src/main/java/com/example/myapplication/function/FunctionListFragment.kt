@@ -2,15 +2,14 @@ package com.example.myapplication.function
 
 
 import android.view.MenuItem
+import androidx.fragment.app.viewModels
 import com.example.myapplication.databinding.FragmentFunctionListBinding
 import com.nwq.base.BaseToolBarFragment
 import com.example.myapplication.R
 
 class FunctionListFragment : BaseToolBarFragment<FragmentFunctionListBinding>() {
 
-    private val viewModel by v
-        FunctionViewModel()
-    }
+    private val viewModel: FunctionViewModel by viewModels()
     override fun getLayoutId(): Int {
         return R.layout.fragment_function_list
     }
