@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.FragmentFunctionListBinding
 import com.nwq.base.BaseToolBarFragment
@@ -42,8 +43,11 @@ class FunctionListFragment : BaseToolBarFragment<FragmentFunctionListBinding>() 
                 val dialog = EditFunctionTitleDialog { name, description ->
                     lifecycleScope.launch {
                         val id = viewModel.createFunction(name, description)
+                        findNavController().navigate(
+                            R.id.action_functionListFragment_to_functionDetailFragment,
+                            FunctionDetailFragmentArgs(id).toBundle()
+                        )
                     }
-
                 }
                 dialog.show(parentFragmentManager, "EditFunctionTitleDialog")
             }
