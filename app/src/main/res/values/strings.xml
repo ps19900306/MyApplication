@@ -114,4 +114,5 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="function_list">功能列表</string>
+    <string name="function_detail">功能详情</string>
 </resources>
