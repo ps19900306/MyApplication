@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nwq.baseutils.R
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
+import com.nwq.callback.CallBack2
 
 /**
  * 一个通用的 RecyclerView 适配器，用于显示实现了 [IText] 接口的数据列表。
@@ -28,6 +29,13 @@ class CheckTextAdapter<T>(
     private val selectBgRes: Int = R.drawable.bg_item_select
 ) : RecyclerView.Adapter<CheckTextAdapter<T>.ViewHolder>() {
 
+
+    //如果需要处理自己的一些特有UI和逻辑
+    private var bindView: CallBack2<View, T>? = null
+
+    fun setBindView(bindView: CallBack2<View, T>) {
+        this.bindView = bindView
+    }
 
     public fun getSelectedItem(): List<ICheckText<T>> {
         return list.filter { it.isCheckStatus() } ?: listOf()
@@ -101,6 +109,7 @@ class CheckTextAdapter<T>(
             } else {
                 itemView.rootView.setBackgroundResource(normalBgRes)
             }
+            bindView?.onCallBack(itemView, item.getT())
         }
     }
 

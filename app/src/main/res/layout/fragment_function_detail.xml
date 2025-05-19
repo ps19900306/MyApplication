@@ -9,7 +9,7 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/nowLogicList"
+        android:id="@+id/allRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/selectLogicList"
+        android:id="@+id/nowRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"

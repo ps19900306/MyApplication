@@ -1,6 +1,6 @@
 package com.nwq.simplelist
 
-class ICheckTextWrap<T>(val t: T, var check: Boolean=false, val getText: (T) -> String) : ICheckText<T> {
+class ICheckTextWrap<T>(private val obj: T, var check: Boolean=false, val getText: (T) -> String) : ICheckText<T> {
     override fun setCheckStatus(boolean: Boolean) {
         check = boolean
     }
@@ -10,11 +10,11 @@ class ICheckTextWrap<T>(val t: T, var check: Boolean=false, val getText: (T) -> 
     }
 
     override fun getText(): String {
-        return getText.invoke(t)
+        return getText.invoke(obj)
     }
 
     override fun getT(): T {
-        return t
+        return obj
     }
 
 }

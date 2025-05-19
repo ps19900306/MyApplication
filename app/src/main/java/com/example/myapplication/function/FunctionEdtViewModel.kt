@@ -32,6 +32,11 @@ class FunctionEdtViewModel() : ViewModel() {
         mLogicDao.findByFunctionIdFlow(id)
     }
 
+    //当前选中的逻辑单元
+    var selectLogicEntity:LogicEntity?=null
+
+
+
     //触发了事件的逻辑单元
     private val _triggerLogicFlow: MutableStateFlow<MutableList<LogicEntity>> =
         MutableStateFlow(mutableListOf())

@@ -36,7 +36,6 @@ class SetSHVFilterDialog(val dGravity: Int = Gravity.CENTER) :
     }
 
     override fun initData() {
-        super.initData()
         binding.etHueMin.setText("${viewModel.getMinH()}")
         binding.etHueMax.setText("${viewModel.getMaxH()}")
         binding.etSaturationMin.setText("${viewModel.getMinS()}")

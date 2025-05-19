@@ -37,5 +37,8 @@ interface FunctionDao {
     @Insert
     fun insert(entity: FunctionEntity):Long
 
+    @Query("DELETE FROM function_entity")
+    fun deleteAll()
+
 
 }

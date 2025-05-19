@@ -57,7 +57,11 @@ class FunctionListFragment : BaseToolBarFragment<FragmentFunctionListBinding>() 
             }
 
             R.id.action_delete_all -> {
-
+                showTipsDialog(){ b->
+                    if (b){
+                        viewModel.deleteAll()
+                    }
+                }
             }
         }
     }

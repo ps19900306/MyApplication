@@ -55,4 +55,12 @@ class FunctionViewModel : ViewModel() {
             }
         }
     }
+
+    fun deleteAll() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                mFunctionDao.deleteAll()
+            }
+        }
+    }
 }

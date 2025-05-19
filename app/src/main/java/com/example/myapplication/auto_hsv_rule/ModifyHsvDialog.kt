@@ -49,7 +49,6 @@ class ModifyHsvDialog(val defaultHsv: HSVRule,val bitmap: Bitmap?=null, val call
 
 
     override fun initData() {
-        super.initData()
         binding.etHueMin.setText("${defaultHsv.minH}")
         binding.etHueMax.setText("${defaultHsv.maxH}")
         binding.etSaturationMin.setText("${defaultHsv.minS}")

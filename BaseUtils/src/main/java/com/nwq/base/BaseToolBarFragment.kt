@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.nwq.baseutils.R
+import com.nwq.dialog.SimpleTipsDialog
 
 /**
  * A simple [Fragment] subclass.
@@ -97,5 +98,9 @@ abstract class BaseToolBarFragment<VB : ViewBinding>() : Fragment() {
 
     fun <T : View> findViewById(id: Int): T {
         return binding.root.findViewById<T>(id)
+    }
+
+    protected fun showTipsDialog(titleRes: Int = 0, descriptionRes: Int = 0, onClick: (Boolean) -> Unit) {
+        SimpleTipsDialog(titleRes, descriptionRes, onClick).showDialog(childFragmentManager)
     }
 }

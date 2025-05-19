@@ -23,7 +23,6 @@
         tools:layout="@layout/fragment_function_detail">
         <argument
             android:name="functionId"
-            app:argType="long"
-            app:nullable="true" />
+            app:argType="long" />
     </fragment>
 </navigation>

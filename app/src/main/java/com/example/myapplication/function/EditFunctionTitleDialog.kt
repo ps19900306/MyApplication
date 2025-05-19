@@ -24,7 +24,6 @@ class EditFunctionTitleDialog(
     }
 
     override fun initData() {
-        super.initData()
         name?.let {
             binding.titleEdt.setText(it)
         }

@@ -117,7 +117,7 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
     /**
      * 初始化数据，子类可以重写此方法。
      */
-    open fun initData() {}
+    abstract fun initData()
 
     /**
      * 通过 ID 查找视图。
