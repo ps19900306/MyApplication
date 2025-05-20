@@ -22,6 +22,7 @@ data class LogicEntity(
 
     var functionId: Long = 0, //这个逻辑类是被哪个功能类启动的
 
+    var parentLogicId: Long = 0, //根节点时候LogicId为0
     var findTagId: Long = 0, //判断模块的Id
     var clickKeyTag: Long = 0, //点击事件的Id
 
@@ -34,7 +35,7 @@ data class LogicEntity(
     //根据此条件逻辑进入下一个逻辑单元的列表
     var nextFunctionId: Long = 0,
 
-    var priority: Int = 0,//逻辑单元的优先级别,越高会先进行识别
+    var priority: Int = 0,//逻辑单元的优先级别,越高会先进行识别 数字越大优先级别越高
 
     var isClearOther: Boolean = false,//如果是逻辑单元的最后一个节点 则为true 则会认为此逻辑正常结束
 
@@ -43,8 +44,10 @@ data class LogicEntity(
     var judeOnFindResult: Int = LogicJudeResult.NORMAL,//如果值大于LogicJudeResult.NORMAL 则会再进入判断的时候进行操作
 ) : ILogicUnit {
 
-    @Ignore
-    constructor() : this(id = 0) // 显式忽略无参构造函数
+//    @Ignore
+//    constructor() : this(id = 0) // 显式忽略无参构造函数
+
+
 
     @Ignore
     private var findTargetList: List<IFindTarget>? = null

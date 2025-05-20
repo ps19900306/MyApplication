@@ -11,8 +11,10 @@ import com.nwq.baseutils.runOnUI
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.opencv.db.entity.LogicEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 
 
 class FunctionEdtViewModel() : ViewModel() {
@@ -46,12 +48,18 @@ class FunctionEdtViewModel() : ViewModel() {
     public fun initFunctionData(id: Long): Flow<FunctionEntity?> {
         this.id = id
         viewModelScope.runOnIO {
-            val list = mutableListOf<LogicEntity>()
-            list.addAll(mLogicDao.findByFunctionId(id))
+            val list = mLogicDao.findByFunctionIdRoot(id)
             _nowLogicFlow.tryEmit(list)
         }
         return mFunctionDao.findByKeyIdFlow(id)
     }
 
 
+
+    suspend fun createLogic(functionId: Long, name: String, parentId: Long, priority: Int): Long {
+        return withContext(Dispatchers.IO) {
+            val entity = LogicEntity(keyTag = name, functionId = functionId, parentLogicId = parentId, priority = priority)
+            mLogicDao.insert(entity)
+        }
+    }
 }

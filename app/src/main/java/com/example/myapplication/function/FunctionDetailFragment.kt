@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding>() {
 
     private val args: FunctionDetailFragmentArgs by navArgs()
-    private val viewModel: FunctionEdtViewModel by viewModels()
+    private val viewModel: FunctionEdtViewModel by viewModels({ requireActivity() })
     private lateinit var mAllLogicAdapter: TextAdapter<LogicEntity>
     private lateinit var mNowLogicAdapter: TextAdapter<LogicEntity>
 
@@ -41,10 +41,10 @@ class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding
     override fun onMenuItemClick(menuItem: MenuItem) {
         when (menuItem.itemId) {
             R.id.action_add -> {
-
+                createLogic()
             }
 
-            R.id.action_delete -> {
+            R.id.action_delete_logic -> {
 
             }
 
@@ -56,8 +56,26 @@ class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding
 
             }
 
+            R.id.action_delete_function -> {
+
+            }
+
         }
     }
+
+    private fun createLogic() {
+        val dialog = LogicCreateDialog(
+            mAllLogicAdapter.itemCount,
+            viewModel.selectLogicEntity?.id ?: 0L
+        ) { name, parentId, priority ->
+            lifecycleScope.launch {
+                val id = viewModel.createLogic(args.functionId, name, parentId, priority)
+
+            }
+
+        }
+    }
+
 
     override fun onBackPress() {
         findNavController().popBackStack()
@@ -65,8 +83,14 @@ class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding
 
     override fun initData() {
         super.initData()
-        viewModel.initFunctionData(args.functionId)
-
+        val flow = viewModel.initFunctionData(args.functionId)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                flow.collect { functionEntity ->
+                    toolbar.title = functionEntity?.keyTag ?: ""
+                }
+            }
+        }
         //展示全部的逻辑的
         binding.allRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

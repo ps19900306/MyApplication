@@ -81,4 +81,8 @@
     <string name="function_detail">功能详情</string>
     <string name="detail">详情</string>
     <string name="trigger">触发</string>
+    <string name="create_logic_unit">创建逻辑单元</string>
+    <string name="root_logic">根逻辑</string>
+    <string name="delete_logic">删除逻辑</string>
+    <string name="delete_function">删除功能</string>
 </resources>

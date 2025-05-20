@@ -19,8 +19,8 @@ interface LogicDao {
     @Query("SELECT * FROM logic_unit WHERE id = :id")
     fun findByKeyId(id: Long): LogicEntity?
 
-    @Query("SELECT * FROM logic_unit WHERE functionId = :id")
-    fun findByFunctionId(id: Long):List<LogicEntity>
+    @Query("SELECT * FROM logic_unit WHERE functionId = :id and parentLogicId = 0")
+    fun findByFunctionIdRoot(id: Long):MutableList<LogicEntity>
 
     @Query("SELECT * FROM logic_unit WHERE functionId = :id")
     fun findByFunctionIdFlow(id: Long): Flow<List<LogicEntity>>

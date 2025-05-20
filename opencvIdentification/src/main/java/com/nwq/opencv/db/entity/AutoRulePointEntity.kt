@@ -26,8 +26,8 @@ data class AutoRulePointEntity(
     var storageType: Int = MatUtils.STORAGE_ASSET_TYPE,
 ) : IAutoRulePoint {
 
-    @Ignore
-    constructor() : this(id = 0) // 显式忽略无参构造函数
+//    @Ignore
+//    constructor() : this(id = 0) // 显式忽略无参构造函数
 
     override suspend fun autoPoint(hsvMat: Mat): MutableList<Point> {
         val pointList = mutableListOf<Point>()
