@@ -2,8 +2,10 @@ package com.example.myapplication.logic
 
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentLogicDetailBinding
+import com.example.myapplication.function.FunctionDetailFragmentArgs
 import com.example.myapplication.function.FunctionEdtViewModel
 import com.nwq.base.BaseToolBarFragment
 
@@ -13,6 +15,8 @@ import com.nwq.base.BaseToolBarFragment
  * create an instance of this fragment.
  */
 class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
+
+    private val args: LogicDetailFragmentArgs by navArgs()
 
     private val viewModel: FunctionEdtViewModel by viewModels({ requireActivity() })
 
@@ -28,6 +32,12 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
         findNavController().popBackStack()
     }
 
+    override fun initView() {
+        super.initView()
+    }
 
+    override fun initData() {
+        super.initData()
+    }
 
 }

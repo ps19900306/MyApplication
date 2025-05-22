@@ -25,6 +25,9 @@ interface LogicDao {
     @Query("SELECT * FROM logic_unit WHERE functionId = :id")
     fun findByFunctionIdFlow(id: Long): Flow<List<LogicEntity>>
 
+    @Query("SELECT * FROM logic_unit")
+    fun findAll(): Flow<List<LogicEntity>>
+
     // 删除指定的实体
     @Delete
     fun delete(entity: LogicEntity)
@@ -37,7 +40,9 @@ interface LogicDao {
     @Query("DELETE FROM logic_unit")
     fun deleteAll()
 
-    @Query("SELECT * FROM logic_unit WHERE keyTag LIKE '%' || :keyTag || '%' and functionId = :functionId")
-    fun findByKeyTagLike(keyTag: String,functionId:Long): Flow<List<LogicEntity>>
+    @Query("SELECT * FROM logic_unit WHERE keyTag LIKE '%' || :keyTag || '%'")
+    fun findByKeyTagLike(keyTag: String): Flow<List<LogicEntity>>
 
+    @Query("SELECT * FROM logic_unit WHERE keyTag LIKE '%' || :keyTag || '%' and functionId = :functionId")
+    fun findByKeyTagFunctionIdLike(keyTag: String,functionId:Long): Flow<List<LogicEntity>>
 }

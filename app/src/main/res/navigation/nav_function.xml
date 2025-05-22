@@ -24,5 +24,35 @@
         <argument
             android:name="functionId"
             app:argType="long" />
+        <action
+            android:id="@+id/action_functionDetailFragment_to_logicDetailFragment"
+            app:destination="@id/logicDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/logicDetailFragment"
+        android:name="com.example.myapplication.logic.LogicDetailFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_logic_detail">
+        <argument
+            android:name="logicId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_logicDetailFragment_to_LogicSelectFragment"
+            app:destination="@id/LogicSelectFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/LogicSelectFragment"
+        android:name="com.example.myapplication.logic.LogicSelectFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_function_list">
+        <argument
+            android:name="functionId"
+            app:argType="long"
+            android:defaultValue="0"/>
+        <argument
+            android:name="actionTag"
+            app:argType="string" />
     </fragment>
 </navigation>
