@@ -47,6 +47,20 @@ class CheckTextAdapter<T>(
         notifyDataSetChanged()
     }
 
+    //全选 选中
+    public fun selectAll(boolean: Boolean) {
+        list.forEach { it.setCheckStatus(boolean) }
+        notifyDataSetChanged()
+    }
+
+    //反选
+    public fun selectReverse() {
+        list.forEach {
+            it.setCheckStatus(!it.isCheckStatus())
+        }
+        notifyDataSetChanged()
+    }
+
 
     /**
      * 创建并返回一个新的 ViewHolder 实例。

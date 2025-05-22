@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.FragmentFunctionDetailBinding
 import com.nwq.base.BaseToolBarFragment
 import com.example.myapplication.R
+import com.example.myapplication.logic.LogicCreateDialog
 import com.nwq.callback.CallBack
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.opencv.db.entity.LogicEntity

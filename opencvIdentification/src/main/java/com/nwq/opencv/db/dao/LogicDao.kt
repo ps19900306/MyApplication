@@ -36,4 +36,8 @@ interface LogicDao {
     // 清空表
     @Query("DELETE FROM logic_unit")
     fun deleteAll()
+
+    @Query("SELECT * FROM logic_unit WHERE keyTag LIKE '%' || :keyTag || '%' and functionId = :functionId")
+    fun findByKeyTagLike(keyTag: String,functionId:Long): Flow<List<LogicEntity>>
+
 }

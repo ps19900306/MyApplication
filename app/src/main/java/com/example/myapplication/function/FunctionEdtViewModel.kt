@@ -14,6 +14,9 @@ import com.nwq.opencv.db.entity.LogicEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 
@@ -35,8 +38,7 @@ class FunctionEdtViewModel() : ViewModel() {
     }
 
     //当前选中的逻辑单元
-    var selectLogicEntity:LogicEntity?=null
-
+    var selectLogicEntity: LogicEntity? = null
 
 
     //触发了事件的逻辑单元
@@ -55,11 +57,31 @@ class FunctionEdtViewModel() : ViewModel() {
     }
 
 
-
     suspend fun createLogic(functionId: Long, name: String, parentId: Long, priority: Int): Long {
         return withContext(Dispatchers.IO) {
-            val entity = LogicEntity(keyTag = name, functionId = functionId, parentLogicId = parentId, priority = priority)
+            val entity = LogicEntity(
+                keyTag = name,
+                functionId = functionId,
+                parentLogicId = parentId,
+                priority = priority
+            )
             mLogicDao.insert(entity)
         }
     }
+
+
+    //这个是用来进行查询的
+    private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
+    val logicSearchFlow = queryFlow.debounce(1000).flatMapLatest { query ->
+        if (query.isEmpty()) {
+            mLogicDao.findByFunctionIdFlow(id) // 如果输入为空，查询整个表
+        } else {
+            mLogicDao.findByKeyTagLike(query, id) // 如果输入不为空，进行模糊查询
+        }
+    }.flowOn(Dispatchers.IO)
+
+    fun updateLogicSearchStr(query: String) {
+        queryFlow.tryEmit(query)
+    }
+
 }

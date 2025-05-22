@@ -1,13 +1,13 @@
-package com.example.myapplication.function
+package com.example.myapplication.logic
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import com.example.myapplication.R
 import com.example.myapplication.databinding.DialogCreateLogicBinding
 import com.nwq.base.BaseDialogFragment
 import com.nwq.baseutils.T
 import com.nwq.baseutils.singleClick
-import com.example.myapplication.R
 
 class LogicCreateDialog(
     val size: Int = 0,

@@ -85,4 +85,8 @@
     <string name="root_logic">根逻辑</string>
     <string name="delete_logic">删除逻辑</string>
     <string name="delete_function">删除功能</string>
+    <string name="please_select">请选择</string>
+    <string name="select_all">全选</string>
+    <string name="delete_all_select">全不选</string>
+    <string name="reverse_all">反选</string>
 </resources>
