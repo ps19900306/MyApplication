@@ -42,11 +42,10 @@ class AutoHsvRuleModel : ViewModel() {
 
    suspend fun saveHsvRule(tag: String, hsvRule: List<HSVRule>, bitmap: Bitmap) {
        FileUtils.saveBitmapToGalleryRule(bitmap, tag);
-       val data = AutoRulePointEntity(
-           keyTag = tag,
-           prList = hsvRule,
-           storageType = MatUtils.STORAGE_EXTERNAL_TYPE
-       )
+       val data = AutoRulePointEntity()
+       data.keyTag = tag
+       data.prList = hsvRule
+       data.storageType= MatUtils.STORAGE_EXTERNAL_TYPE
        mAutoRulePointDao.insert(data)
     }
 

@@ -15,43 +15,41 @@ import com.nwq.opencv.db.converters.LongListConverters
 
 //
 @Entity(tableName = "logic_unit")
-data class LogicEntity(
+class LogicEntity() : ILogicUnit {
+
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0,
-    var keyTag: String = "",  //描述此逻辑单元用来做什么的
+    var id: Long = 0
+    var keyTag: String = ""  //描述此逻辑单元用来做什么的
 
-    var functionId: Long = 0, //这个逻辑类是被哪个功能类启动的
+    var functionId: Long = 0 //这个逻辑类是被哪个功能类启动的
 
-    var parentLogicId: Long = 0, //根节点时候LogicId为0
-    var findTagId: Long = 0, //判断模块的Id
-    var clickKeyTag: Long = 0, //点击事件的Id
-
-    @TypeConverters(LongListConverters::class)
-    var nextLogicList: List<Long>? = null,
+    var parentLogicId: Long = 0 //根节点时候LogicId为0
+    var findTagId: Long = 0 //判断模块的Id
+    var clickKeyTag: Long = 0 //点击事件的Id
 
     @TypeConverters(LongListConverters::class)
-    var clearLogicList: List<Long>? = null,
+    var nextLogicList: List<Long>? = null
+
+    @TypeConverters(LongListConverters::class)
+    var clearLogicList: List<Long>? = null
 
     //根据此条件逻辑进入下一个逻辑单元的列表
-    var nextFunctionId: Long = 0,
+    var nextFunctionId: Long = 0
 
-    var priority: Int = 0,//逻辑单元的优先级别,越高会先进行识别 数字越大优先级别越高
+    var priority: Int = 0//逻辑单元的优先级别,越高会先进行识别 数字越大优先级别越高
 
-    var isClearOther: Boolean = false,//如果是逻辑单元的最后一个节点 则为true 则会认为此逻辑正常结束
+    var isClearOther: Boolean = false//如果是逻辑单元的最后一个节点 则为true 则会认为此逻辑正常结束
 
-    var consecutiveEntries: Int = -1,//连续进入此方法的最大次数  如果是一个正在运行的状态判断则调低优先级 设置为-1，
+    var consecutiveEntries: Int = -1//连续进入此方法的最大次数  如果是一个正在运行的状态判断则调低优先级 设置为-1，
 
-    var judeOnFindResult: Int = LogicJudeResult.NORMAL,//如果值大于LogicJudeResult.NORMAL 则会再进入判断的时候进行操作
-) : ILogicUnit {
-
-//    @Ignore
-//    constructor() : this(id = 0) // 显式忽略无参构造函数
-
+    var judeOnFindResult: Int = LogicJudeResult.NORMAL//如果值大于LogicJudeResult.NORMAL 则会再进入判断的时候进行操作
 
 
     @Ignore
     private var findTargetList: List<IFindTarget>? = null
 
+    @Ignore
+    private var lastCoordinateArea: CoordinateArea? = null
 
     fun getTargetList(): List<IFindTarget>? {
         if (findTargetList == null) {
@@ -77,8 +75,7 @@ data class LogicEntity(
     }
 
 
-    @Ignore
-    private var lastCoordinateArea: CoordinateArea? = null
+
 
     override suspend fun jude(): Boolean {
         getTargetList()?.forEach {

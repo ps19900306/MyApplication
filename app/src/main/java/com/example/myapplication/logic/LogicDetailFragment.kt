@@ -25,7 +25,11 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
     }
 
     override fun getTitleRes(): Int {
-        TODO("Not yet implemented")
+        return R.layout.fragment_function_list
+    }
+
+    override fun getMenuRes(): Int {
+        return R.menu.menu_logic_detail
     }
 
     override fun onBackPress() {
@@ -39,5 +43,7 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
     override fun initData() {
         super.initData()
     }
+
+
 
 }

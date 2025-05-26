@@ -71,6 +71,7 @@ class FunctionListFragment : BaseToolBarFragment<FragmentFunctionListBinding>() 
         requireActivity().finish()
     }
 
+
     override fun initView() {
         super.initView()
         mCheckTextAdapter = CheckTextAdapter()
@@ -82,6 +83,7 @@ class FunctionListFragment : BaseToolBarFragment<FragmentFunctionListBinding>() 
             viewModel.updateSearchStr(text)
         }
     }
+
 
     override fun initData() {
         super.initData()

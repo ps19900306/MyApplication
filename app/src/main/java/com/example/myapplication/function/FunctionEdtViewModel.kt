@@ -59,12 +59,11 @@ class FunctionEdtViewModel() : ViewModel() {
 
     suspend fun createLogic(functionId: Long, name: String, parentId: Long, priority: Int): Long {
         return withContext(Dispatchers.IO) {
-            val entity = LogicEntity(
-                keyTag = name,
-                functionId = functionId,
-                parentLogicId = parentId,
-                priority = priority
-            )
+            val entity = LogicEntity()
+            entity.functionId = functionId
+            entity.parentLogicId = parentId
+            entity.priority = priority
+            entity.keyTag = name
             mLogicDao.insert(entity)
         }
     }
