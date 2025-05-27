@@ -56,7 +56,9 @@ abstract class BaseToolBarFragment<VB : ViewBinding>() : Fragment() {
 
 
     open fun setupActionBar() {
-        toolbar.title = getString(getTitleRes())
+        if (getTitleRes() != 0){
+            toolbar.title = getString(getTitleRes())
+        }
         toolbar.setNavigationOnClickListener { onBackPress() }
         if (getMenuRes() != 0) {
             MenuInflater(requireContext()).apply {
@@ -80,7 +82,9 @@ abstract class BaseToolBarFragment<VB : ViewBinding>() : Fragment() {
 
     }
 
-    abstract fun getTitleRes(): Int
+    open fun getTitleRes(): Int{
+        return 0;
+    }
 
     abstract fun onBackPress()
 

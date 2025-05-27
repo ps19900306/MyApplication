@@ -1,9 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".logic.LogicDetailFragment">
 
+    <Spinner
+        android:id="@+id/resultSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+
+    <!-- 普通的 -->
+    <TextView
+        android:id="@+id/clickTipTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/click_area"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/resultSpinner"
+        app:layout_constraintStart_toEndOf="@+id/resultSpinner"
+        app:layout_constraintTop_toTopOf="@+id/resultSpinner" />
+
+    <TextView
+        android:id="@+id/clickEntityTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_item_select"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/clickTipTv"
+        app:layout_constraintStart_toEndOf="@+id/clickTipTv"
+        app:layout_constraintTop_toTopOf="@+id/clickTipTv"
+        tools:text="未设置" />
+
+    <TextView
+        android:id="@+id/consecutiveEntriesTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/max_consecutive_entries"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/resultSpinner"
+        app:layout_constraintTop_toBottomOf="@+id/resultSpinner" />
+
+    <EditText
+        android:id="@+id/consecutiveEntriesEdt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:inputType="number"
+        android:minWidth="40dp"
+        android:text="-1"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/consecutiveEntriesTv"
+        app:layout_constraintStart_toEndOf="@+id/consecutiveEntriesTv"
+        app:layout_constraintTop_toTopOf="@+id/consecutiveEntriesTv" />
+
+    <TextView
+        android:id="@+id/addLogicTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:paddingStart="16dp"
+        android:text="@string/add_logic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/consecutiveEntriesTv"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/addRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addLogicTv"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <TextView
+        android:id="@+id/deleteLogicTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:text="@string/delete_logic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/addLogicTv"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/deleteRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addLogicTv"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/normalGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="clickTipTv,clickEntityTv,consecutiveEntriesTv,consecutiveEntriesEdt,addLogicTv,addRecyclerView,deleteLogicTv,deleteRecyclerView" />
+
+    <!--如果要情动功能 -->
+    <TextView
+        android:id="@+id/functionTipsTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/start_function"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/resultSpinner"
+        app:layout_constraintStart_toEndOf="@+id/resultSpinner"
+        app:layout_constraintTop_toTopOf="@+id/resultSpinner" />
+
+    <TextView
+        android:id="@+id/functionEntityTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_item_select"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/functionTipsTv"
+        app:layout_constraintStart_toEndOf="@+id/functionTipsTv"
+        app:layout_constraintTop_toTopOf="@+id/functionTipsTv"
+        tools:text="未设置" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/functionGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="functionTipsTv,functionEntityTv" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import com.example.myapplication.databinding.FragmentLogicDetailBinding
 import com.example.myapplication.function.FunctionDetailFragmentArgs
 import com.example.myapplication.function.FunctionEdtViewModel
 import com.nwq.base.BaseToolBarFragment
+import com.nwq.opencv.constant.LogicJudeResult
 
 /**
  * A simple [Fragment] subclass.
@@ -38,6 +39,8 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
 
     override fun initView() {
         super.initView()
+        LogicJudeResult
+        binding.resultSpinner
     }
 
     override fun initData() {

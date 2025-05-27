@@ -12,6 +12,7 @@ import com.example.myapplication.databinding.FragmentFunctionDetailBinding
 import com.nwq.base.BaseToolBarFragment
 import com.example.myapplication.R
 import com.example.myapplication.logic.LogicCreateDialog
+import com.example.myapplication.logic.LogicDetailFragmentArgs
 import com.nwq.callback.CallBack
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.opencv.db.entity.LogicEntity
@@ -26,6 +27,10 @@ class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding
     private val viewModel: FunctionEdtViewModel by viewModels({ requireActivity() })
     private lateinit var mAllLogicAdapter: TextAdapter<LogicEntity>
     private lateinit var mNowLogicAdapter: TextAdapter<LogicEntity>
+
+    private val options by lazy {
+        arrayOf("正常", "开启子模块", "功能运行结束", "完成")
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_function_detail
@@ -71,10 +76,13 @@ class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding
         ) { name, parentId, priority ->
             lifecycleScope.launch {
                 val id = viewModel.createLogic(args.functionId, name, parentId, priority)
-
+                findNavController().navigate(
+                    R.id.action_functionDetailFragment_to_logicDetailFragment,
+                    LogicDetailFragmentArgs(id).toBundle()
+                )
             }
-
         }
+        dialog.show(requireActivity().supportFragmentManager, "createLogic")
     }
 
 

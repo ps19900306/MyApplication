@@ -89,4 +89,8 @@
     <string name="select_all">全选</string>
     <string name="delete_all_select">全不选</string>
     <string name="reverse_all">反选</string>
+    <string name="click_area">点击区域:</string>
+    <string name="add_logic">新增逻辑</string>
+    <string name="start_function">启动功能</string>
+    <string name="max_consecutive_entries">最大进入次数</string>
 </resources>
