@@ -86,6 +86,10 @@ abstract class BaseToolBarFragment<VB : ViewBinding>() : Fragment() {
         return 0;
     }
 
+    protected fun setTitleString(title: String) {
+        toolbar.title = title
+    }
+
     abstract fun onBackPress()
 
 

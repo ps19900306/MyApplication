@@ -16,6 +16,7 @@ import com.nwq.opencv.db.converters.PointHSVRuleConverters
 import com.nwq.opencv.db.converters.PointRuleConverters
 import com.nwq.opencv.db.converters.PointVerifyResultConverters
 import com.nwq.opencv.db.dao.AutoRulePointDao
+import com.nwq.opencv.db.dao.ClickDao
 import com.nwq.opencv.db.dao.FindTargetHsvDao
 import com.nwq.opencv.db.dao.FindTargetImgDao
 import com.nwq.opencv.db.dao.FindTargetMatDao
@@ -73,7 +74,7 @@ abstract class IdentifyDatabase : RoomDatabase() {
 
     abstract fun functionDao(): FunctionDao
 
-
+    abstract fun clickDao(): ClickDao
     companion object {
         @Volatile
         private var INSTANCE: IdentifyDatabase? = null

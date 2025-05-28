@@ -43,7 +43,7 @@
     <string name="enable_sub_functions">开启子模块</string>
     <string name="stuck_point_end">卡点检测卡住了</string>
     <string name="function_not_find">卡点检测卡住了</string>
-    <string name="function_end">次功能运行结束</string>
+    <string name="function_end">功能运行结束</string>
     <string name="complete">完成</string>
 
 </resources>
