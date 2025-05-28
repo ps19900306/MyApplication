@@ -6,6 +6,7 @@ import com.nwq.baseutils.ContextUtils
 import com.nwq.baseutils.runOnIO
 import com.nwq.opencv.constant.LogicJudeResult
 import com.nwq.opencv.db.IdentifyDatabase
+import com.nwq.opencv.db.entity.ClickEntity
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.opencv.db.entity.LogicEntity
 import kotlinx.coroutines.Dispatchers
@@ -16,10 +17,8 @@ class LogicDetailViewModel() : ViewModel() {
 
     private val mLogicDao = IdentifyDatabase.getDatabase().logicDao()
     private var mLogicEntity: LogicEntity? = null
-    private val mClickDao by lazy {
-        IdentifyDatabase.getDatabase().clickDao()
-    }
-
+    private val mClickDao by lazy { IdentifyDatabase.getDatabase().clickDao() }
+    public var mClickEntity: ClickEntity? = null
 
 
     public val items by lazy {
@@ -50,6 +49,9 @@ class LogicDetailViewModel() : ViewModel() {
     suspend fun initLogicEntity(id: Long): LogicEntity? {
         return withContext(Dispatchers.IO) {
             mLogicEntity = mLogicDao.findByKeyId(id)
+            if ((mLogicEntity?.functionId ?: 0) > 0) {
+                mClickEntity = mClickDao.findByKeyId(mLogicEntity?.findTagId ?: 0)
+            }
             mLogicEntity
         }
     }

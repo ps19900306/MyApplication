@@ -40,7 +40,21 @@
         <action
             android:id="@+id/action_logicDetailFragment_to_LogicSelectFragment"
             app:destination="@id/LogicSelectFragment" />
+        <action
+            android:id="@+id/action_logicDetailFragment_to_ClickSelectFragment"
+            app:destination="@id/ClickSelectFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/ClickSelectFragment"
+        android:name="com.example.myapplication.click.ClickSelectFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_function_list">
+        <argument
+            android:name="actionTag"
+            app:argType="string" />
+    </fragment>
+
 
     <fragment
         android:id="@+id/LogicSelectFragment"

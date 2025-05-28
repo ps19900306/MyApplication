@@ -25,7 +25,7 @@ class LogicEntity() : ILogicUnit {
 
     var parentLogicId: Long = 0 //根节点时候LogicId为0
     var findTagId: Long = 0 //判断模块的Id
-    var clickKeyTag: Long = 0 //点击事件的Id
+    var clickId: Long = 0 //点击事件的Id
 
     @TypeConverters(LongListConverters::class)
     var nextLogicList: List<Long>? = null

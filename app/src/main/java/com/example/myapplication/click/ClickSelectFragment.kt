@@ -1,4 +1,4 @@
-package com.example.myapplication.logic
+package com.example.myapplication.click
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -12,25 +12,24 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentFunctionListBinding
-import com.example.myapplication.function.FunctionDetailFragmentArgs
-import com.example.myapplication.function.FunctionEdtViewModel
 import com.nwq.base.BaseToolBarFragment
 import com.nwq.constant.ConstantKeyStr
-import com.nwq.opencv.db.entity.LogicEntity
+import com.nwq.opencv.db.entity.ClickEntity
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
 
 
-class LogicSelectFragment : BaseToolBarFragment<FragmentFunctionListBinding>() {
+class ClickSelectFragment : BaseToolBarFragment<FragmentFunctionListBinding>() {
 
-    private val args: LogicSelectFragmentArgs by navArgs()
+    private val args: ClickSelectFragmentArgs by navArgs()
 
 
 
-    private val viewModel: LogicSelectViewModel by viewModels()
 
-    private lateinit var mCheckTextAdapter: CheckTextAdapter<LogicEntity>
+    private val viewModel: ClickSelectViewModel by viewModels()
+
+    private lateinit var mCheckTextAdapter: CheckTextAdapter<ClickEntity>
     override fun getLayoutId(): Int {
         return R.layout.fragment_function_list
     }
@@ -71,7 +70,6 @@ class LogicSelectFragment : BaseToolBarFragment<FragmentFunctionListBinding>() {
     }
 
     override fun initView() {
-        viewModel.id = args.functionId
         mCheckTextAdapter = CheckTextAdapter()
         binding.recycler.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -88,7 +86,7 @@ class LogicSelectFragment : BaseToolBarFragment<FragmentFunctionListBinding>() {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.logicSearchFlow.collect {
                     val list = it.map { data ->
-                        ICheckTextWrap<LogicEntity>(data) {
+                        ICheckTextWrap<ClickEntity>(data) {
                             data.keyTag
                         }
                     }
