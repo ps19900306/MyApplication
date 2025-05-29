@@ -15,7 +15,7 @@ import org.opencv.core.Point
 @Entity(tableName = "image_descriptors")
 data class ImageDescriptorEntity(
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
+    var id: Long = 0,
     var keyTag: String,
     //这些是Mat的
     var matCols: Int,
@@ -69,7 +69,7 @@ data class ImageDescriptorEntity(
     }
 
     override fun hashCode(): Int {
-        var result = id
+        var result = id.hashCode()
         result = 31 * result + keyTag.hashCode()
         result = 31 * result + detectionType.hashCode()
         result = 31 * result + matCols
@@ -77,5 +77,6 @@ data class ImageDescriptorEntity(
         result = 31 * result + descriptors.contentHashCode()
         return result
     }
+
 
 }

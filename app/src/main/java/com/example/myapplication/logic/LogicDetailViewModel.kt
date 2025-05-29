@@ -7,10 +7,9 @@ import com.nwq.baseutils.runOnIO
 import com.nwq.opencv.constant.LogicJudeResult
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.ClickEntity
-import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.opencv.db.entity.LogicEntity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 
 class LogicDetailViewModel() : ViewModel() {
@@ -18,8 +17,12 @@ class LogicDetailViewModel() : ViewModel() {
     private val mLogicDao = IdentifyDatabase.getDatabase().logicDao()
     private var mLogicEntity: LogicEntity? = null
     private val mClickDao by lazy { IdentifyDatabase.getDatabase().clickDao() }
-    public var mClickEntity: ClickEntity? = null
 
+    public val mClickEntityFlow: MutableStateFlow<ClickEntity?> = MutableStateFlow(null)
+    public val mAddLogicListFow: MutableStateFlow<MutableList<LogicEntity>?> =
+        MutableStateFlow(null)
+    public val mDeleteLogicListFow: MutableStateFlow<MutableList<LogicEntity>?> =
+        MutableStateFlow(null)
 
     public val items by lazy {
         listOf(
@@ -50,9 +53,57 @@ class LogicDetailViewModel() : ViewModel() {
         return withContext(Dispatchers.IO) {
             mLogicEntity = mLogicDao.findByKeyId(id)
             if ((mLogicEntity?.functionId ?: 0) > 0) {
-                mClickEntity = mClickDao.findByKeyId(mLogicEntity?.findTagId ?: 0)
+                mClickEntityFlow.tryEmit(mClickDao.findByKeyId(mLogicEntity?.findTagId ?: 0))
+            }
+            val addList = mutableListOf<LogicEntity>()
+            mLogicEntity?.addLogicList?.forEach { id ->
+                mLogicDao.findByKeyId(id)?.let { addList.add(it) }
+            }
+            mAddLogicListFow.tryEmit(addList)
+            val deleteList = mutableListOf<LogicEntity>()
+            mLogicEntity?.clearLogicList?.forEach { id ->
+                mLogicDao.findByKeyId(id)?.let { deleteList.add(it) }
             }
             mLogicEntity
+        }
+    }
+
+    public fun addAddLogic(selectedIds: LongArray?) {
+        if (selectedIds == null) {
+            return
+        }
+        viewModelScope.runOnIO {
+            val list = mAddLogicListFow.value ?: mutableListOf()
+            selectedIds.forEach { newId->
+                if (list.find { newId == it.id } == null) {
+                    mLogicDao.findByKeyId(newId)?.let { list.add(it) }
+                }
+            }
+            mAddLogicListFow.tryEmit(list)
+        }
+    }
+
+    public fun addClearLogic(selectedIds: LongArray?) {
+        if (selectedIds == null) {
+            return
+        }
+        viewModelScope.runOnIO {
+            val list = mDeleteLogicListFow.value ?: mutableListOf()
+            selectedIds.forEach { newId->
+                if (list.find { newId == it.id } == null) {
+                    mLogicDao.findByKeyId(newId)?.let { list.add(it) }
+                }
+            }
+            mDeleteLogicListFow.tryEmit(list)
+        }
+    }
+
+
+
+
+    public fun updateClickEntity(id: Long) {
+        viewModelScope.runOnIO {
+            mClickEntityFlow.tryEmit(mClickDao.findByKeyId(id))
         }
     }
 

@@ -28,7 +28,7 @@ class LogicEntity() : ILogicUnit {
     var clickId: Long = 0 //点击事件的Id
 
     @TypeConverters(LongListConverters::class)
-    var nextLogicList: List<Long>? = null
+    var addLogicList: List<Long>? = null
 
     @TypeConverters(LongListConverters::class)
     var clearLogicList: List<Long>? = null
@@ -104,17 +104,18 @@ class LogicEntity() : ILogicUnit {
 
     //
     override suspend fun hasChanged(nowLogicUnitList: MutableList<ILogicUnit>) {
-        if ((nextLogicList == null || nextLogicList!!.isEmpty()) && (clearLogicList == null || clearLogicList!!.isEmpty()))
+        if ((addLogicList == null || addLogicList!!.isEmpty()) && (clearLogicList == null || clearLogicList!!.isEmpty()))
             return
 
-        // 如果存在下一个逻辑单元列表，则将其全部添加到当前列表中
-        nextLogicList?.forEach { id ->
+        // 如果需要新增逻辑单元列表，则将其全部添加到当前列表中
+        addLogicList?.forEach { id ->
             IdentifyDatabase.getDatabase().logicDao().findByKeyId(id)?.let {
                 nowLogicUnitList.add(it)
             }
         }
 
-        nextLogicList?.forEach { data ->
+        // 如果需要清除逻辑单元列表，则将其全部从当前列表中移除
+        clearLogicList?.forEach { data ->
             nowLogicUnitList.removeIf { it.getKeyId() == data }
         }
         //如果数据有改动  则进行排序

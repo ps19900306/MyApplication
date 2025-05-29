@@ -17,7 +17,7 @@ import com.nwq.opencv.rgb.PointRule
 data class FindTargetRgbEntity(
 
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
+    var id: Long = 0,
 
     //识别标签 比如"主菜单","位置菜单"
     var keyTag: String,

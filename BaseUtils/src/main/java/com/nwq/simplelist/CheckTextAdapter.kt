@@ -41,6 +41,11 @@ class CheckTextAdapter<T>(
         return list.filter { it.isCheckStatus() } ?: listOf()
     }
 
+    public fun removeSelectAndGet(): List<T>{
+        return list.filter { !it.isCheckStatus() }.map { it.getT() }
+    }
+
+
     public fun upData(list: List<ICheckText<T>>) {
         this.list.clear()
         this.list.addAll(list)

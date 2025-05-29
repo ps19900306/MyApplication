@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_logicDetailFragment_to_ClickSelectFragment"
             app:destination="@id/ClickSelectFragment" />
+        <action
+            android:id="@+id/action_logicDetailFragment_to_FunctionSelectFragment"
+            app:destination="@id/FunctionSelectFragment" />
     </fragment>
 
     <fragment
@@ -55,6 +58,15 @@
             app:argType="string" />
     </fragment>
 
+    <fragment
+        android:id="@+id/FunctionSelectFragment"
+        android:name="com.example.myapplication.function.FunctionSelectFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_function_list">
+        <argument
+            android:name="actionTag"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/LogicSelectFragment"

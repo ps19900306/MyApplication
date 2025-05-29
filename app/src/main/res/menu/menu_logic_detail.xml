@@ -5,21 +5,17 @@
     <item
         android:id="@+id/action_add"
         android:orderInCategory="100"
-        android:title="添加逻辑"
+        android:title="添加新增逻辑"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_delete"
+        android:orderInCategory="100"
+        android:title="添加移除逻辑"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_delete_select"
         android:orderInCategory="100"
-        android:title="移除逻辑"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_delete_all"
-        android:orderInCategory="100"
-        android:title="启动功能"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_click_model"
-        android:orderInCategory="100"
-        android:title="点击模块"
+        android:title="删除选中逻辑"
         app:showAsAction="never" />
 </menu>

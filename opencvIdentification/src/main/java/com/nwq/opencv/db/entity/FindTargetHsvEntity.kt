@@ -16,7 +16,7 @@ import org.opencv.core.Mat
 data class FindTargetHsvEntity(
 
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
+    var id: Long = 0,
 
     //识别标签 比如"主菜单","位置菜单"
     var keyTag: String,
