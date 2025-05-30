@@ -45,4 +45,7 @@ interface LogicDao {
 
     @Query("SELECT * FROM logic_unit WHERE keyTag LIKE '%' || :keyTag || '%' and functionId = :functionId")
     fun findByKeyTagFunctionIdLike(keyTag: String,functionId:Long): Flow<List<LogicEntity>>
+
+    @Insert(onConflict = androidx.room.OnConflictStrategy.REPLACE)
+    fun update(entity: LogicEntity)
 }

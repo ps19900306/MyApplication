@@ -7,6 +7,7 @@ import com.nwq.baseutils.runOnIO
 import com.nwq.opencv.constant.LogicJudeResult
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.ClickEntity
+import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.opencv.db.entity.LogicEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,11 +15,17 @@ import kotlinx.coroutines.withContext
 
 class LogicDetailViewModel() : ViewModel() {
 
-    private val mLogicDao = IdentifyDatabase.getDatabase().logicDao()
+    private val mLogicDao by lazy {
+        IdentifyDatabase.getDatabase().logicDao()
+    }
+    private val mFunctionDao by lazy {
+        IdentifyDatabase.getDatabase().functionDao()
+    }
     private var mLogicEntity: LogicEntity? = null
     private val mClickDao by lazy { IdentifyDatabase.getDatabase().clickDao() }
 
     public val mClickEntityFlow: MutableStateFlow<ClickEntity?> = MutableStateFlow(null)
+    public val mStartFunctionFlow: MutableStateFlow<FunctionEntity?> = MutableStateFlow(null)
     public val mAddLogicListFow: MutableStateFlow<MutableList<LogicEntity>?> =
         MutableStateFlow(null)
     public val mDeleteLogicListFow: MutableStateFlow<MutableList<LogicEntity>?> =
@@ -46,7 +53,9 @@ class LogicDetailViewModel() : ViewModel() {
         )
     }
 
-    public
+    public fun updateConsecutiveEntries(int: Int) {
+        mLogicEntity?.consecutiveEntries = int
+    }
 
 
     suspend fun initLogicEntity(id: Long): LogicEntity? {
@@ -55,6 +64,15 @@ class LogicDetailViewModel() : ViewModel() {
             if ((mLogicEntity?.functionId ?: 0) > 0) {
                 mClickEntityFlow.tryEmit(mClickDao.findByKeyId(mLogicEntity?.findTagId ?: 0))
             }
+
+            if ((mLogicEntity?.nextFunctionId ?: 0) > 0) {
+                mStartFunctionFlow.tryEmit(
+                    mFunctionDao.findByKeyId(
+                        mLogicEntity?.nextFunctionId ?: 0
+                    )
+                )
+            }
+
             val addList = mutableListOf<LogicEntity>()
             mLogicEntity?.addLogicList?.forEach { id ->
                 mLogicDao.findByKeyId(id)?.let { addList.add(it) }
@@ -74,7 +92,7 @@ class LogicDetailViewModel() : ViewModel() {
         }
         viewModelScope.runOnIO {
             val list = mAddLogicListFow.value ?: mutableListOf()
-            selectedIds.forEach { newId->
+            selectedIds.forEach { newId ->
                 if (list.find { newId == it.id } == null) {
                     mLogicDao.findByKeyId(newId)?.let { list.add(it) }
                 }
@@ -89,7 +107,7 @@ class LogicDetailViewModel() : ViewModel() {
         }
         viewModelScope.runOnIO {
             val list = mDeleteLogicListFow.value ?: mutableListOf()
-            selectedIds.forEach { newId->
+            selectedIds.forEach { newId ->
                 if (list.find { newId == it.id } == null) {
                     mLogicDao.findByKeyId(newId)?.let { list.add(it) }
                 }
@@ -99,13 +117,18 @@ class LogicDetailViewModel() : ViewModel() {
     }
 
 
-
-
     public fun updateClickEntity(id: Long) {
         viewModelScope.runOnIO {
             mClickEntityFlow.tryEmit(mClickDao.findByKeyId(id))
         }
     }
+
+    public fun updatesStartFunction(id: Long) {
+        viewModelScope.runOnIO {
+            mStartFunctionFlow.tryEmit(mFunctionDao.findByKeyId(id))
+        }
+    }
+
 
     fun setResultSelection(p: Int): Boolean {
         mLogicEntity?.judeOnFindResult = mResultCode[p]
@@ -133,6 +156,19 @@ class LogicDetailViewModel() : ViewModel() {
             else -> {
                 return 0
             }
+        }
+    }
+
+    fun saveAll(){
+        mLogicEntity?.let { logicEntity->
+            logicEntity.clearLogicList = mDeleteLogicListFow.value?.map { it.id } ?: listOf()
+            logicEntity.addLogicList = mAddLogicListFow.value?.map { it.id } ?: listOf()
+            logicEntity.clickId = mClickEntityFlow.value?.id ?: 0
+            logicEntity.nextFunctionId = mStartFunctionFlow.value?.id ?: 0
+            viewModelScope.runOnIO {
+                mLogicDao.update(logicEntity)
+            }
+
         }
     }
 }

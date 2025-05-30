@@ -18,4 +18,9 @@
         android:orderInCategory="100"
         android:title="删除选中逻辑"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_save"
+        android:orderInCategory="100"
+        android:title="@string/save"
+        app:showAsAction="never" />
 </menu>

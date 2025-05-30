@@ -4,6 +4,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -38,6 +39,7 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
     private lateinit var mDeleteAdapter: CheckTextAdapter<LogicEntity>
 
     private val SELECT_CLICK_TAG = "select_click"
+    private val SELECT_FUNCTION_TAG = "select_function"
     private val ADD_LOGIC_TAG = "add_logic"
     private val DELETE_LOGIC_TAG = "delete_logic"
     private val adapter by lazy {
@@ -78,7 +80,13 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
 
             R.id.action_delete_select -> {
                 viewModel.mAddLogicListFow.tryEmit(mAddAdapter.removeSelectAndGet().toMutableList())
-                viewModel.mDeleteLogicListFow.tryEmit(mDeleteAdapter.removeSelectAndGet().toMutableList())
+                viewModel.mDeleteLogicListFow.tryEmit(
+                    mDeleteAdapter.removeSelectAndGet().toMutableList()
+                )
+            }
+            R.id.action_save -> {
+                viewModel.saveAll()
+                findNavController().popBackStack()
             }
         }
     }
@@ -121,7 +129,22 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
                 selectedIds?.get(0)?.let { viewModel.updateClickEntity(it) }
             })
 
-        //
+        //选择功能区域
+        binding.functionEntityTv.singleClick {
+            findNavController().navigate(
+                R.id.action_logicDetailFragment_to_FunctionSelectFragment,
+                ClickSelectFragmentArgs(SELECT_FUNCTION_TAG).toBundle()
+            )
+        }
+        parentFragment?.setFragmentResultListener(
+            SELECT_FUNCTION_TAG, // 这个 tag 要和 ClickSelectFragment 接收到的 args.actionTag 一致
+            { requestKey, result ->
+                val selectedIds = result.getLongArray(ConstantKeyStr.SELECTED_RESULT)
+                selectedIds?.get(0)?.let { viewModel.updatesStartFunction(it) }
+            })
+
+
+        //设置新增和去除的逻辑
         binding.addRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         mAddAdapter = CheckTextAdapter()
         binding.addRecyclerView.adapter = mAddAdapter
@@ -144,7 +167,13 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
                 viewModel.addClearLogic(selectedIds)
             })
 
-
+        binding.consecutiveEntriesEdt.addTextChangedListener {
+            try {
+                viewModel.updateConsecutiveEntries(it.toString().toInt())
+            } catch (e: Exception) {
+                binding.consecutiveEntriesEdt.setText("-1")
+            }
+        }
     }
 
 
