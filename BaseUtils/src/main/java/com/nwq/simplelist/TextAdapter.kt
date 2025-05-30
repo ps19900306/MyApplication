@@ -32,9 +32,6 @@ class TextAdapter<T>(
 ) : RecyclerView.Adapter<TextAdapter<T>.ViewHolder>() {
 
 
-
-
-
     public fun upData(list: List<ICheckText<T>>) {
         this.list.clear()
         this.list.addAll(list)
@@ -52,6 +49,15 @@ class TextAdapter<T>(
     fun setBindView(bindView: CallBack2<View, T>) {
         this.bindView = bindView
     }
+
+    fun getSelectData(): T? {
+        return if (mSelectPosition == -1) {
+            null
+        } else {
+            list[mSelectPosition].getT()
+        }
+    }
+
 
     /**
      * 创建并返回一个新的 ViewHolder 实例。

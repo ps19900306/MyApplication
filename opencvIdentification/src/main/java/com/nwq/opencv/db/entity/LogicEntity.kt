@@ -23,7 +23,7 @@ class LogicEntity() : ILogicUnit {
 
     var functionId: Long = 0 //这个逻辑类是被哪个功能类启动的
 
-    var parentLogicId: Long = 0 //根节点时候LogicId为0
+    var parentLogicId: Long = 0L //根节点时候LogicId为0  这里已父类逻辑单元会添加该根节点为准
     var findTagId: Long = 0 //判断模块的Id
     var clickId: Long = 0 //点击事件的Id
 
@@ -75,8 +75,6 @@ class LogicEntity() : ILogicUnit {
     }
 
 
-
-
     override suspend fun jude(): Boolean {
         getTargetList()?.forEach {
             val coordinateArea = it.findTarget()
@@ -102,15 +100,24 @@ class LogicEntity() : ILogicUnit {
         return LogicJudeResult.TIME_OUT
     }
 
+    override fun needChange(): Boolean {
+        if ((addLogicList == null || addLogicList!!.isEmpty()) && (clearLogicList == null || clearLogicList!!.isEmpty())) return false
+        return true
+    }
+
+
     //
-    override suspend fun hasChanged(nowLogicUnitList: MutableList<ILogicUnit>) {
-        if ((addLogicList == null || addLogicList!!.isEmpty()) && (clearLogicList == null || clearLogicList!!.isEmpty()))
-            return
+    override fun <T : ILogicUnit> onHasChanged(
+        nowLogicUnitList: MutableList<T>, allLogicUnitList: List<T>
+    ): MutableList<T> {
+        if ((addLogicList == null || addLogicList!!.isEmpty()) && (clearLogicList == null || clearLogicList!!.isEmpty())) return nowLogicUnitList
 
         // 如果需要新增逻辑单元列表，则将其全部添加到当前列表中
         addLogicList?.forEach { id ->
-            IdentifyDatabase.getDatabase().logicDao().findByKeyId(id)?.let {
-                nowLogicUnitList.add(it)
+            allLogicUnitList.find { it.getKeyId() == id }?.let { logic ->
+                if (!nowLogicUnitList.contains(logic)) {
+                    nowLogicUnitList.add(logic)
+                }
             }
         }
 
@@ -120,6 +127,7 @@ class LogicEntity() : ILogicUnit {
         }
         //如果数据有改动  则进行排序
         nowLogicUnitList.sortBy { it.getPrioritySort() }
+        return nowLogicUnitList
     }
 
     override fun getKeyId(): Long {

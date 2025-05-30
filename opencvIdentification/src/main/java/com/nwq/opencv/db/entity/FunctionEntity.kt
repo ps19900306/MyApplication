@@ -24,8 +24,8 @@ data class FunctionEntity(
     var keyTag: String,
 
     var description: String,
-    //开始时候的功能模块
-    var logicIdList: MutableList<Long> = mutableListOf(),
+//    //开始时候的功能模块
+//    var logicIdList: MutableList<Long> = mutableListOf(),
 
     var maxNullCount: Int = 20
 ) : IFunctionUnit {
@@ -33,9 +33,13 @@ data class FunctionEntity(
     @Ignore
     private var mStuckPointDetection: IStuckPointDetection? = null
 
+    //这个是当前会进行检测判读的逻辑模块
     @Ignore
-    private var logicList: MutableList<ILogicUnit> = mutableListOf()
+    private var nowLogicList: MutableList<ILogicUnit> = mutableListOf()
 
+    //这个是全部的逻辑模块
+    @Ignore
+    private var allLogicList: MutableList<ILogicUnit> = mutableListOf()
 
     @Ignore
     private var nowNullCount = 0
@@ -47,44 +51,54 @@ data class FunctionEntity(
     }
 
 
+    //
     override suspend fun startFunction(): Int {
-        if (logicList.isEmpty()) {
+        if (allLogicList.isEmpty()) {
             Log.i(keyTag, "INIT_LOGIC_LIST")
             val logicDao = IdentifyDatabase.getDatabase().logicDao()
-            logicIdList.forEach { logicId ->
-                logicDao.findByKeyId(logicId)?.let {
-                    logicList.add(it)
-                }
+            logicDao.findByFunctionIdRoot(id).let {
+                allLogicList.addAll(it)
             }
-            logicList.sortBy { it.getPrioritySort() }
+            logicDao.findByFunctionId(id).let { list ->
+                allLogicList.clear()
+                allLogicList.addAll(list)
+
+                nowLogicList.addAll(list.filter { it.parentLogicId == 0L })
+
+            }
+
+
+
+            nowLogicList.sortBy { it.getPrioritySort() }
         }
 
         var result = NORMAL;
         var lastLogicUnit: ILogicUnit? = null
         var nowLogicUnit: ILogicUnit? = null
         var count = 0;
-        Log.i(keyTag, "START_FUNCTION::${logicList.size}")
+        Log.i(keyTag, "START_FUNCTION::${nowLogicList.size}")
         //写while循环
-        while (result < 0 && logicList.isNotEmpty()) {
-            nowLogicUnit = logicList.find {
+        while (result < 0 && nowLogicList.isNotEmpty()) {
+            nowLogicUnit = nowLogicList.find {
                 it.jude()
             }
             if (nowLogicUnit == null) {
-                lastLogicUnit?.hasChanged(logicList);
+                lastLogicUnit?.onHasChanged(nowLogicList, allLogicList);
                 if (isPointDetection()) {
                     result = STUCK_POINT_END
                 }
             } else {
                 mStuckPointDetection?.resetCount()
                 if (nowLogicUnit != lastLogicUnit) {
-                    lastLogicUnit?.hasChanged(logicList);
+                    lastLogicUnit?.onHasChanged(nowLogicList, allLogicList);
                     count = 0;
                 } else {
                     count++
                     result = nowLogicUnit.onJude(count)
                     if (result == ENABLE_SUB_FUNCTIONS) {//开启子模块
                         result =
-                            getChildrenFunctionUnit(nowLogicUnit.getChildrenFunctionId())?.startFunction()?:ENABLE_SUB_FUNCTIONS
+                            getChildrenFunctionUnit(nowLogicUnit.getChildrenFunctionId())?.startFunction()
+                                ?: ENABLE_SUB_FUNCTIONS
                     }
                 }
             }
@@ -93,6 +107,7 @@ data class FunctionEntity(
         Log.i(keyTag, "EXECUTION_RESULT::$result")
         return result
     }
+
 
     private fun getChildrenFunctionUnit(functionID: Long): FunctionEntity? {
         return IdentifyDatabase.getDatabase().functionDao().findByKeyId(functionID)

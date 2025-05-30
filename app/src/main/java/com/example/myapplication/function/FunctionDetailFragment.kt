@@ -14,12 +14,11 @@ import com.example.myapplication.R
 import com.example.myapplication.logic.LogicCreateDialog
 import com.example.myapplication.logic.LogicDetailFragmentArgs
 import com.nwq.callback.CallBack
-import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.opencv.db.entity.LogicEntity
 import com.nwq.simplelist.ICheckTextWrap
-import com.nwq.simplelist.ITextWarp
 import com.nwq.simplelist.TextAdapter
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding>() {
 
@@ -28,9 +27,7 @@ class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding
     private lateinit var mAllLogicAdapter: TextAdapter<LogicEntity>
     private lateinit var mNowLogicAdapter: TextAdapter<LogicEntity>
 
-    private val options by lazy {
-        arrayOf("正常", "开启子模块", "功能运行结束", "完成")
-    }
+
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_function_detail
@@ -55,11 +52,20 @@ class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding
             }
 
             R.id.action_detail -> {
-
+                mAllLogicAdapter.getSelectData()?.let { logic->
+                    findNavController().navigate(
+                        R.id.action_functionDetailFragment_to_logicDetailFragment,
+                        LogicDetailFragmentArgs(logic.id).toBundle()
+                    )
+                }
             }
 
             R.id.action_trigger -> {
-
+                mNowLogicAdapter.getSelectData()?.let { logic->
+                    if (logic.needChange()){
+                        viewModel.onTrigger(logic,mNowLogicAdapter.list.map { it.getT() }.toMutableList(), mAllLogicAdapter.list.map { it.getT() })
+                    }
+                }
             }
 
             R.id.action_delete_function -> {

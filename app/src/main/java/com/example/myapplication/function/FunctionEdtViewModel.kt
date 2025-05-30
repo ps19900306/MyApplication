@@ -1,22 +1,15 @@
 package com.example.myapplication.function
 
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.verify_results.AutoHsvRuleDetailViewModelFactory
-import com.example.myapplication.verify_results.VerifyResultPViewModel
 import com.nwq.baseutils.runOnIO
-import com.nwq.baseutils.runOnUI
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.opencv.db.entity.LogicEntity
+import com.nwq.simplelist.IText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 
@@ -68,6 +61,13 @@ class FunctionEdtViewModel() : ViewModel() {
         }
     }
 
+    fun onTrigger(
+        logic: LogicEntity,
+        nowList: MutableList<LogicEntity>,
+        AllList: List<LogicEntity>
+    ) {
+        _nowLogicFlow.tryEmit(logic.onHasChanged(nowList, AllList))
+    }
 
 
 }

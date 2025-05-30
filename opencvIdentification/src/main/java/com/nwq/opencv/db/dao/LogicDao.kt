@@ -19,8 +19,11 @@ interface LogicDao {
     @Query("SELECT * FROM logic_unit WHERE id = :id")
     fun findByKeyId(id: Long): LogicEntity?
 
-    @Query("SELECT * FROM logic_unit WHERE functionId = :id and parentLogicId = 0")
-    fun findByFunctionIdRoot(id: Long):MutableList<LogicEntity>
+    @Query("SELECT * FROM logic_unit WHERE functionId = :functionId and parentLogicId = 0")
+    fun findByFunctionIdRoot(functionId: Long): MutableList<LogicEntity>
+
+    @Query("SELECT * FROM logic_unit WHERE functionId = :id")
+    fun findByFunctionId(id: Long): List<LogicEntity>
 
     @Query("SELECT * FROM logic_unit WHERE functionId = :id")
     fun findByFunctionIdFlow(id: Long): Flow<List<LogicEntity>>
@@ -34,7 +37,7 @@ interface LogicDao {
 
     // 插入新的实体
     @Insert
-    fun insert(entity: LogicEntity):Long
+    fun insert(entity: LogicEntity): Long
 
     // 清空表
     @Query("DELETE FROM logic_unit")
@@ -44,7 +47,7 @@ interface LogicDao {
     fun findByKeyTagLike(keyTag: String): Flow<List<LogicEntity>>
 
     @Query("SELECT * FROM logic_unit WHERE keyTag LIKE '%' || :keyTag || '%' and functionId = :functionId")
-    fun findByKeyTagFunctionIdLike(keyTag: String,functionId:Long): Flow<List<LogicEntity>>
+    fun findByKeyTagFunctionIdLike(keyTag: String, functionId: Long): Flow<List<LogicEntity>>
 
     @Insert(onConflict = androidx.room.OnConflictStrategy.REPLACE)
     fun update(entity: LogicEntity)
