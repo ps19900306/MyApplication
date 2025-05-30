@@ -48,7 +48,9 @@ class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding
             }
 
             R.id.action_delete_logic -> {
-
+                mAllLogicAdapter.getSelectData()?.let { logic->
+                    viewModel.deleteLogic(logic)
+                }
             }
 
             R.id.action_detail -> {

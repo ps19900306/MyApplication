@@ -6,7 +6,6 @@ import com.nwq.baseutils.runOnIO
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.opencv.db.entity.LogicEntity
-import com.nwq.simplelist.IText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +16,7 @@ class FunctionEdtViewModel() : ViewModel() {
 
     private val mFunctionDao = IdentifyDatabase.getDatabase().functionDao()
     private val mLogicDao = IdentifyDatabase.getDatabase().logicDao()
-    public var id: Long = 0
+    public var functionID: Long = 0
 
 
     //这个是当前逻辑单元的
@@ -27,7 +26,7 @@ class FunctionEdtViewModel() : ViewModel() {
 
 
     val allLogicFlow: Flow<List<LogicEntity>> by lazy {
-        mLogicDao.findByFunctionIdFlow(id)
+        mLogicDao.findByFunctionIdFlow(functionID)
     }
 
     //当前选中的逻辑单元
@@ -41,7 +40,7 @@ class FunctionEdtViewModel() : ViewModel() {
 
 
     public fun initFunctionData(id: Long): Flow<FunctionEntity?> {
-        this.id = id
+        this.functionID = id
         viewModelScope.runOnIO {
             val list = mLogicDao.findByFunctionIdRoot(id)
             _nowLogicFlow.tryEmit(list)
@@ -67,6 +66,13 @@ class FunctionEdtViewModel() : ViewModel() {
         AllList: List<LogicEntity>
     ) {
         _nowLogicFlow.tryEmit(logic.onHasChanged(nowList, AllList))
+    }
+
+    fun deleteLogic(logic: LogicEntity) {
+        viewModelScope.runOnIO {
+            mLogicDao.findByFunctionAndParent(functionID,logic.id)
+            mLogicDao.delete(logic)
+        }
     }
 
 

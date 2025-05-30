@@ -22,6 +22,10 @@ interface LogicDao {
     @Query("SELECT * FROM logic_unit WHERE functionId = :functionId and parentLogicId = 0")
     fun findByFunctionIdRoot(functionId: Long): MutableList<LogicEntity>
 
+    @Query("SELECT * FROM logic_unit WHERE functionId = :functionId and parentLogicId = :parentId")
+    fun findByFunctionAndParent(functionId: Long,  parentId: Long): List<LogicEntity>
+
+
     @Query("SELECT * FROM logic_unit WHERE functionId = :id")
     fun findByFunctionId(id: Long): List<LogicEntity>
 
