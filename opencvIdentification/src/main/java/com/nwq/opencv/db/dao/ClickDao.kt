@@ -46,4 +46,6 @@ interface ClickDao {
     // 删除所有数据
     @Query("DELETE FROM click_area")
     fun deleteAll()
+
+
 }

@@ -20,7 +20,7 @@ object ClickBuilderUtils {
         height: Int,
         isRound: Boolean,
         delayTime: Long
-    ): GestureDescription? {
+    ): GestureDescription {
         val parameter = ExhaustionControl.getClickParameter()
         val coordinateArea = CoordinateArea(
             x,

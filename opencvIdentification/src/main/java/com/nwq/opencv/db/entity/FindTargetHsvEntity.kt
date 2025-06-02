@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
+import com.nwq.baseobj.CoordinatePoint
 import com.nwq.opencv.FindTargetType
 import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.data.PointVerifyResult
@@ -91,6 +92,10 @@ data class FindTargetHsvEntity(
             )
         }
         return last
+    }
+
+    override suspend fun getOffsetPoint(): CoordinatePoint {
+        return  CoordinatePoint(lastOffsetX, lastOffsetY)
     }
 
 

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.nwq.baseobj.CoordinateArea
+import com.nwq.baseobj.CoordinatePoint
 import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.FindTargetType
@@ -56,35 +57,35 @@ data class FindTargetMatEntity(
 
 
     @Ignore
-    private var targetMat:Mat?=null
+    private var targetMat: Mat? = null
 
-    private fun getTargetMat():Mat?{
+    private fun getTargetMat(): Mat? {
         if (targetMat == null) {
-            targetMat= MatUtils.readHsvMat(storageType, keyTag)
+            targetMat = MatUtils.readHsvMat(storageType, keyTag)
         }
         return targetMat
     }
-    @Ignore
-    private var maskMat:Mat?=null
 
-    private fun getMaskMat():Mat?{
+    @Ignore
+    private var maskMat: Mat? = null
+
+    private fun getMaskMat(): Mat? {
         if (maskMat == null) {
-            maskMat= MaskUtils.getMaskMat(getTargetMat(),maskType)
+            maskMat = MaskUtils.getMaskMat(getTargetMat(), maskType)
         }
         return maskMat
     }
 
     @Ignore
-    private var descriptorMat:Mat?=null
+    private var descriptorMat: Mat? = null
 
 
-    private fun getDescriptorMat():Mat?{
+    private fun getDescriptorMat(): Mat? {
         if (descriptorMat == null) {
-            descriptorMat=  builderTargetMat()
+            descriptorMat = builderTargetMat()
         }
         return descriptorMat
     }
-
 
 
     @Ignore
@@ -93,6 +94,8 @@ data class FindTargetMatEntity(
     @Ignore
     private lateinit var mKeypoints: MatOfKeyPoint//这个是特征点的 用来
 
+    @Ignore
+    private val mOffsetPoint: CoordinatePoint = CoordinatePoint(0, 0)
 
     override suspend fun findTarget(): CoordinateArea? {
         val srcMat = imgTake.getHsvMat(findArea) ?: return null
@@ -115,7 +118,9 @@ data class FindTargetMatEntity(
         )
     }
 
-
+    override suspend fun getOffsetPoint(): CoordinatePoint {
+        return mOffsetPoint
+    }
 
 
     private fun findTargetBitmap(srcMat: Mat): CoordinateArea? {
@@ -166,7 +171,8 @@ data class FindTargetMatEntity(
         val y = resultPoints.minOf { it.y }.toInt() + (findArea?.y ?: 0)
         val w = (resultPoints.maxOf { it.x } - x).toInt()
         val h = (resultPoints.maxOf { it.y } - y).toInt()
-
+        mOffsetPoint.x = x - targetOriginalArea.x
+        mOffsetPoint.y = y - targetOriginalArea.y
         return CoordinateArea(x, y, w, h)
     }
 

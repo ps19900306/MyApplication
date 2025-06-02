@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.nwq.baseobj.CoordinateArea
+import com.nwq.baseobj.CoordinatePoint
 import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.FindTargetType
@@ -54,6 +55,10 @@ data class FindTargetImgEntity(
 
     @Ignore
     private var maskMat: Mat? = null
+
+     @Ignore
+     private val mOffsetPoint: CoordinatePoint = CoordinatePoint(0,0)
+
 
     private fun getMaskMat(): Mat? {
         if (maskMat == null) {
@@ -118,6 +123,10 @@ data class FindTargetImgEntity(
         )
     }
 
+    override suspend fun getOffsetPoint(): CoordinatePoint {
+       return mOffsetPoint;
+    }
+
 
     private suspend fun findTargetBitmap(sourceMat: Mat): CoordinateArea? {
         getTargetMat() ?: return null
@@ -148,6 +157,8 @@ data class FindTargetImgEntity(
                 matchLoc.x.toInt(), matchLoc.y.toInt(),
                 getTargetMat()!!.width(), getTargetMat()!!.height()
             )
+            mOffsetPoint.x =coordinateArea.x-targetOriginalArea.x
+            mOffsetPoint.y =coordinateArea.y-targetOriginalArea.y
             return coordinateArea
         }
         // 否则返回 null

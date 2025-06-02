@@ -5,6 +5,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
+import com.nwq.baseobj.CoordinatePoint
 import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.constant.LogicJudeResult
 import com.nwq.opencv.core.ILogicUnit
@@ -51,6 +52,13 @@ class LogicEntity() : ILogicUnit {
     @Ignore
     private var lastCoordinateArea: CoordinateArea? = null
 
+    @Ignore
+    private var lastCoordinatePoint: CoordinatePoint? = null
+
+    @Ignore
+    private var clickEntity: ClickEntity? = null
+
+
     fun getTargetList(): List<IFindTarget>? {
         if (findTargetList == null) {
             val list = mutableListOf<IFindTarget>()
@@ -70,6 +78,7 @@ class LogicEntity() : ILogicUnit {
                 }
             }
             findTargetList = list
+            clickEntity = IdentifyDatabase.getDatabase().clickDao().findByKeyId(clickId)
         }
         return findTargetList
     }
@@ -80,6 +89,7 @@ class LogicEntity() : ILogicUnit {
             val coordinateArea = it.findTarget()
             if (coordinateArea != null) {
                 lastCoordinateArea = coordinateArea
+                lastCoordinatePoint = it.getOffsetPoint()
                 return true
             }
         }
@@ -94,7 +104,7 @@ class LogicEntity() : ILogicUnit {
             return LogicJudeResult.ENABLE_SUB_FUNCTIONS
         }
         if (consecutiveEntries < 0 || count in 1..<consecutiveEntries) {
-            //TODO 如果需要进行点击则出发点击事件
+            clickEntity?.optClick(lastCoordinatePoint?.x?:0, lastCoordinatePoint?.y?:0)
             return LogicJudeResult.NORMAL;
         }
         return LogicJudeResult.TIME_OUT
