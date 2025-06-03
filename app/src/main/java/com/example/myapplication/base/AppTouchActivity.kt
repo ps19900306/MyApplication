@@ -8,7 +8,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
-import com.example.myapplication.opencv.TouchOptModel
 import com.nwq.base.BaseActivity
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinateLine
@@ -17,6 +16,9 @@ import com.nwq.view.PreviewImageView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+/**
+ * 如果需要获取什么操作请看TouchOptModel
+ */
 abstract class AppTouchActivity<VB : ViewBinding> : BaseActivity<VB>() {
 
     protected val mTouchOptModel by viewModels<TouchOptModel>()

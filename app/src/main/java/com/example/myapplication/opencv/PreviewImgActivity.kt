@@ -3,7 +3,6 @@ package com.example.myapplication.opencv
 import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -15,6 +14,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.myapplication.base.TouchOptModel
 import com.example.myapplication.databinding.ActivityPreviewImgBinding
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType

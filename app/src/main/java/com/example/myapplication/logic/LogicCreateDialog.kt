@@ -13,8 +13,7 @@ class LogicCreateDialog(
     val size: Int = 0,
     val logicId: Long = 0,
     val result: (name: String, parentId: Long, offset: Int) -> Unit
-) :
-    BaseDialogFragment<DialogCreateLogicBinding>() {
+) : BaseDialogFragment<DialogCreateLogicBinding>() {
 
     private var offset = 0
 

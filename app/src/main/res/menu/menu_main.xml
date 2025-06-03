@@ -3,8 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.myapplication.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/nav_function"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/function"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/nav_target"
+        android:orderInCategory="100"
+        android:title="@string/result_is_pass"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/nav_rule"
+        android:orderInCategory="100"
+        android:title="@string/rule"
         app:showAsAction="never" />
 </menu>

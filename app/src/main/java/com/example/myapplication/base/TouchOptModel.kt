@@ -1,4 +1,4 @@
-package com.example.myapplication.opencv
+package com.example.myapplication.base
 
 import androidx.lifecycle.ViewModel
 import com.nwq.baseobj.CoordinateArea

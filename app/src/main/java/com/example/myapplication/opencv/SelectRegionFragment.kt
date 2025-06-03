@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.base.NavigationContainerActivity
 import com.example.myapplication.R
 import com.example.myapplication.auto_hsv_rule.AutoHsvRuleActivity
+import com.example.myapplication.base.TouchOptModel
 import com.example.myapplication.databinding.FragmentSelectRegionBinding
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
@@ -126,7 +127,6 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
         list.add(ResStrKeyText(R.string.add_hsv_filter))
         list.add(ResStrKeyText(R.string.auto_exc))
         list.add(ResStrKeyText(R.string.check_target_object))
-
         return list
     }
 

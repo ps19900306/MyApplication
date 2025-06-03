@@ -38,7 +38,7 @@ class CheckTextAdapter<T>(
     }
 
     public fun getSelectedItem(): List<ICheckText<T>> {
-        return list.filter { it.isCheckStatus() } ?: listOf()
+        return list.filter { it.isCheckStatus() }  ?: listOf()
     }
 
     public fun removeSelectAndGet(): List<T>{
