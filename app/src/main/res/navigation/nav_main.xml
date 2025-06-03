@@ -8,22 +8,21 @@
     <fragment
         android:id="@+id/nav_function"
         android:name="com.example.myapplication.function.FunctionListFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_function_list"/>
+        android:label="@string/function_list"
+        tools:layout="@layout/fragment_function_list" />
 
 
     <fragment
         android:id="@+id/nav_target"
         android:name="com.example.myapplication.find_target.FindTargetListFragment"
-        android:label="FindTargetListFragment"
-        tools:layout="@layout/fragment_find_target_list"/>
+        android:label="@string/target_list"
+        tools:layout="@layout/fragment_find_target_list" />
 
     <fragment
         android:id="@+id/nav_rule"
         android:name="com.example.myapplication.auto_hsv_rule.AutoHsvRuleListFragment"
-        android:label="AutoHsvRuleListFragment"
-        tools:layout="@layout/fragment_auto_hsv_rule_list"/>
-
+        android:label="@string/rule_list"
+        tools:layout="@layout/fragment_auto_hsv_rule_list" />
 
 
 </navigation>

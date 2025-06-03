@@ -12,12 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.FragmentFunctionListBinding
 import com.nwq.base.BaseToolBarFragment
 import com.example.myapplication.R
+import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
 
-class FunctionListFragment : BaseToolBarFragment<FragmentFunctionListBinding>() {
+class FunctionListFragment : BaseToolBar2Fragment<FragmentFunctionListBinding>() {
 
     private val viewModel: FunctionViewModel by viewModels()
 
@@ -28,16 +29,13 @@ class FunctionListFragment : BaseToolBarFragment<FragmentFunctionListBinding>() 
         return R.layout.fragment_function_list
     }
 
-    override fun getTitleRes(): Int {
-        return R.string.function_list
-    }
 
     override fun getMenuRes(): Int {
         return R.menu.menu_list_edit
     }
 
 
-    override fun onMenuItemClick(menuItem: MenuItem) {
+    override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_add -> {
                 val dialog = EditFunctionTitleDialog { name, description ->
@@ -50,20 +48,24 @@ class FunctionListFragment : BaseToolBarFragment<FragmentFunctionListBinding>() 
                     }
                 }
                 dialog.show(parentFragmentManager, "EditFunctionTitleDialog")
+                return true
             }
 
             R.id.action_delete_select -> {
                 viewModel.delete(mCheckTextAdapter.getSelectedItem().map { it.getT() })
+                return true
             }
 
             R.id.action_delete_all -> {
-                showTipsDialog(){ b->
-                    if (b){
+                showTipsDialog() { b ->
+                    if (b) {
                         viewModel.deleteAll()
                     }
                 }
+                return true
             }
         }
+        return false
     }
 
 

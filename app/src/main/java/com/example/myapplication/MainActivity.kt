@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.myapplication.databinding.ActivityMainBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.nwq.base.BaseActivity
 
 

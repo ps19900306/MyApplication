@@ -95,4 +95,6 @@
     <string name="start_function">启动功能</string>
     <string name="max_consecutive_entries">最大进入次数</string>
     <string name="rule">规则</string>
+    <string name="target_list">检测目标列表</string>
+    <string name="rule_list">规则列表</string>
 </resources>
