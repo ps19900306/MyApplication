@@ -21,9 +21,7 @@ import kotlinx.coroutines.launch
 class FunctionListFragment : BaseToolBar2Fragment<FragmentFunctionListBinding>() {
 
     private val viewModel: FunctionViewModel by viewModels()
-
     private lateinit var mCheckTextAdapter: CheckTextAdapter<FunctionEntity>
-
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_function_list
