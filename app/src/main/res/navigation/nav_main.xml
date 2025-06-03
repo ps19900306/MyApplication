@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@+id/nav_function">
+
+    <fragment
+        android:id="@+id/nav_function"
+        android:name="com.example.myapplication.function.FunctionListFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_function_list"/>
+
+
+    <fragment
+        android:id="@+id/nav_target"
+        android:name="com.example.myapplication.find_target.FindTargetListFragment"
+        android:label="FindTargetListFragment"
+        tools:layout="@layout/fragment_find_target_list"/>
+
+    <fragment
+        android:id="@+id/nav_rule"
+        android:name="com.example.myapplication.auto_hsv_rule.AutoHsvRuleListFragment"
+        android:label="AutoHsvRuleListFragment"
+        tools:layout="@layout/fragment_auto_hsv_rule_list"/>
+
+
+
+</navigation>
