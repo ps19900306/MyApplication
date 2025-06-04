@@ -27,17 +27,16 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
     private var _binding: VB? = null
     protected val binding: VB get() = _binding!!
 
-    protected lateinit var toolbar: Toolbar
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView =
-            inflater.inflate(getLayoutId(), container, false) as LinearLayout
-        _binding = DataBindingUtil.bind(rootView);
-        return rootView
+        _binding = createBinding(inflater)
+        return binding.root
     }
+
+    abstract fun createBinding(inflater: LayoutInflater): VB
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,13 +55,9 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
         initData() // 初始化视图，设置监听器等
     }
 
-    abstract fun getLayoutId(): Int
     abstract fun getMenuRes(): Int
     abstract fun onMenuItemClick(menuItem: MenuItem): Boolean
 
-    protected fun setTitleString(title: String) {
-        toolbar.title = title
-    }
 
     abstract fun onBackPress()
 

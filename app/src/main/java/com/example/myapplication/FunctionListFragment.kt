@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 
+import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -23,8 +24,8 @@ class FunctionListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
     private val viewModel: FunctionViewModel by viewModels()
     private lateinit var mCheckTextAdapter: CheckTextAdapter<FunctionEntity>
 
-    override fun getLayoutId(): Int {
-        return R.layout.fragment_search_list
+    override fun createBinding(inflater: LayoutInflater): FragmentSearchListBinding {
+        return FragmentSearchListBinding.inflate(inflater)
     }
 
 

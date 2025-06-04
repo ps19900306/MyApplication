@@ -54,9 +54,7 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
         return R.layout.fragment_logic_detail
     }
 
-    override fun getTitleRes(): Int {
-        return R.layout.`fragment_search_list.xml`
-    }
+
 
     override fun getMenuRes(): Int {
         return R.menu.menu_logic_detail

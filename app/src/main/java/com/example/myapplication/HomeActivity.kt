@@ -4,11 +4,12 @@ package com.example.myapplication
 import android.view.LayoutInflater
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.databinding.ActivityHomeBinding
 import com.nwq.base.BaseActivity
 
+class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
-class MainActivity : BaseActivity<ActivityMainBinding>() {
+
     override fun initData() {
         // 1. 设置 Toolbar 替代 ActionBar
 
@@ -28,8 +29,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
             // 显示返回按钮（非顶级目标时）
             if (destination.id != R.id.nav_function &&
-                destination.id != R.id.nav_target &&
-                destination.id != R.id.nav_rule
+                destination.id != R.id.nav_target
+             //   &&destination.id != R.id.nav_rule
             ) {
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
             } else {
@@ -43,9 +44,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
     }
 
-    override fun createBinding(inflater: LayoutInflater): ActivityMainBinding {
-        return ActivityMainBinding.inflate(inflater)
+    override fun createBinding(inflater: LayoutInflater): ActivityHomeBinding {
+       return ActivityHomeBinding.inflate(inflater)
     }
-
-
 }

@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@+id/findTargetListFragment"
-    android:id="@+id/nav_find_target">
+    >
 
 
-    <fragment
-        android:id="@+id/findTargetListFragment"
-        android:name="com.example.myapplication.FindTargetListFragment"
-        android:label="FindTargetListFragment"
-        tools:layout="@layout/fragment_find_target_list">
-        <action
-            android:id="@+id/action_autoHsvRuleListFragment_to_autoHsvRuleDetailFragment"
-            app:destination="@id/autoHsvRuleDetailFragment" />
-    </fragment>
+<!--    <fragment-->
+<!--        android:id="@+id/findTargetListFragment"-->
+<!--        android:name="com.example.myapplication.FindTargetListFragment"-->
+<!--        android:label="FindTargetListFragment"-->
+<!--        tools:layout="@layout/fragment_search_list">-->
+<!--        <action-->
+<!--            android:id="@+id/action_autoHsvRuleListFragment_to_autoHsvRuleDetailFragment"-->
+<!--            app:destination="@id/autoHsvRuleDetailFragment" />-->
+<!--    </fragment>-->
 
 
 

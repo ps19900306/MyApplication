@@ -12,16 +12,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.FunctionViewModel
-import com.example.myapplication.databinding.FragmentFunctionListBinding
 import com.nwq.base.BaseToolBarFragment
 import com.example.myapplication.R
+import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
 
-class FunctionSelectFragment : BaseToolBarFragment<FragmentFunctionListBinding>() {
+class FunctionSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() {
 
     private val viewModel: FunctionViewModel by viewModels()
     private val args: FunctionSelectFragmentArgs by navArgs()
@@ -29,7 +29,7 @@ class FunctionSelectFragment : BaseToolBarFragment<FragmentFunctionListBinding>(
 
 
     override fun getLayoutId(): Int {
-        return R.layout.`fragment_search_list.xml`
+        return R.layout.fragment_search_list
     }
 
     override fun getTitleRes(): Int {
