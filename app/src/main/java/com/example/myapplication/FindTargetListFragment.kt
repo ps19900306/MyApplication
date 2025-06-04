@@ -97,7 +97,7 @@ class FindTargetListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>()
                 viewModel.resultsFlow.collect {
                     val list = it.map { data ->
                         ICheckTextWrap<FindTargetRecord>(data) {
-                            data.keyTag
+                            data.keyTag + "\n" + data.description
                         }
                     }
                     mCheckTextAdapter.upData(list)
