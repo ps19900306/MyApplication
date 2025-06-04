@@ -1,4 +1,4 @@
-package com.example.myapplication.auto_hsv_rule
+package com.example.myapplication
 
 
 import android.text.Editable
@@ -10,7 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.myapplication.R
+import com.example.myapplication.auto_hsv_rule.AutoHsvRuleModel
 import com.example.myapplication.auto_hsv_rule.adapter.AutoHsvRuleAdapter
 import com.example.myapplication.databinding.FragmentAutoHsvRuleListBinding
 import com.nwq.base.BaseFragment
@@ -71,17 +71,5 @@ class AutoHsvRuleListFragment : BaseFragment<FragmentAutoHsvRuleListBinding>() {
                 }
             }
         }
-        mAdapter.setItemClickListener(object : CallBack<IAutoRulePoint?> {
-            override fun onCallBack(data: IAutoRulePoint?) {
-                data?.getTag()?.let { t->
-                    findNavController().navigate(R.id.action_autoHsvRuleListFragment_to_autoHsvRuleDetailFragment,  AutoHsvRuleDetailFragmentArgs(t).toBundle())
-                }
-            }
-        })
-
-        binding.createBtn.singleClick {
-            findNavController().navigate(R.id.action_autoHsvRuleListFragment_to_autoHsvRuleDetailFragment,  AutoHsvRuleDetailFragmentArgs(null).toBundle())
-        }
     }
-
 }

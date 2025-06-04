@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.FragmentSearchListBinding
-import com.example.myapplication.function.EditFunctionTitleDialog
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.dialog.SimpleInputDialog
 import com.nwq.opencv.db.entity.FindTargetRecord

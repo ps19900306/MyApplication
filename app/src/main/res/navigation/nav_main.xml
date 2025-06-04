@@ -20,7 +20,7 @@
 
 <!--    <fragment-->
 <!--        android:id="@+id/nav_rule"-->
-<!--        android:name="com.example.myapplication.auto_hsv_rule.AutoHsvRuleListFragment"-->
+<!--        android:name="com.example.myapplication.AutoHsvRuleListFragment"-->
 <!--        android:label="@string/rule_list"-->
 <!--        tools:layout="@layout/fragment_auto_hsv_rule_list" />-->
 

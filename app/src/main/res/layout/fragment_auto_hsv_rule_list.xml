@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:layoutManager="LinearLayoutManager"
     android:background="@color/white"
-    tools:context=".auto_hsv_rule.AutoHsvRuleListFragment"
+    tools:context=".AutoHsvRuleListFragment"
     tools:listitem="@layout/fragment_auto_hsv_rule_list">
 
     <EditText
