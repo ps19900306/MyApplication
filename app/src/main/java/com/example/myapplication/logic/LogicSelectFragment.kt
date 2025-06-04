@@ -12,8 +12,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentFunctionListBinding
-import com.example.myapplication.function.FunctionDetailFragmentArgs
-import com.example.myapplication.function.FunctionEdtViewModel
 import com.nwq.base.BaseToolBarFragment
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.opencv.db.entity.LogicEntity
@@ -32,7 +30,7 @@ class LogicSelectFragment : BaseToolBarFragment<FragmentFunctionListBinding>() {
 
     private lateinit var mCheckTextAdapter: CheckTextAdapter<LogicEntity>
     override fun getLayoutId(): Int {
-        return R.layout.fragment_function_list
+        return R.layout.`fragment_search_list.xml`
     }
 
     override fun getTitleRes(): Int {

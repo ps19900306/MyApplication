@@ -5,13 +5,14 @@
     class="androidx.appcompat.app.AlertController$RecycleListView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".function.FunctionListFragment">
+    android:orientation="vertical">
 
+    <!--tong -->
     <EditText
         android:id="@+id/inputEdit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="请输入检索内容" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"

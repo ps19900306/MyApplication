@@ -1,18 +1,10 @@
-package com.example.myapplication.function
+package com.example.myapplication
 
-import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nwq.baseutils.FileUtils
-import com.nwq.baseutils.MatUtils
-import com.nwq.baseutils.runOnIO
-import com.nwq.baseutils.runOnUI
 import com.nwq.opencv.db.IdentifyDatabase
-import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.opencv.db.entity.FunctionEntity
-import com.nwq.opencv.hsv.HSVRule
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest

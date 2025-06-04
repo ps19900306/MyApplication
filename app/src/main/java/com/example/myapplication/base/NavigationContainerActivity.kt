@@ -37,10 +37,11 @@ class NavigationContainerActivity : AppTouchActivity<ActivityNavigationContainer
 
     override fun initData() {
         val navigationID = intent.getIntExtra("navigationID", -1)
+        val bundle = intent.extras
         if (navigationID != -1) {
             // 加载对应的导航文件
             val navController = findNavController(R.id.nav_host_fragment)
-            navController.setGraph(navigationID)
+            navController.setGraph(navigationID,bundle)
         } else {
             // 如果没有传递有效的导航ID，可以处理错误或关闭活动
             T.show("navigationID为空")

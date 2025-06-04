@@ -7,14 +7,14 @@
 
     <fragment
         android:id="@+id/nav_function"
-        android:name="com.example.myapplication.function.FunctionListFragment"
+        android:name="com.example.myapplication.FunctionListFragment"
         android:label="@string/function_list"
-        tools:layout="@layout/fragment_function_list" />
+        tools:layout="@layout/fragment_search_list" />
 
 
     <fragment
         android:id="@+id/nav_target"
-        android:name="com.example.myapplication.find_target.FindTargetListFragment"
+        android:name="com.example.myapplication.FindTargetListFragment"
         android:label="@string/target_list"
         tools:layout="@layout/fragment_find_target_list" />
 

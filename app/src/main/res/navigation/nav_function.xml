@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_auto_code"
-    app:startDestination="@+id/functionListFragment">
+    app:startDestination="@+id/functionDetailFragment">
 
 
-    <fragment
-        android:id="@+id/functionListFragment"
-        android:name="com.example.myapplication.function.FunctionListFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_function_list">
-        <action
-            android:id="@+id/action_functionListFragment_to_functionDetailFragment"
-            app:destination="@id/functionDetailFragment" />
-    </fragment>
+<!--    <fragment-->
+<!--        android:id="@+id/functionListFragment"-->
+<!--        android:name="com.example.myapplication.FunctionListFragment"-->
+<!--        android:label="@string/first_fragment_label"-->
+<!--        tools:layout="@layout/fragment_search_list">-->
+<!--        <action-->
+<!--            android:id="@+id/action_functionListFragment_to_functionDetailFragment"-->
+<!--            app:destination="@id/functionDetailFragment" />-->
+<!--    </fragment>-->
 
     <fragment
         android:id="@+id/functionDetailFragment"
@@ -52,7 +52,7 @@
         android:id="@+id/ClickSelectFragment"
         android:name="com.example.myapplication.click.ClickSelectFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_function_list">
+        tools:layout="@layout/fragment_search_list">
         <argument
             android:name="actionTag"
             app:argType="string" />
@@ -62,7 +62,7 @@
         android:id="@+id/FunctionSelectFragment"
         android:name="com.example.myapplication.function.FunctionSelectFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_function_list">
+        tools:layout="@layout/fragment_search_list">
         <argument
             android:name="actionTag"
             app:argType="string" />
@@ -72,7 +72,7 @@
         android:id="@+id/LogicSelectFragment"
         android:name="com.example.myapplication.logic.LogicSelectFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_function_list">
+        tools:layout="@layout/fragment_search_list">
         <argument
             android:name="functionId"
             app:argType="long"

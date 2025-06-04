@@ -32,9 +32,12 @@ interface FindTargetRecordDao {
     @Delete
     fun delete(entity: FindTargetRecord)
 
+    @Delete
+    fun delete(entitys: Array<FindTargetRecord>)
+
     // 插入新的实体
     @Insert
-    fun insert(entity: FindTargetRecord)
+    fun insert(entity: FindTargetRecord):Long
 
     // 清空表
     @Query("DELETE FROM find_target_all")

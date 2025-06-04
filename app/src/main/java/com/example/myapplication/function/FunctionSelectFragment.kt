@@ -11,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myapplication.FunctionViewModel
 import com.example.myapplication.databinding.FragmentFunctionListBinding
 import com.nwq.base.BaseToolBarFragment
 import com.example.myapplication.R
@@ -28,7 +29,7 @@ class FunctionSelectFragment : BaseToolBarFragment<FragmentFunctionListBinding>(
 
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_function_list
+        return R.layout.`fragment_search_list.xml`
     }
 
     override fun getTitleRes(): Int {

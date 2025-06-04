@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/findTargetListFragment"
-        android:name="com.example.myapplication.find_target.FindTargetListFragment"
+        android:name="com.example.myapplication.FindTargetListFragment"
         android:label="FindTargetListFragment"
         tools:layout="@layout/fragment_find_target_list">
         <action

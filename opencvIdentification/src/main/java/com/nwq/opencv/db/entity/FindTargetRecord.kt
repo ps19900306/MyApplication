@@ -17,7 +17,7 @@ data class FindTargetRecord(
     //描述信息
     var description: String = "",
 ) {
-    @Ignore
-    public val list = mutableListOf<IFindTarget>()
+
+
 
 }

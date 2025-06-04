@@ -31,7 +31,7 @@ class ClickSelectFragment : BaseToolBarFragment<FragmentFunctionListBinding>() {
 
     private lateinit var mCheckTextAdapter: CheckTextAdapter<ClickEntity>
     override fun getLayoutId(): Int {
-        return R.layout.fragment_function_list
+        return R.layout.`fragment_search_list.xml`
     }
 
     override fun getTitleRes(): Int {

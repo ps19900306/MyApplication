@@ -1,4 +1,4 @@
-package com.example.myapplication.function
+package com.example.myapplication
 
 
 import android.view.MenuItem
@@ -7,24 +7,24 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.myapplication.databinding.FragmentFunctionListBinding
-import com.nwq.base.BaseToolBarFragment
-import com.example.myapplication.R
+import com.example.myapplication.base.NavigationContainerActivity
+import com.example.myapplication.databinding.FragmentSearchListBinding
+import com.example.myapplication.function.EditFunctionTitleDialog
+import com.example.myapplication.function.FunctionDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
 
-class FunctionListFragment : BaseToolBar2Fragment<FragmentFunctionListBinding>() {
+class FunctionListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
 
     private val viewModel: FunctionViewModel by viewModels()
     private lateinit var mCheckTextAdapter: CheckTextAdapter<FunctionEntity>
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_function_list
+        return R.layout.fragment_search_list
     }
 
 
@@ -39,10 +39,7 @@ class FunctionListFragment : BaseToolBar2Fragment<FragmentFunctionListBinding>()
                 val dialog = EditFunctionTitleDialog { name, description ->
                     lifecycleScope.launch {
                         val id = viewModel.createFunction(name, description)
-                        findNavController().navigate(
-                            R.id.action_functionListFragment_to_functionDetailFragment,
-                            FunctionDetailFragmentArgs(id).toBundle()
-                        )
+                        NavigationContainerActivity.startNavigationContainerActivity(requireContext(),  R.navigation.nav_function, FunctionDetailFragmentArgs(id).toBundle())
                     }
                 }
                 dialog.show(parentFragmentManager, "EditFunctionTitleDialog")
