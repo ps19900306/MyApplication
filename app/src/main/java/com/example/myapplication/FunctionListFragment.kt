@@ -14,6 +14,7 @@ import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.example.myapplication.function.EditFunctionTitleDialog
 import com.example.myapplication.function.FunctionDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
+import com.nwq.dialog.SimpleInputDialog
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
@@ -37,7 +38,7 @@ class FunctionListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_add -> {
-                val dialog = EditFunctionTitleDialog { name, description ->
+                val dialog = SimpleInputDialog(titleRes= R.string.create_function) { name, description ->
                     lifecycleScope.launch {
                         val id = viewModel.createFunction(name, description)
                         NavigationContainerActivity.startNavigationContainerActivity(requireContext(),  R.navigation.nav_function, FunctionDetailFragmentArgs(id).toBundle())

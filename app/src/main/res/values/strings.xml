@@ -73,6 +73,7 @@
     <string name="result_is_do">标签</string>
     <string name="result_is_effective">有效</string>
     <string name="result_is_pass">目标</string>
+    <string name="create_target">新建目标</string>
     <string name="has_find_t">检查到目标</string>
     <string name="un_has_find_t">未检测到目标</string>
     <string name="check_target_object">目标检测实体</string>
@@ -80,6 +81,7 @@
     <string name="function">功能</string>
     <string name="function_list">功能列表</string>
     <string name="function_detail">功能详情</string>
+    <string name="create_function">新建功能</string>
     <string name="detail">详情</string>
     <string name="trigger">触发</string>
     <string name="create_logic_unit">创建逻辑单元</string>

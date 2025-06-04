@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.example.myapplication.function.EditFunctionTitleDialog
 import com.nwq.base.BaseToolBar2Fragment
+import com.nwq.dialog.SimpleInputDialog
 import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
@@ -41,7 +42,7 @@ class FindTargetListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>()
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_add -> {
-                val dialog = EditFunctionTitleDialog { name, description ->
+                val dialog = SimpleInputDialog(titleRes= R.string.create_target) { name, description ->
                     lifecycleScope.launch {
                         val id = viewModel.createTarget(name, description)
 //                        findNavController().navigate(
