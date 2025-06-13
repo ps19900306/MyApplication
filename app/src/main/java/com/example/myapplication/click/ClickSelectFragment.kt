@@ -24,9 +24,6 @@ class ClickSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() {
 
     private val args: ClickSelectFragmentArgs by navArgs()
 
-
-
-
     private val viewModel: ClickSelectViewModel by viewModels()
 
     private lateinit var mCheckTextAdapter: CheckTextAdapter<ClickEntity>

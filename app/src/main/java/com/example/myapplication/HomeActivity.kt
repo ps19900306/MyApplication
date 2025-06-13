@@ -6,6 +6,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.myapplication.databinding.ActivityHomeBinding
 import com.nwq.base.BaseActivity
+import com.nwq.base.BaseToolBar2Fragment
 
 class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
@@ -30,7 +31,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             // 显示返回按钮（非顶级目标时）
             if (destination.id != R.id.nav_function &&
                 destination.id != R.id.nav_target
-             //   &&destination.id != R.id.nav_rule
+            //   &&destination.id != R.id.nav_rule
             ) {
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
             } else {
@@ -40,11 +41,19 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
         // 4. 处理 Toolbar 返回按钮点击
         binding.toolbar.setNavigationOnClickListener {
-            navController.navigateUp() // 返回上一级
+            val currentFragment = navHostFragment.childFragmentManager.primaryNavigationFragment
+            if (currentFragment is BaseToolBar2Fragment<*>) {
+                if (!currentFragment.onBackPress()) {
+                    // 如果返回 false，再执行默认返回逻辑
+                    navController.navigateUp()
+                }
+            } else {
+                navController.navigateUp()
+            }
         }
     }
 
     override fun createBinding(inflater: LayoutInflater): ActivityHomeBinding {
-       return ActivityHomeBinding.inflate(inflater)
+        return ActivityHomeBinding.inflate(inflater)
     }
 }

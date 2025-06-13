@@ -35,9 +35,6 @@
             android:name=".base.NavigationContainerActivity"
             android:exported="false" />
         <activity
-            android:name=".find_target.FindTargetActivity"
-            android:exported="false" />
-        <activity
             android:name=".FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"

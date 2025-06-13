@@ -2,20 +2,21 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@+id/findTargetListFragment"
-    >
+    app:startDestination="@+id/findTargetListFragment">
 
 
-<!--    <fragment-->
-<!--        android:id="@+id/findTargetListFragment"-->
-<!--        android:name="com.example.myapplication.FindTargetListFragment"-->
-<!--        android:label="FindTargetListFragment"-->
-<!--        tools:layout="@layout/fragment_search_list">-->
-<!--        <action-->
-<!--            android:id="@+id/action_autoHsvRuleListFragment_to_autoHsvRuleDetailFragment"-->
-<!--            app:destination="@id/autoHsvRuleDetailFragment" />-->
-<!--    </fragment>-->
-
+    <fragment
+        android:id="@+id/findTargetDetailFragment"
+        android:name="com.example.myapplication.find_target.FindTargetDetailFragment"
+        android:label="FindTargetListFragment"
+        tools:layout="@layout/fragment_search_list">
+        <argument
+            android:name="targetId"
+            app:argType="long" />
+        <argument
+            android:name="@string/big_title_key"
+            app:argType="String" />
+    </fragment>
 
 
 </navigation>

@@ -26,7 +26,8 @@ class CheckTextAdapter<T>(
     private val layoutId: Int = R.layout.item_text,
     private val textId: Int = R.id.textTv,
     private val normalBgRes: Int = R.drawable.bg_item_normal,
-    private val selectBgRes: Int = R.drawable.bg_item_select
+    private val selectBgRes: Int = R.drawable.bg_item_select,
+    private val mLongClick: CallBack<T>? = null//长按
 ) : RecyclerView.Adapter<CheckTextAdapter<T>.ViewHolder>() {
 
 
@@ -38,10 +39,10 @@ class CheckTextAdapter<T>(
     }
 
     public fun getSelectedItem(): List<ICheckText<T>> {
-        return list.filter { it.isCheckStatus() }  ?: listOf()
+        return list.filter { it.isCheckStatus() } ?: listOf()
     }
 
-    public fun removeSelectAndGet(): List<T>{
+    public fun removeSelectAndGet(): List<T> {
         return list.filter { !it.isCheckStatus() }.map { it.getT() }
     }
 
@@ -109,6 +110,12 @@ class CheckTextAdapter<T>(
                     } else {
                         itemView.rootView.setBackgroundResource(normalBgRes)
                     }
+                }
+            }
+            mLongClick?.let {
+                itemView.setOnLongClickListener {
+                    mLongClick.onCallBack(mIKeyText!!.getT())
+                    true
                 }
             }
             mTextView = itemView.findViewById(textId) // 初始化 TextView

@@ -49,6 +49,8 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return onMenuItemClick(menuItem)
             }
+
+
         }, viewLifecycleOwner)
 
         initView()
@@ -59,7 +61,7 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
     abstract fun onMenuItemClick(menuItem: MenuItem): Boolean
 
 
-    abstract fun onBackPress()
+    abstract fun onBackPress():Boolean
 
 
     // 设置视图，子类可以重写这个方法来初始化视图

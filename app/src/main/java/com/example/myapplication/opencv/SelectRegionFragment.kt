@@ -165,7 +165,7 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
                 autoCode()
             }
             R.string.check_target_object-> {
-                NavigationContainerActivity.startNavigationContainerActivity(requireActivity(), R.navigation.nav_find_target)
+             //   NavigationContainerActivity.startNavigationContainerActivity(requireActivity(), R.navigation.nav_find_target)
             }
         }
     }

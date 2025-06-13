@@ -1,7 +1,6 @@
 package com.example.myapplication
 
 
-
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.widget.addTextChangedListener
@@ -10,8 +9,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myapplication.base.NavigationContainerActivity2
 import com.example.myapplication.databinding.FragmentSearchListBinding
+import com.example.myapplication.find_target.FindTargetDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
+import com.nwq.callback.CallBack
 import com.nwq.dialog.SimpleInputDialog
 import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.simplelist.CheckTextAdapter
@@ -27,9 +29,8 @@ class FindTargetListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>()
     private lateinit var mCheckTextAdapter: CheckTextAdapter<FindTargetRecord>
 
 
-
     override fun createBinding(inflater: LayoutInflater): FragmentSearchListBinding {
-       return FragmentSearchListBinding.inflate(inflater)
+        return FragmentSearchListBinding.inflate(inflater)
     }
 
 
@@ -41,15 +42,17 @@ class FindTargetListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>()
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_add -> {
-                val dialog = SimpleInputDialog(titleRes= R.string.create_target) { name, description ->
-                    lifecycleScope.launch {
-                        val id = viewModel.createTarget(name, description)
-//                        findNavController().navigate(
-//                            R.id.action_functionListFragment_to_functionDetailFragment,
-//                            FunctionDetailFragmentArgs(id).toBundle()
-//                        )
+                val dialog =
+                    SimpleInputDialog(titleRes = R.string.create_target) { name, description ->
+                        lifecycleScope.launch {
+                            val id = viewModel.createTarget(name, description)
+                            NavigationContainerActivity2.startNavigationContainerActivity(
+                                requireContext(),
+                                R.navigation.nav_find_target,
+                                FindTargetDetailFragmentArgs(id, name).toBundle()
+                            )
+                        }
                     }
-                }
                 dialog.show(parentFragmentManager, "EditFunctionTitleDialog")
                 return true
             }
@@ -72,14 +75,23 @@ class FindTargetListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>()
     }
 
 
-    override fun onBackPress() {
+    override fun onBackPress(): Boolean {
         requireActivity().finish()
+        return true;
     }
 
 
     override fun initView() {
         super.initView()
-        mCheckTextAdapter = CheckTextAdapter()
+        mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<FindTargetRecord> {
+            override fun onCallBack(data: FindTargetRecord) {
+                NavigationContainerActivity2.startNavigationContainerActivity(
+                    requireContext(),
+                    R.navigation.nav_find_target,
+                    FindTargetDetailFragmentArgs(data.id, data.keyTag).toBundle()
+                )
+            }
+        })
         binding.recycler.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recycler.adapter = mCheckTextAdapter

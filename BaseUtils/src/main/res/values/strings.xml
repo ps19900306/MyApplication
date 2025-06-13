@@ -46,4 +46,6 @@
     <string name="function_end">功能运行结束</string>
     <string name="complete">完成</string>
 
+    <string name="big_title_key">big_title</string>
+    <string name="small_title_key">small_title</string>
 </resources>

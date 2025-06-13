@@ -1,5 +1,6 @@
 package com.example.myapplication.logic
 
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.click.ClickSelectFragmentArgs
 import com.example.myapplication.databinding.FragmentLogicDetailBinding
+import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.base.BaseToolBarFragment
 import com.nwq.baseutils.singleClick
 import com.nwq.constant.ConstantKeyStr
@@ -30,7 +32,7 @@ import kotlinx.coroutines.launch
  * Use the [LogicDetailFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
+class LogicDetailFragment : BaseToolBar2Fragment<FragmentLogicDetailBinding>() {
 
     private val args: LogicDetailFragmentArgs by navArgs()
 
@@ -50,23 +52,24 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
         )
     }
 
-    override fun getLayoutId(): Int {
-        return R.layout.fragment_logic_detail
-    }
 
+    override fun createBinding(inflater: LayoutInflater): FragmentLogicDetailBinding {
+        return FragmentLogicDetailBinding.inflate(inflater)
+    }
 
 
     override fun getMenuRes(): Int {
         return R.menu.menu_logic_detail
     }
 
-    override fun onMenuItemClick(menuItem: MenuItem) {
+    override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_add -> {
                 findNavController().navigate(
                     R.id.action_logicDetailFragment_to_LogicSelectFragment,
                     ClickSelectFragmentArgs(ADD_LOGIC_TAG).toBundle()
                 )
+                return true;
             }
 
             R.id.action_delete -> {
@@ -74,6 +77,7 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
                     R.id.action_logicDetailFragment_to_LogicSelectFragment,
                     ClickSelectFragmentArgs(DELETE_LOGIC_TAG).toBundle()
                 )
+                return true;
             }
 
             R.id.action_delete_select -> {
@@ -81,16 +85,21 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
                 viewModel.mDeleteLogicListFow.tryEmit(
                     mDeleteAdapter.removeSelectAndGet().toMutableList()
                 )
+                return true;
             }
+
             R.id.action_save -> {
                 viewModel.saveAll()
                 findNavController().popBackStack()
+                return true
             }
         }
+        return false
     }
 
-    override fun onBackPress() {
+    override fun onBackPress(): Boolean {
         findNavController().popBackStack()
+        return true
     }
 
     override fun initView() {
@@ -224,9 +233,11 @@ class LogicDetailFragment : BaseToolBarFragment<FragmentLogicDetailBinding>() {
 
     private fun initLogicEntity(data: LogicEntity) {
         binding.resultSpinner.setSelection(viewModel.getResultSelection())
-        setTitleString(data.keyTag)
         binding.consecutiveEntriesEdt.setText(data.consecutiveEntries.toString())
     }
+
+
+
 
     //需要根据类型显示不同UI
     private fun showUiGroup(isFunction: Boolean) {

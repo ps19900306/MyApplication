@@ -80,8 +80,9 @@ class AutoHsvRuleListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>(
     }
 
 
-    override fun onBackPress() {
+    override fun onBackPress(): Boolean {
         requireActivity().finish()
+        return true;
     }
 
 
