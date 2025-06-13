@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 
+import android.Manifest
 import android.view.LayoutInflater
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -10,6 +11,15 @@ import com.nwq.base.BaseToolBar2Fragment
 
 class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
+
+    override fun getPermission(): Array<String> {
+        return arrayOf(
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        )
+    }
 
     override fun initData() {
         // 1. 设置 Toolbar 替代 ActionBar
@@ -51,6 +61,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 navController.navigateUp()
             }
         }
+
+        checkPermission();
     }
 
     override fun createBinding(inflater: LayoutInflater): ActivityHomeBinding {
