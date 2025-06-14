@@ -6,15 +6,6 @@
     app:startDestination="@+id/functionDetailFragment">
 
 
-<!--    <fragment-->
-<!--        android:id="@+id/functionListFragment"-->
-<!--        android:name="com.example.myapplication.FunctionListFragment"-->
-<!--        android:label="@string/first_fragment_label"-->
-<!--        tools:layout="@layout/fragment_search_list">-->
-<!--        <action-->
-<!--            android:id="@+id/action_functionListFragment_to_functionDetailFragment"-->
-<!--            app:destination="@id/functionDetailFragment" />-->
-<!--    </fragment>-->
 
     <fragment
         android:id="@+id/functionDetailFragment"

@@ -1,6 +1,7 @@
-package com.example.myapplication
+package com.example.myapplication.auto_hsv_rule
 
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.widget.addTextChangedListener
@@ -8,24 +9,26 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.myapplication.base.NavigationContainerActivity2
+import com.example.myapplication.AutoHsvRuleModel
 import com.example.myapplication.databinding.FragmentSearchListBinding
-import com.example.myapplication.find_target.FindTargetDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
-import com.nwq.callback.CallBack
-import com.nwq.dialog.SimpleInputDialog
 import com.nwq.opencv.db.entity.AutoRulePointEntity
-import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
+import com.example.myapplication.R
+import com.nwq.constant.ConstantKeyStr
 
 /**
  *[AutoRulePointEntity]
  */
-class AutoHsvRuleListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
+class AutoHsvRuleSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
 
+
+    private val args: AutoHsvRuleSelectFragmentArgs by navArgs()
     private val viewModel: AutoHsvRuleModel by viewModels()
     private lateinit var mCheckTextAdapter: CheckTextAdapter<AutoRulePointEntity>
 
@@ -36,34 +39,24 @@ class AutoHsvRuleListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>(
 
 
     override fun getMenuRes(): Int {
-        return R.menu.menu_list_edit
+        return R.menu.menu_list_select
     }
 
 
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
-            R.id.action_add -> {
-                val dialog =
-                    SimpleInputDialog(titleRes = R.string.create_target) { name, description ->
-                        lifecycleScope.launch {
-                            val id = viewModel.createHsvRule(name, description)
-                        }
-                    }
-                dialog.show(parentFragmentManager, "EditFunctionTitleDialog")
-                return true
-            }
-
-            R.id.action_delete_select -> {
-                viewModel.delete(mCheckTextAdapter.getSelectedItem().map { it.getT() })
+            R.id.action_select_all -> {
+                mCheckTextAdapter.selectAll(true)
                 return true
             }
 
             R.id.action_delete_all -> {
-                showTipsDialog() { b ->
-                    if (b) {
-                        viewModel.deleteAll()
-                    }
-                }
+                mCheckTextAdapter.selectAll(false)
+                return true
+            }
+
+            R.id.action_reverse_all -> {
+                mCheckTextAdapter.selectReverse()
                 return true
             }
         }
@@ -72,22 +65,21 @@ class AutoHsvRuleListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>(
 
 
     override fun onBackPress(): Boolean {
-        requireActivity().finish()
-        return true;
+        val selectedItems = mCheckTextAdapter.getSelectedItem()
+        val result = Bundle().apply {
+            putLongArray(
+                ConstantKeyStr.SELECTED_RESULT,
+                selectedItems.map { it.getT().id }.toLongArray()
+            )
+        }
+        parentFragmentManager.setFragmentResult(args.actionTag, result)
+        findNavController().popBackStack()
+        return true
     }
-
 
     override fun initView() {
         super.initView()
-        mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<AutoRulePointEntity> {
-            override fun onCallBack(data: AutoRulePointEntity) {
-                NavigationContainerActivity2.startNavigationContainerActivity(
-                    requireContext(),
-                    R.navigation.nav_find_target,
-                    FindTargetDetailFragmentArgs(data.id, data.keyTag).toBundle()
-                )
-            }
-        })
+        mCheckTextAdapter = CheckTextAdapter()
         binding.recycler.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recycler.adapter = mCheckTextAdapter

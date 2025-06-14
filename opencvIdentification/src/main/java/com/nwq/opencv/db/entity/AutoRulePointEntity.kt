@@ -18,20 +18,25 @@ class AutoRulePointEntity() : IAutoRulePoint {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
-    var keyTag: String =""
+    var keyTag: String = ""
+
     //识别规则 这里的坐标信息是基于全图的
     @TypeConverters(HSVRuleConverters::class)
     @JvmField
     var prList: List<HSVRule> = listOf()
-    //这个文件存放的类型现在考虑放外部存储或者asset文件夹 测试时候考虑为外部 打包时候考虑放asset
-    var storageType: Int = MatUtils.STORAGE_ASSET_TYPE
 
-//    constructor(id: Long, keyTag: String, prList: List<HSVRule>, storageType: Int):  this(){
-//        this.keyTag = keyTag
-//        this.prList = prList
-//        this.storageType = storageType
-//    }
+    var description: String = ""
 
+    constructor(keyTag: String, description: String) : this() {
+        this.keyTag = keyTag
+        this.description = description
+    }
+
+    constructor(keyTag: String, prList: List<HSVRule>, description: String) : this() {
+        this.keyTag = keyTag
+        this.prList = prList
+        this.description = description
+    }
 
 
     override suspend fun autoPoint(hsvMat: Mat): MutableList<Point> {

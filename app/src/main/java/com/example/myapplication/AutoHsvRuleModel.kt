@@ -1,4 +1,4 @@
-package com.example.myapplication.auto_hsv_rule
+package com.example.myapplication
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
@@ -7,6 +7,7 @@ import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.AutoRulePointEntity
+import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.opencv.hsv.HSVRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -14,9 +15,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
+/**
+ * [AutoRulePointEntity]
+ */
 class AutoHsvRuleModel : ViewModel() {
     private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 
@@ -36,23 +40,43 @@ class AutoHsvRuleModel : ViewModel() {
         queryFlow.value = string
     }
 
-    fun getByTagFlow(tag: String): Flow<AutoRulePointEntity>? {
-        return mAutoRulePointDao.findByKeyTagFlow(tag);
-    }
 
-   suspend fun saveHsvRule(tag: String, hsvRule: List<HSVRule>, bitmap: Bitmap) {
-       FileUtils.saveBitmapToGalleryRule(bitmap, tag);
-       val data = AutoRulePointEntity()
-       data.keyTag = tag
-       data.prList = hsvRule
-       data.storageType= MatUtils.STORAGE_EXTERNAL_TYPE
-       mAutoRulePointDao.insert(data)
+    suspend fun saveHsvRule(tag: String, hsvRule: List<HSVRule>, bitmap: Bitmap) {
+        FileUtils.saveBitmapToGalleryRule(bitmap, tag);
+        val data = AutoRulePointEntity()
+        data.keyTag = tag
+        data.prList = hsvRule
+        mAutoRulePointDao.insert(data)
     }
 
     fun updateHsvRule(entity: AutoRulePointEntity, hsvRule: List<HSVRule>) {
         viewModelScope.launch(Dispatchers.IO) {
             entity.prList = hsvRule
             mAutoRulePointDao.update(entity)
+        }
+    }
+
+
+    suspend fun createHsvRule(name: String, description: String): Long {
+        return withContext(Dispatchers.IO) {
+            val entity = AutoRulePointEntity(keyTag = name, description = description)
+            mAutoRulePointDao.insert(entity)
+        }
+    }
+
+    fun delete(map: List<AutoRulePointEntity>) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                mAutoRulePointDao.delete(map.toTypedArray())
+            }
+        }
+    }
+
+    fun deleteAll() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                mAutoRulePointDao.deleteAll()
+            }
         }
     }
 

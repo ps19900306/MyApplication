@@ -40,8 +40,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
             // 显示返回按钮（非顶级目标时）
             if (destination.id != R.id.nav_function &&
-                destination.id != R.id.nav_target
-            //   &&destination.id != R.id.nav_rule
+                destination.id != R.id.nav_target &&
+                destination.id != R.id.nav_rule
             ) {
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
             } else {

@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.myapplication.R
 
-
+/**
+ * A simple [com.nwq.opencv.db.entity.FindTargetRgbEntity] 的预览.
+ */
 class RgbTargetDetailFragment : Fragment() {
 
 

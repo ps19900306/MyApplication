@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@+id/findTargetListFragment">
+    app:startDestination="@+id/findTargetDetailFragment">
 
 
     <fragment
@@ -15,8 +15,85 @@
             app:argType="long" />
         <argument
             android:name="@string/big_title_key"
-            app:argType="String" />
+            app:argType="string" />
+        <action
+            android:id="@+id/action_findTargetDetailFragment_to_MatTargetDetailFragment"
+            app:destination="@id/MatTargetDetailFragment" />
+        <action
+            android:id="@+id/action_findTargetDetailFragment_to_hsvTargetDetailFragment"
+            app:destination="@id/hsvTargetDetailFragment" />
+        <action
+            android:id="@+id/action_findTargetDetailFragment_to_rgbTargetDetailFragment"
+            app:destination="@id/rgbTargetDetailFragment" />
+        <action
+            android:id="@+id/action_findTargetDetailFragment_to_imgTargetDetailFragment"
+            app:destination="@id/imgTargetDetailFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/hsvTargetDetailFragment"
+        android:name="com.example.myapplication.find_target.HsvTargetDetailFragment"
+        android:label="HsvTargetDetailFragment"
+        tools:layout="@layout/fragment_search_list">
+        <argument
+            android:name="@string/big_title_key"
+            app:argType="string" />
+        <argument
+            android:name="@string/small_title_key"
+            android:defaultValue="Hsv"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/rgbTargetDetailFragment"
+        android:name="com.example.myapplication.find_target.RgbTargetDetailFragment"
+        android:label="RgbTargetDetailFragment"
+        tools:layout="@layout/fragment_search_list">
+        <argument
+            android:name="@string/big_title_key"
+            app:argType="string" />
+        <argument
+            android:name="@string/small_title_key"
+            android:defaultValue="Rgb"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/imgTargetDetailFragment"
+        android:name="com.example.myapplication.find_target.ImgTargetDetailFragment"
+        android:label="ImgTargetDetailFragment"
+        tools:layout="@layout/fragment_search_list">
+        <argument
+            android:name="@string/big_title_key"
+            app:argType="string" />
+        <argument
+            android:name="@string/small_title_key"
+            android:defaultValue="Img"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/MatTargetDetailFragment"
+        android:name="com.example.myapplication.find_target.MatTargetDetailFragment"
+        android:label="MatTargetDetailFragment"
+        tools:layout="@layout/fragment_search_list">
+        <argument
+            android:name="@string/big_title_key"
+            app:argType="string" />
+        <argument
+            android:name="@string/small_title_key"
+            android:defaultValue="Mat"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/AutoHsvRuleSelectFragment"
+        android:name="com.example.myapplication.auto_hsv_rule.AutoHsvRuleSelectFragment"
+        android:label="AutoHsvRuleSelectFragment"
+        tools:layout="@layout/fragment_search_list">
+        <argument
+            android:name="actionTag"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

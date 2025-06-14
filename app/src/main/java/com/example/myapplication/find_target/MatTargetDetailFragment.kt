@@ -13,9 +13,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [MatTargetDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * A simple [com.nwq.opencv.db.entity.FindTargetMatEntity] 的预览.
  */
 class MatTargetDetailFragment : Fragment() {
     // TODO: Rename and change types of parameters

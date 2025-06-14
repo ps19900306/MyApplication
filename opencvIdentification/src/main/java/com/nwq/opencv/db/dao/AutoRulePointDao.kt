@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.nwq.opencv.db.entity.AutoRulePointEntity
+import com.nwq.opencv.db.entity.FindTargetRecord
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -39,7 +40,7 @@ interface AutoRulePointDao {
 
     // 删除指定的实体
     @Delete
-    fun delete(entity: List<AutoRulePointEntity>)
+    fun delete(entitys: Array<AutoRulePointEntity>)
 
     // 更新指定的实体
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -47,7 +48,7 @@ interface AutoRulePointDao {
 
     // 插入新的实体
     @Insert
-    fun insert(entity: AutoRulePointEntity)
+    fun insert(entity: AutoRulePointEntity):Long
 
     // 清空表
     @Query("DELETE FROM auto_rule_point")

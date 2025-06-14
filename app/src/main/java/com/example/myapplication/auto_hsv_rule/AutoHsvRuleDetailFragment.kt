@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.adapter.HsvRuleAdapter
 import com.example.myapplication.databinding.FragmentAutoHsvRuleDetailBinding
 import com.nwq.base.BaseFragment
+import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.T
 import com.nwq.baseutils.runOnIO
@@ -28,12 +30,9 @@ import kotlinx.coroutines.launch
 
 
 /**
- * A simple [Fragment] subclass.
- * Use the [AutoHsvRuleDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * [AutoRulePointEntity]
  */
-class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>(),
-    CallBack<HSVRule> {
+class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetailBinding>() {
 
     //    private val TAG = "AutoHsvRuleDetailFragment"
 //    private val args: AutoHsvRuleDetailFragmentArgs by navArgs()
@@ -121,14 +120,20 @@ class AutoHsvRuleDetailFragment : BaseFragment<FragmentAutoHsvRuleDetailBinding>
 //        hsvList.add(data)
 //        adapter.updateData(hsvList)
 //    }
-    override fun createBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ): FragmentAutoHsvRuleDetailBinding {
+
+    override fun createBinding(inflater: LayoutInflater): FragmentAutoHsvRuleDetailBinding {
+        return FragmentAutoHsvRuleDetailBinding.inflate(inflater)
+    }
+
+    override fun getMenuRes(): Int {
         TODO("Not yet implemented")
     }
 
-    override fun onCallBack(data: HSVRule) {
+    override fun onMenuItemClick(menuItem: MenuItem): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBackPress(): Boolean {
         TODO("Not yet implemented")
     }
 }

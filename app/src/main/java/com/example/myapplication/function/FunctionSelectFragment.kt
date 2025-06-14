@@ -27,7 +27,6 @@ class FunctionSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() 
     private val args: FunctionSelectFragmentArgs by navArgs()
     private lateinit var mCheckTextAdapter: CheckTextAdapter<FunctionEntity>
 
-
     override fun getLayoutId(): Int {
         return R.layout.fragment_search_list
     }
@@ -61,7 +60,10 @@ class FunctionSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() 
     override fun onBackPress() {
         val selectedItems = mCheckTextAdapter.getSelectedItem()
         val result = Bundle().apply {
-            putLongArray(ConstantKeyStr.SELECTED_RESULT, selectedItems.map { it.getT().id }.toLongArray())
+            putLongArray(
+                ConstantKeyStr.SELECTED_RESULT,
+                selectedItems.map { it.getT().id }.toLongArray()
+            )
         }
         parentFragmentManager.setFragmentResult(args.actionTag, result)
         findNavController().popBackStack()
