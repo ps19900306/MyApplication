@@ -11,7 +11,9 @@ import com.nwq.base.BaseFragment
 import com.nwq.base.BaseToolBar2Fragment
 
 
-//测
+/**
+ * [com.nwq.opencv.db.entity.FindTargetRecord]
+ */
 class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBinding>() {
 
 

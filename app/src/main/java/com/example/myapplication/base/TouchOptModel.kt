@@ -1,22 +1,38 @@
 package com.example.myapplication.base
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.config.SelectMimeType
+import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinateLine
 import com.nwq.baseobj.CoordinatePoint
 import com.nwq.baseobj.ICoordinate
+import com.nwq.loguitls.L
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.suspendCancellableCoroutine
+import java.util.concurrent.CancellationException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+
 
 class TouchOptModel : ViewModel() {
+
+    private val TAG = "TouchOptModel"
 
     companion object {
 
 
         const val FULL_SCREEN = Int.MAX_VALUE
-        const val SELECT_PICTURE = Int.MAX_VALUE -1
+        const val SELECT_PICTURE = Int.MAX_VALUE - 1
 
         //不拦截的事件
         const val NORMAL_TYPE = 0
@@ -40,17 +56,17 @@ class TouchOptModel : ViewModel() {
     private val _touchCoordinate = MutableStateFlow<ICoordinate?>(null)
 
 
-     fun updateICoordinate( datae :ICoordinate){
+    fun updateICoordinate(datae: ICoordinate) {
         _touchCoordinate.value = datae
     }
 
-    fun fullScreen(){
+    fun fullScreen() {
         _touchType.value = FULL_SCREEN
     }
 
-   fun selectPicture(){
-       _touchType.value = SELECT_PICTURE
-   }
+//    fun selectPicture() {
+//        _touchType.value = SELECT_PICTURE
+//    }
 
     fun resetTouchOptFlag() {
         _touchType.value = NORMAL_TYPE
@@ -95,4 +111,60 @@ class TouchOptModel : ViewModel() {
         _touchType.value = NORMAL_TYPE
         return data as CoordinateLine
     }
+
+
+    suspend fun selectPicture(fragment: Fragment): ArrayList<LocalMedia?>? =
+        suspendCancellableCoroutine { continuation ->
+            PictureSelector.create(fragment).openSystemGallery(SelectMimeType.ofImage())
+                .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
+                    override fun onResult(result: ArrayList<LocalMedia?>?) {
+                        L.i(TAG, "onResult")
+                        continuation.resume(result) // 返回结果
+                    }
+
+                    override fun onCancel() {
+                        L.i(TAG, "onCancel")
+                        continuation.resumeWithException(CancellationException("User cancelled image selection"))
+                    }
+                })
+        }
+
+    suspend fun selectPictureFirst(fragment: Fragment): String? =
+        suspendCancellableCoroutine { continuation ->
+            PictureSelector.create(fragment).openSystemGallery(SelectMimeType.ofImage())
+                .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
+                    override fun onResult(result: ArrayList<LocalMedia?>?) {
+                        L.i(TAG, "onResult")
+                        continuation.resume(result?.getOrNull(0)?.realPath)
+                    }
+
+                    override fun onCancel() {
+                        L.i(TAG, "onCancel")
+                        continuation.resume(null) // 返回结果
+                    }
+                })
+        }
+
+
+//    private val mBitmapOption by lazy {
+//        val opts = BitmapFactory.Options()
+//        opts.outConfig = Bitmap.Config.ARGB_8888
+//        opts.inMutable = true
+//        opts
+//    }
+//
+//    fun getBitmapFromPath(path: String): Bitmap? {
+//        return BitmapFactory.decodeFile(path, mBitmapOption)
+//    }
+//
+//    fun getBitmapFromAssets(context: Context, name: String): Bitmap? {
+//        return try {
+//            val inputStream = context.assets?.open(name)
+//            BitmapFactory.decodeStream(inputStream, null, mBitmapOption)
+//        } catch (e: Exception) {
+//            null
+//        }
+//    }
+
+
 }

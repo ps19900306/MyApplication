@@ -42,6 +42,18 @@ object FileUtils {
         }
     }
 
+    private val mBitmapOption by lazy {
+        val opts = BitmapFactory.Options()
+        opts.outConfig = Bitmap.Config.ARGB_8888
+        opts.inMutable = true
+        opts
+    }
+
+    fun readBitmapFromRealPath(path: String): Bitmap? {
+        return BitmapFactory.decodeFile(path, mBitmapOption)
+    }
+
+
 
     /**
      * 保存bitmap到根目录/img/@fileName.jpg

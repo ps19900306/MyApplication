@@ -1,6 +1,7 @@
 package com.example.myapplication.preview
 
 import android.content.res.Configuration
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -10,6 +11,8 @@ import com.example.myapplication.base.TouchOptModel
 import com.example.myapplication.databinding.FragmentPreviewBinding
 import com.nwq.base.BaseFragment
 import com.nwq.baseobj.PreviewCoordinateData
+import com.nwq.baseutils.FileUtils
+import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.simplelist.TextAdapter
@@ -64,6 +67,21 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
         binding.recyclerView.adapter = mTextAdapter
         mTextAdapter.upData(dataList)
         updatePreviewList()
+        if (!TextUtils.isEmpty(viewModel.path)) {
+            when (viewModel.type) {
+                MatUtils.STORAGE_ASSET_TYPE -> {
+                    binding.imageView.setImageBitmap(FileUtils.readBitmapFromAsset(viewModel.path))
+                }
+
+                MatUtils.STORAGE_EXTERNAL_TYPE -> {
+                    binding.imageView.setImageBitmap(FileUtils.readBitmapFromRootImg(viewModel.path))
+                }
+
+                MatUtils.REAL_PATH_TYPE -> {
+                    binding.imageView.setImageBitmap(FileUtils.readBitmapFromRealPath(viewModel.path))
+                }
+            }
+        }
     }
 
     private fun updatePreviewList() {
@@ -80,7 +98,16 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
             }
 
             TouchOptModel.SELECT_PICTURE -> {
-                touchOptModel.selectPicture()
+                lifecycleScope.launch {
+                    val path = touchOptModel.selectPictureFirst(this@PreviewFragment)
+                    path?.let {
+                        FileUtils.readBitmapFromRealPath(path)?.let { bitmap ->
+                            viewModel.path = path
+                            viewModel.type = MatUtils.REAL_PATH_TYPE
+                            binding.imageView.setImageBitmap(bitmap)
+                        }
+                    }
+                }
             }
 
             TouchOptModel.RECT_AREA_TYPE -> {

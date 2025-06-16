@@ -24,7 +24,9 @@ object MatUtils {
 
     const val STORAGE_ASSET_TYPE = 0
     const val STORAGE_EXTERNAL_TYPE = 1
-    const val TAG="MatUtils"
+    const val REAL_PATH_TYPE = 3
+    const val TAG = "MatUtils"
+
     /**
      * 读取并转换HSV色彩空间的Mat对象
      *
@@ -375,14 +377,18 @@ object MatUtils {
 
 
     //chatgpt 提取共同的点
-    fun findExactHSVMatch(imagePaths: List<String>, area: CoordinateArea? = null,checkHSVSame: CheckHSVSame= CheckHSVSame3()): Mat? {
+    fun findExactHSVMatch(
+        imagePaths: List<String>,
+        area: CoordinateArea? = null,
+        checkHSVSame: CheckHSVSame = CheckHSVSame3()
+    ): Mat? {
         if (imagePaths.isEmpty()) {
             println("没有提供图像路径！")
             return null
         }
 
         // 加载第一张图像并转换为 HSV
-        var baseHSV = getMatFormPaths(imagePaths[0], area)?:return null
+        var baseHSV = getMatFormPaths(imagePaths[0], area) ?: return null
 
         // 初始化结果矩阵（全黑）
         val mask = Mat(baseHSV.size(), CvType.CV_8UC3, Scalar(0.0, 0.0, 0.0))
@@ -390,7 +396,7 @@ object MatUtils {
         // 遍历其他图像
         for (i in 1 until imagePaths.size) {
             // 转换为 HSV 格式
-            val nextHSV = getMatFormPaths(imagePaths[i], area)?:return null
+            val nextHSV = getMatFormPaths(imagePaths[i], area) ?: return null
             // 创建临时掩码矩阵
             val tempMask = Mat(baseHSV.size(), CvType.CV_8UC3, Scalar(0.0, 0.0, 0.0))
 
@@ -401,8 +407,15 @@ object MatUtils {
                     val basePixel = baseHSV.get(row, col)
                     val nextPixel = nextHSV.get(row, col)
 
-                    if (checkHSVSame.checkHSVSame(basePixel[0],basePixel[1],basePixel[2]
-                            ,nextPixel[0],nextPixel[1],nextPixel[2])) {
+                    if (checkHSVSame.checkHSVSame(
+                            basePixel[0],
+                            basePixel[1],
+                            basePixel[2],
+                            nextPixel[0],
+                            nextPixel[1],
+                            nextPixel[2]
+                        )
+                    ) {
                         Log.i(TAG, "添加点, $row  $col")
                         tempMask.put(row, col, *basePixel)
                     }
