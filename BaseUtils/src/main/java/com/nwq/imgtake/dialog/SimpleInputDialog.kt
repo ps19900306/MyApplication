@@ -1,4 +1,4 @@
-package com.nwq.dialog
+package com.nwq.imgtake.dialog
 
 
 import android.view.LayoutInflater

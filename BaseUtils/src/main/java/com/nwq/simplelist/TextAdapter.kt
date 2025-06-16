@@ -15,15 +15,14 @@ import com.nwq.callback.CommonCallBack2
  * 一个通用的 RecyclerView 适配器，用于显示实现了 [IText] 接口的数据列表。
  *
  * @param T 数据类型，需实现 [IText] 接口
- * @property list 数据源列表，包含多个 [IText<T>] 对象
  * @property mCallBack 点击回调接口，用于通知外部点击事件
  * @property layoutId 列表项布局资源 ID，默认为 [R.layout.item_text]
  * @property textId 显示文本的 TextView 的资源 ID，默认为 [R.id.textTv]
  * @property normalBgRes 默认状态下的背景资源，默认为 [R.drawable.bg_item_normal]
  * @property selectBgRes 选中状态下的背景资源，默认为 [R.drawable.bg_item_select]
+ *  多选使用[CheckTextAdapter]
  */
 class TextAdapter<T>(
-    val list: MutableList<IText<T>> = mutableListOf(),
     private val layoutId: Int = R.layout.item_text,
     private val textId: Int = R.id.textTv,
     private val normalBgRes: Int = R.drawable.bg_item_normal,
@@ -31,8 +30,9 @@ class TextAdapter<T>(
     val mCallBack: CallBack<T>? = null,
 ) : RecyclerView.Adapter<TextAdapter<T>.ViewHolder>() {
 
+    val list: MutableList<IText<T>> = mutableListOf()
 
-    public fun upData(list: List<ICheckText<T>>) {
+    public fun upData(list: List<IText<T>>) {
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()

@@ -42,6 +42,12 @@
             android:name="@string/small_title_key"
             android:defaultValue="Hsv"
             app:argType="string" />
+        <action
+            android:id="@+id/action_hsvTargetDetailFragment_to_AutoHsvRuleSelectFragment"
+            app:destination="@id/AutoHsvRuleSelectFragment" />
+        <action
+            android:id="@+id/action_hsvTargetDetailFragment_to_nav_opt_preview"
+            app:destination="@id/nav_opt_preview" />
     </fragment>
 
     <fragment
@@ -56,13 +62,19 @@
             android:name="@string/small_title_key"
             android:defaultValue="Rgb"
             app:argType="string" />
+        <action
+            android:id="@+id/action_rgbTargetDetailFragment_to_AutoHsvRuleSelectFragment"
+            app:destination="@id/AutoHsvRuleSelectFragment" />
+        <action
+            android:id="@+id/action_rgbTargetDetailFragment_to_nav_opt_preview"
+            app:destination="@id/nav_opt_preview" />
     </fragment>
 
     <fragment
         android:id="@+id/imgTargetDetailFragment"
         android:name="com.example.myapplication.find_target.ImgTargetDetailFragment"
         android:label="ImgTargetDetailFragment"
-        tools:layout="@layout/fragment_search_list">
+        tools:layout="@layout/fragment_img_target_detail">
         <argument
             android:name="@string/big_title_key"
             app:argType="string" />
@@ -70,6 +82,9 @@
             android:name="@string/small_title_key"
             android:defaultValue="Img"
             app:argType="string" />
+        <action
+            android:id="@+id/action_imgTargetDetailFragment_to_nav_opt_preview"
+            app:destination="@id/nav_opt_preview" />
     </fragment>
 
     <fragment
@@ -84,6 +99,9 @@
             android:name="@string/small_title_key"
             android:defaultValue="Mat"
             app:argType="string" />
+        <action
+            android:id="@+id/action_MatTargetDetailFragment_to_nav_opt_preview"
+            app:destination="@id/nav_opt_preview" />
     </fragment>
 
     <fragment
@@ -96,4 +114,5 @@
             app:argType="string" />
     </fragment>
 
+    <include app:graph="@navigation/nav_opt_preview" />
 </navigation>

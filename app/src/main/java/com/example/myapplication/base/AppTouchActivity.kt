@@ -58,7 +58,7 @@ abstract class AppTouchActivity<VB : ViewBinding> : BaseActivity<VB>() {
                     TouchOptModel.CIRCLE_AREA_TYPE,
                     TouchOptModel.SINGLE_CLICK_TYPE,
                     TouchOptModel.MEASURE_DISTANCE_TYPE,
-                    -> {
+                        -> {
                         onTouchOptView()
                         nowMode = it
                     }
@@ -70,7 +70,7 @@ abstract class AppTouchActivity<VB : ViewBinding> : BaseActivity<VB>() {
     override fun beforeSetContentView() {
         super.beforeSetContentView()
         controller = WindowInsetsControllerCompat(window, window.decorView)
-        fullScreen()
+        //fullScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val params = window.attributes
         // 设置布局进入刘海区域
@@ -87,7 +87,7 @@ abstract class AppTouchActivity<VB : ViewBinding> : BaseActivity<VB>() {
         return null
     }
 
-    private fun fullScreen() {
+    protected open fun fullScreen() {
         controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
         controller.hide(WindowInsetsCompat.Type.navigationBars())
     }
@@ -205,7 +205,7 @@ abstract class AppTouchActivity<VB : ViewBinding> : BaseActivity<VB>() {
         x2: Float,
         y2: Float
     ): CoordinateLine {
-       return if (x1 + y1 > x2 + y2) {
+        return if (x1 + y1 > x2 + y2) {
             CoordinateLine(
                 CoordinatePoint(x2, y2),
                 CoordinatePoint(x1, y1)

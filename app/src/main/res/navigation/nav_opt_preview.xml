@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_opt_preview"
+    app:startDestination="@+id/previewFragment">
+
+
+    <fragment
+        android:id="@+id/previewFragment"
+        android:name="com.example.myapplication.preview.PreviewFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_preview">
+        <argument
+            android:name="actionTag"
+            app:argType="string" />
+    </fragment>
+
+
+</navigation>

@@ -20,8 +20,6 @@ Function description:
 class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     constructor (context: Context) : this(context, null)
-
-
     private var showFlag = true
 
     private val mDotPaint: Paint  //用来画点的

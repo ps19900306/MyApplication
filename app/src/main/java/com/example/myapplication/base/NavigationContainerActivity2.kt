@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
+import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.myapplication.R
@@ -113,5 +114,10 @@ class NavigationContainerActivity2 : AppTouchActivity<ActivityNavigationContaine
 
     override fun createBinding(inflater: LayoutInflater): ActivityNavigationContainerBinding {
         return ActivityNavigationContainerBinding.inflate(inflater)
+    }
+
+    override fun fullScreen() {
+        super.fullScreen()
+        binding.toolbar.isVisible = false
     }
 }
