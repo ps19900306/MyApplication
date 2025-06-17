@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentFindTargetDetailBinding
 import com.example.myapplication.databinding.FragmentHsvTargetDetailBinding
+import com.example.myapplication.preview.PreviewOptItem
 import com.example.myapplication.preview.PreviewViewModel
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.callback.CallBack
@@ -51,12 +52,18 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
 
             }
 
+            R.id.action_area -> {
+
+            }
+
             R.id.delete_select -> {
 
             }
 
-            R.id.delete_modify -> {
+            R.id.delete_modify -> {//修改最大容错
+                if (viewModel.mFindTargetHsvEntity != null) {
 
+                }
             }
         }
         return flag
@@ -85,6 +92,16 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
             binding.infoTv.text =
                 "OriginalArea:${entity.targetOriginalArea}::findArea:${entity.findArea}::errorTolerance:${entity.errorTolerance}";
         }
+    }
+
+    private fun findArea() {
+        preViewModel.optList.clear();
+//        preViewModel.optList.add(
+//            PreviewOptItem(
+//                R.string.select_critical_area,
+//                TouchOptModel.SELECT_AREA
+//            )
+//        )
     }
 
 
