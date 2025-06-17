@@ -1,0 +1,41 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.myapplication.MainActivity">
+
+    <item
+        android:id="@+id/action_save"
+        android:orderInCategory="100"
+        android:title="@string/save"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_select"
+        android:orderInCategory="100"
+        android:title="@string/delete_select"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/action_add_hsv"
+        android:orderInCategory="100"
+        android:title="添加HSV"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_add_rgb"
+        android:orderInCategory="100"
+        android:title="添加Rgb"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_add_img"
+        android:orderInCategory="100"
+        android:title="添加Img"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_add_mat"
+        android:orderInCategory="100"
+        android:title="添加Mat"
+        app:showAsAction="never" />
+
+</menu>

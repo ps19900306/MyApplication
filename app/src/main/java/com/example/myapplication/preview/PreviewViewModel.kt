@@ -1,12 +1,11 @@
 package com.example.myapplication.preview
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import com.example.myapplication.R
 import com.example.myapplication.base.TouchOptModel
 import com.nwq.baseutils.MatUtils
 
-class PreviewFragmentViewModel : ViewModel() {
+class PreviewViewModel : ViewModel() {
 
 //    //这个是操作项目的
 //    public val optList: MutableStateFlow<List<PreviewOptItem>?> = MutableStateFlow(null)

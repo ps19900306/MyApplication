@@ -5,4 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".find_target.HsvTargetDetailFragment">
 
+    <!--不可编辑的信息 -->
+    <TextView
+        android:id="@+id/infoTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

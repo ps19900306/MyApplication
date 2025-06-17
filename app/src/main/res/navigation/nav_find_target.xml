@@ -16,6 +16,9 @@
         <argument
             android:name="@string/big_title_key"
             app:argType="string" />
+        <argument
+            android:name="@string/small_title_key"
+            app:argType="string" />
         <action
             android:id="@+id/action_findTargetDetailFragment_to_MatTargetDetailFragment"
             app:destination="@id/MatTargetDetailFragment" />

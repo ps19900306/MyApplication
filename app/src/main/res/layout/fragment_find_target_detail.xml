@@ -4,7 +4,64 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
     tools:context=".find_target.FindTargetDetailFragment">
 
+    <TextView
+        android:id="@+id/hsvBgView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_stccc_soe0e0e0"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:text="Hsv"
+        android:textColor="@color/black"
+        app:layout_constraintDimensionRatio="4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+
+    <TextView
+        android:id="@+id/rgbBgView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_stccc_soe0e0e0"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:text="Rgb"
+        android:textColor="@color/black"
+        app:layout_constraintDimensionRatio="4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hsvBgView" />
+
+    <TextView
+        android:id="@+id/imgBgView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_stccc_soe0e0e0"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:text="Img"
+        android:textColor="@color/black"
+        app:layout_constraintDimensionRatio="4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rgbBgView" />
+
+    <TextView
+        android:id="@+id/matBgView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_stccc_soe0e0e0"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:text="mat"
+        android:textColor="@color/black"
+        app:layout_constraintDimensionRatio="4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgBgView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -103,10 +103,10 @@ class NavigationContainerActivity2 : AppTouchActivity<ActivityNavigationContaine
             if (currentFragment is BaseToolBar2Fragment<*>) {
                 if (!currentFragment.onBackPress()) {
                     // 如果返回 false，再执行默认返回逻辑
-                    navController.navigateUp()
+                    finish()
                 }
             } else {
-                navController.navigateUp()
+                finish()
             }
         }
     }

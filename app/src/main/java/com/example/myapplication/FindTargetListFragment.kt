@@ -49,7 +49,7 @@ class FindTargetListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>()
                             NavigationContainerActivity2.startNavigationContainerActivity(
                                 requireContext(),
                                 R.navigation.nav_find_target,
-                                FindTargetDetailFragmentArgs(id, name).toBundle()
+                                FindTargetDetailFragmentArgs(id, name,description).toBundle()
                             )
                         }
                     }
@@ -88,7 +88,7 @@ class FindTargetListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>()
                 NavigationContainerActivity2.startNavigationContainerActivity(
                     requireContext(),
                     R.navigation.nav_find_target,
-                    FindTargetDetailFragmentArgs(data.id, data.keyTag).toBundle()
+                    FindTargetDetailFragmentArgs(data.id, data.keyTag,data.description).toBundle()
                 )
             }
         })

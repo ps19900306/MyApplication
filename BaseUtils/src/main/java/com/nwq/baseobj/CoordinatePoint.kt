@@ -22,4 +22,10 @@ data class CoordinatePoint(var x: Int, var y: Int):ICoordinate {
     val yD by lazy {
         y.toDouble()
     }
+
+    override fun toString(): String {
+        return "CoordinatePoint(x=$x, y=$y)"
+    }
+
+
 }
