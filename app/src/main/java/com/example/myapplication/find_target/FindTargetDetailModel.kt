@@ -20,19 +20,22 @@ import kotlinx.coroutines.withContext
  */
 class FindTargetDetailModel : ViewModel() {
 
-    //进行生成时候选的区域
-    var targetOriginalArea: CoordinateArea? = null
+
     var mFindTargetRecord: FindTargetRecord? = null
     var mFindTargetHsvEntity: FindTargetHsvEntity? = null
     var mFindTargetRgbEntity: FindTargetRgbEntity? = null
     var mFindTargetImgEntity: FindTargetImgEntity? = null
     var mFindTargetMatEntity: FindTargetMatEntity? = null
 
+    //所有的必须一致  如果需要重新生成需要清除掉原有数据
+    //进行生成时候选的区域
+    var targetOriginalArea: CoordinateArea? = null
+
     //这个是找图范围
     var findArea: CoordinateArea? = null
 
-    private val mTargetRecordDao = IdentifyDatabase.getDatabase().findTargetRecordDao()
 
+    private val mTargetRecordDao = IdentifyDatabase.getDatabase().findTargetRecordDao()
     private val mTargetRgbDao = IdentifyDatabase.getDatabase().findTargetRgbDao()
     private val mTargetHsvDao = IdentifyDatabase.getDatabase().findTargetHsvDao()
     private val mTargetImgDao = IdentifyDatabase.getDatabase().findTargetImgDao()
@@ -46,6 +49,15 @@ class FindTargetDetailModel : ViewModel() {
             mFindTargetRgbEntity = mTargetRgbDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
             mFindTargetImgEntity = mTargetImgDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
             mFindTargetMatEntity = mTargetMatDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
+        }
+    }
+
+    public suspend fun clear() {
+        return withContext(Dispatchers.IO) {
+            mFindTargetHsvEntity?.let { mTargetHsvDao.delete(it) }
+            mFindTargetRgbEntity?.let { mTargetRgbDao.delete(it) }
+            mFindTargetImgEntity?.let { mTargetImgDao.delete(it) }
+            mFindTargetMatEntity?.let { mTargetMatDao.delete(it) }
         }
     }
 
