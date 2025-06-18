@@ -49,10 +49,11 @@ object FileUtils {
         opts
     }
 
-    fun readBitmapFromRealPath(path: String): Bitmap? {
+    fun readBitmapFromRealPath(path: String?): Bitmap? {
+        if (path.isNullOrEmpty() || path.isBlank())
+            return null
         return BitmapFactory.decodeFile(path, mBitmapOption)
     }
-
 
 
     /**
@@ -67,14 +68,14 @@ object FileUtils {
         fileNameStr: String,
         coordinateArea: CoordinateArea? = null
     ): Boolean {
-       return saveBitmapToGallery(srBitmap, fileNameStr, coordinateArea,"imgs")
+        return saveBitmapToGallery(srBitmap, fileNameStr, coordinateArea, "imgs")
     }
 
     fun saveBitmapToGalleryRule(
         srBitmap: Bitmap,
         fileNameStr: String,
     ): Boolean {
-        return saveBitmapToGallery(srBitmap, fileNameStr, null,"rules")
+        return saveBitmapToGallery(srBitmap, fileNameStr, null, "rules")
     }
 
 
@@ -83,7 +84,7 @@ object FileUtils {
         fileNameStr: String,
         coordinateArea: CoordinateArea? = null
     ): Boolean {
-        return saveBitmapToGallery(srBitmap, fileNameStr, coordinateArea,"check")
+        return saveBitmapToGallery(srBitmap, fileNameStr, coordinateArea, "check")
     }
 
 
@@ -93,7 +94,9 @@ object FileUtils {
      * @param fileName 文件名
      * @return 读取的Bitmap对象，如果读取失败则返回null
      */
-    fun readBitmapFromRootImg(fileName: String): Bitmap? {
+    fun readBitmapFromRootImg(fileName: String?): Bitmap? {
+        if (fileName.isNullOrEmpty())
+            return null
         // 获取根目录下的 img 文件夹
         val directory = File(Environment.getExternalStorageDirectory(), "img")
         if (!directory.exists()) {
@@ -127,7 +130,9 @@ object FileUtils {
      * @param fileName 文件名
      * @return 读取的Bitmap对象，如果读取失败则返回null
      */
-    fun readBitmapFromAsset(fileName: String): Bitmap? {
+    fun readBitmapFromAsset(fileName: String?): Bitmap? {
+        if (fileName.isNullOrEmpty())
+            return null
         return try {
             val inputStream = context.assets.open("$fileName.jpg")
             BitmapFactory.decodeStream(inputStream)
@@ -143,7 +148,10 @@ object FileUtils {
      * @param fileName 文件名
      * @return  File?
      */
-    fun checkDocumentsFile(fileName: String): File? {
+    fun checkDocumentsFile(fileName: String?): File? {
+        if (fileName.isNullOrEmpty()) {
+            return null
+        }
         // 检查外部存储是否可用
         val state = Environment.getExternalStorageState()
         if (state != Environment.MEDIA_MOUNTED) {
@@ -167,8 +175,6 @@ object FileUtils {
     }
 
 
-
-
     /**
      * 将Bitmap保存到相册 的Imgs文件夹下 如果文件夹不存在则创建文件夹
      *
@@ -181,7 +187,7 @@ object FileUtils {
         srBitmap: Bitmap,
         fileNameStr: String,
         coordinateArea: CoordinateArea? = null,
-        parentPath:String? = null
+        parentPath: String? = null
     ): Boolean {
         // 如果文件名不包含扩展名，则默认添加.jpg扩展名
         val fileName = if (fileNameStr.contains(".")) {
@@ -209,9 +215,12 @@ object FileUtils {
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
             // 从Android Q开始，需要指定相对路径
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (parentPath != null){
-                    put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator +parentPath)
-                }else{
+                if (parentPath != null) {
+                    put(
+                        MediaStore.Images.Media.RELATIVE_PATH,
+                        Environment.DIRECTORY_PICTURES + File.separator + parentPath
+                    )
+                } else {
                     put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
                 }
             }
@@ -287,7 +296,10 @@ object FileUtils {
                 val imageId = it.getLong(idColumnIndex)
 
                 // 通过 ID 获取图片的 Uri
-                val imageUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId.toString())
+                val imageUri = Uri.withAppendedPath(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    imageId.toString()
+                )
 
                 // 加载 Bitmap
                 var inputStream: InputStream? = null
@@ -304,7 +316,6 @@ object FileUtils {
 
         return null // 如果未找到文件或读取失败，返回 null
     }
-
 
 
     /**

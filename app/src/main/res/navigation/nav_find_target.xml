@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_findTargetDetailFragment_to_imgTargetDetailFragment"
             app:destination="@id/imgTargetDetailFragment" />
+        <action
+            android:id="@+id/action_findTargetDetailFragment_to_nav_opt_preview"
+            app:destination="@id/nav_opt_preview" />
     </fragment>
 
     <fragment

@@ -37,7 +37,6 @@ class SimpleInputDialog(
         }
         binding.cancelButton.setOnClickListener {
             dismissDialog()
-            onClick.invoke(defaultlStr1,defaultlStr2)
         }
     }
 

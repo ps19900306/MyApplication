@@ -3,6 +3,7 @@ package com.nwq.opencv.db.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.nwq.opencv.db.entity.FindTargetHsvEntity
 import com.nwq.opencv.db.entity.FindTargetRecord
@@ -38,6 +39,9 @@ interface FindTargetRecordDao {
     // 插入新的实体
     @Insert
     fun insert(entity: FindTargetRecord):Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun update(entity: FindTargetRecord):Long
 
     // 清空表
     @Query("DELETE FROM find_target_all")

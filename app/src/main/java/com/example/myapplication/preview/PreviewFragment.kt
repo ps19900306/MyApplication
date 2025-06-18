@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
 
-    private val viewModel: PreviewFragmentViewModel by viewModels({ requireActivity() })
+    private val viewModel: PreviewViewModel by viewModels({ requireActivity() })
     private val touchOptModel: TouchOptModel by viewModels({ requireActivity() })
     private lateinit var mTextAdapter: TextAdapter<PreviewOptItem>
     override fun createBinding(
