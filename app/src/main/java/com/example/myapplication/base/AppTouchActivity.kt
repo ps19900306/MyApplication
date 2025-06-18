@@ -70,7 +70,8 @@ abstract class AppTouchActivity<VB : ViewBinding> : BaseActivity<VB>() {
     override fun beforeSetContentView() {
         super.beforeSetContentView()
         controller = WindowInsetsControllerCompat(window, window.decorView)
-        //fullScreen()
+        controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
+        controller.hide(WindowInsetsCompat.Type.navigationBars())
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val params = window.attributes
         // 设置布局进入刘海区域

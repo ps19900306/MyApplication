@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.widget.addTextChangedListener
@@ -13,6 +14,7 @@ import com.example.myapplication.base.NavigationContainerActivity2
 import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.example.myapplication.find_target.FindTargetDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
+import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.imgtake.dialog.SimpleInputDialog
 import com.nwq.opencv.db.entity.FindTargetRecord
@@ -45,6 +47,10 @@ class FindTargetListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>()
                 val dialog =
                     SimpleInputDialog(titleRes = R.string.create_target) { name, description ->
                         lifecycleScope.launch {
+                            if (TextUtils.isEmpty( name)|| TextUtils.isEmpty(description)){
+                                T.show("请输入内容")
+                                return@launch
+                            }
                             val id = viewModel.createTarget(name, description)
                             NavigationContainerActivity2.startNavigationContainerActivity(
                                 requireContext(),

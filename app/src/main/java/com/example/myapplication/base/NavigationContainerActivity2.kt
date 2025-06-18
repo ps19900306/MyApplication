@@ -44,6 +44,7 @@ class NavigationContainerActivity2 : AppTouchActivity<ActivityNavigationContaine
     }
 
     override fun initData() {
+        binding.toolbar.menu.clear() // 清除旧菜单
         val navigationID = intent.getIntExtra("navigationID", -1)
         val bundle = intent.extras
         if (navigationID == -1) {
@@ -60,6 +61,8 @@ class NavigationContainerActivity2 : AppTouchActivity<ActivityNavigationContaine
 
         // 3. 监听导航事件，自动更新 Toolbar 标题和返回按钮
         navController.addOnDestinationChangedListener { _, destination, bundle ->
+            super.fullScreen()
+            binding.toolbar.isVisible = true
             if (bundle == null) {
                 binding.toolbar.title = destination.label // 使用 navigation.xml 中定义的 label
                 binding.toolbar.subtitle = ""

@@ -1,6 +1,7 @@
 package com.nwq.base
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -38,10 +39,26 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
 
     abstract fun createBinding(inflater: LayoutInflater): VB
 
+    override fun onResume() {
+        super.onResume()
+        setHasOptionsMenu(true)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        setHasOptionsMenu(false)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().addMenuProvider(object : MenuProvider {
+        val a = requireActivity();
+        Log.i("BaseToolBarFragment", "Activity" + a + "Fragment" + this);
+        a.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(getMenuRes(), menu)
             }
@@ -49,10 +66,7 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return onMenuItemClick(menuItem)
             }
-
-
         }, viewLifecycleOwner)
-
         initView()
         initData() // 初始化视图，设置监听器等
     }
@@ -61,7 +75,7 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
     abstract fun onMenuItemClick(menuItem: MenuItem): Boolean
 
 
-    abstract fun onBackPress():Boolean
+    abstract fun onBackPress(): Boolean
 
 
     // 设置视图，子类可以重写这个方法来初始化视图

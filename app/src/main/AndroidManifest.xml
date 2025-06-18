@@ -36,6 +36,7 @@
             android:exported="false" />
         <activity
             android:name=".base.NavigationContainerActivity2"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.Fullscreen"
             android:exported="false" />
         <activity
             android:name=".FullscreenActivity"
@@ -51,8 +52,7 @@
             android:name=".opencv.PreviewImgActivity"
             android:configChanges="screenLayout|orientation|screenSize"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.Fullscreen">
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.Fullscreen"/>
 
         <service
             android:name=".base.TakeImgAccessibilityService"
