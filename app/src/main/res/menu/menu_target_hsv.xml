@@ -9,9 +9,9 @@
         android:title="@string/save"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_area"
+        android:id="@+id/action_auto_rule"
         android:orderInCategory="100"
-        android:title="选择区域"
+        android:title="生成规则"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_create"
