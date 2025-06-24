@@ -1,10 +1,14 @@
 package com.example.myapplication.preview
 
+import android.graphics.Bitmap
+import android.text.TextUtils
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.R
 import com.example.myapplication.base.TouchOptModel
 import com.nwq.baseobj.ICoordinate
+import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class PreviewViewModel : ViewModel() {
 
@@ -15,7 +19,7 @@ class PreviewViewModel : ViewModel() {
 
     public var path: String? = null
     public var type = MatUtils.STORAGE_ASSET_TYPE
-
+    public var mBitmap: MutableStateFlow<Bitmap?> = MutableStateFlow(null)
 
     public fun getCoordinate(key: Int): ICoordinate? {
         return optList.find { it.key == key }?.coordinate
@@ -26,5 +30,12 @@ class PreviewViewModel : ViewModel() {
         PreviewOptItem(R.string.full_screen, TouchOptModel.FULL_SCREEN),
         PreviewOptItem(R.string.select_picture, TouchOptModel.SELECT_PICTURE),
     )
+
+    public fun initBitMap() {
+        if (mBitmap.value == null) {
+            mBitmap.tryEmit(FileUtils.getBitmapByType(path, type))
+        }
+    }
+
 
 }

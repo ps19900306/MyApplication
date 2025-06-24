@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication.base.TouchOptModel
 import com.example.myapplication.databinding.FragmentPreviewBinding
@@ -17,6 +18,8 @@ import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.simplelist.TextAdapter
 import com.nwq.simplelist.TextWarp
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
@@ -67,21 +70,14 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
         binding.recyclerView.adapter = mTextAdapter
         mTextAdapter.upData(dataList)
         updatePreviewList()
-        if (!TextUtils.isEmpty(viewModel.path)) {
-            when (viewModel.type) {
-                MatUtils.STORAGE_ASSET_TYPE -> {
-                    binding.imageView.setImageBitmap(FileUtils.readBitmapFromAsset(viewModel.path))
-                }
-
-                MatUtils.STORAGE_EXTERNAL_TYPE -> {
-                    binding.imageView.setImageBitmap(FileUtils.readBitmapFromRootImg(viewModel.path))
-                }
-
-                MatUtils.REAL_PATH_TYPE -> {
-                    binding.imageView.setImageBitmap(FileUtils.readBitmapFromRealPath(viewModel.path))
+        lifecycleScope.launch {
+            repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.RESUMED) {
+                viewModel.mBitmap.collectLatest {
+                    binding.imageView.setImageBitmap(it)
                 }
             }
         }
+        viewModel.initBitMap()
     }
 
     private fun updatePreviewList() {
@@ -104,7 +100,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
                         FileUtils.readBitmapFromRealPath(path)?.let { bitmap ->
                             viewModel.path = path
                             viewModel.type = MatUtils.REAL_PATH_TYPE
-                            binding.imageView.setImageBitmap(bitmap)
+                            viewModel.mBitmap.tryEmit(bitmap)
                         }
                     }
                 }

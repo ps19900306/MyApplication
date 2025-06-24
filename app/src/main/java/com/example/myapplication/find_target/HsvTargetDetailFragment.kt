@@ -6,15 +6,21 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
+import com.example.myapplication.click.ClickSelectFragmentArgs
 import com.example.myapplication.databinding.FragmentFindTargetDetailBinding
 import com.example.myapplication.databinding.FragmentHsvTargetDetailBinding
 import com.example.myapplication.preview.PreviewOptItem
 import com.example.myapplication.preview.PreviewViewModel
 import com.nwq.base.BaseToolBar2Fragment
+import com.nwq.baseutils.T
+import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
+import com.nwq.constant.ConstantKeyStr
+import com.nwq.dialog.SimpleTipsDialog
 import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.opencv.hsv.HSVRule
 import com.nwq.opencv.hsv.PointHSVRule
@@ -32,7 +38,7 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
     private val viewModel: FindTargetDetailModel by viewModels({ requireActivity() })
     private val preViewModel: PreviewViewModel by viewModels({ requireActivity() })
 
-
+    private val SELECT_HSV_RULE_TAG = "select_hsv_rule"
     override fun createBinding(inflater: LayoutInflater): FragmentHsvTargetDetailBinding {
         return FragmentHsvTargetDetailBinding.inflate(inflater);
     }
@@ -48,12 +54,28 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
 
             }
 
-            R.id.action_create -> {
-
+            R.id.action_auto_rule -> {
+                //选择功能区域
+                findNavController().navigate(
+                    R.id.action_hsvTargetDetailFragment_to_AutoHsvRuleSelectFragment,
+                    ClickSelectFragmentArgs(SELECT_HSV_RULE_TAG).toBundle()
+                )
             }
 
-            R.id.action_area -> {
-
+            R.id.action_create -> {
+                if (viewModel.mBitmap == null) {
+                    T.show("图片为空")
+                } else if (viewModel.targetOriginalArea == null) {
+                    T.show("请先选择区域")
+                } else if (viewModel.autoRulePoint == null) {
+                    T.show("请先设置自动规则")
+                }else{
+                    SimpleTipsDialog(
+                        onClick = {
+                            viewModel.performAutoFindRule(true, it)
+                        }
+                    )
+                }
             }
 
             R.id.delete_select -> {
@@ -80,6 +102,12 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
             androidx.recyclerview.widget.LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = mCheckTextAdapter
         updateInfo();
+        parentFragment?.setFragmentResultListener(
+            SELECT_HSV_RULE_TAG, // 这个 tag 要和 ClickSelectFragment 接收到的 args.actionTag 一致
+            { requestKey, result ->
+                val selectedIds = result.getLongArray(ConstantKeyStr.SELECTED_RESULT)
+                selectedIds?.get(0)?.let { viewModel.updateHsvRule(it) }
+            })
     }
 
     private fun updateInfo() {

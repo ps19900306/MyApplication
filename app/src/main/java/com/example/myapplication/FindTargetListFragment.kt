@@ -16,7 +16,7 @@ import com.example.myapplication.find_target.FindTargetDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
-import com.nwq.imgtake.dialog.SimpleInputDialog
+import com.nwq.dialog.SimpleInputDialog
 import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap

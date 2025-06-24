@@ -82,7 +82,7 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
 
     private fun save() {
         viewModel.save(preViewModel.path,preViewModel.type,preViewModel.getCoordinate(key = R.string.select_critical_area),preViewModel.getCoordinate(key = R.string.find_the_image_area))
-
+        viewModel.mBitmap= preViewModel.mBitmap.value
     }
 
     //选择图片和关键区域
@@ -107,7 +107,7 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
         )
         preViewModel.path = viewModel.path
         preViewModel.type = viewModel.storageType
-
+        preViewModel.mBitmap.tryEmit(viewModel.mBitmap)
         findNavController().navigate(R.id.action_findTargetDetailFragment_to_nav_opt_preview)
     }
 

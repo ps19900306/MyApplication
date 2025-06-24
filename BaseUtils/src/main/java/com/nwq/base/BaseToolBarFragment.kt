@@ -12,7 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.nwq.baseutils.R
-import com.nwq.imgtake.dialog.SimpleTipsDialog
+import com.nwq.dialog.SimpleTipsDialog
 
 /**
  * A simple [Fragment] subclass.

@@ -6,11 +6,13 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ImageFormat
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.TextUtils
 import android.util.Log
 import com.nwq.baseobj.CoordinateArea
 
@@ -123,6 +125,27 @@ object FileUtils {
             null
         }
     }
+
+
+    public fun getBitmapByType(path: String?, type: Int): Bitmap? {
+        if (TextUtils.isEmpty(path))
+            return null
+        when (type) {
+            MatUtils.STORAGE_ASSET_TYPE -> {
+                return readBitmapFromAsset(path)
+            }
+
+            MatUtils.STORAGE_EXTERNAL_TYPE -> {
+                return readBitmapFromRootImg(path)
+            }
+
+            MatUtils.REAL_PATH_TYPE -> {
+                return readBitmapFromRealPath(path)
+            }
+        }
+        return null
+    }
+
 
     /**
      * 从Asset读取Bitmap
