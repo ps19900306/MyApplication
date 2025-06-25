@@ -14,6 +14,7 @@ import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.example.myapplication.find_target.FindTargetDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.callback.CallBack
+import com.nwq.dialog.Simple2InputDialog
 import com.nwq.dialog.SimpleInputDialog
 import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.opencv.db.entity.FindTargetRecord
@@ -44,7 +45,7 @@ class AutoHsvRuleListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>(
         when (menuItem.itemId) {
             R.id.action_add -> {
                 val dialog =
-                    SimpleInputDialog(titleRes = R.string.create_target) { name, description ->
+                    Simple2InputDialog(titleRes = R.string.create_target) { name, description ->
                         lifecycleScope.launch {
                             val id = viewModel.createHsvRule(name, description)
                         }

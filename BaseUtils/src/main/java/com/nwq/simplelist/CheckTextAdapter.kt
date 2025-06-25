@@ -43,7 +43,24 @@ class CheckTextAdapter<T>(
     }
 
     public fun removeSelectAndGet(): List<T> {
-        return list.filter { !it.isCheckStatus() }.map { it.getT() }
+        if (list.isNullOrEmpty()) {
+            return emptyList()
+        }
+
+        val removedItems = mutableListOf<T>()
+        val remainingItems = list.filterTo(mutableListOf()) {
+            if (it.isCheckStatus()) {
+                removedItems.add(it.getT())
+                false
+            } else {
+                true
+            }
+        }
+
+        list.clear()
+        list.addAll(remainingItems)
+        notifyDataSetChanged()
+        return removedItems
     }
 
 

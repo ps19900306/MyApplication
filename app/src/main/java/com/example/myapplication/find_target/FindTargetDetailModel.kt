@@ -179,4 +179,12 @@ class FindTargetDetailModel : ViewModel() {
         L.d(TAG, "buildRgbFindTarget")
     }
 
+    fun saveHsvTarget() {
+        mFindTargetHsvEntity?.let { entity ->
+            viewModelScope.launch(Dispatchers.IO) {
+                mTargetHsvDao.insert(entity)
+            }
+        }
+    }
+
 }
