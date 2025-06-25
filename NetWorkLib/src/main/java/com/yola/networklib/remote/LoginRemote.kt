@@ -1,6 +1,6 @@
 package com.yola.networklib.remote
 
-import com.yola.networklib.Api.LoginApi
+import com.yola.networklib.api.LoginApi
 import com.yola.networklib.BaseNetSigResult
 import com.yola.networklib.BaseRemote
 import com.yola.networklib.Interceptor.UnifiedHeaderInterceptor

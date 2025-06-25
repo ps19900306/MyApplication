@@ -10,7 +10,6 @@ import com.example.myapplication.R
 import com.example.myapplication.auto_hsv_rule.AutoHsvRuleSelectFragmentArgs
 import com.example.myapplication.auto_hsv_rule.ModifyHsvDialog
 import com.example.myapplication.databinding.FragmentHsvTargetDetailBinding
-import com.example.myapplication.preview.PreviewViewModel
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack

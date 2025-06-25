@@ -11,7 +11,7 @@ import com.nwq.opencv.point_rule.BIPR
 
 
 //单点对应单色
-class PointRule(val point: CoordinatePoint, val rule: ColorRule) : BIPR() {
+class PointRule(val point: CoordinatePoint, var rule: ColorRule) : BIPR() {
 
 
     constructor(x: Int, y: Int, r: Int, g: Int, b: Int) : this(

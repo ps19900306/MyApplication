@@ -19,6 +19,7 @@ import com.nwq.baseobj.CoordinateArea
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.FileWriter
 import java.io.IOException
@@ -145,6 +146,9 @@ object FileUtils {
         }
         return null
     }
+
+
+
 
 
     /**
@@ -478,5 +482,49 @@ object FileUtils {
     fun isFileExists(fileName: String): Boolean {
         val file = File(context.filesDir, fileName)
         return file.exists()
+    }
+
+    /**
+     * 导出 Room 数据库文件到设备的 Documents 目录。
+     *
+     * @param context 应用程序上下文
+     * @param databaseName 要导出的数据库名称（例如 "app_database"）
+     * @return 返回导出后的文件路径，如果导出失败则返回 null
+     */
+    fun exportRoomDatabase(context: Context, databaseName: String): String? {
+        val dbFile = context.getDatabasePath(databaseName)
+        if (!dbFile.exists()) {
+            Log.e(TAG, "数据库文件不存在")
+            return null
+        }
+
+        // 获取 Documents 目录$
+        val documentsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) ?: run {
+            Log.e(TAG, "无法访问 Documents 目录")
+            return null
+        }
+
+        // 创建目标文件
+        val exportFile = File(documentsDir, "$databaseName.db")
+        try {
+            // 复制数据库文件到 Documents 目录$
+            val inputStream = FileInputStream(dbFile)
+            val outputStream = FileOutputStream(exportFile)
+
+            val buffer = ByteArray(1024)
+            var length: Int
+            while (inputStream.read(buffer).also { length = it } > 0) {
+                outputStream.write(buffer, 0, length)
+            }
+
+            inputStream.close()
+            outputStream.flush()
+            outputStream.close()
+
+            return exportFile.absolutePath
+        } catch (e: Exception) {
+            Log.e(TAG, "导出数据库失败", e)
+            return null
+        }
     }
 }

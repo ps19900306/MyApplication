@@ -187,4 +187,12 @@ class FindTargetDetailModel : ViewModel() {
         }
     }
 
+    fun saveRbgTarget() {
+        mFindTargetRgbEntity?.let { entity ->
+            viewModelScope.launch(Dispatchers.IO) {
+                mTargetRgbDao.insert(entity)
+            }
+        }
+    }
+
 }
