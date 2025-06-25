@@ -59,7 +59,9 @@ class AutoHsvRuleModel : ViewModel() {
 
     suspend fun createHsvRule(name: String, description: String): Long {
         return withContext(Dispatchers.IO) {
-            val entity = AutoRulePointEntity(keyTag = name, description = description)
+            val entity = AutoRulePointEntity()
+            entity.keyTag = name
+            entity.description = description
             mAutoRulePointDao.insert(entity)
         }
     }

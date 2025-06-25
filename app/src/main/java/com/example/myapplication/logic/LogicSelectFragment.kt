@@ -1,6 +1,7 @@
 package com.example.myapplication.logic
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -12,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentSearchListBinding
+import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.base.BaseToolBarFragment
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.opencv.db.entity.LogicEntity
@@ -20,21 +22,18 @@ import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
 
 
-class LogicSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() {
+class LogicSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
 
     private val args: LogicSelectFragmentArgs by navArgs()
-
 
 
     private val viewModel: LogicSelectViewModel by viewModels()
 
     private lateinit var mCheckTextAdapter: CheckTextAdapter<LogicEntity>
-    override fun getLayoutId(): Int {
-        return R.layout.fragment_search_list
-    }
 
-    override fun getTitleRes(): Int {
-        return R.string.please_select
+
+    override fun createBinding(inflater: LayoutInflater): FragmentSearchListBinding {
+        return FragmentSearchListBinding.inflate(inflater)
     }
 
     override fun getMenuRes(): Int {
@@ -42,7 +41,7 @@ class LogicSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() {
     }
 
 
-    override fun onMenuItemClick(menuItem: MenuItem) {
+    override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_select_all -> {
                 mCheckTextAdapter.selectAll(true)
@@ -56,16 +55,21 @@ class LogicSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() {
                 mCheckTextAdapter.selectReverse()
             }
         }
+        return true
     }
 
 
-    override fun onBackPress() {
+    override fun onBackPress(): Boolean {
         val selectedItems = mCheckTextAdapter.getSelectedItem()
         val result = Bundle().apply {
-            putLongArray(ConstantKeyStr.SELECTED_RESULT, selectedItems.map { it.getT().id }.toLongArray())
+            putLongArray(
+                ConstantKeyStr.SELECTED_RESULT,
+                selectedItems.map { it.getT().id }.toLongArray()
+            )
         }
         parentFragmentManager.setFragmentResult(args.actionTag, result)
         findNavController().popBackStack()
+        return true
     }
 
     override fun initView() {

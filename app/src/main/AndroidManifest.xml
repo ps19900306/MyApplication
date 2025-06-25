@@ -34,6 +34,8 @@
         <activity
             android:name=".base.NavigationContainerActivity"
             android:exported="false" />
+
+
         <activity
             android:name=".base.NavigationContainerActivity2"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.Fullscreen"

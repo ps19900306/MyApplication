@@ -27,16 +27,7 @@ class AutoRulePointEntity() : IAutoRulePoint {
 
     var description: String = ""
 
-    constructor(keyTag: String, description: String) : this() {
-        this.keyTag = keyTag
-        this.description = description
-    }
 
-    constructor(keyTag: String, prList: List<HSVRule>, description: String) : this() {
-        this.keyTag = keyTag
-        this.prList = prList
-        this.description = description
-    }
 
 
     override suspend fun autoPoint(hsvMat: Mat): MutableList<Point> {

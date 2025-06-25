@@ -2,15 +2,14 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_auto_code"
+    android:id="@+id/nav_function"
     app:startDestination="@+id/functionDetailFragment">
-
 
 
     <fragment
         android:id="@+id/functionDetailFragment"
         android:name="com.example.myapplication.function.FunctionDetailFragment"
-        android:label="@string/second_fragment_label"
+        android:label="@string/function_detail"
         tools:layout="@layout/fragment_function_detail">
         <argument
             android:name="functionId"
@@ -52,7 +51,7 @@
     <fragment
         android:id="@+id/FunctionSelectFragment"
         android:name="com.example.myapplication.function.FunctionSelectFragment"
-        android:label="@string/second_fragment_label"
+        android:label="@string/please_select"
         tools:layout="@layout/fragment_search_list">
         <argument
             android:name="actionTag"
@@ -62,7 +61,7 @@
     <fragment
         android:id="@+id/LogicSelectFragment"
         android:name="com.example.myapplication.logic.LogicSelectFragment"
-        android:label="@string/second_fragment_label"
+        android:label="@string/please_select"
         tools:layout="@layout/fragment_search_list">
         <argument
             android:name="functionId"

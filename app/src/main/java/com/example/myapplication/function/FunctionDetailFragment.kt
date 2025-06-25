@@ -1,5 +1,6 @@
 package com.example.myapplication.function
 
+import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,6 +14,7 @@ import com.nwq.base.BaseToolBarFragment
 import com.example.myapplication.R
 import com.example.myapplication.logic.LogicCreateDialog
 import com.example.myapplication.logic.LogicDetailFragmentArgs
+import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.callback.CallBack
 import com.nwq.opencv.db.entity.LogicEntity
 import com.nwq.simplelist.ICheckTextWrap
@@ -20,7 +22,7 @@ import com.nwq.simplelist.TextAdapter
 import kotlinx.coroutines.launch
 import kotlin.math.log
 
-class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding>() {
+class FunctionDetailFragment : BaseToolBar2Fragment<FragmentFunctionDetailBinding>() {
 
     private val args: FunctionDetailFragmentArgs by navArgs()
     private val viewModel: FunctionEdtViewModel by viewModels({ requireActivity() })
@@ -28,46 +30,49 @@ class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding
     private lateinit var mNowLogicAdapter: TextAdapter<LogicEntity>
 
 
-
-    override fun getLayoutId(): Int {
-        return R.layout.fragment_function_detail
-    }
-
-    override fun getTitleRes(): Int {
-        return R.string.function_detail
+    override fun createBinding(inflater: LayoutInflater): FragmentFunctionDetailBinding {
+        return FragmentFunctionDetailBinding.inflate(inflater)
     }
 
     override fun getMenuRes(): Int {
         return R.menu.menu_function_detail
     }
 
-    override fun onMenuItemClick(menuItem: MenuItem) {
+    override fun onMenuItemClick(menuItem: MenuItem): Boolean {
+        var flag = false;
         when (menuItem.itemId) {
             R.id.action_add -> {
                 createLogic()
+                flag = true
             }
 
             R.id.action_delete_logic -> {
-                mAllLogicAdapter.getSelectData()?.let { logic->
+                mAllLogicAdapter.getSelectData()?.let { logic ->
                     viewModel.deleteLogic(logic)
                 }
+                flag = true
             }
 
             R.id.action_detail -> {
-                mAllLogicAdapter.getSelectData()?.let { logic->
+                mAllLogicAdapter.getSelectData()?.let { logic ->
                     findNavController().navigate(
                         R.id.action_functionDetailFragment_to_logicDetailFragment,
                         LogicDetailFragmentArgs(logic.id).toBundle()
                     )
                 }
+                flag = true
             }
 
             R.id.action_trigger -> {
-                mNowLogicAdapter.getSelectData()?.let { logic->
-                    if (logic.needChange()){
-                        viewModel.onTrigger(logic,mNowLogicAdapter.list.map { it.getT() }.toMutableList(), mAllLogicAdapter.list.map { it.getT() })
+                mNowLogicAdapter.getSelectData()?.let { logic ->
+                    if (logic.needChange()) {
+                        viewModel.onTrigger(
+                            logic,
+                            mNowLogicAdapter.list.map { it.getT() }.toMutableList(),
+                            mAllLogicAdapter.list.map { it.getT() })
                     }
                 }
+                flag = true
             }
 
             R.id.action_delete_function -> {
@@ -75,6 +80,7 @@ class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding
             }
 
         }
+        return flag;
     }
 
     private fun createLogic() {
@@ -94,20 +100,20 @@ class FunctionDetailFragment : BaseToolBarFragment<FragmentFunctionDetailBinding
     }
 
 
-    override fun onBackPress() {
-        findNavController().popBackStack()
+    override fun onBackPress(): Boolean {
+        return false
     }
 
     override fun initData() {
         super.initData()
         val flow = viewModel.initFunctionData(args.functionId)
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                flow.collect { functionEntity ->
-                    toolbar.title = functionEntity?.keyTag ?: ""
-                }
-            }
-        }
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+//                flow.collect { functionEntity ->
+//                    toolbar.title = functionEntity?.keyTag ?: ""
+//                }
+//            }
+//        }
         //展示全部的逻辑的
         binding.allRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

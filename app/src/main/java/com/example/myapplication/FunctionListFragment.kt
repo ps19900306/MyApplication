@@ -9,7 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.myapplication.base.NavigationContainerActivity
+import com.example.myapplication.base.NavigationContainerActivity2
 import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.example.myapplication.function.FunctionDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
@@ -42,7 +42,7 @@ class FunctionListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
                     Simple2InputDialog(titleRes = R.string.create_function) { name, description ->
                         lifecycleScope.launch {
                             val id = viewModel.createFunction(name, description)
-                            NavigationContainerActivity.startNavigationContainerActivity(
+                            NavigationContainerActivity2.startNavigationContainerActivity(
                                 requireContext(),
                                 R.navigation.nav_function,
                                 FunctionDetailFragmentArgs(id).toBundle()

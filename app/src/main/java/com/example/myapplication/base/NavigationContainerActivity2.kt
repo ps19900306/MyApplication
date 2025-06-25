@@ -13,6 +13,9 @@ import com.example.myapplication.databinding.ActivityNavigationContainerBinding
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseutils.T
 
+/**
+ * 和 NavigationContainerActivity  多了Toolbar
+ */
 class NavigationContainerActivity2 : AppTouchActivity<ActivityNavigationContainerBinding>() {
 
     companion object {

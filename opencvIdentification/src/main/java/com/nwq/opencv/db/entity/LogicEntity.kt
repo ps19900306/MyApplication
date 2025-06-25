@@ -29,10 +29,10 @@ class LogicEntity() : ILogicUnit {
     var clickId: Long = 0 //点击事件的Id
 
     @TypeConverters(LongListConverters::class)
-    var addLogicList: List<Long>? = null
+    var addLogicList: List<Long> = mutableListOf()
 
     @TypeConverters(LongListConverters::class)
-    var clearLogicList: List<Long>? = null
+    var clearLogicList: List<Long> = mutableListOf()
 
     //根据此条件逻辑进入下一个逻辑单元的列表
     var nextFunctionId: Long = 0
