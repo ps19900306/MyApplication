@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
 import com.example.myapplication.auto_hsv_rule.AutoHsvRuleSelectFragmentArgs
+import com.example.myapplication.auto_hsv_rule.ModifyHsvDialog
 import com.example.myapplication.databinding.FragmentHsvTargetDetailBinding
 import com.example.myapplication.preview.PreviewViewModel
 import com.nwq.base.BaseToolBar2Fragment
@@ -16,6 +17,7 @@ import com.nwq.callback.CallBack
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.dialog.SimpleInputDialog
 import com.nwq.dialog.SimpleTipsDialog
+import com.nwq.opencv.hsv.HSVRule
 import com.nwq.opencv.hsv.PointHSVRule
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
@@ -89,11 +91,20 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
         return flag
     }
 
+
+    private fun modifyHsv(src: PointHSVRule) {
+        ModifyHsvDialog(src.rule, null, object : CallBack<HSVRule> {
+            override fun onCallBack(data: HSVRule) {
+                src.rule = data
+            }
+        })
+    }
+
     override fun initData() {
         super.initData()
         mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<PointHSVRule> {
             override fun onCallBack(data: PointHSVRule) {
-
+                modifyHsv(data)
             }
         })
         binding.recyclerView.layoutManager =

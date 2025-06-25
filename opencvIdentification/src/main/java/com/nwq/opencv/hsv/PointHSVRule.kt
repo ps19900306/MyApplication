@@ -9,7 +9,7 @@ import org.opencv.core.Mat
 
 
 //单点对应单色
-class PointHSVRule(val point: CoordinatePoint, val rule: HSVRule) : MIPR() {
+class PointHSVRule(val point: CoordinatePoint, var rule: HSVRule) : MIPR() {
 
 
     constructor(x: Int, y: Int, h: Int, s: Int, v: Int) : this(
