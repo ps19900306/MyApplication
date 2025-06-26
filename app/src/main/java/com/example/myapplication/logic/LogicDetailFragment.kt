@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.click.ClickSelectFragmentArgs
 import com.example.myapplication.databinding.FragmentLogicDetailBinding
+import com.example.myapplication.find_target.TargetSelectFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.base.BaseToolBarFragment
 import com.nwq.baseutils.singleClick
@@ -38,6 +39,7 @@ class LogicDetailFragment : BaseToolBar2Fragment<FragmentLogicDetailBinding>() {
     private lateinit var mAddAdapter: CheckTextAdapter<LogicEntity>
     private lateinit var mDeleteAdapter: CheckTextAdapter<LogicEntity>
 
+    private val SELECT_TARGET_TAG = "select_target"
     private val SELECT_CLICK_TAG = "select_click"
     private val SELECT_FUNCTION_TAG = "select_function"
     private val ADD_LOGIC_TAG = "add_logic"
@@ -62,6 +64,14 @@ class LogicDetailFragment : BaseToolBar2Fragment<FragmentLogicDetailBinding>() {
 
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
+            R.id.action_target -> {
+                findNavController().navigate(
+                    R.id.action_logicDetailFragment_to_TargetSelectFragment,
+                    TargetSelectFragmentArgs(SELECT_TARGET_TAG).toBundle()
+                )
+                return true;
+            }
+
             R.id.action_add -> {
                 findNavController().navigate(
                     R.id.action_logicDetailFragment_to_LogicSelectFragment,
@@ -147,7 +157,12 @@ class LogicDetailFragment : BaseToolBar2Fragment<FragmentLogicDetailBinding>() {
                 val selectedIds = result.getLongArray(ConstantKeyStr.SELECTED_RESULT)
                 selectedIds?.get(0)?.let { viewModel.updatesStartFunction(it) }
             })
-
+        parentFragment?.setFragmentResultListener(
+            SELECT_TARGET_TAG, // 这个 tag 要和 ClickSelectFragment 接收到的 args.actionTag 一致
+            { requestKey, result ->
+                val selectedIds = result.getLongArray(ConstantKeyStr.SELECTED_RESULT)
+                selectedIds?.get(0)?.let { viewModel.updatesFindTarget(it) }
+            })
 
         //设置新增和去除的逻辑
         binding.addRecyclerView.layoutManager = LinearLayoutManager(requireContext())

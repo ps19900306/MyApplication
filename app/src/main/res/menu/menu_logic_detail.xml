@@ -2,6 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.myapplication.MainActivity">
+
+    <item
+        android:id="@+id/action_target"
+        android:orderInCategory="100"
+        android:title="设置检测目标"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_add"
         android:orderInCategory="100"

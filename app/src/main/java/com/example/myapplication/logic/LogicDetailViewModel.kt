@@ -3,6 +3,7 @@ package com.example.myapplication.logic
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nwq.baseutils.ContextUtils
+import com.nwq.baseutils.T
 import com.nwq.baseutils.runOnIO
 import com.nwq.opencv.constant.LogicJudeResult
 import com.nwq.opencv.db.IdentifyDatabase
@@ -129,6 +130,10 @@ class LogicDetailViewModel() : ViewModel() {
         }
     }
 
+    public fun updatesFindTarget(id: Long) {
+        mLogicEntity?.findTagId = id
+    }
+
 
     fun setResultSelection(p: Int): Boolean {
         mLogicEntity?.judeOnFindResult = mResultCode[p]
@@ -159,8 +164,12 @@ class LogicDetailViewModel() : ViewModel() {
         }
     }
 
-    fun saveAll(){
-        mLogicEntity?.let { logicEntity->
+    fun saveAll() {
+        if (mLogicEntity?.findTagId == 0L) {
+            T.show("请选择查找目标")
+            return
+        }
+        mLogicEntity?.let { logicEntity ->
             logicEntity.clearLogicList = mDeleteLogicListFow.value?.map { it.id } ?: listOf()
             logicEntity.addLogicList = mAddLogicListFow.value?.map { it.id } ?: listOf()
             logicEntity.clickId = mClickEntityFlow.value?.id ?: 0
@@ -168,7 +177,6 @@ class LogicDetailViewModel() : ViewModel() {
             viewModelScope.runOnIO {
                 mLogicDao.update(logicEntity)
             }
-
         }
     }
 }
