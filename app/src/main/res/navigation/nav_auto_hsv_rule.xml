@@ -16,7 +16,7 @@
             app:argType="long" />
 
         <argument
-            android:name="@string/big_title_key"
+            android:name="big_title"
             app:argType="string" />
 
     </fragment>

@@ -69,15 +69,18 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
         lifecycleScope.launch {
             viewModel.init(args.targetId)
         }
-//        binding.hsvBgView.singleClick {
-//            findNavController().navigate(R.id.action_findTargetDetailFragment_to_hsvTargetDetailFragment,HsvTargetDetailFragmentArgs(args.@string/bigTitleKey))
-//        }
-//        binding.rgbBgView.singleClick {
-//            findNavController().navigate(R.id.action_findTargetDetailFragment_to_nav_opt_preview)
-//        }
-//        binding.imgBgView.singleClick {
-//            findNavController().navigate(R.id.action_findTargetDetailFragment_to_nav_opt_preview)
-//        }
+        binding.hsvBgView.singleClick {
+            findNavController().navigate(R.id.action_findTargetDetailFragment_to_hsvTargetDetailFragment,HsvTargetDetailFragmentArgs(args.bigTitle).toBundle())
+        }
+        binding.rgbBgView.singleClick {
+            findNavController().navigate(R.id.action_findTargetDetailFragment_to_rgbTargetDetailFragment,RgbTargetDetailFragmentArgs(args.bigTitle).toBundle())
+        }
+        binding.imgBgView.singleClick {
+            findNavController().navigate(R.id.action_findTargetDetailFragment_to_imgTargetDetailFragment,ImgTargetDetailFragmentArgs(args.bigTitle).toBundle())
+        }
+        binding.matBgView.singleClick {
+            findNavController().navigate(R.id.action_findTargetDetailFragment_to_MatTargetDetailFragment,MatTargetDetailFragmentArgs(args.bigTitle).toBundle())
+        }
     }
 
     private fun save() {

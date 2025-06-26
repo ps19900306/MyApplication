@@ -91,8 +91,7 @@ class NavigationContainerActivity2 : AppTouchActivity<ActivityNavigationContaine
         setSupportActionBar(binding.toolbar)
         //设置默认标题
         if (bundle != null) {
-            val title =
-                bundle.getString(getString(com.nwq.baseutils.R.string.big_title_key))
+            val title = bundle.getString(getString(com.nwq.baseutils.R.string.big_title_key))
             if (!TextUtils.isEmpty(title)) {
                 binding.toolbar.title = title
             }

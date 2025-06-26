@@ -14,10 +14,10 @@
             android:name="targetId"
             app:argType="long" />
         <argument
-            android:name="@string/big_title_key"
+            android:name="big_title"
             app:argType="string" />
         <argument
-            android:name="@string/small_title_key"
+            android:name="small_title"
             app:argType="string" />
         <action
             android:id="@+id/action_findTargetDetailFragment_to_MatTargetDetailFragment"
@@ -42,10 +42,10 @@
         android:label="HsvTargetDetailFragment"
         tools:layout="@layout/fragment_search_list">
         <argument
-            android:name="@string/big_title_key"
+            android:name="big_title"
             app:argType="string" />
         <argument
-            android:name="@string/small_title_key"
+            android:name="small_title"
             android:defaultValue="Hsv"
             app:argType="string" />
         <action
@@ -62,10 +62,10 @@
         android:label="RgbTargetDetailFragment"
         tools:layout="@layout/fragment_search_list">
         <argument
-            android:name="@string/big_title_key"
+            android:name="big_title"
             app:argType="string" />
         <argument
-            android:name="@string/small_title_key"
+            android:name="small_title"
             android:defaultValue="Rgb"
             app:argType="string" />
         <action
@@ -82,10 +82,10 @@
         android:label="ImgTargetDetailFragment"
         tools:layout="@layout/fragment_img_target_detail">
         <argument
-            android:name="@string/big_title_key"
+            android:name="big_title"
             app:argType="string" />
         <argument
-            android:name="@string/small_title_key"
+            android:name="small_title"
             android:defaultValue="Img"
             app:argType="string" />
         <action
@@ -99,10 +99,10 @@
         android:label="MatTargetDetailFragment"
         tools:layout="@layout/fragment_search_list">
         <argument
-            android:name="@string/big_title_key"
+            android:name="big_title"
             app:argType="string" />
         <argument
-            android:name="@string/small_title_key"
+            android:name="small_title"
             android:defaultValue="Mat"
             app:argType="string" />
         <action
