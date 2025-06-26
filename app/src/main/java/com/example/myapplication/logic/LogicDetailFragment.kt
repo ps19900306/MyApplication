@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
- * A simple [Fragment] subclass.
+ * A simple [LogicEntity] subclass.
  * Use the [LogicDetailFragment.newInstance] factory method to
  * create an instance of this fragment.
  */

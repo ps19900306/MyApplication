@@ -1,4 +1,4 @@
-package com.example.myapplication.click
+package com.example.myapplication.find_target
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,21 +14,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.nwq.base.BaseToolBar2Fragment
-import com.nwq.base.BaseToolBarFragment
 import com.nwq.constant.ConstantKeyStr
-import com.nwq.opencv.db.entity.ClickEntity
+import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
 
+/**
+ * [com.nwq.opencv.db.entity.FindTargetRecord]
+ */
+class TargetSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
 
-class ClickSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
+    private val args: TargetSelectFragmentArgs by navArgs()
 
-    private val args: ClickSelectFragmentArgs by navArgs()
+    private val viewModel: TargetSelectViewModel by viewModels()
 
-    private val viewModel: ClickSelectViewModel by viewModels()
-
-    private lateinit var mCheckTextAdapter: CheckTextAdapter<ClickEntity>
+    private lateinit var mCheckTextAdapter: CheckTextAdapter<FindTargetRecord>
 
     override fun createBinding(inflater: LayoutInflater): FragmentSearchListBinding {
         return FragmentSearchListBinding.inflate(inflater)
@@ -39,7 +40,7 @@ class ClickSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
     }
 
 
-    override fun onMenuItemClick(menuItem: MenuItem):Boolean{
+    override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_select_all -> {
                 mCheckTextAdapter.selectAll(true)
@@ -57,10 +58,13 @@ class ClickSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
     }
 
 
-    override fun onBackPress():Boolean {
+    override fun onBackPress(): Boolean {
         val selectedItems = mCheckTextAdapter.getSelectedItem()
         val result = Bundle().apply {
-            putLongArray(ConstantKeyStr.SELECTED_RESULT, selectedItems.map { it.getT().id }.toLongArray())
+            putLongArray(
+                ConstantKeyStr.SELECTED_RESULT,
+                selectedItems.map { it.getT().id }.toLongArray()
+            )
         }
         parentFragmentManager.setFragmentResult(args.actionTag, result)
         findNavController().popBackStack()
@@ -84,7 +88,7 @@ class ClickSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.logicSearchFlow.collect {
                     val list = it.map { data ->
-                        ICheckTextWrap<ClickEntity>(data) {
+                        ICheckTextWrap<FindTargetRecord>(data) {
                             data.keyTag
                         }
                     }

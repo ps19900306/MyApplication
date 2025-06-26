@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_logicDetailFragment_to_FunctionSelectFragment"
             app:destination="@id/FunctionSelectFragment" />
+        <action
+            android:id="@+id/action_logicDetailFragment_to_TargetSelectFragment"
+            app:destination="@id/TargetSelectFragment" />
     </fragment>
 
     <fragment
@@ -65,8 +68,18 @@
         tools:layout="@layout/fragment_search_list">
         <argument
             android:name="functionId"
-            app:argType="long"
-            android:defaultValue="0L"/>
+            android:defaultValue="0L"
+            app:argType="long" />
+        <argument
+            android:name="actionTag"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/TargetSelectFragment"
+        android:name="com.example.myapplication.find_target.TargetSelectFragment"
+        android:label="@string/please_select"
+        tools:layout="@layout/fragment_search_list">
         <argument
             android:name="actionTag"
             app:argType="string" />
