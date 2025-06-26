@@ -28,9 +28,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
- * A simple [LogicEntity] subclass.
- * Use the [LogicDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * A simple [LogicEntity] 预览类
  */
 class LogicDetailFragment : BaseToolBar2Fragment<FragmentLogicDetailBinding>() {
 
