@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 
-class ModifyHsvDialog(val defaultHsv: HSVRule,val bitmap: Bitmap?=null, val callBack: CallBack<HSVRule>) :
+class ModifyHsvDialog(val defaultHsv: HSVRule= HSVRule(),val bitmap: Bitmap?=null, val callBack: CallBack<HSVRule>) :
     BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
     private val TAG = ModifyHsvDialog::class.java.simpleName
     private var nowHsv: MutableStateFlow<HSVRule> = MutableStateFlow(defaultHsv).apply {
@@ -64,16 +64,22 @@ class ModifyHsvDialog(val defaultHsv: HSVRule,val bitmap: Bitmap?=null, val call
         binding.sbValueMax.progress = defaultHsv.maxV
         binding.saveBtn.singleClick {
             callBack.onCallBack(nowHsv.value)
+            defaultHsv.minH = nowHsv.value.minH
+            defaultHsv.maxH = nowHsv.value.maxH
+            defaultHsv.minS = nowHsv.value.minS
+            defaultHsv.maxS = nowHsv.value.maxS
+            defaultHsv.minV = nowHsv.value.minV
+            defaultHsv.maxV = nowHsv.value.maxV
             dismissDialog()
         }
 
         setupSeekBarAndEditText(R.id.sb_hue_min, R.id.et_hue_min, 0, 180)
         { i ->
-            nowHsv.value = HSVRule( i, defaultHsv.maxH, defaultHsv.minS, defaultHsv.maxS, defaultHsv.minV, defaultHsv.maxV)
+            nowHsv.value = HSVRule( i, nowHsv.value.maxH, nowHsv.value.minS, nowHsv.value.maxS, nowHsv.value.minV, nowHsv.value.maxV)
         }
         setupSeekBarAndEditText(R.id.sb_hue_max, R.id.et_hue_max, 0, 180)
         { i ->
-            nowHsv.value = HSVRule( defaultHsv.minH, i, defaultHsv.minS, defaultHsv.maxS, defaultHsv.minV, defaultHsv.maxV)
+            nowHsv.value = HSVRule( nowHsv.value.minH, i, nowHsv.value.minS, nowHsv.value.maxS, nowHsv.value.minV, nowHsv.value.maxV)
         }
         setupSeekBarAndEditText(
             R.id.sb_saturation_min,
@@ -81,7 +87,7 @@ class ModifyHsvDialog(val defaultHsv: HSVRule,val bitmap: Bitmap?=null, val call
             0,
             255,
         ){i->
-            nowHsv.value = HSVRule( defaultHsv.minH, defaultHsv.maxH, i, defaultHsv.maxS, defaultHsv.minV, defaultHsv.maxV)
+            nowHsv.value = HSVRule( nowHsv.value.minH, nowHsv.value.maxH, i, nowHsv.value.maxS, nowHsv.value.minV, nowHsv.value.maxV)
         }
         setupSeekBarAndEditText(
             R.id.sb_saturation_max,
@@ -89,7 +95,7 @@ class ModifyHsvDialog(val defaultHsv: HSVRule,val bitmap: Bitmap?=null, val call
             0,
             255,
         ){i->
-            nowHsv.value = HSVRule( defaultHsv.minH, defaultHsv.maxH, defaultHsv.minS, i, defaultHsv.minV, defaultHsv.maxV)
+            nowHsv.value = HSVRule( nowHsv.value.minH, defaultHsv.maxH, defaultHsv.minS, i, defaultHsv.minV, defaultHsv.maxV)
         }
         setupSeekBarAndEditText(
             R.id.sb_value_min,
@@ -97,7 +103,7 @@ class ModifyHsvDialog(val defaultHsv: HSVRule,val bitmap: Bitmap?=null, val call
             0,
             255,
         ){i->
-            nowHsv.value = HSVRule( defaultHsv.minH, defaultHsv.maxH, defaultHsv.minS, defaultHsv.maxS, i, defaultHsv.maxV)
+            nowHsv.value = HSVRule( nowHsv.value.minH, nowHsv.value.maxH, nowHsv.value.minS, nowHsv.value.maxS, i, nowHsv.value.maxV)
         }
         setupSeekBarAndEditText(
             R.id.sb_value_max,
@@ -106,7 +112,7 @@ class ModifyHsvDialog(val defaultHsv: HSVRule,val bitmap: Bitmap?=null, val call
             255,
         ){
             i->
-            nowHsv.value = HSVRule( defaultHsv.minH, defaultHsv.maxH, defaultHsv.minS, defaultHsv.maxS, defaultHsv.minV, i)
+            nowHsv.value = HSVRule(nowHsv.value.minH, nowHsv.value.maxH, nowHsv.value.minS, nowHsv.value.maxS, nowHsv.value.minV, i)
         }
 
         lifecycleScope.launch {
@@ -127,10 +133,6 @@ class ModifyHsvDialog(val defaultHsv: HSVRule,val bitmap: Bitmap?=null, val call
             binding.srcImg.setImageBitmap(it)
             binding.srcImg.isVisible =true
             binding.saveBtn.isVisible =true
-            binding.saveBtn.singleClick {
-                callBack.onCallBack(nowHsv.value)
-                dismiss()
-            }
         }
 
     }

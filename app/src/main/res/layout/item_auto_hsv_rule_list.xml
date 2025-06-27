@@ -5,11 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <CheckBox
-        android:id="@+id/cBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <ImageView
         android:id="@+id/srcImg"
         android:layout_width="wrap_content"
@@ -21,4 +16,5 @@
         android:layout_height="wrap_content"
         android:textSize="15sp"
         tools:text="TextView" />
+
 </LinearLayout>

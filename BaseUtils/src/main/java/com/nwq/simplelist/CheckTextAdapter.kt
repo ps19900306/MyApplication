@@ -46,7 +46,6 @@ class CheckTextAdapter<T>(
         if (list.isNullOrEmpty()) {
             return emptyList()
         }
-
         val removedItems = mutableListOf<T>()
         val remainingItems = list.filterTo(mutableListOf()) {
             if (it.isCheckStatus()) {
@@ -62,6 +61,8 @@ class CheckTextAdapter<T>(
         notifyDataSetChanged()
         return removedItems
     }
+
+
 
 
     public fun upData(list: List<ICheckText<T>>) {

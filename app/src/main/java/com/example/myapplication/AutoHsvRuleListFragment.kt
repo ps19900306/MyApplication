@@ -82,12 +82,11 @@ class AutoHsvRuleListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>(
         super.initView()
         mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<AutoRulePointEntity> {
             override fun onCallBack(data: AutoRulePointEntity) {
-                //TODO需要修改成改颜色
-//                NavigationContainerActivity2.startNavigationContainerActivity(
-//                    requireContext(),
-//                    R.navigation.nav_find_target,
-//                    FindTargetDetailFragmentArgs(data.id, data.keyTag,data.description).toBundle()
-//                )
+                NavigationContainerActivity2.startNavigationContainerActivity(
+                    requireContext(),
+                    R.navigation.nav_auto_hsv_rule,
+                    FindTargetDetailFragmentArgs(data.id, data.keyTag,data.description).toBundle()
+                )
             }
         })
         binding.recycler.layoutManager =
