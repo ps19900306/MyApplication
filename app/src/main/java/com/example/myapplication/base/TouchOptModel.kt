@@ -55,7 +55,7 @@ class TouchOptModel : ViewModel() {
 
     private val _touchCoordinate = MutableStateFlow<ICoordinate?>(null)
 
-
+    public val nowPoint = MutableStateFlow(CoordinatePoint(0,0))
     fun updateICoordinate(datae: ICoordinate) {
         _touchCoordinate.value = datae
     }
@@ -63,10 +63,6 @@ class TouchOptModel : ViewModel() {
     fun fullScreen() {
         _touchType.value = FULL_SCREEN
     }
-
-//    fun selectPicture() {
-//        _touchType.value = SELECT_PICTURE
-//    }
 
     fun resetTouchOptFlag() {
         _touchType.value = NORMAL_TYPE
@@ -146,25 +142,7 @@ class TouchOptModel : ViewModel() {
         }
 
 
-//    private val mBitmapOption by lazy {
-//        val opts = BitmapFactory.Options()
-//        opts.outConfig = Bitmap.Config.ARGB_8888
-//        opts.inMutable = true
-//        opts
-//    }
-//
-//    fun getBitmapFromPath(path: String): Bitmap? {
-//        return BitmapFactory.decodeFile(path, mBitmapOption)
-//    }
-//
-//    fun getBitmapFromAssets(context: Context, name: String): Bitmap? {
-//        return try {
-//            val inputStream = context.assets?.open(name)
-//            BitmapFactory.decodeStream(inputStream, null, mBitmapOption)
-//        } catch (e: Exception) {
-//            null
-//        }
-//    }
+
 
 
 }

@@ -220,7 +220,7 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
             )
         )
         mBitmap = null
-        findNavController().navigate(R.id.action_findTargetDetailFragment_to_nav_opt_preview)
+        findNavController().navigate(R.id.action_autoHsvRuleDetailFragment_to_nav_opt_preview)
     }
 
 }

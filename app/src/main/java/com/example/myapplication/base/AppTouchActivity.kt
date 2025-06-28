@@ -31,7 +31,7 @@ abstract class AppTouchActivity<VB : ViewBinding> : BaseActivity<VB>() {
     private var isFirst = true
     private var nowMode = TouchOptModel.NORMAL_TYPE
     private var lastTime = 0L
-    private val cancelInterval = 3000L
+    private val cancelInterval = 2000L
 
     /**
      * 全屏的
@@ -110,6 +110,7 @@ abstract class AppTouchActivity<VB : ViewBinding> : BaseActivity<VB>() {
         }
         when (nowMode) {
             TouchOptModel.SINGLE_CLICK_TYPE -> {
+                mTouchOptModel.nowPoint.tryEmit(CoordinatePoint(ev.x.toInt(), ev.y.toInt()))
                 if (isFirst) {
                     if (ev.action == MotionEvent.ACTION_DOWN) {
                         starX = ev.x
