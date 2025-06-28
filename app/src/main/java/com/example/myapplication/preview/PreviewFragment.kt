@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -78,6 +79,12 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
             }
         }
         viewModel.initBitMap()
+
+        lifecycleScope.launch {
+            touchOptModel.nowPoint.collectLatest {
+                binding.draggableTextView.text = "(${it.x},${it.y})"
+            }
+        }
     }
 
     private fun updatePreviewList() {
@@ -121,9 +128,13 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
             }
 
             TouchOptModel.SINGLE_CLICK_TYPE -> {
-                lifecycleScope.launch {
+                binding.draggableTextView.isVisible = true
+
+
+                 lifecycleScope.launch {
                     data.coordinate = touchOptModel.getPoint()
                     updatePreviewList()
+                    binding.draggableTextView.isVisible = false
                 }
             }
 
