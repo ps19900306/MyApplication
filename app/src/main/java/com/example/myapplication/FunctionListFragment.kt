@@ -13,8 +13,10 @@ import com.example.myapplication.base.NavigationContainerActivity2
 import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.example.myapplication.function.FunctionDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
+import com.nwq.callback.CallBack
 import com.nwq.dialog.Simple2InputDialog
 import com.nwq.dialog.SimpleInputDialog
+import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.opencv.db.entity.FunctionEntity
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
@@ -45,7 +47,7 @@ class FunctionListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
                             NavigationContainerActivity2.startNavigationContainerActivity(
                                 requireContext(),
                                 R.navigation.nav_function,
-                                FunctionDetailFragmentArgs(id).toBundle()
+                                FunctionDetailFragmentArgs(id, name, description).toBundle()
                             )
                         }
                     }
@@ -79,7 +81,16 @@ class FunctionListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
 
     override fun initView() {
         super.initView()
-        mCheckTextAdapter = CheckTextAdapter()
+        mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<FunctionEntity> {
+            override fun onCallBack(data: FunctionEntity) {
+                NavigationContainerActivity2.startNavigationContainerActivity(
+                    requireContext(),
+                    R.navigation.nav_function,
+                    FunctionDetailFragmentArgs(data.id, data.keyTag, data.description).toBundle()
+                )
+            }
+
+        })
         binding.recycler.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recycler.adapter = mCheckTextAdapter

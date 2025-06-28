@@ -124,6 +124,7 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
 
     override fun initData() {
         super.initData()
+        binding.recycler.layoutManager = LinearLayoutManager(requireContext())
         mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<HSVRule> {
             override fun onCallBack(data: HSVRule) {
                 val dialog = ModifyHsvDialog(HSVRule(), getBitmap(), object : CallBack<HSVRule> {
@@ -134,6 +135,7 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
                 dialog.show(childFragmentManager, "ModifyHsvDialog")
             }
         })
+        binding.recycler.adapter = mCheckTextAdapter
         lifecycleScope.launch(Dispatchers.IO) {
             mAutoRulePointEntity = mAutoRulePointDao.findByKeyId(args.autoHsvId)
             mAutoRulePointEntity?.let { entity ->

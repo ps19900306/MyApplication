@@ -124,9 +124,9 @@ class CheckTextAdapter<T>(
                 mIKeyText?.apply {
                     setCheckStatus(!isCheckStatus())
                     if (isCheckStatus()) {
-                        itemView.rootView.setBackgroundResource(selectBgRes)
+                        itemView.setBackgroundResource(selectBgRes)
                     } else {
-                        itemView.rootView.setBackgroundResource(normalBgRes)
+                        itemView.setBackgroundResource(normalBgRes)
                     }
                 }
             }
@@ -149,9 +149,9 @@ class CheckTextAdapter<T>(
             mIKeyText = item
             mTextView.text = item.getText() // 设置文本内容
             if (item.isCheckStatus()) {
-                itemView.rootView.setBackgroundResource(selectBgRes)
+                itemView.setBackgroundResource(selectBgRes)
             } else {
-                itemView.rootView.setBackgroundResource(normalBgRes)
+                itemView.setBackgroundResource(normalBgRes)
             }
             bindView?.onCallBack(itemView, item.getT())
         }

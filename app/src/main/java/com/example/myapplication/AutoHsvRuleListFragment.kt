@@ -9,15 +9,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myapplication.auto_hsv_rule.AutoHsvRuleDetailFragmentArgs
 import com.example.myapplication.base.NavigationContainerActivity2
 import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.example.myapplication.find_target.FindTargetDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.callback.CallBack
 import com.nwq.dialog.Simple2InputDialog
-import com.nwq.dialog.SimpleInputDialog
 import com.nwq.opencv.db.entity.AutoRulePointEntity
-import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
@@ -48,6 +47,11 @@ class AutoHsvRuleListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>(
                     Simple2InputDialog(titleRes = R.string.create_target) { name, description ->
                         lifecycleScope.launch {
                             val id = viewModel.createHsvRule(name, description)
+                            NavigationContainerActivity2.startNavigationContainerActivity(
+                                requireContext(),
+                                R.navigation.nav_auto_hsv_rule,
+                                AutoHsvRuleDetailFragmentArgs(id, name,description).toBundle()
+                            )
                         }
                     }
                 dialog.show(parentFragmentManager, "EditFunctionTitleDialog")
@@ -85,7 +89,7 @@ class AutoHsvRuleListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>(
                 NavigationContainerActivity2.startNavigationContainerActivity(
                     requireContext(),
                     R.navigation.nav_auto_hsv_rule,
-                    FindTargetDetailFragmentArgs(data.id, data.keyTag,data.description).toBundle()
+                    AutoHsvRuleDetailFragmentArgs(data.id, data.keyTag,data.description).toBundle()
                 )
             }
         })

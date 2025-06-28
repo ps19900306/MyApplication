@@ -14,6 +14,12 @@
         <argument
             android:name="functionId"
             app:argType="long" />
+        <argument
+            android:name="big_title"
+            app:argType="string" />
+        <argument
+            android:name="small_title"
+            app:argType="string" />
         <action
             android:id="@+id/action_functionDetailFragment_to_logicDetailFragment"
             app:destination="@id/logicDetailFragment" />

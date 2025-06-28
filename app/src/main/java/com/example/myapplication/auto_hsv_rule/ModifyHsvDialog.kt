@@ -72,7 +72,7 @@ class ModifyHsvDialog(val defaultHsv: HSVRule= HSVRule(),val bitmap: Bitmap?=nul
             defaultHsv.maxV = nowHsv.value.maxV
             dismissDialog()
         }
-
+        binding.saveBtn.isVisible = true
         setupSeekBarAndEditText(R.id.sb_hue_min, R.id.et_hue_min, 0, 180)
         { i ->
             nowHsv.value = HSVRule( i, nowHsv.value.maxH, nowHsv.value.minS, nowHsv.value.maxS, nowHsv.value.minV, nowHsv.value.maxV)

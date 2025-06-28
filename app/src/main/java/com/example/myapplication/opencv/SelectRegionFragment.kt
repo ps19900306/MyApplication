@@ -178,15 +178,15 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
     }
 
     private fun addHsvFilter() {
-        if (openCvPreviewModel.srcBitmap == null) {
-            AutoHsvRuleActivity.startActivityCreate(requireActivity());
-            return
-        }
-        lifecycleScope.launch {
-            val rectArea = mTouchOptModel.getRectArea()
-            FileUtils.saveBitmapToExternalStorageImg(openCvPreviewModel.srcBitmap!!, ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME, rectArea)
-            AutoHsvRuleActivity.startActivityCreate(requireActivity());
-        }
+//        if (openCvPreviewModel.srcBitmap == null) {
+//            AutoHsvRuleActivity.startActivityCreate(requireActivity());
+//            return
+//        }
+//        lifecycleScope.launch {
+//            val rectArea = mTouchOptModel.getRectArea()
+//            FileUtils.saveBitmapToExternalStorageImg(openCvPreviewModel.srcBitmap!!, ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME, rectArea)
+//            AutoHsvRuleActivity.startActivityCreate(requireActivity());
+//        }
     }
 
 

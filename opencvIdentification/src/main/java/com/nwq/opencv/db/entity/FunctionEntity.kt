@@ -44,6 +44,10 @@ data class FunctionEntity(
     @Ignore
     private var nowNullCount = 0
 
+    //用来记录次数的 比如一个任务接取的需要接任务的
+    @Ignore
+    private var isTimeComplete: Boolean = false
+
 
     private suspend fun isPointDetection(): Boolean {
         nowNullCount = mStuckPointDetection?.checkStuckPoint() ?: nowNullCount
@@ -62,13 +66,8 @@ data class FunctionEntity(
             logicDao.findByFunctionId(id).let { list ->
                 allLogicList.clear()
                 allLogicList.addAll(list)
-
                 nowLogicList.addAll(list.filter { it.parentLogicId == 0L })
-
             }
-
-
-
             nowLogicList.sortBy { it.getPrioritySort() }
         }
 

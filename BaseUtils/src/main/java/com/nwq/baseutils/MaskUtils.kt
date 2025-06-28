@@ -9,7 +9,6 @@ object MaskUtils {
 
     //maskMat的生成条件
      fun getMaskMat(mat: Mat?,type: Int): Mat? {
-
-        return null
+         return null
     }
 }

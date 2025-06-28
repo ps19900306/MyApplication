@@ -10,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.FragmentFunctionDetailBinding
-import com.nwq.base.BaseToolBarFragment
 import com.example.myapplication.R
 import com.example.myapplication.logic.LogicCreateDialog
 import com.example.myapplication.logic.LogicDetailFragmentArgs
@@ -20,7 +19,6 @@ import com.nwq.opencv.db.entity.LogicEntity
 import com.nwq.simplelist.ICheckTextWrap
 import com.nwq.simplelist.TextAdapter
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 class FunctionDetailFragment : BaseToolBar2Fragment<FragmentFunctionDetailBinding>() {
 
