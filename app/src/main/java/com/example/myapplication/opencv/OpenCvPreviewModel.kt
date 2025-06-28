@@ -152,6 +152,17 @@ class OpenCvPreviewModel : ViewModel() {
     }
 
 
+    /**
+     * 创建或获取显示的位图，通过HSV颜色空间过滤生成特定颜色范围的图像
+     *
+     * @param minH HSV颜色空间中的最小色相值
+     * @param maxH HSV颜色空间中的最大色相值
+     * @param minS HSV颜色空间中的最小饱和度值
+     * @param maxS HSV颜色空间中的最大饱和度值
+     * @param minV HSV颜色空间中的最小明度值
+     * @param maxV HSV颜色空间中的最大明度值
+     * @return 过滤后的位图对象，如果处理失败则返回null
+     */
     private fun getOrCreateShowBitmap(
         minH: Int,
         maxH: Int,
@@ -160,12 +171,17 @@ class OpenCvPreviewModel : ViewModel() {
         minV: Int,
         maxV: Int
     ): Bitmap? {
+        // 更新颜色列表以反映当前的HSV阈值设置
         updateColorsList(minH, maxH, minS, maxS, minV, maxV)
+        
+        // 获取或创建HSV矩阵，如果失败则返回null
         val bitmap = if (getOrCreateHsvMat() == null) {
             null
         } else {
+            // 获取HSV矩阵并应用颜色过滤
             val hsvMat = getOrCreateHsvMat()!!
             val maskMat = MatUtils.filterByHsv(hsvMat, minH, maxH, minS, maxS, minV, maxV)
+            // 将过滤后的HSV矩阵转换为位图
             MatUtils.hsvMatToBitmap(maskMat)
         }
         return bitmap

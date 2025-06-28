@@ -15,6 +15,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_select_area"
+        android:orderInCategory="100"
+        android:title="预览选中"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_add"
         android:orderInCategory="100"
         android:title="@string/add"

@@ -1,6 +1,7 @@
 package com.nwq.baseutils
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.text.TextUtils
 import android.util.Log
 import com.nwq.baseobj.CoordinateArea
@@ -103,6 +104,55 @@ object MatUtils {
         return maskMat
     }
 
+    /**
+     * 合并两张掩码图进行逻辑or运算
+     *
+     * @param maskMat1 第一张掩码图矩阵
+     * @param maskMat2 第二张掩码图矩阵
+     * @return 运算结果的新掩码图矩阵
+     */
+    fun mergeMaskMat(maskMat1: Mat, maskMat2: Mat): Mat {
+        // 创建输出矩阵
+        val resultMat = Mat()
+        // 执行逻辑AND运算
+        Core.bitwise_or(maskMat1, maskMat2, resultMat)
+        return resultMat
+    }
+
+
+    fun createBitmapFromMask(
+        maskMat: Mat,
+        color: Int = Color.RED,
+        backColor: Int = Color.TRANSPARENT
+    ): Bitmap {
+        // 验证输入掩码类型
+        require(maskMat.type() == CvType.CV_8UC1) {
+            "掩码必须是单通道8位无符号整型(CV_8UC1)"
+        }
+
+        // 创建ARGB_8888格式的Bitmap
+        val width = maskMat.cols()
+        val height = maskMat.rows()
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        // 获取掩码数据
+        val maskData = ByteArray(width * height)
+        maskMat.get(0, 0, maskData)
+
+        // 设置Bitmap像素
+        val pixels = IntArray(width * height)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val index = y * width + x
+                pixels[index] = if (maskData[index].toInt() == 1) color else backColor
+            }
+        }
+
+        // 将像素数组设置到Bitmap
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
+
+        return bitmap
+    }
 
     /**
      * 根据指定的HSV范围过滤图像
@@ -129,14 +179,17 @@ object MatUtils {
     ): Mat {
         // 获取基于指定HSV范围的掩码Mat对象
         val maskMat = getFilterMaskMat(srcMat, minH, maxH, minS, maxS, minV, maxV)
+        // 返回过滤后的图像
+        return filterByMask(srcMat, maskMat)
+    }
+
+    fun filterByMask(srcMat: Mat, maskMat: Mat): Mat{
         // 将掩码Mat对象转换为三通道，以便与源图像兼容
         val maskMat3Channel = Mat()
         Imgproc.cvtColor(maskMat, maskMat3Channel, Imgproc.COLOR_GRAY2BGR)
-
         // 使用掩码对源图像进行过滤，提取符合颜色空间的图像部分
         val destMat = Mat()
         Core.bitwise_and(srcMat, maskMat3Channel, destMat)
-        // 返回过滤后的图像
         return destMat
     }
 

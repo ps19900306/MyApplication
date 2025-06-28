@@ -41,6 +41,7 @@ import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.opencv.core.Mat
 
 
 /**
@@ -50,11 +51,11 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
 
     private val args: AutoHsvRuleDetailFragmentArgs by navArgs()
     private val preViewModel: PreviewViewModel by viewModels({ requireActivity() })
-    private val viewModel: AutoHsvRuleDetailViewModel by viewModels({ requireActivity() })
     private val mAutoRulePointDao = IdentifyDatabase.getDatabase().autoRulePointDao()
     private lateinit var mCheckTextAdapter: CheckTextAdapter<HSVRule>
     private var prList: MutableList<HSVRule> = mutableListOf()
     private var mAutoRulePointEntity: AutoRulePointEntity? = null
+    private var mBitmap: Bitmap? = null
 
     override fun createBinding(inflater: LayoutInflater): FragmentAutoHsvRuleDetailBinding {
         return FragmentAutoHsvRuleDetailBinding.inflate(inflater)
@@ -78,6 +79,10 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
 
             R.id.action_area -> {
                 findArea()
+            }
+
+            R.id.action_select_area -> { //根据选中的Rule对图片尽心给过滤
+                preViewSelectArea()
             }
 
             R.id.action_add -> {
@@ -145,7 +150,7 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
         }
     }
 
-    private var mBitmap: Bitmap? = null
+
     private fun getBitmap(): Bitmap? {
         if (mBitmap != null)
             return mBitmap
@@ -167,6 +172,40 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
         return mBitmap
     }
 
+    //预览选中区域
+    private fun preViewSelectArea() {
+        val rules = mCheckTextAdapter.getSelectedItem()
+        if (rules.isEmpty()) {
+            T.show("请选择规则")
+        }
+
+        getBitmap()?.let { bitMap ->
+            val mat = MatUtils.bitmapToHsvMat(bitMap)
+            var lastMaskMat: Mat? = null
+            rules.forEach {
+                val rule = it.getT()
+                val maskMat = MatUtils.getFilterMaskMat(
+                    mat,
+                    rule.minH,
+                    rule.maxH,
+                    rule.minS,
+                    rule.maxS,
+                    rule.minV,
+                    rule.maxV
+                )
+                if (lastMaskMat == null) {
+                    lastMaskMat = maskMat
+                } else {
+                    lastMaskMat = MatUtils.mergeMaskMat(lastMaskMat!!, maskMat)
+                }
+            }
+            val resultMap = MatUtils.hsvMatToBitmap(MatUtils.filterByMask(mat, lastMaskMat!!))
+            binding.srcImg.setImageBitmap(resultMap)
+        }?:let {
+            T.show("请选择图片和关键区域")
+        }
+    }
+
 
     //选择图片和关键区域
     private fun findArea() {
@@ -181,93 +220,5 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
         mBitmap = null
         findNavController().navigate(R.id.action_findTargetDetailFragment_to_nav_opt_preview)
     }
-
-//    private val TAG = "AutoHsvRuleDetailFragment"
-//    private val args: AutoHsvRuleDetailFragmentArgs by navArgs()
-//    private val viewModel by viewModels<AutoHsvRuleModel>({ requireActivity() })
-//    private val hsvRuleAdapter = HsvRuleAdapter()
-//    private var autoRulePointEntity: AutoRulePointEntity? = null
-//    private var srcBitmap: Bitmap? = null
-//    private val hsvList by lazy {
-//        mutableListOf<HSVRule>()
-//    }
-//    private lateinit var adapter: HsvRuleAdapter
-//
-//    override fun createBinding(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?
-//    ): FragmentAutoHsvRuleDetailBinding {
-//        return FragmentAutoHsvRuleDetailBinding.inflate(inflater, container, false)
-//    }
-//
-//    override fun initData() {
-//        super.initData()
-//        adapter = HsvRuleAdapter()
-//        if (!TextUtils.isEmpty(args.autoHsvRuleTag)) {
-//            lifecycleScope.launch {
-//                lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.RESUMED) {
-//                    viewModel.getByTagFlow(args.autoHsvRuleTag!!)?.collect {
-//                        autoRulePointEntity = it
-//                        initView(it)
-//                    }
-//                }
-//            }
-//        } else {
-//            val bitmap =
-//                FileUtils.loadBitmapFromGallery(ConstantKeyStr.AUTO_HSV_RULE_IMG_NAME) ?: return
-//            binding.srcImg.setImageBitmap(bitmap)
-//            srcBitmap = bitmap
-//        }
-//        binding.addBtn.singleClick {
-//            addHsvRule()
-//        }
-//        binding.recycler.layoutManager = LinearLayoutManager(requireContext())
-//        binding.recycler.adapter = adapter
-//        binding.saveBtn.singleClick {
-//            saveHsvRule()
-//        }
-//    }
-//
-//    private fun addHsvRule() {
-//        val dialog = ModifyHsvDialog(HSVRule(), srcBitmap, this)
-//        dialog.show(childFragmentManager, "ModifyHsvDialog")
-//    }
-//
-//    private fun saveHsvRule() {
-//        if (autoRulePointEntity == null) {
-//            val tag = binding.tagText.text
-//            if (TextUtils.isEmpty(tag)){
-//                T.show("请输入标签")
-//                return
-//            }
-//            if (hsvList.isEmpty()){
-//                T.show("请添加HSV规则")
-//                return
-//            }
-//            lifecycleScope.launch {
-//                runOnIO {
-//                    viewModel.saveHsvRule(tag.toString(), hsvList, srcBitmap!!)
-//                    runOnUI {
-//                         findNavController().popBackStack()
-//                    }
-//                }
-//            }
-//        } else {
-//            viewModel.updateHsvRule(autoRulePointEntity!!, hsvList)
-//        }
-//    }
-//
-//
-//    private fun initView(autoRulePointEntity: AutoRulePointEntity) {
-//        hsvList.addAll(autoRulePointEntity.prList)
-//        hsvRuleAdapter.updateData(hsvList)
-//    }
-//
-//    override fun onCallBack(data: HSVRule) {
-//        Log.i(TAG, "添加新的HSVRule: $data")
-//        hsvList.add(data)
-//        adapter.updateData(hsvList)
-//    }
-
 
 }

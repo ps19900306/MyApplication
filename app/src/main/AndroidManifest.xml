@@ -47,10 +47,6 @@
             android:label="@string/title_activity_fullscreen"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.Fullscreen" />
         <activity
-            android:name=".auto_hsv_rule.AutoHsvRuleActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.Fullscreen" />
-        <activity
             android:name=".opencv.PreviewImgActivity"
             android:configChanges="screenLayout|orientation|screenSize"
             android:exported="true"

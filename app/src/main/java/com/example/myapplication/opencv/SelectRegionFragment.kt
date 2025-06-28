@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.auto_hsv_rule.AutoHsvRuleActivity
 import com.example.myapplication.base.TouchOptModel
 import com.example.myapplication.databinding.FragmentSelectRegionBinding
 import com.luck.picture.lib.basic.PictureSelector
