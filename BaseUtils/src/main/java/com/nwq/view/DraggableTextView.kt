@@ -1,7 +1,10 @@
+package com.nwq.view;
+
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatTextView
+import kotlin.math.abs
 
 class DraggableTextView @JvmOverloads constructor(
     context: Context,
@@ -12,6 +15,7 @@ class DraggableTextView @JvmOverloads constructor(
     private var lastX = 0f
     private var lastY = 0f
     private var isLongPressed = false
+    private val longPressRunnable = Runnable { isLongPressed = true }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
@@ -19,18 +23,24 @@ class DraggableTextView @JvmOverloads constructor(
                 lastX = event.rawX
                 lastY = event.rawY
                 isLongPressed = false
-                this@DraggableTextView.postDelayed({
-                    isLongPressed = true
-                }, 500) // 长按时间设定为500毫秒
+                // 设置长按延迟，同时检测微小移动
+                postDelayed(longPressRunnable, 500)
                 return true
             }
 
             MotionEvent.ACTION_MOVE -> {
+                val dx = event.rawX - lastX
+                val dy = event.rawY - lastY
+
+                // 移动阈值判断（避免误触发长按）
+                if (!isLongPressed && (abs(dx) > 10 || abs(dy) > 10)) {
+                    removeCallbacks(longPressRunnable)
+                }
+
                 if (isLongPressed) {
-                    val dx = event.rawX - lastX
-                    val dy = event.rawY - lastY
-                    x += dx
-                    y += dy
+                    // 使用 translation 更可靠
+                    translationX += dx
+                    translationY += dy
                     lastX = event.rawX
                     lastY = event.rawY
                 }
@@ -38,7 +48,7 @@ class DraggableTextView @JvmOverloads constructor(
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                this@DraggableTextView.removeCallbacks(null)
+                removeCallbacks(longPressRunnable)
                 isLongPressed = false
                 return true
             }
