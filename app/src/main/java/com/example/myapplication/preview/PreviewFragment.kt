@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.graphics.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -82,6 +83,10 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
 
         lifecycleScope.launch {
             touchOptModel.nowPoint.collectLatest {
+                val bitmap = viewModel.mBitmap.value ?: return@collectLatest
+                val color = bitmap[it.x, it.y]
+                // opts.outConfig = Bitmap.Config.ARGB_8888
+                binding.draggableTextView.setBackgroundColor(color)
                 binding.draggableTextView.text = "(${it.x},${it.y})"
             }
         }
@@ -131,7 +136,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
                 binding.draggableTextView.isVisible = true
 
 
-                 lifecycleScope.launch {
+                lifecycleScope.launch {
                     data.coordinate = touchOptModel.getPoint()
                     updatePreviewList()
                     binding.draggableTextView.isVisible = false

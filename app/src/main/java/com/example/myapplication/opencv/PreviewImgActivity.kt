@@ -39,6 +39,7 @@ class PreviewImgActivity : BaseActivity<ActivityPreviewImgBinding>() {
         return ActivityPreviewImgBinding.inflate(layoutInflater)
     }
 
+
     override fun beforeSetContentView() {
         super.beforeSetContentView()
         controller = WindowInsetsControllerCompat(window, window.decorView)
