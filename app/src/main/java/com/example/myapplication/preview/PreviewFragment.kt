@@ -125,6 +125,7 @@ class PreviewFragment : BaseToolBar2Fragment<FragmentPreviewBinding>() {
         binding.previewCoordinateView.updateList(list)
     }
 
+
     private fun selectPicture() {
         L.i(TAG, "selectPicture")
         PictureSelector.create(requireActivity()).openSystemGallery(SelectMimeType.ofImage())
