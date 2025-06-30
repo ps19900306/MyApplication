@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -19,16 +20,23 @@ create by: 86136
 create time: 2023/5/22 14:51
 Function description:
  */
-class PreviewCoordinateView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
-
-
-    constructor (context: Context) : this(context, null)
+class PreviewCoordinateView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : TouchOptView(context, attrs, defStyleAttr) {
 
     private val list = mutableListOf<PreviewCoordinateData>()
-
+    private val TAG = "PreviewCoordinateView"
     private val mDotPaint: Paint  //用来画点的
     private val oblongPaint: Paint //用来画长方形的
     private val dotSize: Float
+
+    //单区域预览
+    var oblongArea: CoordinateArea? = null
+
+    //单区域预览
+    var oblongLine: CoordinateLine? = null
 
     init {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.PreviewImageView)
@@ -65,6 +73,7 @@ class PreviewCoordinateView(context: Context, attrs: AttributeSet?) : View(conte
     private fun drawArea(canvas: Canvas, area: CoordinateArea, color: Int, size: Float) {
         oblongPaint.color = color
         oblongPaint.strokeWidth = size
+        Log.i(TAG, "drawArea: ${area.toString()}")
         if (area.isRound) {
             canvas.drawCircle(
                 area.xF, area.yF,
@@ -93,9 +102,10 @@ class PreviewCoordinateView(context: Context, attrs: AttributeSet?) : View(conte
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (!isVisible) {
-            return
-        }
+//        if (!isVisible) {
+//            Log.i(TAG, "onDraw: 不可见")
+//            return
+//        }
         list.forEach {
             when (it.coordinate) {
                 is CoordinatePoint -> {
@@ -127,7 +137,36 @@ class PreviewCoordinateView(context: Context, attrs: AttributeSet?) : View(conte
                 }
             }
         }
+        oblongLine?.let { line ->
+            drawLine(canvas, line, ContextCompat.getColor(context, R.color.red), 5f)
+        }
+
+        oblongArea?.let {
+            drawArea(canvas, it, ContextCompat.getColor(context, R.color.red), 5f)
+        }
     }
 
+    // 预览相关的方法
+    override fun updatePreviewArea(area: CoordinateArea) {
+        Log.i(TAG, "updatePreviewArea: ${area.toString()}")
+        oblongArea = area
+        invalidate()
+    }
+
+    protected override fun clearPreviewArea() {
+        oblongArea = null
+        invalidate()
+    }
+
+    protected override fun updatePreviewLine(line: CoordinateLine) {
+        Log.i(TAG, "updatePreviewLine: ${line.toString()}")
+        oblongLine = line
+        invalidate()
+    }
+
+    override fun clearPreviewLine() {
+        oblongLine = null
+        invalidate()
+    }
 
 }

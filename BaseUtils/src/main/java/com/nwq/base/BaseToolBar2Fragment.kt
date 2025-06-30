@@ -57,7 +57,7 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val a = requireActivity();
-        Log.i("BaseToolBarFragment", "Activity" + a + "Fragment" + this);
+        Log.i("BaseToolBarFragment", "Activity" + a + "Fragment" + this.tag);
         a.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(getMenuRes(), menu)

@@ -88,7 +88,7 @@ abstract class AppTouchActivity<VB : ViewBinding> : BaseActivity<VB>() {
         return null
     }
 
-    protected open fun fullScreen() {
+    public open fun fullScreen() {
         controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
         controller.hide(WindowInsetsCompat.Type.navigationBars())
     }

@@ -9,6 +9,7 @@ import com.nwq.baseobj.ICoordinate
 import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.opencv.core.Mat
 
 class PreviewViewModel : ViewModel() {
 
@@ -20,6 +21,16 @@ class PreviewViewModel : ViewModel() {
     public var path: String? = null
     public var type = MatUtils.STORAGE_ASSET_TYPE
     public var mBitmap: MutableStateFlow<Bitmap?> = MutableStateFlow(null)
+
+    private var mMat: Mat? = null
+    public fun getSrcMat():Mat?{
+        if (mMat == null)
+            return mMat
+        mBitmap.value?.let {
+            mMat = MatUtils.bitmapToHsvMat(it)
+        }
+        return mMat
+    }
 
     public fun getCoordinate(key: Int): ICoordinate? {
         return optList.find { it.key == key }?.coordinate

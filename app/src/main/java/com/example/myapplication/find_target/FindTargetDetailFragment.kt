@@ -1,6 +1,8 @@
 package com.example.myapplication.find_target
 
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
@@ -15,9 +17,14 @@ import com.example.myapplication.R
 import com.example.myapplication.base.TouchOptModel
 import com.example.myapplication.preview.PreviewOptItem
 import com.example.myapplication.preview.PreviewViewModel
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.config.SelectMimeType
+import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.singleClick
+import com.nwq.loguitls.L
 import kotlinx.coroutines.launch
 
 
@@ -26,6 +33,7 @@ import kotlinx.coroutines.launch
  */
 class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBinding>() {
 
+    private val TAG = "FindTargetDetailFragment"
     private val args: FindTargetDetailFragmentArgs by navArgs()
     private val viewModel: FindTargetDetailModel by viewModels({ requireActivity() })
     private val preViewModel: PreviewViewModel by viewModels({ requireActivity() })
@@ -40,11 +48,12 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         var flag = true
         when (menuItem.itemId) {
-
+            R.id.action_select_picture-> {
+                selectPicture()
+            }
             R.id.action_save -> {
                 save()
             }
-
             R.id.action_area -> {
                 findArea()
             }
@@ -59,6 +68,32 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
         }
         return flag
     }
+
+    private fun selectPicture() {
+        L.i(TAG, "selectPicture")
+        PictureSelector.create(requireActivity()).openSystemGallery(SelectMimeType.ofImage())
+            .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
+                override fun onResult(result: ArrayList<LocalMedia?>?) {
+                    L.i(TAG, "onResult")
+                    result?.getOrNull(0)?.let {  localMedia->
+                        val opts = BitmapFactory.Options()
+                        opts.outConfig = Bitmap.Config.ARGB_8888
+                        opts.inMutable = true
+                        BitmapFactory.decodeFile(localMedia.realPath, opts)?.let {
+                            viewModel.mBitmap = it
+                            viewModel.path = localMedia.realPath
+                            viewModel.storageType = MatUtils.REAL_PATH_TYPE
+                        }
+                    }
+                }
+
+                override fun onCancel() {
+                    L.i(TAG, "onCancel")
+                }
+            })
+    }
+
+
 
     override fun onBackPress(): Boolean {
         return false

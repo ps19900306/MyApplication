@@ -4,7 +4,9 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
+import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinateLine
@@ -17,11 +19,16 @@ create by: 86136
 create time: 2023/5/22 14:51
 Function description:
  */
-class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
+class PreviewImageView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : TouchOptView(context, attrs, defStyleAttr) {
 
-    constructor (context: Context) : this(context, null)
+    private val TAG = "PreviewImageView"
+
+    //是否显示预览
     private var showFlag = true
-
     private val mDotPaint: Paint  //用来画点的
     private val oblongPaint: Paint //用来画长方形的
     private val dotSize: Float
@@ -32,7 +39,6 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
 
     //这个是用于查看选中的
     private val watchDotList = mutableListOf<CoordinatePoint>()
-
 
     //单区域预览
     var oblongArea: CoordinateArea? = null
@@ -198,7 +204,24 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
         }
     }
 
-
-
+    // 预览相关的方法
+    override protected fun updatePreviewArea(area: CoordinateArea) {
+        Log.i(TAG, "updatePreviewArea: ${area.toString()}")
+        oblongArea = area
+        invalidate()
+    }
+    override protected fun clearPreviewArea() {
+        oblongArea = null
+        invalidate()
+    }
+    override protected fun updatePreviewLine(line: CoordinateLine) {
+        Log.i(TAG, "updatePreviewLine: ${line.toString()}")
+        oblongLine = line
+        invalidate()
+    }
+    override protected fun clearPreviewLine() {
+        oblongLine = null
+        invalidate()
+    }
 
 }

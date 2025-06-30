@@ -4,19 +4,27 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.WindowManager
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.paging.LOG_TAG
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityNavigationContainerBinding
+import com.nwq.base.BaseActivity
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseutils.T
+import com.nwq.loguitls.L
 
 /**
  * 和 NavigationContainerActivity  多了Toolbar
  */
-class NavigationContainerActivity2 : AppTouchActivity<ActivityNavigationContainerBinding>() {
+class NavigationContainerActivity2 : BaseActivity<ActivityNavigationContainerBinding>() {
 
     companion object {
         const val TAG = "NavigationContainerActivity"
@@ -45,8 +53,26 @@ class NavigationContainerActivity2 : AppTouchActivity<ActivityNavigationContaine
             context.startActivity(intent)
         }
     }
+    /**
+     * 全屏的
+     */
+    private lateinit var controller: WindowInsetsControllerCompat
+
+    override fun beforeSetContentView() {
+        super.beforeSetContentView()
+        controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
+        controller.hide(WindowInsetsCompat.Type.navigationBars())
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val params = window.attributes
+        // 设置布局进入刘海区域
+        params.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        window.attributes = params
+    }
 
     override fun initData() {
+        L.i(TAG,"initData $this")
         binding.toolbar.menu.clear() // 清除旧菜单
         val navigationID = intent.getIntExtra("navigationID", -1)
         val bundle = intent.extras
@@ -64,7 +90,8 @@ class NavigationContainerActivity2 : AppTouchActivity<ActivityNavigationContaine
 
         // 3. 监听导航事件，自动更新 Toolbar 标题和返回按钮
         navController.addOnDestinationChangedListener { _, destination, bundle ->
-            super.fullScreen()
+            fullScreen()
+            Log.i(TAG, "onDestinationChanged: ${destination.label}")
             binding.toolbar.isVisible = true
             if (bundle == null) {
                 binding.toolbar.title = destination.label // 使用 navigation.xml 中定义的 label
@@ -121,8 +148,12 @@ class NavigationContainerActivity2 : AppTouchActivity<ActivityNavigationContaine
         return ActivityNavigationContainerBinding.inflate(inflater)
     }
 
-    override fun fullScreen() {
-        super.fullScreen()
+    public fun fullScreen() {
+        controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
+        controller.hide(WindowInsetsCompat.Type.navigationBars())
         binding.toolbar.isVisible = false
     }
+
+
+
 }

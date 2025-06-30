@@ -1,5 +1,6 @@
 package com.example.myapplication.base
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -52,9 +53,7 @@ class TouchOptModel : ViewModel() {
 
     private val _touchType = MutableStateFlow(NORMAL_TYPE)
     val touchType = _touchType as Flow<Int>
-
     private val _touchCoordinate = MutableStateFlow<ICoordinate?>(null)
-
     public val nowPoint = MutableStateFlow(CoordinatePoint(0,0))
     fun updateICoordinate(datae: ICoordinate) {
         _touchCoordinate.value = datae
@@ -125,24 +124,44 @@ class TouchOptModel : ViewModel() {
                 })
         }
 
-    suspend fun selectPictureFirst(fragment: Fragment): String? =
+    suspend fun selectPictureFirst(context: Activity): String? =
         suspendCancellableCoroutine { continuation ->
-            PictureSelector.create(fragment).openSystemGallery(SelectMimeType.ofImage())
-                .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
-                    override fun onResult(result: ArrayList<LocalMedia?>?) {
-                        L.i(TAG, "onResult")
-                        continuation.resume(result?.getOrNull(0)?.realPath)
-                    }
+            // 添加协程取消时的清理逻辑
+            continuation.invokeOnCancellation {
+                L.i(TAG, "Picture selection was cancelled by the coroutine")
+            }
 
-                    override fun onCancel() {
-                        L.i(TAG, "onCancel")
-                        continuation.resume(null) // 返回结果
-                    }
-                })
+            try {
+                PictureSelector.create(context)
+                    .openSystemGallery(SelectMimeType.ofImage())
+                    .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
+                        override fun onResult(result: ArrayList<LocalMedia?>?) {
+                            if (continuation.isActive) {
+                                L.i(TAG, "Picture selection completed successfully")
+                                val path = result?.firstOrNull()?.realPath
+                                if (path != null) {
+                                    L.d(TAG, "Selected picture path: $path")
+                                } else {
+                                    L.w(TAG, "No picture was selected or path was null")
+                                }
+                                continuation.resume(path)
+                            }
+                        }
+
+                        override fun onCancel() {
+                            if (continuation.isActive) {
+                                L.i(TAG, "Picture selection was cancelled by user")
+                                continuation.resume(null)
+                            }
+                        }
+                    })
+            } catch (e: Exception) {
+                L.e(TAG, "Error in picture selection $e")
+                if (continuation.isActive) {
+                    continuation.resume(null)
+                }
+            }
         }
-
-
-
 
 
 }

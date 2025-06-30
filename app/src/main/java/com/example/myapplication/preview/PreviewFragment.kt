@@ -1,39 +1,66 @@
 package com.example.myapplication.preview
 
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.core.graphics.get
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.myapplication.R
+import com.example.myapplication.base.NavigationContainerActivity2
 import com.example.myapplication.base.TouchOptModel
 import com.example.myapplication.databinding.FragmentPreviewBinding
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.config.SelectMimeType
+import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.nwq.base.BaseFragment
+import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseobj.PreviewCoordinateData
 import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
+import com.nwq.loguitls.L
 import com.nwq.simplelist.TextAdapter
 import com.nwq.simplelist.TextWarp
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import java.util.concurrent.CancellationException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
-class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
+class PreviewFragment : BaseToolBar2Fragment<FragmentPreviewBinding>() {
 
     private val viewModel: PreviewViewModel by viewModels({ requireActivity() })
-    private val touchOptModel: TouchOptModel by viewModels({ requireActivity() })
     private lateinit var mTextAdapter: TextAdapter<PreviewOptItem>
-    override fun createBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ): FragmentPreviewBinding {
-        return FragmentPreviewBinding.inflate(inflater, container, false)
+    private val TAG = "PreviewFragment"
+
+    override fun createBinding(inflater: LayoutInflater): FragmentPreviewBinding {
+        return FragmentPreviewBinding.inflate(inflater)
+    }
+
+    override fun getMenuRes(): Int {
+        return R.menu.menu_list_edit
+    }
+
+    override fun onMenuItemClick(menuItem: MenuItem): Boolean {
+        return true
+    }
+
+    override fun onBackPress(): Boolean {
+        return false
     }
 
     override fun initData() {
@@ -49,7 +76,6 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
         } else {
             3 // 竖屏设置为3
         }
-
         val dataList = list.map {
             TextWarp<PreviewOptItem>(it) {
                 getString(it.resStr)
@@ -82,7 +108,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
         viewModel.initBitMap()
 
         lifecycleScope.launch {
-            touchOptModel.nowPoint.collectLatest {
+            binding.previewCoordinateView.nowPoint.collectLatest {
                 val bitmap = viewModel.mBitmap.value ?: return@collectLatest
                 val color = bitmap[it.x, it.y]
                 // opts.outConfig = Bitmap.Config.ARGB_8888
@@ -99,54 +125,90 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
         binding.previewCoordinateView.updateList(list)
     }
 
+    private fun selectPicture() {
+        L.i(TAG, "selectPicture")
+        PictureSelector.create(requireActivity()).openSystemGallery(SelectMimeType.ofImage())
+            .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
+                override fun onResult(result: ArrayList<LocalMedia?>?) {
+                    L.i(TAG, "onResult")
+                    result?.getOrNull(0)?.let {
+                        val opts = BitmapFactory.Options()
+                        opts.outConfig = Bitmap.Config.ARGB_8888
+                        opts.inMutable = true
+                        BitmapFactory.decodeFile(it.realPath, opts)?.let {
+                            viewModel.mBitmap.tryEmit(it)
+                        }
+                        viewModel.path = it.realPath
+                        viewModel.type = MatUtils.REAL_PATH_TYPE
+                    }
+                }
+
+                override fun onCancel() {
+                    L.i(TAG, "onCancel")
+                }
+            })
+    }
+
+
     private fun onOpt(data: PreviewOptItem) {
         when (data.type) {
             TouchOptModel.FULL_SCREEN -> {
-                touchOptModel.fullScreen()
+                val ac = requireActivity()
+               if (ac is NavigationContainerActivity2) {
+                    ac.fullScreen()
+                }
             }
 
             TouchOptModel.SELECT_PICTURE -> {
-                lifecycleScope.launch {
-                    val path = touchOptModel.selectPictureFirst(this@PreviewFragment)
-                    path?.let {
-                        FileUtils.readBitmapFromRealPath(path)?.let { bitmap ->
-                            viewModel.path = path
-                            viewModel.type = MatUtils.REAL_PATH_TYPE
-                            viewModel.mBitmap.tryEmit(bitmap)
-                        }
-                    }
-                }
+                selectPicture()
+//                lifecycleScope.launch {
+//                    val path = touchOptModel.selectPictureFirst(requireActivity())
+//                    Log.i(TAG, "onOpt: $path")
+//                    path?.let {
+//                        FileUtils.readBitmapFromRealPath(path)?.let { bitmap ->
+//                            viewModel.path = path
+//                            viewModel.type = MatUtils.REAL_PATH_TYPE
+//                            viewModel.mBitmap.tryEmit(bitmap)
+//                        }
+//                    }
+
             }
 
             TouchOptModel.RECT_AREA_TYPE -> {
                 lifecycleScope.launch {
-                    data.coordinate = touchOptModel.getRectArea()
+                    binding.recyclerView.isVisible  = false
+                    data.coordinate = binding.previewCoordinateView.getRectArea()
                     updatePreviewList()
+                    binding.recyclerView.isVisible  = true
                 }
             }
 
             TouchOptModel.CIRCLE_AREA_TYPE -> {
                 lifecycleScope.launch {
-                    data.coordinate = touchOptModel.getCircleArea()
+                    binding.recyclerView.isVisible  = false
+                    data.coordinate = binding.previewCoordinateView.getCircleArea()
                     updatePreviewList()
+                    binding.recyclerView.isVisible  = true
                 }
             }
 
             TouchOptModel.SINGLE_CLICK_TYPE -> {
-                binding.draggableTextView.isVisible = true
-
-
                 lifecycleScope.launch {
-                    data.coordinate = touchOptModel.getPoint()
+                    binding.draggableTextView.isVisible = true
+                    binding.recyclerView.isVisible  = false
+                    data.coordinate = binding.previewCoordinateView.getPoint()
                     updatePreviewList()
                     binding.draggableTextView.isVisible = false
+                    binding.recyclerView.isVisible  = true
                 }
             }
 
             TouchOptModel.MEASURE_DISTANCE_TYPE -> {
                 lifecycleScope.launch {
-                    data.coordinate = touchOptModel.measureDistance()
+                    binding.recyclerView.isVisible  = false
+                    data.coordinate = binding.previewCoordinateView.measureDistance()
                     updatePreviewList()
+                    binding.recyclerView.isVisible  = true
                 }
             }
 
@@ -156,4 +218,9 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>() {
         }
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i(TAG, "onDestroy: ")
+    }
 }
