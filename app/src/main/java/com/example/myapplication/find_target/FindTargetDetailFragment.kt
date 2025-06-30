@@ -96,7 +96,8 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
 
 
     override fun onBackPress(): Boolean {
-        return false
+        requireActivity().finish()
+        return true
     }
 
     override fun initData() {
