@@ -19,6 +19,7 @@ import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
 import com.example.myapplication.R
+import com.nwq.callback.CallBack
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.opencv.IAutoRulePoint
 import com.nwq.opencv.auto_point_impl.CodeHsvRuleUtils
@@ -67,17 +68,17 @@ class AutoHsvRuleSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_select_all -> {
-              //  mTextAdapter.selectAll(true)
+                //  mTextAdapter.selectAll(true)
                 return true
             }
 
             R.id.action_delete_all -> {
-              //  mTextAdapter.selectAll(false)
+                //  mTextAdapter.selectAll(false)
                 return true
             }
 
             R.id.action_reverse_all -> {
-              //  mTextAdapter.selectReverse()
+                //  mTextAdapter.selectReverse()
                 return true
             }
         }
@@ -86,28 +87,31 @@ class AutoHsvRuleSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding
 
 
     override fun onBackPress(): Boolean {
-//        val selectedItems = mCheckTextAdapter.getSelectedItem()
-//        val result = Bundle().apply {
-//            putString(
-//                ConstantKeyStr.SELECTED_RESULT,
-//                selectedItems.map { it.getT().getTag() }.toTypedArray()
-//            )
-//        }
-//        parentFragmentManager.setFragmentResult(args.actionTag, result)
-        findNavController().popBackStack()
-        return true
+
+        return false
     }
 
     override fun initView() {
         super.initView()
-//        mCheckTextAdapter = CheckTextAdapter()
-//        binding.recycler.layoutManager =
-//            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-//        binding.recycler.adapter = mCheckTextAdapter
-//        binding.inputEdit.addTextChangedListener {
-//            val text = it?.toString() ?: ""
-//            updateSearchStr(text)
-//        }
+        mTextAdapter = TextAdapter(mCallBack = object : CallBack<IAutoRulePoint> {
+            override fun onCallBack(data: IAutoRulePoint) {
+                val result = Bundle().apply {
+                    putString(
+                        ConstantKeyStr.SELECTED_RESULT,
+                        data.getTag()
+                    )
+                }
+                parentFragmentManager.setFragmentResult(args.actionTag, result)
+                findNavController().popBackStack()
+            }
+        })
+        binding.recycler.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recycler.adapter = mTextAdapter
+        binding.inputEdit.addTextChangedListener {
+            val text = it?.toString() ?: ""
+            updateSearchStr(text)
+        }
     }
 
 
