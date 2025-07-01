@@ -2,13 +2,10 @@ package com.example.myapplication.auto_hsv_rule
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -17,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
-import com.example.myapplication.adapter.HsvRuleAdapter
 import com.example.myapplication.base.TouchOptModel
 import com.example.myapplication.databinding.FragmentAutoHsvRuleDetailBinding
 import com.example.myapplication.preview.PreviewOptItem
@@ -26,25 +22,17 @@ import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
-import com.nwq.base.BaseFragment
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinatePoint
-import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
-import com.nwq.baseutils.runOnIO
-import com.nwq.baseutils.runOnUI
-import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.loguitls.L
-import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.AutoRulePointEntity
-import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.opencv.hsv.HSVRule
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 
@@ -90,7 +78,7 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
             }
 
             R.id.action_add -> {
-                val dialog = ModifyHsvDialog(HSVRule(), getBitmap(), object : CallBack<HSVRule> {
+                val dialog = ModifyHsvDialog(HSVRule(), getSelectBitmap(), object : CallBack<HSVRule> {
                     override fun onCallBack(data: HSVRule) {
                         viewModel.addData(ICheckTextWrap<HSVRule>(data) {
                             it.toString()
@@ -175,7 +163,7 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
         mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<HSVRule> {
             override fun onCallBack(data: HSVRule) {
                 val dialog =
-                    ModifyHsvDialog(data, bitmap = mSelectBitmap, object : CallBack<HSVRule> {
+                    ModifyHsvDialog(data, bitmap = getSelectBitmap(), object : CallBack<HSVRule> {
                         override fun onCallBack(data: HSVRule) {
                             mCheckTextAdapter.notifyDataSetChanged()
                         }
@@ -196,10 +184,10 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
     }
 
 
-    private fun getBitmap(): Bitmap? {
+    private fun getSelectBitmap(): Bitmap? {
         if (mSelectBitmap != null)
             return mSelectBitmap
-        if (preViewModel.mBitmap == null) {
+        if (preViewModel.mBitmap != null) {
             val co = preViewModel.getCoordinate(key = R.string.select_critical_area)
             if (co != null && co is CoordinateArea) {
                 //根据区域队Bitmap进行裁剪
@@ -222,7 +210,7 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
             T.show("请选择规则")
         }
 
-        getBitmap()?.let { bitMap ->
+        getSelectBitmap()?.let { bitMap ->
             val mat = MatUtils.bitmapToHsvMat(bitMap)
             var lastMaskMat: Mat? = null
             rules.forEach {
@@ -252,21 +240,22 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
 
     //选择图片和关键区域
     private fun findArea() {
-        preViewModel.optList.clear();
-        preViewModel.optList.add(
-            PreviewOptItem(
-                key = R.string.select_critical_area,
-                type = TouchOptModel.RECT_AREA_TYPE,
-                color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red)
+        if (preViewModel.optList.isEmpty()){
+            preViewModel.optList.add(
+                PreviewOptItem(
+                    key = R.string.select_critical_area,
+                    type = TouchOptModel.RECT_AREA_TYPE,
+                    color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red)
+                )
             )
-        )
-        preViewModel.optList.add(
-            PreviewOptItem(
-                key = R.string.select_point_hsv,
-                type = TouchOptModel.SINGLE_CLICK_TYPE,
-                color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.black)
+            preViewModel.optList.add(
+                PreviewOptItem(
+                    key = R.string.select_point_hsv,
+                    type = TouchOptModel.SINGLE_CLICK_TYPE,
+                    color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.black)
+                )
             )
-        )
+        }
         mSelectBitmap = null
         findNavController().navigate(R.id.action_autoHsvRuleDetailFragment_to_nav_opt_preview)
     }
