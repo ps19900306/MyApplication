@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.nwq.base.BaseDialogFragment
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
@@ -20,25 +21,38 @@ import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.opencv.hsv.HSVRule
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 
-class ModifyHsvDialog(val defaultHsv: HSVRule= HSVRule(),val bitmap: Bitmap?=null, val callBack: CallBack<HSVRule>) :
+class ModifyHsvDialog(
+    val defaultHsv: HSVRule = HSVRule(),
+    val bitmap: Bitmap? = null,
+    val callBack: CallBack<HSVRule>
+) :
     BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
     private val TAG = ModifyHsvDialog::class.java.simpleName
-    private var nowHsv: MutableStateFlow<HSVRule> = MutableStateFlow(defaultHsv).apply {
-        debounce(1000)
-    }
+
     private val srcMat by lazy {
         if (bitmap != null) {
             MatUtils.bitmapToHsvMat(bitmap)
-        }else{
+        } else {
             null
         }
     }
+
+    private val updateSignalFlow: MutableStateFlow<Int> = MutableStateFlow(Int.MIN_VALUE)
+
+
+    private var minH: Int = defaultHsv.minH
+    private var maxH: Int = defaultHsv.maxH
+    private var minS: Int = defaultHsv.minS
+    private var maxS: Int = defaultHsv.maxS
+    private var minV: Int = defaultHsv.minV
+    private var maxV: Int = defaultHsv.maxV
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -47,6 +61,9 @@ class ModifyHsvDialog(val defaultHsv: HSVRule= HSVRule(),val bitmap: Bitmap?=nul
         return FragmentSetSHVFilterDialogBinding.inflate(inflater)
     }
 
+    private fun sendUpdateSignal(){
+        updateSignalFlow.value += 1
+    }
 
     override fun initData() {
         binding.etHueMin.setText("${defaultHsv.minH}")
@@ -63,64 +80,88 @@ class ModifyHsvDialog(val defaultHsv: HSVRule= HSVRule(),val bitmap: Bitmap?=nul
         binding.sbValueMin.progress = defaultHsv.minV
         binding.sbValueMax.progress = defaultHsv.maxV
         binding.saveBtn.singleClick {
-            callBack.onCallBack(nowHsv.value)
-            defaultHsv.minH = nowHsv.value.minH
-            defaultHsv.maxH = nowHsv.value.maxH
-            defaultHsv.minS = nowHsv.value.minS
-            defaultHsv.maxS = nowHsv.value.maxS
-            defaultHsv.minV = nowHsv.value.minV
-            defaultHsv.maxV = nowHsv.value.maxV
+            defaultHsv.minH = minH
+            defaultHsv.maxH = maxH
+            defaultHsv.minS = minS
+            defaultHsv.maxS = maxS
+            defaultHsv.minV = minV
+            defaultHsv.maxV = maxV
+            callBack.onCallBack(defaultHsv)
             dismissDialog()
         }
         binding.saveBtn.isVisible = true
         setupSeekBarAndEditText(R.id.sb_hue_min, R.id.et_hue_min, 0, 180)
         { i ->
-            nowHsv.value = HSVRule( i, nowHsv.value.maxH, nowHsv.value.minS, nowHsv.value.maxS, nowHsv.value.minV, nowHsv.value.maxV)
+            minH = i
+            sendUpdateSignal()
         }
         setupSeekBarAndEditText(R.id.sb_hue_max, R.id.et_hue_max, 0, 180)
         { i ->
-            nowHsv.value = HSVRule( nowHsv.value.minH, i, nowHsv.value.minS, nowHsv.value.maxS, nowHsv.value.minV, nowHsv.value.maxV)
+            maxH = i
+            sendUpdateSignal()
         }
         setupSeekBarAndEditText(
             R.id.sb_saturation_min,
             R.id.et_saturation_min,
             0,
             255,
-        ){i->
-            nowHsv.value = HSVRule( nowHsv.value.minH, nowHsv.value.maxH, i, nowHsv.value.maxS, nowHsv.value.minV, nowHsv.value.maxV)
+        ) { i ->
+            minS = i
+            sendUpdateSignal()
         }
         setupSeekBarAndEditText(
             R.id.sb_saturation_max,
             R.id.et_saturation_max,
             0,
             255,
-        ){i->
-            nowHsv.value = HSVRule( nowHsv.value.minH, defaultHsv.maxH, defaultHsv.minS, i, defaultHsv.minV, defaultHsv.maxV)
+        ) { i ->
+            maxS
+            sendUpdateSignal()
         }
         setupSeekBarAndEditText(
             R.id.sb_value_min,
             R.id.et_value_min,
             0,
             255,
-        ){i->
-            nowHsv.value = HSVRule( nowHsv.value.minH, nowHsv.value.maxH, nowHsv.value.minS, nowHsv.value.maxS, i, nowHsv.value.maxV)
+        ) { i ->
+            minV = i
+            sendUpdateSignal()
         }
         setupSeekBarAndEditText(
             R.id.sb_value_max,
             R.id.et_value_max,
             0,
             255,
-        ){
-            i->
-            nowHsv.value = HSVRule(nowHsv.value.minH, nowHsv.value.maxH, nowHsv.value.minS, nowHsv.value.maxS, nowHsv.value.minV, i)
+        ) { i ->
+            maxV = i
+            sendUpdateSignal()
         }
 
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                nowHsv.collectLatest {
-                    binding.recycler.adapter = ColorAdapter(HsvRuleUtils.getColorsList(it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV))
-                    srcMat?.let { mat->
-                        val maskMat = MatUtils.filterByHsv(mat, it.minH, it.maxH, it.minS, it.maxS, it.minV, it.maxV)
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                updateSignalFlow.collectLatest {
+                    delay(500)
+                    binding.recycler.adapter = ColorAdapter(
+                        HsvRuleUtils.getColorsList(
+                            minH,
+                            maxH,
+                            minS,
+                            maxS,
+                            minV,
+                            maxV
+                        )
+                    )
+
+                    srcMat?.let { mat ->
+                        val maskMat = MatUtils.filterByHsv(
+                            mat,
+                            minH,
+                            maxH,
+                            minS,
+                            maxS,
+                            minV,
+                            maxV
+                        )
                         val newBitmap = MatUtils.hsvMatToBitmap(maskMat)
                         binding.srcImg.setImageBitmap(newBitmap)
                     }
@@ -131,12 +172,11 @@ class ModifyHsvDialog(val defaultHsv: HSVRule= HSVRule(),val bitmap: Bitmap?=nul
 
         bitmap?.let {
             binding.srcImg.setImageBitmap(it)
-            binding.srcImg.isVisible =true
-            binding.saveBtn.isVisible =true
+            binding.srcImg.isVisible = true
+            binding.saveBtn.isVisible = true
         }
 
     }
-
 
 
     private fun setupSeekBarAndEditText(
