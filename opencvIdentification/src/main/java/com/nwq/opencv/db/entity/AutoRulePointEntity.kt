@@ -52,6 +52,10 @@ class AutoRulePointEntity() : IAutoRulePoint {
         return keyTag
     }
 
+    override fun getDescriptionInfo(): String {
+        return description
+    }
+
     @Ignore
     private var mSelected = false
 

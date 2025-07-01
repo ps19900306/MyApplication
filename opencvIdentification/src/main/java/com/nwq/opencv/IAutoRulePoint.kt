@@ -10,6 +10,8 @@ interface IAutoRulePoint {
 
     fun getTag(): String
 
+    fun getDescriptionInfo(): String
+
     fun boundaryMinDistance(): Int {
         return 0
     }

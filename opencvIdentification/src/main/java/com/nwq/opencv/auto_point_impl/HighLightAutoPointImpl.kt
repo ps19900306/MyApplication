@@ -10,6 +10,8 @@ import org.opencv.core.Point
 class HighLightAutoPointImpl() : IAutoRulePoint {
 
     private val tagStr: String = "高亮区域"
+    private val descriptionStr: String = "高亮区域"
+
     // 获取高亮区域
     private val mHighSvRule by lazy {
         val list = mutableListOf<HSVRule>()
@@ -48,9 +50,12 @@ class HighLightAutoPointImpl() : IAutoRulePoint {
                     it.maxV,
                     boundaryMinDistance(),
                 )
-            Log.i("AutoPointImpl", "minH:${it.minH}, maxH:${it.maxH}, minS:${it.minS}, maxS:${it.maxS}, minV:${it.minV}, maxV:${it.maxV}, list:${list.size}")
+            Log.i(
+                "AutoPointImpl",
+                "minH:${it.minH}, maxH:${it.maxH}, minS:${it.minS}, maxS:${it.maxS}, minV:${it.minV}, maxV:${it.maxV}, list:${list.size}"
+            )
             pointList.addAll(list)
-            if (pointList.size >= getMaxTakePointNumber()){
+            if (pointList.size >= getMaxTakePointNumber()) {
                 return pointList
             }
         }
@@ -67,9 +72,12 @@ class HighLightAutoPointImpl() : IAutoRulePoint {
                     it.maxV,
                     boundaryMinDistance(),
                 )
-            Log.i("AutoPointImpl", "minH:${it.minH}, maxH:${it.maxH}, minS:${it.minS}, maxS:${it.maxS}, minV:${it.minV}, maxV:${it.maxV}, list:${list.size}")
+            Log.i(
+                "AutoPointImpl",
+                "minH:${it.minH}, maxH:${it.maxH}, minS:${it.minS}, maxS:${it.maxS}, minV:${it.minV}, maxV:${it.maxV}, list:${list.size}"
+            )
             pointList.addAll(list)
-            if (pointList.size >= getMaxTakePointNumber()){
+            if (pointList.size >= getMaxTakePointNumber()) {
                 return pointList
             }
         }
@@ -78,6 +86,10 @@ class HighLightAutoPointImpl() : IAutoRulePoint {
 
     override fun getTag(): String {
         return tagStr
+    }
+
+    override fun getDescriptionInfo(): String {
+        return descriptionStr
     }
 
 

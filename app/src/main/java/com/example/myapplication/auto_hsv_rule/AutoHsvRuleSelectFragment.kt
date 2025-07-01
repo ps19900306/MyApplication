@@ -2,17 +2,16 @@ package com.example.myapplication.auto_hsv_rule
 
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.myapplication.AutoHsvRuleModel
 import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.opencv.db.entity.AutoRulePointEntity
@@ -21,17 +20,39 @@ import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
 import com.example.myapplication.R
 import com.nwq.constant.ConstantKeyStr
+import com.nwq.opencv.IAutoRulePoint
+import com.nwq.opencv.auto_point_impl.CodeHsvRuleUtils
+import com.nwq.opencv.db.IdentifyDatabase
+import com.nwq.opencv.hsv.HSVRule
+import com.nwq.simplelist.TextAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 
 /**
  *[AutoRulePointEntity]
  */
 class AutoHsvRuleSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
 
-
     private val args: AutoHsvRuleSelectFragmentArgs by navArgs()
-    private val viewModel: AutoHsvRuleModel by viewModels()
-    private lateinit var mCheckTextAdapter: CheckTextAdapter<AutoRulePointEntity>
+    private lateinit var mTextAdapter: TextAdapter<IAutoRulePoint>
+    private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
+    private val mAutoRulePointDao = IdentifyDatabase.getDatabase().autoRulePointDao()
 
+    // 合并查询逻辑
+    val resultsFlow = queryFlow.debounce(1000).flatMapLatest { query ->
+        if (query.isEmpty()) {
+            mAutoRulePointDao.findAll() // 如果输入为空，查询整个表
+        } else {
+            mAutoRulePointDao.findByKeyTagLike(query) // 如果输入不为空，进行模糊查询
+        }
+    }.flowOn(Dispatchers.IO)
+
+    fun updateSearchStr(string: String) {
+        queryFlow.value = string
+    }
 
     override fun createBinding(inflater: LayoutInflater): FragmentSearchListBinding {
         return FragmentSearchListBinding.inflate(inflater)
@@ -46,17 +67,17 @@ class AutoHsvRuleSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_select_all -> {
-                mCheckTextAdapter.selectAll(true)
+              //  mTextAdapter.selectAll(true)
                 return true
             }
 
             R.id.action_delete_all -> {
-                mCheckTextAdapter.selectAll(false)
+              //  mTextAdapter.selectAll(false)
                 return true
             }
 
             R.id.action_reverse_all -> {
-                mCheckTextAdapter.selectReverse()
+              //  mTextAdapter.selectReverse()
                 return true
             }
         }
@@ -65,28 +86,28 @@ class AutoHsvRuleSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding
 
 
     override fun onBackPress(): Boolean {
-        val selectedItems = mCheckTextAdapter.getSelectedItem()
-        val result = Bundle().apply {
-            putLongArray(
-                ConstantKeyStr.SELECTED_RESULT,
-                selectedItems.map { it.getT().id }.toLongArray()
-            )
-        }
-        parentFragmentManager.setFragmentResult(args.actionTag, result)
+//        val selectedItems = mCheckTextAdapter.getSelectedItem()
+//        val result = Bundle().apply {
+//            putString(
+//                ConstantKeyStr.SELECTED_RESULT,
+//                selectedItems.map { it.getT().getTag() }.toTypedArray()
+//            )
+//        }
+//        parentFragmentManager.setFragmentResult(args.actionTag, result)
         findNavController().popBackStack()
         return true
     }
 
     override fun initView() {
         super.initView()
-        mCheckTextAdapter = CheckTextAdapter()
-        binding.recycler.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.recycler.adapter = mCheckTextAdapter
-        binding.inputEdit.addTextChangedListener {
-            val text = it?.toString() ?: ""
-            viewModel.updateSearchStr(text)
-        }
+//        mCheckTextAdapter = CheckTextAdapter()
+//        binding.recycler.layoutManager =
+//            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+//        binding.recycler.adapter = mCheckTextAdapter
+//        binding.inputEdit.addTextChangedListener {
+//            val text = it?.toString() ?: ""
+//            updateSearchStr(text)
+//        }
     }
 
 
@@ -94,13 +115,30 @@ class AutoHsvRuleSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding
         super.initData()
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.resultsFlow.collect {
+                resultsFlow.collect {
                     val list = it.map { data ->
-                        ICheckTextWrap<AutoRulePointEntity>(data) {
+                        ICheckTextWrap<IAutoRulePoint>(data) {
                             "${data.keyTag}:详情:${data.description}"
                         }
+                    }.toMutableList()
+                    if (TextUtils.isEmpty(queryFlow.value)) {
+                        val list2 = CodeHsvRuleUtils.mAutoRulePointList.map { data ->
+                            ICheckTextWrap<IAutoRulePoint>(data) {
+                                "${data.getTag()}:详情:${data.getDescriptionInfo()}"
+                            }
+                        }
+                        list.addAll(0, list2)
+                    } else {
+                        val list2 = CodeHsvRuleUtils.mAutoRulePointList.filter { data ->
+                            data.getTag().contains(queryFlow.value)
+                        }.map { data ->
+                            ICheckTextWrap<IAutoRulePoint>(data) {
+                                "${data.getTag()}:详情:${data.getDescriptionInfo()}"
+                            }
+                        }
+                        list.addAll(0, list2)
                     }
-                    mCheckTextAdapter.upData(list)
+                    mTextAdapter.upData(list)
                 }
             }
         }

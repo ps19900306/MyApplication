@@ -26,6 +26,7 @@
         android:text="长按拖动我"
         android:textSize="18sp"
         android:padding="12dp"
+        android:visibility="gone"
         android:textColor="@color/black"
         android:background="#FFDDDD"
         android:layout_centerInParent="true"/>

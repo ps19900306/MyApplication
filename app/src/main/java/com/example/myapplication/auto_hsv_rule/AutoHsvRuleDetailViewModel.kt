@@ -1,7 +1,6 @@
 package com.example.myapplication.auto_hsv_rule
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.AutoRulePointEntity
@@ -10,9 +9,7 @@ import com.nwq.simplelist.ICheckText
 import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.serialization.descriptors.PrimitiveKind
 
 class AutoHsvRuleDetailViewModel : ViewModel() {
 
