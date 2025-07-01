@@ -26,7 +26,7 @@
 
     <string name="select_picture">选择图片</string>
     <string name="select_critical_area">选择关键区域</string>
-
+    <string name="select_point_hsv">选择点HSV</string>
     <string name="image_feature_extraction">图片特征提取</string>
     <string name="characters_feature_extraction">文字识别</string>
     <string name="all_feature_extraction">全点特征提取</string>

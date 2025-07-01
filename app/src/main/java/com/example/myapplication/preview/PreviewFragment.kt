@@ -25,6 +25,7 @@ import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.nwq.base.BaseFragment
 import com.nwq.base.BaseToolBar2Fragment
+import com.nwq.baseobj.ICoordinate
 import com.nwq.baseobj.PreviewCoordinateData
 import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
@@ -33,6 +34,7 @@ import com.nwq.callback.CallBack
 import com.nwq.loguitls.L
 import com.nwq.simplelist.TextAdapter
 import com.nwq.simplelist.TextWarp
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,6 +48,8 @@ class PreviewFragment : BaseToolBar2Fragment<FragmentPreviewBinding>() {
     private val viewModel: PreviewViewModel by viewModels({ requireActivity() })
     private lateinit var mTextAdapter: TextAdapter<PreviewOptItem>
     private val TAG = "PreviewFragment"
+
+    private val hashMap: MutableMap<Int, MutableStateFlow<ICoordinate>> = mutableMapOf()
 
     override fun createBinding(inflater: LayoutInflater): FragmentPreviewBinding {
         return FragmentPreviewBinding.inflate(inflater)
@@ -98,18 +102,10 @@ class PreviewFragment : BaseToolBar2Fragment<FragmentPreviewBinding>() {
         binding.recyclerView.adapter = mTextAdapter
         mTextAdapter.upData(dataList)
         updatePreviewList()
-        lifecycleScope.launch {
-            repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.RESUMED) {
-                viewModel.mBitmap.collectLatest {
-                    binding.imageView.setImageBitmap(it)
-                }
-            }
-        }
-        viewModel.initBitMap()
-
+        binding.imageView.setImageBitmap(viewModel.mBitmap)
         lifecycleScope.launch {
             binding.previewCoordinateView.nowPoint.collectLatest {
-                val bitmap = viewModel.mBitmap.value ?: return@collectLatest
+                val bitmap = viewModel.mBitmap ?: return@collectLatest
                 val color = bitmap[it.x, it.y]
                 // opts.outConfig = Bitmap.Config.ARGB_8888
                 binding.draggableTextView.setBackgroundColor(color)
@@ -126,90 +122,50 @@ class PreviewFragment : BaseToolBar2Fragment<FragmentPreviewBinding>() {
     }
 
 
-    private fun selectPicture() {
-        L.i(TAG, "selectPicture")
-        PictureSelector.create(requireActivity()).openSystemGallery(SelectMimeType.ofImage())
-            .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
-                override fun onResult(result: ArrayList<LocalMedia?>?) {
-                    L.i(TAG, "onResult")
-                    result?.getOrNull(0)?.let {
-                        val opts = BitmapFactory.Options()
-                        opts.outConfig = Bitmap.Config.ARGB_8888
-                        opts.inMutable = true
-                        BitmapFactory.decodeFile(it.realPath, opts)?.let {
-                            viewModel.mBitmap.tryEmit(it)
-                        }
-                        viewModel.path = it.realPath
-                        viewModel.type = MatUtils.REAL_PATH_TYPE
-                    }
-                }
-
-                override fun onCancel() {
-                    L.i(TAG, "onCancel")
-                }
-            })
-    }
-
-
     private fun onOpt(data: PreviewOptItem) {
         when (data.type) {
             TouchOptModel.FULL_SCREEN -> {
                 val ac = requireActivity()
-               if (ac is NavigationContainerActivity2) {
+                if (ac is NavigationContainerActivity2) {
                     ac.fullScreen()
                 }
             }
 
-            TouchOptModel.SELECT_PICTURE -> {
-                selectPicture()
-//                lifecycleScope.launch {
-//                    val path = touchOptModel.selectPictureFirst(requireActivity())
-//                    Log.i(TAG, "onOpt: $path")
-//                    path?.let {
-//                        FileUtils.readBitmapFromRealPath(path)?.let { bitmap ->
-//                            viewModel.path = path
-//                            viewModel.type = MatUtils.REAL_PATH_TYPE
-//                            viewModel.mBitmap.tryEmit(bitmap)
-//                        }
-//                    }
-
-            }
-
             TouchOptModel.RECT_AREA_TYPE -> {
                 lifecycleScope.launch {
-                    binding.recyclerView.isVisible  = false
+                    binding.recyclerView.isVisible = false
                     data.coordinate = binding.previewCoordinateView.getRectArea()
                     updatePreviewList()
-                    binding.recyclerView.isVisible  = true
+                    binding.recyclerView.isVisible = true
                 }
             }
 
             TouchOptModel.CIRCLE_AREA_TYPE -> {
                 lifecycleScope.launch {
-                    binding.recyclerView.isVisible  = false
+                    binding.recyclerView.isVisible = false
                     data.coordinate = binding.previewCoordinateView.getCircleArea()
                     updatePreviewList()
-                    binding.recyclerView.isVisible  = true
+                    binding.recyclerView.isVisible = true
                 }
             }
 
             TouchOptModel.SINGLE_CLICK_TYPE -> {
                 lifecycleScope.launch {
                     binding.draggableTextView.isVisible = true
-                    binding.recyclerView.isVisible  = false
+                    binding.recyclerView.isVisible = false
                     data.coordinate = binding.previewCoordinateView.getPoint()
                     updatePreviewList()
                     binding.draggableTextView.isVisible = false
-                    binding.recyclerView.isVisible  = true
+                    binding.recyclerView.isVisible = true
                 }
             }
 
             TouchOptModel.MEASURE_DISTANCE_TYPE -> {
                 lifecycleScope.launch {
-                    binding.recyclerView.isVisible  = false
+                    binding.recyclerView.isVisible = false
                     data.coordinate = binding.previewCoordinateView.measureDistance()
                     updatePreviewList()
-                    binding.recyclerView.isVisible  = true
+                    binding.recyclerView.isVisible = true
                 }
             }
 

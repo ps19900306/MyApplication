@@ -120,33 +120,32 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
     }
 
     private fun save() {
-        viewModel.save(preViewModel.path,preViewModel.type,preViewModel.getCoordinate(key = R.string.select_critical_area),preViewModel.getCoordinate(key = R.string.find_the_image_area))
-        viewModel.mBitmap= preViewModel.mBitmap.value
+//        viewModel.save(viewModel.path,viewModel.storageType,preViewModel.getCoordinate(key = R.string.select_critical_area),preViewModel.getCoordinate(key = R.string.find_the_image_area))
+//        viewModel.mBitmap= preViewModel.mBitmap
     }
 
     //选择图片和关键区域
     private fun findArea() {
-        preViewModel.optList.clear();
-        preViewModel.optList.add(
-            PreviewOptItem(
-                key = R.string.select_critical_area,
-                type = TouchOptModel.RECT_AREA_TYPE,
-                color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red)
-            )
-        )
-        preViewModel.optList.add(
-            PreviewOptItem(
-                key = R.string.find_the_image_area,
-                type = TouchOptModel.RECT_AREA_TYPE,
-                color = ContextCompat.getColor(
-                    requireContext(),
-                    com.nwq.baseutils.R.color.button_normal
+        if (preViewModel.optList.isEmpty()){
+            preViewModel.optList.add(
+                PreviewOptItem(
+                    key = R.string.select_critical_area,
+                    type = TouchOptModel.RECT_AREA_TYPE,
+                    color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red)
                 )
             )
-        )
-        preViewModel.path = viewModel.path
-        preViewModel.type = viewModel.storageType
-        preViewModel.mBitmap.tryEmit(viewModel.mBitmap)
+            preViewModel.optList.add(
+                PreviewOptItem(
+                    key = R.string.find_the_image_area,
+                    type = TouchOptModel.RECT_AREA_TYPE,
+                    color = ContextCompat.getColor(
+                        requireContext(),
+                        com.nwq.baseutils.R.color.button_normal
+                    )
+                )
+            )
+        }
+        preViewModel.mBitmap=viewModel.mBitmap
         findNavController().navigate(R.id.action_findTargetDetailFragment_to_nav_opt_preview)
     }
 

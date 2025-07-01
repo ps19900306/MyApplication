@@ -62,8 +62,20 @@ class CheckTextAdapter<T>(
         return removedItems
     }
 
+    public fun removeSelectAndGet2(): List<ICheckText<T>> {
+        if (list.isNullOrEmpty()) {
+            return emptyList()
+        }
+        val remainingItems = list.filter {!it.isCheckStatus()}
+        return remainingItems
+    }
 
 
+
+    public fun  addData(item: ICheckText<T>) {
+        list.add(item)
+        notifyItemInserted(list.size - 1)
+    }
 
     public fun upData(list: List<ICheckText<T>>) {
         this.list.clear()

@@ -183,7 +183,7 @@ object MatUtils {
         return filterByMask(srcMat, maskMat)
     }
 
-    fun filterByMask(srcMat: Mat, maskMat: Mat): Mat{
+    fun filterByMask(srcMat: Mat, maskMat: Mat): Mat {
         // 将掩码Mat对象转换为三通道，以便与源图像兼容
         val maskMat3Channel = Mat()
         Imgproc.cvtColor(maskMat, maskMat3Channel, Imgproc.COLOR_GRAY2BGR)
@@ -601,5 +601,10 @@ object MatUtils {
 
         // 返回计算出的平均背景图像
         return background
+    }
+
+    fun getHsv(hsvMat: Mat, x: Int, y: Int): DoubleArray? {
+        val array = hsvMat.get(y, x)
+        return array
     }
 }

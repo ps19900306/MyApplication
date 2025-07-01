@@ -17,16 +17,13 @@ class PreviewViewModel : ViewModel() {
 //    public val optList: MutableStateFlow<List<PreviewOptItem>?> = MutableStateFlow(null)
 
     public val optList: MutableList<PreviewOptItem> = mutableListOf()
-
-    public var path: String? = null
-    public var type = MatUtils.STORAGE_ASSET_TYPE
-    public var mBitmap: MutableStateFlow<Bitmap?> = MutableStateFlow(null)
+    public var mBitmap: Bitmap? = null
 
     private var mMat: Mat? = null
-    public fun getSrcMat():Mat?{
-        if (mMat == null)
+    public fun getSrcMat(): Mat? {
+        if (mMat != null)
             return mMat
-        mBitmap.value?.let {
+        mBitmap?.let {
             mMat = MatUtils.bitmapToHsvMat(it)
         }
         return mMat
@@ -42,11 +39,6 @@ class PreviewViewModel : ViewModel() {
         PreviewOptItem(R.string.select_picture, TouchOptModel.SELECT_PICTURE),
     )
 
-    public fun initBitMap() {
-        if (mBitmap.value == null) {
-            mBitmap.tryEmit(FileUtils.getBitmapByType(path, type))
-        }
-    }
 
 
 }

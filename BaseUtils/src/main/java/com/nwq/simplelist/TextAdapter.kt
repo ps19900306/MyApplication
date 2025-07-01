@@ -99,7 +99,7 @@ class TextAdapter<T>(
                     val temp = mSelectPosition
                     mSelectPosition = position
                     notifyItemChanged(temp) // 通知旧选中项刷新
-                    itemView.rootView.setBackgroundResource(selectBgRes) // 设置当前为选中状态背景
+                    itemView.setBackgroundResource(selectBgRes) // 设置当前为选中状态背景
                 }
 
                 // 回调选中的数据对象
@@ -122,9 +122,9 @@ class TextAdapter<T>(
             position = p
             // 根据是否选中设置背景
             if (mSelectPosition == p) {
-                itemView.rootView.setBackgroundResource(selectBgRes)
+                itemView.setBackgroundResource(selectBgRes)
             } else {
-                itemView.rootView.setBackgroundResource(normalBgRes)
+                itemView.setBackgroundResource(normalBgRes)
             }
             bindView?.onCallBack(itemView, item.getT())
         }
