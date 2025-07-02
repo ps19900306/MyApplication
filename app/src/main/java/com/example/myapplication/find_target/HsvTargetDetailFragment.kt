@@ -55,7 +55,7 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
             }
 
             R.id.action_create -> {
-                if (viewModel.mBitmap == null) {
+                if (viewModel.mSrcBitmap == null) {
                     T.show("图片为空")
                 } else if (viewModel.targetOriginalArea == null) {
                     T.show("请先选择区域")
@@ -121,8 +121,9 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
         parentFragment?.setFragmentResultListener(
             SELECT_HSV_RULE_TAG, // 这个 tag 要和 ClickSelectFragment 接收到的 args.actionTag 一致
             { requestKey, result ->
-                val selectedIds = result.getLongArray(ConstantKeyStr.SELECTED_RESULT)
-                selectedIds?.get(0)?.let { viewModel.updateHsvRule(it) }
+                result.getString(ConstantKeyStr.SELECTED_RESULT)?.let {keyTag->
+                    viewModel.updateHsvRule(keyTag)
+                }
             })
     }
 
@@ -131,6 +132,8 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
         viewModel.mFindTargetHsvEntity?.let { entity ->
             binding.infoTv.text =
                 "OriginalArea:${entity.targetOriginalArea}::findArea:${entity.findArea}::errorTolerance:${entity.errorTolerance}";
+        }?:let{
+            binding.infoTv.text = "还未设置"
         }
     }
 

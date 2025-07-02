@@ -159,7 +159,7 @@ class PreviewImageView @JvmOverloads constructor(
         areaList.forEach {
             if (it.isRound) {
                 canvas.drawCircle(
-                    it.xF, it.yF,
+                    it.x.toFloat(), it.y.toFloat(),
                     Math.min(
                         (it.x + it.width).toFloat(), (it.y + it.height).toFloat()
                     ),

@@ -22,6 +22,7 @@ import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.nwq.base.BaseToolBar2Fragment
+import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.singleClick
 import com.nwq.loguitls.L
@@ -48,12 +49,14 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         var flag = true
         when (menuItem.itemId) {
-            R.id.action_select_picture-> {
+            R.id.action_select_picture -> {
                 selectPicture()
             }
+
             R.id.action_save -> {
-                save()
+                viewModel.save()
             }
+
             R.id.action_area -> {
                 findArea()
             }
@@ -69,18 +72,32 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
         return flag
     }
 
+    override fun onResume() {
+        super.onResume()
+        preViewModel.optList.find { it.key == R.string.select_critical_area }?.coordinate?.let {
+            if (it is CoordinateArea)
+                viewModel.targetOriginalArea = it
+        }
+        preViewModel.optList.find { it.key == R.string.find_the_image_area }?.coordinate?.let {
+            if (it is CoordinateArea)
+                viewModel.findArea = it
+        }
+    }
+
+
     private fun selectPicture() {
         L.i(TAG, "selectPicture")
         PictureSelector.create(requireActivity()).openSystemGallery(SelectMimeType.ofImage())
             .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
                 override fun onResult(result: ArrayList<LocalMedia?>?) {
                     L.i(TAG, "onResult")
-                    result?.getOrNull(0)?.let {  localMedia->
+                    result?.getOrNull(0)?.let { localMedia ->
                         val opts = BitmapFactory.Options()
                         opts.outConfig = Bitmap.Config.ARGB_8888
                         opts.inMutable = true
                         BitmapFactory.decodeFile(localMedia.realPath, opts)?.let {
-                            viewModel.mBitmap = it
+                            viewModel.mSrcBitmap = it
+                            preViewModel.mBitmap = it
                             viewModel.path = localMedia.realPath
                             viewModel.storageType = MatUtils.REAL_PATH_TYPE
                         }
@@ -94,7 +111,6 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
     }
 
 
-
     override fun onBackPress(): Boolean {
         requireActivity().finish()
         return true
@@ -102,36 +118,46 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
 
     override fun initData() {
         super.initData()
-        lifecycleScope.launch {
-            viewModel.init(args.targetId)
-        }
+
+        viewModel.init(args.targetId);
+
         binding.hsvBgView.singleClick {
-            findNavController().navigate(R.id.action_findTargetDetailFragment_to_hsvTargetDetailFragment,HsvTargetDetailFragmentArgs(args.bigTitle).toBundle())
+            findNavController().navigate(
+                R.id.action_findTargetDetailFragment_to_hsvTargetDetailFragment,
+                HsvTargetDetailFragmentArgs(args.bigTitle).toBundle()
+            )
         }
         binding.rgbBgView.singleClick {
-            findNavController().navigate(R.id.action_findTargetDetailFragment_to_rgbTargetDetailFragment,RgbTargetDetailFragmentArgs(args.bigTitle).toBundle())
+            findNavController().navigate(
+                R.id.action_findTargetDetailFragment_to_rgbTargetDetailFragment,
+                RgbTargetDetailFragmentArgs(args.bigTitle).toBundle()
+            )
         }
         binding.imgBgView.singleClick {
-            findNavController().navigate(R.id.action_findTargetDetailFragment_to_imgTargetDetailFragment,ImgTargetDetailFragmentArgs(args.bigTitle).toBundle())
+            findNavController().navigate(
+                R.id.action_findTargetDetailFragment_to_imgTargetDetailFragment,
+                ImgTargetDetailFragmentArgs(args.bigTitle).toBundle()
+            )
         }
         binding.matBgView.singleClick {
-            findNavController().navigate(R.id.action_findTargetDetailFragment_to_MatTargetDetailFragment,MatTargetDetailFragmentArgs(args.bigTitle).toBundle())
+            findNavController().navigate(
+                R.id.action_findTargetDetailFragment_to_MatTargetDetailFragment,
+                MatTargetDetailFragmentArgs(args.bigTitle).toBundle()
+            )
         }
     }
 
-    private fun save() {
-//        viewModel.save(viewModel.path,viewModel.storageType,preViewModel.getCoordinate(key = R.string.select_critical_area),preViewModel.getCoordinate(key = R.string.find_the_image_area))
-//        viewModel.mBitmap= preViewModel.mBitmap
-    }
+
 
     //选择图片和关键区域
     private fun findArea() {
-        if (preViewModel.optList.isEmpty()){
+        if (preViewModel.optList.isEmpty()) {
             preViewModel.optList.add(
                 PreviewOptItem(
                     key = R.string.select_critical_area,
                     type = TouchOptModel.RECT_AREA_TYPE,
-                    color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red)
+                    color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
+                    coordinate = viewModel.targetOriginalArea
                 )
             )
             preViewModel.optList.add(
@@ -141,11 +167,12 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
                     color = ContextCompat.getColor(
                         requireContext(),
                         com.nwq.baseutils.R.color.button_normal
-                    )
+                    ),
+                    coordinate = viewModel.findArea
                 )
             )
         }
-        preViewModel.mBitmap=viewModel.mBitmap
+        preViewModel.mBitmap = viewModel.mSrcBitmap
         findNavController().navigate(R.id.action_findTargetDetailFragment_to_nav_opt_preview)
     }
 

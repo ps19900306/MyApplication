@@ -5,4 +5,6 @@ data class CoordinateLine(
     var endP: CoordinatePoint,
     var distance: Int = 1
 ):ICoordinate {
+
+
 }

@@ -1,8 +1,6 @@
 package com.example.myapplication.find_target
 
 import android.graphics.Bitmap
-import android.text.TextUtils
-import android.util.Log
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
@@ -14,7 +12,6 @@ import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.opencv.IAutoRulePoint
-import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.FindTargetHsvEntity
 import com.nwq.opencv.db.entity.FindTargetImgEntity
@@ -30,6 +27,7 @@ import org.opencv.core.Point
 import androidx.core.graphics.get
 import com.nwq.baseutils.MaskUtils
 import com.nwq.loguitls.L
+import com.nwq.opencv.auto_point_impl.CodeHsvRuleUtils
 import com.nwq.opencv.db.entity.ImageDescriptorEntity
 import org.opencv.core.Mat
 import org.opencv.core.MatOfKeyPoint
@@ -60,10 +58,10 @@ class FindTargetDetailModel : ViewModel() {
     //所有的必须一致  如果需要重新生成需要清除掉原有数据
     //进行生成时候选的区域
     var targetOriginalArea: CoordinateArea? = null
-    var autoRulePoint: IAutoRulePoint? = null
+    var autoRulePoint: IAutoRulePoint? = CodeHsvRuleUtils.mAutoRulePointList[0]
     var path: String? = null
     var storageType: Int = MatUtils.STORAGE_ASSET_TYPE
-    var mBitmap: Bitmap? = null
+    var mSrcBitmap: Bitmap? = null //这个是原始的整个屏幕的图
 
 
     private val mTargetRecordDao = IdentifyDatabase.getDatabase().findTargetRecordDao()
@@ -73,16 +71,20 @@ class FindTargetDetailModel : ViewModel() {
     private val mTargetMatDao = IdentifyDatabase.getDatabase().findTargetMatDao()
 
 
-    public suspend fun init(targetId: Long) {
-        return withContext(Dispatchers.IO) {
-            mFindTargetRecord = mTargetRecordDao.findById(targetId)
-            path = mFindTargetRecord?.path
-            storageType = mFindTargetRecord?.storageType ?: MatUtils.REAL_PATH_TYPE
-            mFindTargetHsvEntity = mTargetHsvDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
-            mFindTargetRgbEntity = mTargetRgbDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
-            mFindTargetImgEntity = mTargetImgDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
-            mFindTargetMatEntity = mTargetMatDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
-            mBitmap = FileUtils.getBitmapByType(path, storageType)
+    public  fun init(targetId: Long) {
+        if (mFindTargetRecord == null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                mFindTargetRecord = mTargetRecordDao.findById(targetId)
+                path = mFindTargetRecord?.path
+                storageType = mFindTargetRecord?.storageType ?: MatUtils.REAL_PATH_TYPE
+                mFindTargetHsvEntity = mTargetHsvDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
+                mFindTargetRgbEntity = mTargetRgbDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
+                mFindTargetImgEntity = mTargetImgDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
+                mFindTargetMatEntity = mTargetMatDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
+                mSrcBitmap = FileUtils.getBitmapByType(path, storageType)
+                targetOriginalArea = mFindTargetRecord?.targetOriginalArea
+                findArea = mFindTargetRecord?.findArea
+            }
         }
     }
 
@@ -99,32 +101,33 @@ class FindTargetDetailModel : ViewModel() {
         }
     }
 
-    fun save(path: String?, type: Int, originalArea: ICoordinate?, findArea: ICoordinate?) {
-        this.path = path
-        this.storageType = type
-        originalArea?.let { targetOriginalArea = it as CoordinateArea }
-        findArea?.let { this.findArea = it as CoordinateArea }
+    fun save() {
+        mFindTargetRecord?.targetOriginalArea = targetOriginalArea
+        mFindTargetRecord?.findArea = findArea
         mFindTargetRecord?.path = path ?: "";
-        mFindTargetRecord?.storageType = type
+        mFindTargetRecord?.storageType = storageType
         viewModelScope.launch(Dispatchers.IO) {
             mTargetRecordDao.update(mFindTargetRecord!!)
         }
-
     }
 
-    fun updateHsvRule(it: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            autoRulePoint = IdentifyDatabase.getDatabase().autoRulePointDao().findByKeyId(it)
+    fun updateHsvRule(keyTagStr: String) {
+        autoRulePoint = CodeHsvRuleUtils.mAutoRulePointList.find { it.getTag() == keyTagStr }
+        if (autoRulePoint == null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                autoRulePoint =
+                    IdentifyDatabase.getDatabase().autoRulePointDao().findByKeyTag(keyTagStr)
+            }
         }
     }
 
 
     fun performAutoFindRule(hsv: Boolean, rgb: Boolean) {
         viewModelScope.launch {
-            val sMat = MatUtils.bitmapToMat(mBitmap!!, targetOriginalArea)
+            val sMat = MatUtils.bitmapToMat(mSrcBitmap!!, targetOriginalArea)
             val keyPointList = autoRulePoint!!.autoPoint(sMat)
             if (hsv) {
-                buildRgbFindTarget(mBitmap!!, targetOriginalArea!!, keyPointList)
+                buildRgbFindTarget(mSrcBitmap!!, targetOriginalArea!!, keyPointList)
             }
             if (rgb) {
                 buildHsvFindTarget(sMat, targetOriginalArea!!, keyPointList)

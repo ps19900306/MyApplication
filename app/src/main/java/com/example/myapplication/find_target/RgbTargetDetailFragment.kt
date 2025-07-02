@@ -1,18 +1,12 @@
 package com.example.myapplication.find_target
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
 import com.example.myapplication.auto_hsv_rule.AutoHsvRuleSelectFragmentArgs
-import com.example.myapplication.auto_hsv_rule.ModifyHsvDialog
-import com.example.myapplication.databinding.FragmentHsvTargetDetailBinding
 import com.example.myapplication.databinding.FragmentRgbTargetDetailBinding
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseutils.T
@@ -20,8 +14,6 @@ import com.nwq.callback.CallBack
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.dialog.SimpleInputDialog
 import com.nwq.dialog.SimpleTipsDialog
-import com.nwq.opencv.hsv.HSVRule
-import com.nwq.opencv.hsv.PointHSVRule
 import com.nwq.opencv.rgb.PointRule
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
@@ -59,7 +51,7 @@ class RgbTargetDetailFragment : BaseToolBar2Fragment<FragmentRgbTargetDetailBind
             }
 
             R.id.action_create -> {
-                if (viewModel.mBitmap == null) {
+                if (viewModel.mSrcBitmap == null) {
                     T.show("图片为空")
                 } else if (viewModel.targetOriginalArea == null) {
                     T.show("请先选择区域")
@@ -123,8 +115,9 @@ class RgbTargetDetailFragment : BaseToolBar2Fragment<FragmentRgbTargetDetailBind
         parentFragment?.setFragmentResultListener(
             SELECT_HSV_RULE_TAG, // 这个 tag 要和 ClickSelectFragment 接收到的 args.actionTag 一致
             { requestKey, result ->
-                val selectedIds = result.getLongArray(ConstantKeyStr.SELECTED_RESULT)
-                selectedIds?.get(0)?.let { viewModel.updateHsvRule(it) }
+                result.getString(ConstantKeyStr.SELECTED_RESULT)?.let {keyTag->
+                    viewModel.updateHsvRule(keyTag)
+                }
             })
     }
 
@@ -133,6 +126,8 @@ class RgbTargetDetailFragment : BaseToolBar2Fragment<FragmentRgbTargetDetailBind
         viewModel.mFindTargetRgbEntity?.let { entity ->
             binding.infoTv.text =
                 "OriginalArea:${entity.targetOriginalArea}::findArea:${entity.findArea}::errorTolerance:${entity.errorTolerance}";
+        }?:let{
+            binding.infoTv.text = "还未设置"
         }
     }
 

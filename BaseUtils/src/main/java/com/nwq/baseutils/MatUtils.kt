@@ -359,6 +359,7 @@ object MatUtils {
 
 
     fun bitmapToMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
+
         // 创建一个 Mat 对象
         val mat = Mat()
         // 使用 OpenCV 的 Utils 类将 Bitmap 转换为 Mat

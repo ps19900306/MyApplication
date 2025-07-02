@@ -76,7 +76,7 @@ class PreviewCoordinateView @JvmOverloads constructor(
         Log.i(TAG, "drawArea: ${area.toString()}")
         if (area.isRound) {
             canvas.drawCircle(
-                area.xF, area.yF,
+                area.x.toFloat(), area.y.toFloat(),
                 Math.min(
                     (area.x + area.width).toFloat(), (area.y + area.height).toFloat()
                 ),
@@ -97,7 +97,7 @@ class PreviewCoordinateView @JvmOverloads constructor(
     private fun drawLine(canvas: Canvas, line: CoordinateLine, color: Int, size: Float) {
         oblongPaint.color = color
         oblongPaint.strokeWidth = size
-        canvas.drawLine(line.startP.xF, line.startP.yF, line.endP.xF, line.endP.yF, oblongPaint)
+        canvas.drawLine(line.startP.x.toFloat(), line.startP.y.toFloat(), line.endP.x.toFloat(), line.endP.y.toFloat(), oblongPaint)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -111,8 +111,8 @@ class PreviewCoordinateView @JvmOverloads constructor(
                 is CoordinatePoint -> {
                     drawPoint(
                         canvas,
-                        it.coordinate.xF,
-                        it.coordinate.yF,
+                        it.coordinate.x.toFloat(),
+                        it.coordinate.y.toFloat(),
                         it.color,
                         it.paintWith
                     )
