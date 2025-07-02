@@ -54,5 +54,7 @@ open class CoordinateArea() : ICoordinate {
         return "CoordinateArea(x=$x, y=$y, width=$width, height=$height, isRound=$isRound)"
     }
 
-
+    fun toStringSimple(): String {
+        return "(x=$x, y=$y, w=$width, h=$height, r=$isRound)"
+    }
 }

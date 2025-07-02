@@ -133,7 +133,7 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
     private fun updateInfo() {
         viewModel.mFindTargetHsvEntity?.let { entity ->
             binding.infoTv.text =
-                "OriginalArea:${entity.targetOriginalArea}::findArea:${entity.findArea}::errorTolerance:${entity.errorTolerance}";
+                "OriginalArea:${entity.targetOriginalArea.toStringSimple()}\nfindArea:${entity.findArea?.toStringSimple()}\nerrorTolerance:${entity.errorTolerance}";
         }?:let{
             binding.infoTv.text = "还未设置"
         }
