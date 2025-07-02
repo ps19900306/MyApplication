@@ -361,14 +361,14 @@ object MatUtils {
     fun bitmapToMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
 
         // 创建一个 Mat 对象
-        val mat = Mat()
+        var mat = Mat()
         // 使用 OpenCV 的 Utils 类将 Bitmap 转换为 Mat
         Utils.bitmapToMat(bitmap, mat)
         // 如果 Bitmap 是 ARGB_8888 格式，需要将其转换为 RGB 格式 去掉A通道
         if (bitmap.config == Bitmap.Config.ARGB_8888) {
             val rgbMat = Mat()
             Imgproc.cvtColor(mat, rgbMat, Imgproc.COLOR_RGBA2RGB)
-            return rgbMat
+            mat = rgbMat
         }
         return if (coordinateArea != null) {
             cropMat(mat, coordinateArea)

@@ -58,11 +58,12 @@ class RgbTargetDetailFragment : BaseToolBar2Fragment<FragmentRgbTargetDetailBind
                 } else if (viewModel.autoRulePoint == null) {
                     T.show("请先设置自动规则")
                 } else {
-                    SimpleTipsDialog(
-                        onClick = {
-                            viewModel.performAutoFindRule(true, it)
-                        }
-                    ).show(childFragmentManager, "SimpleTipsDialog")
+                    viewModel.performAutoFindRule(true, false)
+//                    SimpleTipsDialog(
+//                        onClick = {
+//                            viewModel.performAutoFindRule(true, it)
+//                        }
+//                    ).show(childFragmentManager, "SimpleTipsDialog")
                 }
             }
 

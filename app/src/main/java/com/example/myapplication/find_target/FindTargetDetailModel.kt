@@ -1,6 +1,7 @@
 package com.example.myapplication.find_target
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.opencv.core.Point
 import androidx.core.graphics.get
+import androidx.paging.LOG_TAG
 import com.nwq.baseutils.MaskUtils
 import com.nwq.loguitls.L
 import com.nwq.opencv.auto_point_impl.CodeHsvRuleUtils
@@ -71,7 +73,7 @@ class FindTargetDetailModel : ViewModel() {
     private val mTargetMatDao = IdentifyDatabase.getDatabase().findTargetMatDao()
 
 
-    public  fun init(targetId: Long) {
+    public fun init(targetId: Long) {
         if (mFindTargetRecord == null) {
             viewModelScope.launch(Dispatchers.IO) {
                 mFindTargetRecord = mTargetRecordDao.findById(targetId)
@@ -123,13 +125,17 @@ class FindTargetDetailModel : ViewModel() {
 
 
     fun performAutoFindRule(hsv: Boolean, rgb: Boolean) {
-        viewModelScope.launch {
+        Log.i(TAG, "width:${mSrcBitmap?.width} height:${mSrcBitmap?.height}")
+        Log.i(TAG, "findArea:${findArea?.toString()}")
+        Log.i(TAG, "targetOriginalArea:${targetOriginalArea?.toString()}")
+        viewModelScope.launch(Dispatchers.IO) {
             val sMat = MatUtils.bitmapToMat(mSrcBitmap!!, targetOriginalArea)
             val keyPointList = autoRulePoint!!.autoPoint(sMat)
-            if (hsv) {
+            Log.i(TAG, "keyPointList:${keyPointList.size}")
+            if (rgb) {
                 buildRgbFindTarget(mSrcBitmap!!, targetOriginalArea!!, keyPointList)
             }
-            if (rgb) {
+            if (hsv) {
                 buildHsvFindTarget(sMat, targetOriginalArea!!, keyPointList)
             }
             T.show("构建结束")

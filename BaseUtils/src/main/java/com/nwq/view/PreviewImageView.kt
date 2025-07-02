@@ -150,10 +150,10 @@ class PreviewImageView @JvmOverloads constructor(
             return
         }
         dotList.forEach {
-            canvas.drawCircle(it.xF, it.yF, dotSize, mDotPaint)
+            canvas.drawCircle(it.x.toFloat(), it.y.toFloat(), dotSize, mDotPaint)
         }
         watchDotList.forEach {
-            canvas.drawCircle(it.xF, it.yF, dotSize, mDotPaint)
+            canvas.drawCircle(it.x.toFloat(), it.y.toFloat(), dotSize, mDotPaint)
         }
 
         areaList.forEach {
@@ -176,11 +176,11 @@ class PreviewImageView @JvmOverloads constructor(
             }
         }
         lineList.forEach { line ->
-            canvas.drawLine(line.startP.xF, line.startP.yF, line.endP.xF, line.endP.yF, oblongPaint)
+            canvas.drawLine(line.startP.x.toFloat(), line.startP.y.toFloat(), line.endP.x.toFloat(), line.endP.y.toFloat(), oblongPaint)
         }
 
         oblongLine?.let { line ->
-            canvas.drawLine(line.startP.xF, line.startP.yF, line.endP.xF, line.endP.yF, oblongPaint)
+            canvas.drawLine(line.startP.x.toFloat(), line.startP.y.toFloat(), line.endP.x.toFloat(), line.endP.y.toFloat(), oblongPaint)
         }
 
         oblongArea?.let {

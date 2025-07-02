@@ -20,6 +20,7 @@ import com.nwq.opencv.hsv.HSVRule
 import com.nwq.opencv.hsv.PointHSVRule
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
+import kotlin.math.truncate
 
 
 /**
@@ -62,11 +63,12 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
                 } else if (viewModel.autoRulePoint == null) {
                     T.show("请先设置自动规则")
                 } else {
-                    SimpleTipsDialog(
-                        onClick = {
-                            viewModel.performAutoFindRule(true, it)
-                        }
-                    ).show(childFragmentManager, "SimpleTipsDialog")
+                    viewModel.performAutoFindRule(true, true)
+//                    SimpleTipsDialog(
+//                        onClick = {
+//                            viewModel.performAutoFindRule(true, it)
+//                        }
+//                    ).show(childFragmentManager, "SimpleTipsDialog")
                 }
             }
 
