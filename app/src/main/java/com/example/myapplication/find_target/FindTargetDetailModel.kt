@@ -166,6 +166,7 @@ class FindTargetDetailModel : ViewModel() {
             prList = list,
         )
         IdentifyDatabase.getDatabase().findTargetRgbDao().insert(data)
+        mFindTargetRgbEntity = mTargetRgbDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
         L.d(TAG, "buildRgbFindTarget")
     }
 
@@ -192,6 +193,7 @@ class FindTargetDetailModel : ViewModel() {
             prList = list
         )
         IdentifyDatabase.getDatabase().findTargetHsvDao().insert(data)
+        mFindTargetHsvEntity = mTargetHsvDao.findByKeyTag(mFindTargetRecord?.keyTag ?: "")
         L.d(TAG, "buildRgbFindTarget")
     }
 
