@@ -60,5 +60,7 @@ open class HSVRule(
         return "HSVRule(minH=$minH, maxH=$maxH, minS=$minS, maxS=$maxS, minV=$minV, maxV=$maxV)"
     }
 
-
+    fun toStringSimple(): String {
+        return "HSVRule(nH=$minH, xH=$maxH, nS=$minS, xS=$maxS, nV=$minV, xV=$maxV)"
+    }
 }

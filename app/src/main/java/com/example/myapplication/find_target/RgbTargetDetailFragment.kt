@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
 import com.example.myapplication.auto_hsv_rule.AutoHsvRuleSelectFragmentArgs
@@ -17,6 +18,7 @@ import com.nwq.dialog.SimpleTipsDialog
 import com.nwq.opencv.rgb.PointRule
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
+import kotlinx.coroutines.launch
 
 /**
  * A simple [com.nwq.opencv.db.entity.FindTargetRgbEntity] 的预览.
@@ -58,7 +60,10 @@ class RgbTargetDetailFragment : BaseToolBar2Fragment<FragmentRgbTargetDetailBind
                 } else if (viewModel.autoRulePoint == null) {
                     T.show("请先设置自动规则")
                 } else {
-                    viewModel.performAutoFindRule(true, false)
+                    lifecycleScope.launch{
+                        viewModel.performAutoFindRule(false,true )
+                    }
+
 //                    SimpleTipsDialog(
 //                        onClick = {
 //                            viewModel.performAutoFindRule(true, it)

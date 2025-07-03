@@ -3,7 +3,9 @@ package com.nwq.opencv.db.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.nwq.opencv.db.entity.FindTargetHsvEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -20,8 +22,15 @@ interface FindTargetHsvDao {
     @Delete
     fun delete(entity: FindTargetHsvEntity)
 
+    @Query("DELETE FROM find_target_hsv WHERE keyTag = :keyTag")
+    fun deleteByKeyTag(keyTag: String)
+
+    @Update
+    fun update(entity: FindTargetHsvEntity)
+
+
     // 插入新的实体
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(entity: FindTargetHsvEntity)
 
     // 清空表

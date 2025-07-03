@@ -1,18 +1,25 @@
 package com.example.myapplication.find_target
 
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.adapter.ColorAdapter
 import com.example.myapplication.auto_hsv_rule.AutoHsvRuleSelectFragmentArgs
 import com.example.myapplication.auto_hsv_rule.ModifyHsvDialog
 import com.example.myapplication.databinding.FragmentHsvTargetDetailBinding
 import com.nwq.base.BaseToolBar2Fragment
+import com.nwq.baseutils.HsvRuleUtils
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
+import com.nwq.callback.CallBack2
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.dialog.SimpleInputDialog
 import com.nwq.dialog.SimpleTipsDialog
@@ -20,6 +27,7 @@ import com.nwq.opencv.hsv.HSVRule
 import com.nwq.opencv.hsv.PointHSVRule
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
+import kotlinx.coroutines.launch
 import kotlin.math.truncate
 
 
@@ -63,7 +71,11 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
                 } else if (viewModel.autoRulePoint == null) {
                     T.show("请先设置自动规则")
                 } else {
-                    viewModel.performAutoFindRule(true, true)
+                    lifecycleScope.launch {
+                        viewModel.performAutoFindRule(true, false)
+                        Log.i("FindTargetDetailModel", "launch结束")
+                        updateInfo()
+                    }
 //                    SimpleTipsDialog(
 //                        onClick = {
 //                            viewModel.performAutoFindRule(true, it)
@@ -98,32 +110,42 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
             override fun onCallBack(data: HSVRule) {
                 src.rule = data
             }
-        })
+        }).show(childFragmentManager, "ModifyHsvDialog")
     }
 
     override fun initData() {
         super.initData()
-        mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<PointHSVRule> {
-            override fun onCallBack(data: PointHSVRule) {
-                modifyHsv(data)
+        mCheckTextAdapter = CheckTextAdapter(
+            layoutId = R.layout.item_color_rule,
+            textId = R.id.tv,
+            mLongClick = object : CallBack<PointHSVRule> {
+                override fun onCallBack(data: PointHSVRule) {
+                    modifyHsv(data)
+                }
+            })
+        mCheckTextAdapter.setBindView(object : CallBack2<View, PointHSVRule> {
+            override fun onCallBack(data: View, data2: PointHSVRule) {
+                val recyclerView = data.findViewById<RecyclerView>(R.id.rv)
+                recyclerView.adapter = ColorAdapter(
+                    HsvRuleUtils.getColorsList(
+                        data2.rule.minH,
+                        data2.rule.maxH,
+                        data2.rule.minS,
+                        data2.rule.maxS,
+                        data2.rule.minV,
+                        data2.rule.maxV
+                    )
+                )
             }
         })
         binding.recyclerView.layoutManager =
             androidx.recyclerview.widget.LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = mCheckTextAdapter
-        viewModel.mFindTargetHsvEntity?.let { entity ->
-            val list = entity.prList.map { data ->
-                ICheckTextWrap<PointHSVRule>(data) {
-                    it.point.toString() + it.rule.toString()
-                }
-            }
-            mCheckTextAdapter.upData(list)
-        }
         updateInfo();
         parentFragment?.setFragmentResultListener(
             SELECT_HSV_RULE_TAG, // 这个 tag 要和 ClickSelectFragment 接收到的 args.actionTag 一致
             { requestKey, result ->
-                result.getString(ConstantKeyStr.SELECTED_RESULT)?.let {keyTag->
+                result.getString(ConstantKeyStr.SELECTED_RESULT)?.let { keyTag ->
                     viewModel.updateHsvRule(keyTag)
                 }
             })
@@ -132,9 +154,17 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
 
     private fun updateInfo() {
         viewModel.mFindTargetHsvEntity?.let { entity ->
+            val list = entity.prList.map { data ->
+                ICheckTextWrap<PointHSVRule>(data) {
+                    "${it.point.toString()}\n${it.rule.toStringSimple()}"
+                }
+            }
+            mCheckTextAdapter.upData(list)
+        }
+        viewModel.mFindTargetHsvEntity?.let { entity ->
             binding.infoTv.text =
                 "OriginalArea:${entity.targetOriginalArea.toStringSimple()}\nfindArea:${entity.findArea?.toStringSimple()}\nerrorTolerance:${entity.errorTolerance}";
-        }?:let{
+        } ?: let {
             binding.infoTv.text = "还未设置"
         }
     }

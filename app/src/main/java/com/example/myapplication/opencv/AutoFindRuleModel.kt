@@ -56,7 +56,7 @@ class AutoFindRuleModel : ViewModel() {
     public fun intBaseData(bitmap: Bitmap, area: CoordinateArea, sMat: Mat? = null) {
         srcBitmap = bitmap
         selectArea = area
-        selectMat = sMat ?: MatUtils.bitmapToMat(bitmap, area)
+        selectMat = sMat ?: MatUtils.bitmapToHsvMat(bitmap, area)
     }
 
 

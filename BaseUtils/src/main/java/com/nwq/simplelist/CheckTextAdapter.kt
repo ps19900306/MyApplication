@@ -46,33 +46,23 @@ class CheckTextAdapter<T>(
         if (list.isNullOrEmpty()) {
             return emptyList()
         }
-        val removedItems = mutableListOf<T>()
-        val remainingItems = list.filterTo(mutableListOf()) {
-            if (it.isCheckStatus()) {
-                removedItems.add(it.getT())
-                false
-            } else {
-                true
-            }
-        }
-
+        val remainingItems = list.filter { !it.isCheckStatus() }
         list.clear()
         list.addAll(remainingItems)
         notifyDataSetChanged()
-        return removedItems
+        return remainingItems.map { it.getT() }
     }
 
     public fun removeSelectAndGet2(): List<ICheckText<T>> {
         if (list.isNullOrEmpty()) {
             return emptyList()
         }
-        val remainingItems = list.filter {!it.isCheckStatus()}
+        val remainingItems = list.filter { !it.isCheckStatus() }
         return remainingItems
     }
 
 
-
-    public fun  addData(item: ICheckText<T>) {
+    public fun addData(item: ICheckText<T>) {
         list.add(item)
         notifyItemInserted(list.size - 1)
     }

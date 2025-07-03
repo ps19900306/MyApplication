@@ -64,7 +64,7 @@ class FindTargetDetailModel : ViewModel() {
     var path: String? = null
     var storageType: Int = MatUtils.STORAGE_ASSET_TYPE
     var mSrcBitmap: Bitmap? = null //这个是原始的整个屏幕的图
-
+    var mSelectBimap: Bitmap? = null//这个是选中区域的截图
 
     private val mTargetRecordDao = IdentifyDatabase.getDatabase().findTargetRecordDao()
     private val mTargetRgbDao = IdentifyDatabase.getDatabase().findTargetRgbDao()
@@ -124,12 +124,12 @@ class FindTargetDetailModel : ViewModel() {
     }
 
 
-    fun performAutoFindRule(hsv: Boolean, rgb: Boolean) {
+    suspend fun performAutoFindRule(hsv: Boolean, rgb: Boolean) {
         Log.i(TAG, "width:${mSrcBitmap?.width} height:${mSrcBitmap?.height}")
         Log.i(TAG, "findArea:${findArea?.toString()}")
         Log.i(TAG, "targetOriginalArea:${targetOriginalArea?.toString()}")
-        viewModelScope.launch(Dispatchers.IO) {
-            val sMat = MatUtils.bitmapToMat(mSrcBitmap!!, targetOriginalArea)
+        withContext(Dispatchers.IO) {
+            val sMat = MatUtils.bitmapToHsvMat(mSrcBitmap!!, targetOriginalArea)
             val keyPointList = autoRulePoint!!.autoPoint(sMat)
             Log.i(TAG, "keyPointList:${keyPointList.size}")
             if (rgb) {
@@ -138,8 +138,9 @@ class FindTargetDetailModel : ViewModel() {
             if (hsv) {
                 buildHsvFindTarget(sMat, targetOriginalArea!!, keyPointList)
             }
-            T.show("构建结束")
+            Log.i(TAG, "内部结束")
         }
+        Log.i(TAG, "外部结束")
     }
 
     private fun buildRgbFindTarget(
@@ -159,6 +160,9 @@ class FindTargetDetailModel : ViewModel() {
             )
             list.add(pointRule)
         }
+
+        IdentifyDatabase.getDatabase().findTargetRgbDao()
+            .deleteByKeyTag(mFindTargetRecord?.keyTag ?: "")
         val data = FindTargetRgbEntity(
             keyTag = mFindTargetRecord?.keyTag ?: "",
             targetOriginalArea = selectArea,
@@ -186,6 +190,8 @@ class FindTargetDetailModel : ViewModel() {
             )
             list.add(pointRule)
         }
+        IdentifyDatabase.getDatabase().findTargetHsvDao()
+            .deleteByKeyTag(mFindTargetRecord?.keyTag ?: "")
         val data = FindTargetHsvEntity(
             keyTag = mFindTargetRecord?.keyTag ?: "",
             targetOriginalArea = selectArea,
@@ -275,7 +281,7 @@ class FindTargetDetailModel : ViewModel() {
     fun saveHsvTarget() {
         mFindTargetHsvEntity?.let { entity ->
             viewModelScope.launch(Dispatchers.IO) {
-                mTargetHsvDao.insert(entity)
+                mTargetHsvDao.update(entity)
             }
         }
     }

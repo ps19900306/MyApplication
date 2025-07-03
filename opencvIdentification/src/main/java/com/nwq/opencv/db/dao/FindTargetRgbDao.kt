@@ -23,6 +23,8 @@ interface FindTargetRgbDao {
     @Insert
     fun insert(entity: FindTargetRgbEntity)
 
+    @Query("DELETE FROM find_target_rgb WHERE keyTag = :keyTag")
+    fun deleteByKeyTag(keyTag: String)
     // 清空表
     @Query("DELETE FROM find_target_rgb")
     fun deleteAll()
