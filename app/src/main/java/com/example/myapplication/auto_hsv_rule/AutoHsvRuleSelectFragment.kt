@@ -3,9 +3,11 @@ package com.example.myapplication.auto_hsv_rule
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -101,7 +103,8 @@ class AutoHsvRuleSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding
                         data.getTag()
                     )
                 }
-                parentFragmentManager.setFragmentResult(args.actionTag, result)
+                Log.i("AutoHsvRuleSelectFragment", "${args.actionTag}:${data.getTag()}")
+                parentFragment?.setFragmentResult(args.actionTag, result)
                 findNavController().popBackStack()
             }
         })

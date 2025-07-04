@@ -2,6 +2,7 @@ package com.example.myapplication.find_target
 
 
 import android.graphics.Color
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -31,6 +32,7 @@ import com.nwq.callback.CallBack2
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.dialog.SimpleInputDialog
 import com.nwq.dialog.SimpleTipsDialog
+import com.nwq.loguitls.L
 import com.nwq.opencv.hsv.HSVRule
 import com.nwq.opencv.hsv.PointHSVRule
 import com.nwq.simplelist.CheckTextAdapter
@@ -55,6 +57,26 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
 
     override fun getMenuRes(): Int {
         return R.menu.menu_target_hsv
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("HsvTargetDetailFragment", "onDestroyView called") // 检查是否执行
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // 在 onCreate 注册，避免错过回调
+        Log.d("HsvTargetDetailFragment", "onCreate called ${parentFragment==null}") // 检查是否执行
+        parentFragment?.setFragmentResultListener(
+            SELECT_HSV_RULE_TAG,
+            { requestKey, result ->
+                Log.i("HsvTargetDetailFragment", "SELECT_HSV_RULE_TAG called")
+                result.getString(ConstantKeyStr.SELECTED_RESULT)?.let { keyTag ->
+                    viewModel.updateHsvRule(keyTag)
+                }
+            }
+        )
     }
 
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
@@ -124,6 +146,7 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
 
     override fun initData() {
         super.initData()
+        L.i("HsvTargetDetailFragment", "initData")
         mCheckTextAdapter = CheckTextAdapter(
             layoutId = R.layout.item_color_rule,
             textId = R.id.tv,
@@ -151,14 +174,6 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
             androidx.recyclerview.widget.LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = mCheckTextAdapter
         updateInfo();
-        parentFragment?.setFragmentResultListener(
-            SELECT_HSV_RULE_TAG, // 这个 tag 要和 ClickSelectFragment 接收到的 args.actionTag 一致
-            { requestKey, result ->
-                result.getString(ConstantKeyStr.SELECTED_RESULT)?.let { keyTag ->
-                    viewModel.updateHsvRule(keyTag)
-                }
-            })
-
         initPreviewImg()
     }
 
@@ -221,6 +236,7 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
 
 
     override fun onBackPress(): Boolean {
+        Log.i("HsvTargetDetailFragment", "onBackPress")
         findNavController().popBackStack()
         return true
     }
