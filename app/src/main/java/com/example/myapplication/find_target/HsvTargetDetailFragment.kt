@@ -1,13 +1,19 @@
 package com.example.myapplication.find_target
 
 
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.CompoundButton
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
@@ -16,6 +22,8 @@ import com.example.myapplication.auto_hsv_rule.AutoHsvRuleSelectFragmentArgs
 import com.example.myapplication.auto_hsv_rule.ModifyHsvDialog
 import com.example.myapplication.databinding.FragmentHsvTargetDetailBinding
 import com.nwq.base.BaseToolBar2Fragment
+import com.nwq.baseobj.CoordinatePoint
+import com.nwq.baseobj.PreviewCoordinateData
 import com.nwq.baseutils.HsvRuleUtils
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
@@ -27,6 +35,7 @@ import com.nwq.opencv.hsv.HSVRule
 import com.nwq.opencv.hsv.PointHSVRule
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.truncate
 
@@ -149,6 +158,47 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
                     viewModel.updateHsvRule(keyTag)
                 }
             })
+
+        initPreviewImg()
+    }
+
+
+    private fun initPreviewImg() {
+        binding.previewLayout.root.isVisible = viewModel.getSelectBitmap() != null
+        if (viewModel.getSelectBitmap() != null) {
+            binding.previewLayout.imageView.setImageBitmap(viewModel.getSelectBitmap())
+            binding.previewLayout.checkBox.setOnCheckedChangeListener(object :
+                CompoundButton.OnCheckedChangeListener {
+                override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+                    if (p1) {
+                        binding.previewLayout.imageView.isVisible = true
+                    } else {
+                        binding.previewLayout.imageView.isInvisible = true
+                    }
+                }
+            })
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    mCheckTextAdapter.checkListFlow.collectLatest { d ->
+                        val ponits = d.map {
+                            val point = CoordinatePoint(
+                                it.point.x - (viewModel.targetOriginalArea?.x ?: 0),
+                                it.point.y - (viewModel.targetOriginalArea?.y ?: 0)
+                            )
+                            val color = Color.HSVToColor(
+                                floatArrayOf(
+                                    it.rule.maxH * 1.99f,
+                                    it.rule.maxS / 255f,
+                                    it.rule.maxV / 255f
+                                )
+                            )
+                            PreviewCoordinateData(point, color, 3f)
+                        }
+                        binding.previewLayout.previewCoordinateView.updateList(ponits)
+                    }
+                }
+            }
+        }
     }
 
 

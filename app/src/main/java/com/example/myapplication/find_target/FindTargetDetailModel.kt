@@ -64,8 +64,8 @@ class FindTargetDetailModel : ViewModel() {
     var path: String? = null
     var storageType: Int = MatUtils.STORAGE_ASSET_TYPE
     var mSrcBitmap: Bitmap? = null //这个是原始的整个屏幕的图
-    var mSelectBimap: Bitmap? = null//这个是选中区域的截图
-
+    private var mSelectBimap: Bitmap? = null//这个是选中区域的截图
+    private var mSelectMat: Mat? = null
     private val mTargetRecordDao = IdentifyDatabase.getDatabase().findTargetRecordDao()
     private val mTargetRgbDao = IdentifyDatabase.getDatabase().findTargetRgbDao()
     private val mTargetHsvDao = IdentifyDatabase.getDatabase().findTargetHsvDao()
@@ -89,6 +89,22 @@ class FindTargetDetailModel : ViewModel() {
             }
         }
     }
+
+    public fun getSelectBitmap(): Bitmap? {
+        if (mSelectBimap != null)
+            return mSelectBimap
+        if (mSrcBitmap != null && targetOriginalArea != null) {
+            mSelectBimap = Bitmap.createBitmap(
+                mSrcBitmap!!,
+                targetOriginalArea!!.x,
+                targetOriginalArea!!.y,
+                targetOriginalArea!!.width,
+                targetOriginalArea!!.height
+            )
+        }
+        return mSelectBimap
+    }
+
 
     public fun clear() {
         targetOriginalArea = null
@@ -129,14 +145,14 @@ class FindTargetDetailModel : ViewModel() {
         Log.i(TAG, "findArea:${findArea?.toString()}")
         Log.i(TAG, "targetOriginalArea:${targetOriginalArea?.toString()}")
         withContext(Dispatchers.IO) {
-            val sMat = MatUtils.bitmapToHsvMat(mSrcBitmap!!, targetOriginalArea)
-            val keyPointList = autoRulePoint!!.autoPoint(sMat)
+            mSelectMat = MatUtils.bitmapToHsvMat(getSelectBitmap()!!)
+            val keyPointList = autoRulePoint!!.autoPoint(mSelectMat!!)
             Log.i(TAG, "keyPointList:${keyPointList.size}")
             if (rgb) {
-                buildRgbFindTarget(mSrcBitmap!!, targetOriginalArea!!, keyPointList)
+                buildRgbFindTarget(mSelectBimap!!, targetOriginalArea!!, keyPointList)
             }
             if (hsv) {
-                buildHsvFindTarget(sMat, targetOriginalArea!!, keyPointList)
+                buildHsvFindTarget(mSelectMat!!, targetOriginalArea!!, keyPointList)
             }
             Log.i(TAG, "内部结束")
         }
@@ -150,7 +166,7 @@ class FindTargetDetailModel : ViewModel() {
     ) {
         val list = mutableListOf<PointRule>()
         pointList.forEach {
-            val rgbInt = bitmap[(it.x + selectArea.x).toInt(), (it.y + selectArea.y).toInt()]
+            val rgbInt = bitmap[it.x.toInt(), it.y.toInt()]
             val pointRule = PointRule(
                 (it.x + selectArea.x).toInt(),
                 (it.y + selectArea.y).toInt(),

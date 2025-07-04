@@ -23,7 +23,7 @@ class ColorAdapter(private val colorList: List<ColorItem>) : RecyclerView.Adapte
 
     override fun onBindViewHolder(holder: ColorViewHolder, position: Int) {
         val colorItem = colorList[position]
-        val color = Color.HSVToColor( floatArrayOf(colorItem.hsv[0]*1.99f,colorItem.hsv[1]/255,colorItem.hsv[2]/255))
+        val color = Color.HSVToColor(floatArrayOf(colorItem.hsv[0]*1.99f,colorItem.hsv[1]/255,colorItem.hsv[2]/255))
         holder.colorTv.text = "${colorItem.hsv[0].toInt()}:${colorItem.hsv[1].toInt()}:${colorItem.hsv[2].toInt()}"
         holder.colorV.setBackgroundColor(color)
     }

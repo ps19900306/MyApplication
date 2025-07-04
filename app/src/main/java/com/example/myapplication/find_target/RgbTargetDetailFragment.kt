@@ -112,7 +112,7 @@ class RgbTargetDetailFragment : BaseToolBar2Fragment<FragmentRgbTargetDetailBind
         viewModel.mFindTargetRgbEntity?.let { entity ->
             val list = entity.prList.map { data ->
                 ICheckTextWrap<PointRule>(data) {
-                    it.point.toString() + it.rule.toString()
+                    "${it.point}\n${it.rule.toSimpleString()}"
                 }
             }
             mCheckTextAdapter.upData(list)

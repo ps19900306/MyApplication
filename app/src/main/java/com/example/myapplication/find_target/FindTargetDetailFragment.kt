@@ -120,7 +120,6 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
         super.initData()
 
         viewModel.init(args.targetId);
-
         binding.hsvBgView.singleClick {
             findNavController().navigate(
                 R.id.action_findTargetDetailFragment_to_hsvTargetDetailFragment,

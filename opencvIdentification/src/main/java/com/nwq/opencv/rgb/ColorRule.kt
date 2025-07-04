@@ -17,10 +17,16 @@ class ColorRule(
     val redToGreenMax: Float, val redToGreenMin: Float,
     val redToBlueMax: Float, val redToBlueMin: Float,
     val greenToBlueMax: Float, val greenToBlueMin: Float,
-)  {
+) {
 
     constructor(
-        maxRed: Int, minRed: Int, maxGreen: Int, minGreen: Int, maxBlue: Int, minBlue: Int, checkRadio: Boolean = true
+        maxRed: Int,
+        minRed: Int,
+        maxGreen: Int,
+        minGreen: Int,
+        maxBlue: Int,
+        minBlue: Int,
+        checkRadio: Boolean = true
     ) : this(
         maxRed, minRed, maxGreen,
         minGreen, maxBlue, minBlue,
@@ -37,8 +43,8 @@ class ColorRule(
     }
 
     fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
-         if  (!(red in minRed..maxRed && green in minGreen..maxGreen))
-             return false
+        if (!(red in minRed..maxRed && green in minGreen..maxGreen))
+            return false
 
         val redF = red.toFloat()
         val greenF = green.toFloat()
@@ -58,18 +64,23 @@ class ColorRule(
             redToBlue in redToBlueMin..redToBlueMax
         }
 
-        val flag3 = if (greenToBlueMin.isNaN() || greenToBlueMax.isNaN() || green == 0 || blue == 0) {
-            true
-        } else {
-            val greenToBlue = greenF / blueF
-            greenToBlue in greenToBlueMin..greenToBlueMax
-        }
+        val flag3 =
+            if (greenToBlueMin.isNaN() || greenToBlueMax.isNaN() || green == 0 || blue == 0) {
+                true
+            } else {
+                val greenToBlue = greenF / blueF
+                greenToBlue in greenToBlueMin..greenToBlueMax
+            }
 
         return flag1 && flag2 && flag3
     }
 
     override fun toString(): String {
         return "ColorRuleRatioImpl(maxRed=$maxRed, minRed=$minRed, maxGreen=$maxGreen, minGreen=$minGreen, maxBlue=$maxBlue, minBlue=$minBlue, redToGreenMax=$redToGreenMax, redToGreenMin=$redToGreenMin, redToBlueMax=$redToBlueMax, redToBlueMin=$redToBlueMin, greenToBlueMax=$greenToBlueMax, greenToBlueMin=$greenToBlueMin)"
+    }
+
+    fun toSimpleString(): String {
+        return "ColorRuleRatioImpl(xR=$maxRed, nR=$minRed, xG=$maxGreen, nG=$minGreen,xB=$maxBlue, nBe=$minBlue)"
     }
 
     companion object {
@@ -133,12 +144,20 @@ class ColorRule(
             )
         }
 
-        private fun calculateRatio(numerator: Int, denominator: Int, checkRadio: Boolean = true): Float {
+        private fun calculateRatio(
+            numerator: Int,
+            denominator: Int,
+            checkRadio: Boolean = true
+        ): Float {
             if (denominator == 0 || !checkRadio) return NOT_CHECK_RADIO
             return numerator.toFloat() / denominator
         }
 
-        private fun calculateRatio(numerator: Int, denominator: Int, rangRatio: Float = 0F): Pair<Float, Float> {
+        private fun calculateRatio(
+            numerator: Int,
+            denominator: Int,
+            rangRatio: Float = 0F
+        ): Pair<Float, Float> {
             if (denominator == 0) return Pair(NOT_CHECK_RADIO, NOT_CHECK_RADIO)
             val fr = numerator.toFloat() / denominator
             return Pair(fr * (1 + rangRatio), fr * (1 - rangRatio))

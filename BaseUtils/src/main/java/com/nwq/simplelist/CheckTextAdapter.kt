@@ -9,6 +9,7 @@ import com.nwq.baseutils.R
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.callback.CallBack2
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * 一个通用的 RecyclerView 适配器，用于显示实现了 [IText] 接口的数据列表。
@@ -31,6 +32,8 @@ class CheckTextAdapter<T>(
 
     val list: MutableList<ICheckText<T>> = mutableListOf()
 
+    val checkListFlow: MutableStateFlow<List<T>> = MutableStateFlow(listOf())
+
     //如果需要处理自己的一些特有UI和逻辑
     private var bindView: CallBack2<View, T>? = null
 
@@ -46,12 +49,14 @@ class CheckTextAdapter<T>(
         val remainingItems = list.filter { !it.isCheckStatus() }
         list.clear()
         list.addAll(remainingItems)
+        checkListFlow.tryEmit(listOf())
         notifyDataSetChanged()
         return remainingItems.map { it.getT() }
     }
 
     public fun removeSelectAndGet2(): List<ICheckText<T>> {
         val remainingItems = list.filter { !it.isCheckStatus() }
+        checkListFlow.tryEmit(listOf())
         return remainingItems
     }
 
@@ -64,12 +69,14 @@ class CheckTextAdapter<T>(
     public fun upData(list: List<ICheckText<T>>) {
         this.list.clear()
         this.list.addAll(list)
+        checkListFlow.tryEmit(list.filter { it.isCheckStatus() }.map { it.getT() })
         notifyDataSetChanged()
     }
 
     //全选 选中
     public fun selectAll(boolean: Boolean) {
         list.forEach { it.setCheckStatus(boolean) }
+        checkListFlow.tryEmit(list.map { it.getT() })
         notifyDataSetChanged()
     }
 
@@ -78,6 +85,7 @@ class CheckTextAdapter<T>(
         list.forEach {
             it.setCheckStatus(!it.isCheckStatus())
         }
+        checkListFlow.tryEmit(list.filter { it.isCheckStatus() }.map { it.getT() })
         notifyDataSetChanged()
     }
 
@@ -125,6 +133,7 @@ class CheckTextAdapter<T>(
                         itemView.setBackgroundResource(normalBgRes)
                     }
                 }
+                checkListFlow.tryEmit(list.filter { it.isCheckStatus() }.map { it.getT() })
             }
             mLongClick?.let {
                 itemView.setOnLongClickListener {
