@@ -150,7 +150,6 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
                         item.coordinate = null
                     }
                 }
-
             }
         }
     }
@@ -252,6 +251,13 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
                 PreviewOptItem(
                     key = R.string.select_point_hsv,
                     type = TouchOptModel.SINGLE_CLICK_TYPE,
+                    color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.black)
+                )
+            )
+            preViewModel.optList.add(
+                PreviewOptItem(
+                    key = R.string.select_area_hsv,
+                    type = TouchOptModel.RECT_AREA_TYPE,
                     color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.black)
                 )
             )
