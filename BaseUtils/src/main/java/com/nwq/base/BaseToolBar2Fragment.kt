@@ -100,4 +100,6 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
     ) {
         SimpleTipsDialog(titleRes, descriptionRes, onClick).showDialog(childFragmentManager)
     }
+
+
 }

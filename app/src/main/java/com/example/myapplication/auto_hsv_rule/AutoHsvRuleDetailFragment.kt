@@ -68,6 +68,10 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
                 viewModel.save()
             }
 
+            R.id.action_merge_select -> {
+                mergeSelect()
+            }
+
             R.id.action_area -> {
                 findArea()
             }
@@ -77,18 +81,19 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
             }
 
             R.id.action_add -> {
-                val dialog = ModifyHsvDialog(HSVRule(), getSelectBitmap(), object : CallBack<HSVRule> {
-                    override fun onCallBack(data: HSVRule) {
-                        viewModel.addData(ICheckTextWrap<HSVRule>(data) {
-                            it.toString()
-                        })
-                    }
-                })
+                val dialog =
+                    ModifyHsvDialog(HSVRule(), getSelectBitmap(), object : CallBack<HSVRule> {
+                        override fun onCallBack(data: HSVRule) {
+                            viewModel.addData(ICheckTextWrap<HSVRule>(data) {
+                                it.toString()
+                            })
+                        }
+                    })
                 dialog.show(childFragmentManager, "ModifyHsvDialog")
             }
 
             R.id.action_delete_select -> {
-                 viewModel.prList.tryEmit(mCheckTextAdapter.removeSelectAndGet2())
+                viewModel.prList.tryEmit(mCheckTextAdapter.removeSelectAndGet2())
             }
 
             R.id.action_delete_all -> {
@@ -103,6 +108,25 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
         return flag
     }
 
+    //合并选中的 过滤规则
+    private fun mergeSelect() {
+        val list = mCheckTextAdapter.getSelectedItem().map { it.getT() }
+        if (list.isEmpty() || list.size == 1)
+            return
+        val minH = list.minByOrNull { it.minH }?.minH ?: 0
+        val maxH = list.maxByOrNull { it.maxH }?.maxH ?: 180
+        val minS = list.minByOrNull { it.minS }?.minS ?: 0
+        val maxS = list.maxByOrNull { it.maxS }?.maxS ?: 255
+        val minV = list.minByOrNull { it.minV }?.minV ?: 0
+        val maxV = list.maxByOrNull { it.maxH }?.maxV ?: 255
+        val list2 = mCheckTextAdapter.removeSelectAndGet2().toMutableList()
+        val rule = HSVRule(minH, maxH, minS, maxS, minV, maxV)
+        list2.add(ICheckTextWrap<HSVRule>(rule) {
+            it.toString()
+        })
+        viewModel.upData(list2)
+    }
+
     private fun selectPicture() {
         L.i(TAG, "selectPicture")
         PictureSelector.create(requireActivity()).openSystemGallery(SelectMimeType.ofImage())
@@ -115,7 +139,10 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
                         opts.inMutable = true
                         BitmapFactory.decodeFile(localMedia.realPath, opts)?.let {
                             preViewModel.mBitmap = it
+                            viewModel.mSrcBitmap = it
                         }
+                        viewModel.path = localMedia.realPath
+                        viewModel.storageType = MatUtils.REAL_PATH_TYPE
                     }
                 }
 
@@ -158,7 +185,14 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
                 if (point != null && point is CoordinateArea) {
                     MatUtils.getHsv(mat, point.x, point.y, point.width, point.height)?.let { da ->
                         val pointHSVRule =
-                            HSVRule(da[0].toInt(), da[1].toInt(), da[2].toInt(), da[3].toInt(), da[4].toInt(), da[5].toInt())
+                            HSVRule(
+                                da[0].toInt(),
+                                da[1].toInt(),
+                                da[2].toInt(),
+                                da[3].toInt(),
+                                da[4].toInt(),
+                                da[5].toInt()
+                            )
                         viewModel.addData(ICheckTextWrap<HSVRule>(pointHSVRule) {
                             it.toString()
                         })
@@ -166,6 +200,11 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
                     }
                 }
             }
+        }
+
+        preViewModel.optList.find { it.key == R.string.select_critical_area }?.coordinate?.let {
+            if (it is CoordinateArea)
+                viewModel.targetOriginalArea = it
         }
     }
 
@@ -254,7 +293,7 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
 
     //选择图片和关键区域
     private fun findArea() {
-        if (preViewModel.optList.isEmpty()){
+        if (preViewModel.optList.isEmpty()) {
             preViewModel.optList.add(
                 PreviewOptItem(
                     key = R.string.select_critical_area,
@@ -266,16 +305,23 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
                 PreviewOptItem(
                     key = R.string.select_point_hsv,
                     type = TouchOptModel.SINGLE_CLICK_TYPE,
-                    color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.black)
+                    color = ContextCompat.getColor(
+                        requireContext(),
+                        com.nwq.baseutils.R.color.black
+                    )
                 )
             )
             preViewModel.optList.add(
                 PreviewOptItem(
                     key = R.string.select_area_hsv,
                     type = TouchOptModel.RECT_AREA_TYPE,
-                    color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.black)
+                    color = ContextCompat.getColor(
+                        requireContext(),
+                        com.nwq.baseutils.R.color.black
+                    )
                 )
             )
+            preViewModel.mBitmap = viewModel.mSrcBitmap
         }
         mSelectBitmap = null
         findNavController().navigate(R.id.action_autoHsvRuleDetailFragment_to_nav_opt_preview)

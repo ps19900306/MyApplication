@@ -17,6 +17,11 @@
         android:orderInCategory="100"
         android:title="选择区域"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_merge_select"
+        android:orderInCategory="100"
+        android:title="合并选中"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_select_area"
@@ -24,11 +29,7 @@
         android:title="预览选中"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_add"
-        android:orderInCategory="100"
-        android:title="@string/add"
-        app:showAsAction="never" />
+
 
     <item
         android:id="@+id/action_delete_select"
@@ -39,5 +40,11 @@
         android:id="@+id/action_delete_all"
         android:orderInCategory="100"
         android:title="@string/delete_all"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_add"
+        android:orderInCategory="100"
+        android:title="@string/add"
         app:showAsAction="never" />
 </menu>

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.IAutoRulePoint
 import com.nwq.opencv.db.converters.HSVRuleConverters
@@ -27,7 +28,9 @@ class AutoRulePointEntity() : IAutoRulePoint {
 
     var description: String = ""
 
-
+    var targetOriginalArea: CoordinateArea? = null
+    var path: String? = null
+    var storageType: Int = MatUtils.STORAGE_ASSET_TYPE
 
 
     override suspend fun autoPoint(hsvMat: Mat): MutableList<Point> {

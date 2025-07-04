@@ -1,7 +1,11 @@
 package com.example.myapplication.auto_hsv_rule
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nwq.baseobj.CoordinateArea
+import com.nwq.baseutils.FileUtils
+import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.opencv.hsv.HSVRule
@@ -18,8 +22,11 @@ class AutoHsvRuleDetailViewModel : ViewModel() {
     public var prList: MutableStateFlow<List<ICheckText<HSVRule>>> = MutableStateFlow(
         listOf()
     )
-
-
+    //进行生成时候选的区域
+    var targetOriginalArea: CoordinateArea? = null
+    var path: String? = null
+    var storageType: Int = MatUtils.STORAGE_ASSET_TYPE
+    var mSrcBitmap: Bitmap? = null
     public fun init(id: Long) {
         if (mAutoRulePointEntity != null)
             return
@@ -31,6 +38,9 @@ class AutoHsvRuleDetailViewModel : ViewModel() {
                         it.toString()
                     }
                 }
+                path = entity.path
+                storageType = entity.storageType
+                mSrcBitmap = FileUtils.getBitmapByType(path, storageType)
                 prList.tryEmit(list)
             }
         }

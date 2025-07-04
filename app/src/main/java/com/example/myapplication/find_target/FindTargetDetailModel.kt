@@ -60,9 +60,10 @@ class FindTargetDetailModel : ViewModel() {
     //所有的必须一致  如果需要重新生成需要清除掉原有数据
     //进行生成时候选的区域
     var targetOriginalArea: CoordinateArea? = null
-    var autoRulePoint: IAutoRulePoint? = CodeHsvRuleUtils.mAutoRulePointList[0]
     var path: String? = null
     var storageType: Int = MatUtils.STORAGE_ASSET_TYPE
+
+    var autoRulePoint: IAutoRulePoint? = CodeHsvRuleUtils.mAutoRulePointList[0]
     var mSrcBitmap: Bitmap? = null //这个是原始的整个屏幕的图
     private var mSelectBimap: Bitmap? = null//这个是选中区域的截图
     private var mSelectMat: Mat? = null
