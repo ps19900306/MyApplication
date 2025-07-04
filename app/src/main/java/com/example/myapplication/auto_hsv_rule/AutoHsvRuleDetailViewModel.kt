@@ -3,6 +3,7 @@ package com.example.myapplication.auto_hsv_rule
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.R
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
@@ -23,10 +24,11 @@ class AutoHsvRuleDetailViewModel : ViewModel() {
         listOf()
     )
     //进行生成时候选的区域
-    var targetOriginalArea: CoordinateArea? = null
-    var path: String? = null
-    var storageType: Int = MatUtils.STORAGE_ASSET_TYPE
-    var mSrcBitmap: Bitmap? = null
+    public var targetOriginalArea: CoordinateArea? = null
+    public var path: String? = null
+    public var storageType: Int = MatUtils.STORAGE_ASSET_TYPE
+    public var mSrcBitmap: Bitmap? = null
+    public var mSelectBitmap: Bitmap? = null
     public fun init(id: Long) {
         if (mAutoRulePointEntity != null)
             return
@@ -46,6 +48,23 @@ class AutoHsvRuleDetailViewModel : ViewModel() {
         }
     }
 
+    public fun getSelectBitmap(): Bitmap? {
+        if (mSelectBitmap != null)
+            return mSelectBitmap
+        if (mSrcBitmap != null) {
+            if (targetOriginalArea != null) {
+                //根据区域队Bitmap进行裁剪
+                mSelectBitmap = Bitmap.createBitmap(
+                    mSrcBitmap!!,
+                    targetOriginalArea!!.x,
+                    targetOriginalArea!!.y,
+                    targetOriginalArea!!.width,
+                    targetOriginalArea!!.height
+                )
+            }
+        }
+        return mSelectBitmap
+    }
     public fun addData(item: ICheckText<HSVRule>) {
         val list = mutableListOf<ICheckText<HSVRule>>()
         list.addAll(prList.value)
@@ -61,6 +80,9 @@ class AutoHsvRuleDetailViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             mAutoRulePointEntity?.let { entity ->
                 entity.prList = prList.value.map { it.getT() }
+                entity.storageType = storageType
+                entity.path = path
+                entity.targetOriginalArea = targetOriginalArea
                 mAutoRulePointDao.update(entity)
             }
         }

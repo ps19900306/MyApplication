@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -47,7 +48,7 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
     private val preViewModel: PreviewViewModel by viewModels({ requireActivity() })
     private val viewModel: AutoHsvRuleDetailViewModel by viewModels({ requireActivity() })
     private lateinit var mCheckTextAdapter: CheckTextAdapter<HSVRule>
-    private var mSelectBitmap: Bitmap? = null
+
 
     override fun createBinding(inflater: LayoutInflater): FragmentAutoHsvRuleDetailBinding {
         return FragmentAutoHsvRuleDetailBinding.inflate(inflater)
@@ -82,13 +83,16 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
 
             R.id.action_add -> {
                 val dialog =
-                    ModifyHsvDialog(HSVRule(), getSelectBitmap(), object : CallBack<HSVRule> {
-                        override fun onCallBack(data: HSVRule) {
-                            viewModel.addData(ICheckTextWrap<HSVRule>(data) {
-                                it.toString()
-                            })
-                        }
-                    })
+                    ModifyHsvDialog(
+                        HSVRule(),
+                        viewModel.getSelectBitmap(),
+                        object : CallBack<HSVRule> {
+                            override fun onCallBack(data: HSVRule) {
+                                viewModel.addData(ICheckTextWrap<HSVRule>(data) {
+                                    it.toString()
+                                })
+                            }
+                        })
                 dialog.show(childFragmentManager, "ModifyHsvDialog")
             }
 
@@ -216,11 +220,14 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
         mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<HSVRule> {
             override fun onCallBack(data: HSVRule) {
                 val dialog =
-                    ModifyHsvDialog(data, bitmap = getSelectBitmap(), object : CallBack<HSVRule> {
-                        override fun onCallBack(data: HSVRule) {
-                            mCheckTextAdapter.notifyDataSetChanged()
-                        }
-                    })
+                    ModifyHsvDialog(
+                        data,
+                        bitmap = viewModel.getSelectBitmap(),
+                        object : CallBack<HSVRule> {
+                            override fun onCallBack(data: HSVRule) {
+                                mCheckTextAdapter.notifyDataSetChanged()
+                            }
+                        })
                 dialog.show(childFragmentManager, "ModifyHsvDialog")
             }
         })
@@ -237,33 +244,18 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
     }
 
 
-    private fun getSelectBitmap(): Bitmap? {
-        if (mSelectBitmap != null)
-            return mSelectBitmap
-        if (preViewModel.mBitmap != null) {
-            val co = preViewModel.getCoordinate(key = R.string.select_critical_area)
-            if (co != null && co is CoordinateArea) {
-                //根据区域队Bitmap进行裁剪
-                mSelectBitmap = Bitmap.createBitmap(
-                    preViewModel.mBitmap!!,
-                    co.x,
-                    co.y,
-                    co.width,
-                    co.height
-                )
-            }
-        }
-        return mSelectBitmap
-    }
-
     //预览选中区域
     private fun preViewSelectArea() {
+        if (binding.srcImg.isVisible) {
+            binding.srcImg.isVisible = false
+            return
+        }
+        binding.srcImg.isVisible = true
         val rules = mCheckTextAdapter.getSelectedItem()
         if (rules.isEmpty()) {
             T.show("请选择规则")
         }
-
-        getSelectBitmap()?.let { bitMap ->
+        viewModel.getSelectBitmap()?.let { bitMap ->
             val mat = MatUtils.bitmapToHsvMat(bitMap)
             var lastMaskMat: Mat? = null
             rules.forEach {
@@ -298,7 +290,8 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
                 PreviewOptItem(
                     key = R.string.select_critical_area,
                     type = TouchOptModel.RECT_AREA_TYPE,
-                    color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red)
+                    color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
+                    coordinate = viewModel.targetOriginalArea
                 )
             )
             preViewModel.optList.add(
@@ -323,7 +316,7 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
             )
             preViewModel.mBitmap = viewModel.mSrcBitmap
         }
-        mSelectBitmap = null
+        viewModel.mSelectBitmap = null
         findNavController().navigate(R.id.action_autoHsvRuleDetailFragment_to_nav_opt_preview)
     }
 
