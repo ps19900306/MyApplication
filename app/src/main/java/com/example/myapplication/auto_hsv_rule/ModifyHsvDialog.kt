@@ -115,7 +115,7 @@ class ModifyHsvDialog(
             0,
             255,
         ) { i ->
-            maxS
+            maxS = i
             sendUpdateSignal()
         }
         setupSeekBarAndEditText(

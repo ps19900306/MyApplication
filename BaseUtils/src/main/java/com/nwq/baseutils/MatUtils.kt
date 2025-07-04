@@ -177,6 +177,7 @@ object MatUtils {
         minV: Int,
         maxV: Int
     ): Mat {
+        Log.i(TAG,"filterByHsv h $minH:$maxH s $minS:$maxS v $minV:$maxV")
         // 获取基于指定HSV范围的掩码Mat对象
         val maskMat = getFilterMaskMat(srcMat, minH, maxH, minS, maxS, minV, maxV)
         // 返回过滤后的图像

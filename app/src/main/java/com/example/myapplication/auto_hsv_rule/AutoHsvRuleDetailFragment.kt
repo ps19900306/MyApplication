@@ -122,7 +122,7 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
         val minS = list.minByOrNull { it.minS }?.minS ?: 0
         val maxS = list.maxByOrNull { it.maxS }?.maxS ?: 255
         val minV = list.minByOrNull { it.minV }?.minV ?: 0
-        val maxV = list.maxByOrNull { it.maxH }?.maxV ?: 255
+        val maxV = list.maxByOrNull { it.maxV }?.maxV ?: 255
         val list2 = mCheckTextAdapter.removeSelectAndGet2().toMutableList()
         val rule = HSVRule(minH, maxH, minS, maxS, minV, maxV)
         list2.add(ICheckTextWrap<HSVRule>(rule) {
