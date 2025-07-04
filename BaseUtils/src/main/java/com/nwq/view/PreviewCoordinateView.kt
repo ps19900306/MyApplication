@@ -138,11 +138,11 @@ class PreviewCoordinateView @JvmOverloads constructor(
             }
         }
         oblongLine?.let { line ->
-            drawLine(canvas, line, ContextCompat.getColor(context, R.color.red), 5f)
+            drawLine(canvas, line, ContextCompat.getColor(context, R.color.red), 1f)
         }
 
         oblongArea?.let {
-            drawArea(canvas, it, ContextCompat.getColor(context, R.color.red), 5f)
+            drawArea(canvas, it, ContextCompat.getColor(context, R.color.red), 1f)
         }
     }
 

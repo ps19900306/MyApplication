@@ -66,7 +66,6 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
 
             R.id.action_save -> {
                 viewModel.save()
-
             }
 
             R.id.action_area -> {
@@ -144,6 +143,22 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
                     MatUtils.getHsv(mat, point.x, point.y)?.let { da ->
                         val pointHSVRule =
                             HSVRule.getSimple(da[0].toInt(), da[1].toInt(), da[2].toInt())
+                        viewModel.addData(ICheckTextWrap<HSVRule>(pointHSVRule) {
+                            it.toString()
+                        })
+                        item.coordinate = null
+                    }
+                }
+            }
+        }
+        //增加一个新选取点颜色
+        preViewModel.optList.find { it.key == R.string.select_area_hsv }?.let { item ->
+            preViewModel.getSrcMat()?.let { mat ->
+                val point = item.coordinate
+                if (point != null && point is CoordinateArea) {
+                    MatUtils.getHsv(mat, point.x, point.y, point.width, point.height)?.let { da ->
+                        val pointHSVRule =
+                            HSVRule(da[0].toInt(), da[1].toInt(), da[2].toInt(), da[3].toInt(), da[4].toInt(), da[5].toInt())
                         viewModel.addData(ICheckTextWrap<HSVRule>(pointHSVRule) {
                             it.toString()
                         })

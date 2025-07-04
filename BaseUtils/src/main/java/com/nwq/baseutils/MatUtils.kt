@@ -608,4 +608,36 @@ object MatUtils {
         val array = hsvMat.get(y, x)
         return array
     }
+
+    // ... existing code ...
+    fun getHsv(hsvMat: Mat, x: Int, y: Int, width: Int, height: Int): DoubleArray? {
+        if (x < 0 || y < 0 || width <= 0 || height <= 0 ||
+            x + width > hsvMat.cols() || y + height > hsvMat.rows()
+        ) {
+            return null
+        }
+
+        val hsvValues = mutableListOf<DoubleArray>()
+        val roi = hsvMat.submat(y, y + height, x, x + width)
+
+        for (i in 0 until roi.rows()) {
+            for (j in 0 until roi.cols()) {
+                val pixel = roi.get(i, j)
+                hsvValues.add(doubleArrayOf(pixel[0], pixel[1], pixel[2]))
+            }
+        }
+
+        if (hsvValues.isEmpty()) return null
+
+        val minH = hsvValues.minByOrNull { it[0] }?.get(0) ?: 0.0
+        val maxH = hsvValues.maxByOrNull { it[0] }?.get(0) ?: 0.0
+        val minS = hsvValues.minByOrNull { it[1] }?.get(1) ?: 0.0
+        val maxS = hsvValues.maxByOrNull { it[1] }?.get(1) ?: 0.0
+        val minV = hsvValues.minByOrNull { it[2] }?.get(2) ?: 0.0
+        val maxV = hsvValues.maxByOrNull { it[2] }?.get(2) ?: 0.0
+
+        return doubleArrayOf(minH, maxH, minS, maxS, minV, maxV)
+    }
+
+
 }
