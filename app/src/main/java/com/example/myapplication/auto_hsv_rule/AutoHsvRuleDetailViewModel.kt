@@ -40,6 +40,7 @@ class AutoHsvRuleDetailViewModel : ViewModel() {
                         it.toString()
                     }
                 }
+                targetOriginalArea= entity.targetOriginalArea
                 path = entity.path
                 storageType = entity.storageType
                 mSrcBitmap = FileUtils.getBitmapByType(path, storageType)
