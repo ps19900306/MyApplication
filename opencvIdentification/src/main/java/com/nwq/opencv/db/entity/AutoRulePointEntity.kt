@@ -25,8 +25,11 @@ class AutoRulePointEntity() : IAutoRulePoint {
     @TypeConverters(HSVRuleConverters::class)
     @JvmField
     var prList: List<HSVRule> = listOf()
-
     var description: String = ""
+
+    //类型
+    var type: Int = 0
+
 
     var targetOriginalArea: CoordinateArea? = null
     var path: String? = null
