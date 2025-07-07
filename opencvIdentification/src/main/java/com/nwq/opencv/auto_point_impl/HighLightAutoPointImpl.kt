@@ -40,15 +40,8 @@ class HighLightAutoPointImpl() : IAutoRulePoint {
         val pointList = mutableListOf<Point>()
         mHighSvRule.forEach {
             val list =
-                MatUtils.getCornerPoint(
-                    hsvMat,
-                    it.minH,
-                    it.maxH,
-                    it.minS,
-                    it.maxS,
-                    it.minV,
-                    it.maxV,
-                    boundaryMinDistance(),
+                MatUtils.buildImageDescriptorEntity(
+                    hsvMat
                 )
             Log.i(
                 "AutoPointImpl",

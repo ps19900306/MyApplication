@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.text.TextUtils
 import android.util.Log
 import com.nwq.baseobj.CoordinateArea
+import com.nwq.baseobj.CoordinatePoint
 import com.nwq.checkhsv.CheckHSVSame
 import com.nwq.checkhsv.CheckHSVSame1
 import com.nwq.checkhsv.CheckHSVSame2
@@ -13,10 +14,13 @@ import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
+import org.opencv.core.MatOfKeyPoint
 import org.opencv.core.MatOfPoint
 import org.opencv.core.Point
 import org.opencv.core.Scalar
 import org.opencv.core.Size
+import org.opencv.features2d.Feature2D
+import org.opencv.features2d.SIFT
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 import java.nio.ByteBuffer
@@ -177,21 +181,58 @@ object MatUtils {
         minV: Int,
         maxV: Int
     ): Mat {
-        Log.i(TAG,"filterByHsv h $minH:$maxH s $minS:$maxS v $minV:$maxV")
+        Log.i(TAG, "filterByHsv h $minH:$maxH s $minS:$maxS v $minV:$maxV")
         // 获取基于指定HSV范围的掩码Mat对象
         val maskMat = getFilterMaskMat(srcMat, minH, maxH, minS, maxS, minV, maxV)
         // 返回过滤后的图像
         return filterByMask(srcMat, maskMat)
     }
 
+    /**
+     * 使用掩码对源图像进行过滤，提取符合颜色空间的图像部分
+     *
+     * @param srcMat 源图像Mat对象，需要进行掩码过滤的输入图像
+     * @param maskMat 单通道掩码Mat对象，用于指定需要保留的图像区域
+     * @return 过滤后的Mat对象，只包含源图像中被掩码指定的区域
+     */
     fun filterByMask(srcMat: Mat, maskMat: Mat): Mat {
-        // 将掩码Mat对象转换为三通道，以便与源图像兼容
+        // 将单通道掩码转换为三通道，使其与源图像兼容
         val maskMat3Channel = Mat()
         Imgproc.cvtColor(maskMat, maskMat3Channel, Imgproc.COLOR_GRAY2BGR)
-        // 使用掩码对源图像进行过滤，提取符合颜色空间的图像部分
+
+        // 执行按位与操作，应用掩码过滤源图像
         val destMat = Mat()
         Core.bitwise_and(srcMat, maskMat3Channel, destMat)
         return destMat
+    }
+
+
+    // 根据传入的数据获取到描述
+    public fun buildImageDescriptorEntity(hsvMat: Mat, mask: Mat? = null): List<Point> {
+        // 创建一个用于存储 BGR 图像的 Mat 对象
+        val bgrMat = Mat()
+        // 创建一个用于存储灰度图的 Mat 对象
+        val grayMat = Mat()
+        // 先将 HSV 图像转换为 BGR 图像
+        Imgproc.cvtColor(hsvMat, bgrMat, Imgproc.COLOR_HSV2BGR)
+        // 再将 BGR 图像转换为灰度图
+        Imgproc.cvtColor(bgrMat, grayMat, Imgproc.COLOR_BGR2GRAY)
+
+        val mask2 = if (mask == null) {
+            Mat()
+        } else {
+            mask
+        }
+        // 4. 用于保存关键点和描述符
+        val keypoints = MatOfKeyPoint()
+        val descriptors = Mat()
+
+        val feature2D: Feature2D = SIFT.create()
+        // 5. 检测关键点并提取描述符
+        feature2D.detectAndCompute(grayMat, mask2, keypoints, descriptors)
+
+        val keypointList = keypoints.toArray().toList()
+        return keypointList.map {it.pt }
     }
 
 
@@ -288,7 +329,6 @@ object MatUtils {
         erodedMat.release()
         corners.release()
         hierarchy.release()
-
         return cornerPoints
     }
 
@@ -597,7 +637,6 @@ object MatUtils {
         for (image in images) {
             Core.add(background, image, background)
         }
-        0
         // 将累加后的背景图像除以图像数量，得到平均背景图像
         Core.divide(background, Scalar(images.size.toDouble()), background)
 
@@ -605,22 +644,40 @@ object MatUtils {
         return background
     }
 
+    /**
+     * 获取指定点的HSV颜色
+     */
     fun getHsv(hsvMat: Mat, x: Int, y: Int): DoubleArray? {
         val array = hsvMat.get(y, x)
         return array
     }
 
-    // ... existing code ...
+
+    /**
+     * 获取指定区域HSV颜色空间的最小和最大值
+     *
+     * @param hsvMat 输入的HSV颜色空间矩阵
+     * @param x 区域左上角的x坐标
+     * @param y 区域左上角的y坐标
+     * @param width 区域的宽度
+     * @param height 区域的高度
+     * @return 包含HSV各通道最小和最大值的DoubleArray，格式为[minH, maxH, minS, maxS, minV, maxV]。
+     *         如果输入参数无效或区域内无数据，则返回null
+     */
     fun getHsv(hsvMat: Mat, x: Int, y: Int, width: Int, height: Int): DoubleArray? {
+        // 检查输入参数是否有效
         if (x < 0 || y < 0 || width <= 0 || height <= 0 ||
             x + width > hsvMat.cols() || y + height > hsvMat.rows()
         ) {
             return null
         }
 
+        // 存储所有像素点的HSV值
         val hsvValues = mutableListOf<DoubleArray>()
+        // 获取指定区域的子矩阵
         val roi = hsvMat.submat(y, y + height, x, x + width)
 
+        // 遍历子矩阵中的所有像素点
         for (i in 0 until roi.rows()) {
             for (j in 0 until roi.cols()) {
                 val pixel = roi.get(i, j)
@@ -628,8 +685,10 @@ object MatUtils {
             }
         }
 
+        // 如果没有有效数据则返回null
         if (hsvValues.isEmpty()) return null
 
+        // 计算各HSV通道的最小和最大值
         val minH = hsvValues.minByOrNull { it[0] }?.get(0) ?: 0.0
         val maxH = hsvValues.maxByOrNull { it[0] }?.get(0) ?: 0.0
         val minS = hsvValues.minByOrNull { it[1] }?.get(1) ?: 0.0
