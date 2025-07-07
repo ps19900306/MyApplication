@@ -37,7 +37,7 @@ class AutoRulePointEntity() : IAutoRulePoint {
         val pointList = mutableListOf<Point>()
         prList.forEach {
             val list =
-                MatUtils.getCornerPoint(
+                MatUtils.getPointByRange(
                     hsvMat,
                     it.minH,
                     it.maxH,

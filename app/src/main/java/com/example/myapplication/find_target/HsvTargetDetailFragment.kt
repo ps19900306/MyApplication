@@ -85,7 +85,9 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
             R.id.action_save -> {
                 viewModel.saveHsvTarget()
             }
-
+            R.id.action_select_inverse->{
+                mCheckTextAdapter.selectReverse()
+            }
             R.id.action_auto_rule -> {
                 //选择功能区域
                 findNavController().navigate(

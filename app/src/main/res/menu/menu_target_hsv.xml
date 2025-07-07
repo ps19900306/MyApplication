@@ -9,6 +9,11 @@
         android:title="@string/save"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_select_inverse"
+        android:orderInCategory="100"
+        android:title="反选"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_auto_rule"
         android:orderInCategory="100"
         android:title="生成规则"

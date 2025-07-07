@@ -5,10 +5,7 @@ import android.graphics.Color
 import android.text.TextUtils
 import android.util.Log
 import com.nwq.baseobj.CoordinateArea
-import com.nwq.baseobj.CoordinatePoint
 import com.nwq.checkhsv.CheckHSVSame
-import com.nwq.checkhsv.CheckHSVSame1
-import com.nwq.checkhsv.CheckHSVSame2
 import com.nwq.checkhsv.CheckHSVSame3
 import org.opencv.android.Utils
 import org.opencv.core.Core
@@ -207,8 +204,8 @@ object MatUtils {
     }
 
 
-    // 根据传入的数据获取到描述
-    public fun buildImageDescriptorEntity(hsvMat: Mat, mask: Mat? = null): List<Point> {
+    // 获取点通过特征点
+    public fun getPointByImageKeyPoint(hsvMat: Mat, mask: Mat? = null): List<Point> {
         // 创建一个用于存储 BGR 图像的 Mat 对象
         val bgrMat = Mat()
         // 创建一个用于存储灰度图的 Mat 对象
@@ -232,138 +229,100 @@ object MatUtils {
         feature2D.detectAndCompute(grayMat, mask2, keypoints, descriptors)
 
         val keypointList = keypoints.toArray().toList()
-        return keypointList.map {it.pt }
+        return keypointList.map { it.pt }
     }
 
-
-    /**
-     * 检测图像中的角点
-     *
-     * 该函数通过将图像转换到HSV颜色空间，并根据指定的HSV范围进行二值化，随后使用轮廓检测和腐蚀运算来识别和提取角点
-     * 主要应用于计算机视觉任务中，用于识别图像中的关键点
-     *
-     * @param srcMat 输入的图像矩阵，代表原始图像
-     * @param minH HSV中色调的最小值
-     * @param maxH HSV中色调的最大值
-     * @param minS HSV中饱和度的最小值
-     * @param maxS HSV中饱和度的最大值
-     * @param minV HSV中明度的最小值
-     * @param maxV HSV中明度的最大值
-     * @param boundaryMinDistance 边界最小距离，用于过滤靠近图像边界的角点，默认为0
-     * @param digits 腐蚀运算核大小，默认为3
-     * @return 返回检测到的角点列表
-     *
-     * 注意：该函数依赖于OpenCV库，用于图像处理操作
-     */
-    fun getCornerPoint(
-        srcMat: Mat,
+    //通过范围获取坐标列表
+    public fun getPointByRange(
+        hsvMat: Mat,
         minH: Int,
         maxH: Int,
         minS: Int,
         maxS: Int,
         minV: Int,
         maxV: Int,
-        boundaryMinDistance: Int = 0,
-        digits: Int = 3 // 腐蚀运算核大小
+        digits: Int = 1, // 腐蚀运算核大小
+        distance: Int = 3 // 边框取点的最小距离
     ): List<Point> {
-        // 确保传入的参数合法
-        require(minH in 0..180 && maxH in 0..180 && minH <= maxH) { "Hue 范围非法" }
-        require(minS in 0..255 && maxS in 0..255 && minS <= maxS) { "Saturation 范围非法" }
-        require(minV in 0..255 && maxV in 0..255 && minV <= maxV) { "Value 范围非法" }
-        require(digits > 0) { "腐蚀核大小必须大于 0" }
-
-        // 转换为 HSV 空间
-        val hsvMat = Mat()
-        Imgproc.cvtColor(srcMat, hsvMat, Imgproc.COLOR_BGR2HSV)
-
         // 根据阈值进行二值化
         val lowerBound = Scalar(minH.toDouble(), minS.toDouble(), minV.toDouble())
         val upperBound = Scalar(maxH.toDouble(), maxS.toDouble(), maxV.toDouble())
         val binaryMat = Mat()
         Core.inRange(hsvMat, lowerBound, upperBound, binaryMat)
 
-        // 轮廓检测
-        val contours = mutableListOf<MatOfPoint>()
-        val hierarchy = Mat()
-        Imgproc.findContours(
-            binaryMat,
-            contours,
-            hierarchy,
-            Imgproc.RETR_EXTERNAL,
-            Imgproc.CHAIN_APPROX_SIMPLE
-        )
-
-        // 创建腐蚀核并进行腐蚀操作
-        val kernel = Imgproc.getStructuringElement(
+        // 第一次腐蚀计算去除最外层
+        val erodedMat1 = Mat()
+        val kernel1 = Imgproc.getStructuringElement(
             Imgproc.MORPH_RECT,
             Size(digits.toDouble(), digits.toDouble())
         )
-        val erodedMat = Mat()
-        Imgproc.erode(binaryMat, erodedMat, kernel)
+        Imgproc.erode(binaryMat, erodedMat1, kernel1)
 
-        // 检测角点
-        val corners = MatOfPoint()
-        Imgproc.goodFeaturesToTrack(
-            erodedMat,
-            corners,
-            10, // 可设置角点上限
-            0.01,
-            10.0
+        // 第二次腐蚀（使用更大的核）
+        val erodedMat2 = Mat()
+        val kernel2 = Imgproc.getStructuringElement(
+            Imgproc.MORPH_RECT,
+            Size((digits * 2).toDouble(), (digits * 2).toDouble())
         )
+        Imgproc.erode(erodedMat1, erodedMat2, kernel2)
 
-        // 将角点结果转换为 List<Point>
-        val cornerPoints = mutableListOf<Point>()
-        for (i in 0 until corners.rows()) {
-            val data = corners.get(i, 0) // 获取单个角点的坐标
-            cornerPoints.add(Point(data[0], data[1]))
+        // 做减法得到边框Mat
+        val borderMat = Mat()
+        Core.subtract(erodedMat1, erodedMat2, borderMat)
+
+        // 收集所有白色像素点
+        val points = mutableListOf<Point>()
+        for (y in 0 until borderMat.rows()) {
+            for (x in 0 until borderMat.cols()) {
+                if (borderMat.get(y, x)[0] > 0.0) {
+                    points.add(Point(x.toDouble(), y.toDouble()))
+                }
+            }
         }
 
-        // 如果指定了边界最小距离，则进一步过滤角点
-        if (boundaryMinDistance > 0) {
-            filterPoints(cornerPoints, srcMat, boundaryMinDistance)
-        }
-
-        // 释放内存
-        hsvMat.release()
-        binaryMat.release()
-        erodedMat.release()
-        corners.release()
-        hierarchy.release()
-        return cornerPoints
+        // 按照最小距离过滤点
+        return filterPointsByDistance(points, distance)
     }
-
 
     /**
-     * 根据给定的距离阈值过滤掉矩阵外的点
-     * 此函数的目的是从一个点列表中筛选出那些与矩阵边界距离大于等于指定阈值的点
-     * 这在需要对矩阵内部的点进行分析或处理，同时忽略靠近边界的点时特别有用
+     * 根据最小距离过滤点集，确保结果中的每两个点之间的距离都大于等于指定值
      *
-     * @param points 点列表，表示待过滤的点集合
-     * @param mat 图像矩阵，提供了矩阵的宽度和高度信息，用于确定边界
-     * @param distance 距离阈值，定义了点到矩阵边界的最小距离
-     * @return 过滤后的点列表，仅包含与矩阵边界距离大于等于指定阈值的点
+     * @param points 原始点集合，包含需要过滤的坐标点
+     * @param minDistance 最小允许的距离(像素值)，必须大于0才有意义
+     * @return 过滤后的点集合，其中任意两点间的距离都大于等于minDistance
      */
-    fun filterPoints(points: List<Point>, mat: Mat, distance: Int): List<Point> {
-        // 定义矩阵的左边界
-        val left = 0
-        // 定义矩阵的右边界，即矩阵的宽度
-        val right = mat.cols()
-        // 定义矩阵的上边界
-        val top = 0
-        // 定义矩阵的下边界，即矩阵的高度
-        val bottom = mat.rows()
-        // 过滤点列表，保留与边界距离大于等于指定阈值的点
-        return points.filter { point ->
-            isPointWithinDistance(
-                left,
-                right,
-                top,
-                bottom,
-                point,
-                distance
-            )
+    private fun filterPointsByDistance(points: List<Point>, minDistance: Int): List<Point> {
+        if (points.isEmpty() || minDistance <= 0) return points
+
+        // 初始化结果集，总是包含第一个点
+        val filteredPoints = mutableListOf<Point>()
+        filteredPoints.add(points[0])
+
+        // 遍历剩余所有点
+        for (i in 1 until points.size) {
+            val current = points[i]
+            var isFarEnough = true
+
+            // 检查当前点与已选点之间的距离
+            for (existing in filteredPoints) {
+                val dx = current.x - existing.x
+                val dy = current.y - existing.y
+                if (dx * dx + dy * dy < minDistance * minDistance) {
+                    isFarEnough = false
+                    break
+                }
+            }
+
+            // 如果满足距离要求则加入结果集
+            if (isFarEnough) {
+                filteredPoints.add(current)
+            }
         }
+
+        return filteredPoints
     }
+
+
 
 
     /**
@@ -400,7 +359,6 @@ object MatUtils {
 
 
     fun bitmapToMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
-
         // 创建一个 Mat 对象
         var mat = Mat()
         // 使用 OpenCV 的 Utils 类将 Bitmap 转换为 Mat
