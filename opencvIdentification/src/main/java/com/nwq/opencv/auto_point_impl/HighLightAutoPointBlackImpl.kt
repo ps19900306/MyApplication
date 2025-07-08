@@ -10,8 +10,9 @@ import org.opencv.core.Point
 /**
  * 利用高亮区域色块获取关键点
  * 常用颜色块识别
+ * 多了一个黑色区域
  */
-class HighLightAutoPointImpl() : IAutoRulePoint {
+class HighLightAutoPointBlackImpl() : IAutoRulePoint {
 
     private val tagStr: String = "高亮区域"
     private val descriptionStr: String = "高亮区域"
@@ -37,6 +38,7 @@ class HighLightAutoPointImpl() : IAutoRulePoint {
             HSVRule(131, 148, 195, 255, 195, 255),       // 原175-200 → 等比缩小为131-148
             HSVRule(148, 163, 195, 255, 195, 255),       // 原200-220 → 等比缩小为148-163
             HSVRule(163, 180, 195, 255, 195, 255),       // 原220-255 → 等比缩小为163-180
+            HSVRule(0, 180, 0, 255, 0, 5)        //漆黑的区域也算为高亮区域
         )
         list
     }
