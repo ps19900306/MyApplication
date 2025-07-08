@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MatUtils
+import com.nwq.opencv.AutoHsvRuleType
 import com.nwq.opencv.IAutoRulePoint
 import com.nwq.opencv.db.converters.HSVRuleConverters
 import com.nwq.opencv.db.converters.PointHSVRuleConverters
@@ -27,9 +28,10 @@ class AutoRulePointEntity() : IAutoRulePoint {
     var prList: List<HSVRule> = listOf()
     var description: String = ""
 
-    //类型
-    var type: Int = 0
 
+    //类型 请在这些类型里面选择
+    @AutoHsvRuleType
+    var type: Int = 0
 
     var targetOriginalArea: CoordinateArea? = null
     var path: String? = null
