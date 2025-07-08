@@ -4,5 +4,6 @@ import com.nwq.opencv.IAutoRulePoint
 
 object CodeHsvRuleUtils {
 
-    public val mAutoRulePointList: List<IAutoRulePoint> = listOf(HighLightAutoPointImpl())
+    public val mAutoRulePointList: List<IAutoRulePoint> =
+        listOf(KeyPointImpl(), HighLightAutoPointImpl(), HighLightAutoPointBlackImpl())
 }
