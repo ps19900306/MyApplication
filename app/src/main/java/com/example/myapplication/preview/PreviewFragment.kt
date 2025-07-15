@@ -1,49 +1,30 @@
 package com.example.myapplication.preview
 
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.ViewGroup
 import androidx.core.graphics.get
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication.R
-import com.example.myapplication.base.NavigationContainerActivity2
+import com.example.myapplication.base.AppToolBarFragment
 import com.example.myapplication.base.TouchOptModel
 import com.example.myapplication.databinding.FragmentPreviewBinding
-import com.luck.picture.lib.basic.PictureSelector
-import com.luck.picture.lib.config.SelectMimeType
-import com.luck.picture.lib.entity.LocalMedia
-import com.luck.picture.lib.interfaces.OnResultCallbackListener
-import com.nwq.base.BaseFragment
-import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseobj.ICoordinate
 import com.nwq.baseobj.PreviewCoordinateData
-import com.nwq.baseutils.FileUtils
-import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
-import com.nwq.loguitls.L
 import com.nwq.simplelist.TextAdapter
 import com.nwq.simplelist.TextWarp
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import java.util.concurrent.CancellationException
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
-class PreviewFragment : BaseToolBar2Fragment<FragmentPreviewBinding>() {
+
+class PreviewFragment : AppToolBarFragment<FragmentPreviewBinding>() {
 
     private val viewModel: PreviewViewModel by viewModels({ requireActivity() })
     private lateinit var mTextAdapter: TextAdapter<PreviewOptItem>
@@ -125,10 +106,7 @@ class PreviewFragment : BaseToolBar2Fragment<FragmentPreviewBinding>() {
     private fun onOpt(data: PreviewOptItem) {
         when (data.type) {
             TouchOptModel.FULL_SCREEN -> {
-                val ac = requireActivity()
-                if (ac is NavigationContainerActivity2) {
-                    ac.fullScreen()
-                }
+                fullScreen()
             }
 
             TouchOptModel.RECT_AREA_TYPE -> {

@@ -11,9 +11,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.paging.LOG_TAG
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityNavigationContainerBinding
 import com.nwq.base.BaseActivity
@@ -24,7 +22,7 @@ import com.nwq.loguitls.L
 /**
  * 和 NavigationContainerActivity  多了Toolbar
  */
-class NavigationContainerActivity2 : BaseActivity<ActivityNavigationContainerBinding>() {
+class NavigationToolBarActivity : BaseActivity<ActivityNavigationContainerBinding>() {
 
     companion object {
         const val TAG = "NavigationContainerActivity"
@@ -44,7 +42,7 @@ class NavigationContainerActivity2 : BaseActivity<ActivityNavigationContainerBin
             bundle: Bundle? = null
         ) {
             // 创建一个意图，用于启动NavigationContainerActivity。
-            val intent = Intent(context, NavigationContainerActivity2::class.java)
+            val intent = Intent(context, NavigationToolBarActivity::class.java)
 
             // 将导航ID作为额外信息添加到意图中，以便NavigationContainerActivity可以接收并使用它来进行导航。
             intent.putExtra("navigationID", navigationID)
@@ -154,6 +152,9 @@ class NavigationContainerActivity2 : BaseActivity<ActivityNavigationContainerBin
         binding.toolbar.isVisible = false
     }
 
-
+    public fun fullScreenHasTool() {
+        controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
+        controller.hide(WindowInsetsCompat.Type.navigationBars())
+    }
 
 }

@@ -10,14 +10,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.myapplication.base.NavigationContainerActivity2
+import com.example.myapplication.base.NavigationToolBarActivity
 import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.example.myapplication.find_target.FindTargetDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.dialog.Simple2InputDialog
-import com.nwq.dialog.SimpleInputDialog
 import com.nwq.opencv.db.entity.FindTargetRecord
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
@@ -53,7 +52,7 @@ class FindTargetListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>()
                                 return@launch
                             }
                             val id = viewModel.createTarget(name, description)
-                            NavigationContainerActivity2.startNavigationContainerActivity(
+                            NavigationToolBarActivity.startNavigationContainerActivity(
                                 requireContext(),
                                 R.navigation.nav_find_target,
                                 FindTargetDetailFragmentArgs(id, name,description).toBundle()
@@ -92,7 +91,7 @@ class FindTargetListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>()
         super.initView()
         mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<FindTargetRecord> {
             override fun onCallBack(data: FindTargetRecord) {
-                NavigationContainerActivity2.startNavigationContainerActivity(
+                NavigationToolBarActivity.startNavigationContainerActivity(
                     requireContext(),
                     R.navigation.nav_find_target,
                     FindTargetDetailFragmentArgs(data.id, data.keyTag,data.description).toBundle()

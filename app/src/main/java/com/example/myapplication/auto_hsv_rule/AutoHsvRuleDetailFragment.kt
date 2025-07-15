@@ -5,6 +5,9 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -15,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
+import com.example.myapplication.base.AppToolBarFragment
 import com.example.myapplication.base.TouchOptModel
 import com.example.myapplication.databinding.FragmentAutoHsvRuleDetailBinding
 import com.example.myapplication.preview.PreviewOptItem
@@ -23,13 +27,13 @@ import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
-import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinatePoint
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.loguitls.L
+import androidx.navigation.fragment.navArgs
 import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.opencv.hsv.HSVRule
 import com.nwq.simplelist.CheckTextAdapter
@@ -41,7 +45,7 @@ import org.opencv.core.Mat
 /**
  * [AutoRulePointEntity]
  */
-class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetailBinding>() {
+class AutoHsvRuleDetailFragment : AppToolBarFragment<FragmentAutoHsvRuleDetailBinding>() {
 
     private val TAG = "AutoHsvRuleDetailFragment"
     private val args: AutoHsvRuleDetailFragmentArgs by navArgs()
@@ -216,6 +220,30 @@ class AutoHsvRuleDetailFragment : BaseToolBar2Fragment<FragmentAutoHsvRuleDetail
     override fun initData() {
         super.initData()
         Log.i(TAG, "initData");
+
+        binding.spinner.adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            viewModel.typeList.map { it -> it.text1 }
+        )
+        binding.spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                viewModel.setOnTypeSelectP(position)
+                fullScreenHasTool()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+        binding.spinner.setSelection(viewModel.typeSelectP)
+
+
+
         binding.recycler.layoutManager = LinearLayoutManager(requireContext())
         mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<HSVRule> {
             override fun onCallBack(data: HSVRule) {

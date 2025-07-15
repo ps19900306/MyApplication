@@ -9,6 +9,9 @@ import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityNavigationContainerBinding
 import com.nwq.baseutils.T
 
+/**
+ * 弃用
+ */
 class NavigationContainerActivity : AppTouchActivity<ActivityNavigationContainerBinding>() {
 
     companion object {
@@ -23,7 +26,11 @@ class NavigationContainerActivity : AppTouchActivity<ActivityNavigationContainer
          * @param context 上下文，用于启动活动。通常是当前活动或应用程序上下文。
          * @param navigationID 导航ID，表示需要加载的导航文件的唯一标识符。例如，R.navigation.nav_auto_code 或 R.navigation.nav_auto_hsv_rule。
          */
-        fun startNavigationContainerActivity(context: Context, navigationID: Int,bundle: Bundle?=null){
+        fun startNavigationContainerActivity(
+            context: Context,
+            navigationID: Int,
+            bundle: Bundle? = null
+        ) {
             // 创建一个意图，用于启动NavigationContainerActivity。
             val intent = Intent(context, NavigationContainerActivity::class.java)
 
@@ -41,14 +48,13 @@ class NavigationContainerActivity : AppTouchActivity<ActivityNavigationContainer
         if (navigationID != -1) {
             // 加载对应的导航文件
             val navController = findNavController(R.id.nav_host_fragment)
-            navController.setGraph(navigationID,bundle)
+            navController.setGraph(navigationID, bundle)
         } else {
             // 如果没有传递有效的导航ID，可以处理错误或关闭活动
             T.show("navigationID为空")
             finish()
         }
     }
-
 
 
     override fun createBinding(inflater: LayoutInflater): ActivityNavigationContainerBinding {

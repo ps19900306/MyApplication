@@ -10,9 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.auto_hsv_rule.AutoHsvRuleDetailFragmentArgs
-import com.example.myapplication.base.NavigationContainerActivity2
+import com.example.myapplication.base.NavigationToolBarActivity
 import com.example.myapplication.databinding.FragmentSearchListBinding
-import com.example.myapplication.find_target.FindTargetDetailFragmentArgs
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.callback.CallBack
 import com.nwq.dialog.Simple2InputDialog
@@ -47,7 +46,7 @@ class AutoHsvRuleListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>(
                     Simple2InputDialog(titleRes = R.string.create_target) { name, description ->
                         lifecycleScope.launch {
                             val id = viewModel.createHsvRule(name, description)
-                            NavigationContainerActivity2.startNavigationContainerActivity(
+                            NavigationToolBarActivity.startNavigationContainerActivity(
                                 requireContext(),
                                 R.navigation.nav_auto_hsv_rule,
                                 AutoHsvRuleDetailFragmentArgs(id, name,description).toBundle()
@@ -86,7 +85,7 @@ class AutoHsvRuleListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>(
         super.initView()
         mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<AutoRulePointEntity> {
             override fun onCallBack(data: AutoRulePointEntity) {
-                NavigationContainerActivity2.startNavigationContainerActivity(
+                NavigationToolBarActivity.startNavigationContainerActivity(
                     requireContext(),
                     R.navigation.nav_auto_hsv_rule,
                     AutoHsvRuleDetailFragmentArgs(data.id, data.keyTag,data.description).toBundle()

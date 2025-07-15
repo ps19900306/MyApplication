@@ -31,7 +31,7 @@ class AutoRulePointEntity() : IAutoRulePoint {
 
     //类型 请在这些类型里面选择
     @AutoHsvRuleType
-    var type: Int = 0
+    var type: Int = AutoHsvRuleType.KEY_POINT
 
     var targetOriginalArea: CoordinateArea? = null
     var path: String? = null
