@@ -12,9 +12,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
+import com.example.myapplication.base.AppToolBarFragment
 import com.example.myapplication.databinding.FragmentSearchListBinding
-import com.nwq.base.BaseToolBar2Fragment
-import com.nwq.base.BaseToolBarFragment
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.opencv.db.entity.ClickEntity
 import com.nwq.simplelist.CheckTextAdapter
@@ -22,7 +21,7 @@ import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
 
 
-class ClickSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() {
+class ClickSelectFragment : AppToolBarFragment<FragmentSearchListBinding>() {
 
     private val args: ClickSelectFragmentArgs by navArgs()
 
