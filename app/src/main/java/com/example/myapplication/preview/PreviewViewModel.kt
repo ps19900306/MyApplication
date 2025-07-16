@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.myapplication.R
 import com.example.myapplication.base.TouchOptModel
 import com.nwq.baseobj.ICoordinate
+import com.nwq.baseobj.PreviewCoordinateData
 import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,7 @@ class PreviewViewModel : ViewModel() {
 
     public val optList: MutableList<PreviewOptItem> = mutableListOf()
     public var mBitmap: Bitmap? = null
-
+    public val defaultAreaList = mutableListOf<PreviewCoordinateData>()
     private var mMat: Mat? = null
     public fun getSrcMat(): Mat? {
         if (mMat != null)

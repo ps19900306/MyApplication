@@ -8,13 +8,10 @@
 
     <!--tong -->
     <TextView
-        android:id="@+id/Te"
+        android:id="@+id/infoTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="请输入检索内容" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
 </LinearLayout>

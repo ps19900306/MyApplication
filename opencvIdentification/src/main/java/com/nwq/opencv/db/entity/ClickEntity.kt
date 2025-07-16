@@ -17,8 +17,9 @@ data class ClickEntity(
     var isRound: Boolean = true,//是否是圆形区域，默认是方形状
 
     // 点击区域建立时候的 这个是图像的  如果isFixed=false  那么这个值就必须设置
-    val findTargetId: Long = 0,
-    var isFixed: Boolean = true, //点击位置是否是固定的 如果非固定的需要 找到图片根据偏差值进行修正
+    var findTargetId: Long = 0,
+    //如果设置了找图则默认需要修正 不然就是固定
+    // var isFixed: Boolean = true, //点击位置是否是固定的 如果非固定的需要 找到图片根据偏差值进行修正
 
     //如果是多 个点击区域 成排列时候   如果二行四列 通过这个去点击
     var spacingX: Int, //创建点击区域的原始 相对找寻目标坐标的偏移量X
@@ -39,7 +40,9 @@ data class ClickEntity(
         ClickExecuteUtils.executeClick(s);
     }
 
-
+    fun toStringSimple(): String {
+        return "ClickEntity(id=$id, keyTag='$keyTag', x=$x, y=$y, with=$with, height=$height, isRound=$isRound, findTargetId=$findTargetId)"
+    }
 
 
 }

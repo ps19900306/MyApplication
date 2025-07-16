@@ -44,7 +44,7 @@
             app:destination="@id/FunctionSelectFragment" />
         <action
             android:id="@+id/action_logicDetailFragment_to_TargetSelectFragment"
-            app:destination="@id/TargetSelectFragment" />
+            app:destination="@id/nav_target_select" />
     </fragment>
 
     <fragment
@@ -81,13 +81,7 @@
             app:argType="string" />
     </fragment>
 
-    <fragment
-        android:id="@+id/TargetSelectFragment"
-        android:name="com.example.myapplication.find_target.TargetSelectFragment"
-        android:label="@string/please_select"
-        tools:layout="@layout/fragment_search_list">
-        <argument
-            android:name="actionTag"
-            app:argType="string" />
-    </fragment>
+
+
+    <include app:graph="@navigation/nav_target_select" />
 </navigation>

@@ -4,6 +4,7 @@ package com.example.myapplication.function
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -65,7 +66,7 @@ class FunctionSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() 
                 selectedItems.map { it.getT().id }.toLongArray()
             )
         }
-        parentFragmentManager.setFragmentResult(args.actionTag, result)
+        parentFragment?.setFragmentResult(args.actionTag, result)
         findNavController().popBackStack()
     }
 

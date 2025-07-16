@@ -2,19 +2,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.myapplication.MainActivity">
+
     <item
-        android:id="@+id/action_add"
+        android:id="@+id/action_select_picture"
         android:orderInCategory="100"
-        android:title="@string/add"
+        android:title="@string/select_picture"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_set_check_target"
+        android:orderInCategory="100"
+        android:title="@string/set_check_target"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_set_click_area"
+        android:orderInCategory="100"
+        android:title="@string/set_click_area"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_switch_round"
+        android:orderInCategory="100"
+        android:title="切换方圆"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_delete_select"
+        android:id="@+id/action_save"
         android:orderInCategory="100"
-        android:title="@string/delete_select"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_delete_all"
-        android:orderInCategory="100"
-        android:title="@string/delete_all"
+        android:title="@string/save"
         app:showAsAction="never" />
 </menu>

@@ -100,4 +100,6 @@
     <string name="rule">规则</string>
     <string name="target_list">检测目标列表</string>
     <string name="rule_list">规则列表</string>
+    <string name="set_check_target">设置检测目标</string>
+    <string name="set_click_area">设置点击区域</string>
 </resources>

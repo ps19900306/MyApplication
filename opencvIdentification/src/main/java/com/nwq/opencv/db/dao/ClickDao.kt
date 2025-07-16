@@ -35,6 +35,10 @@ interface ClickDao {
     @Insert
     fun insert(entity: ClickEntity): Long
 
+
+    @Update
+    fun update(entity: ClickEntity)
+
     // 删除一条数据
     @Delete
     fun delete(entity: ClickEntity)

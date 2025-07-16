@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_auto_code"
+    app:startDestination="@+id/selectRegionFragment">
+
+    <fragment
+        android:id="@+id/ClickDetailFragment"
+        android:name="com.example.myapplication.click.ClickDetailFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_click_detail">
+        <argument
+            android:name="clickId"
+            app:argType="long" />
+        <argument
+            android:name="big_title"
+            app:argType="string" />
+        <argument
+            android:name="small_title"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_ClickDetailFragment_to_nav_opt_preview"
+            app:destination="@id/nav_opt_preview" />
+        <action
+            android:id="@+id/action_ClickDetailFragment_to_nav_target_select"
+            app:destination="@id/nav_target_select" />
+
+    </fragment>
+
+
+    <include app:graph="@navigation/nav_opt_preview" />
+
+    <include app:graph="@navigation/nav_target_select" />
+</navigation>

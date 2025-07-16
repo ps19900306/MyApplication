@@ -98,7 +98,8 @@ class PreviewFragment : AppToolBarFragment<FragmentPreviewBinding>() {
     private fun updatePreviewList() {
         val list = viewModel.optList.filter { it.coordinate != null }.map {
             PreviewCoordinateData(it.coordinate!!, it.color, it.paintWith)
-        }
+        }.toMutableList()
+        list.addAll(viewModel.defaultAreaList)
         binding.previewCoordinateView.updateList(list)
     }
 
