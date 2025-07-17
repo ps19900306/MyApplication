@@ -57,18 +57,19 @@ class ClickDetailViewModel : ViewModel() {
     }
 
     fun save() {
-        clickArea?.let { clickArea->
+        viewModelScope.launch (Dispatchers.IO){
+            clickArea?.let { clickArea->
+                mClickEntity?.let {
+                    it.x = clickArea.x
+                    it.y = clickArea.y
+                    it.with = clickArea.width
+                    it.height = clickArea.height
+                }
+            }
             mClickEntity?.let {
-                it.x = clickArea.x
-                it.y = clickArea.y
-                it.with = clickArea.width
-                it.height = clickArea.height
+                mClickDao.update(it)
             }
         }
-        mClickEntity?.let {
-            mClickDao.update(it)
-        }
-
     }
 
 

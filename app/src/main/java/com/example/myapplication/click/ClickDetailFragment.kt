@@ -102,15 +102,18 @@ class ClickDetailFragment : AppToolBarFragment<FragmentClickDetailBinding>() {
     override fun onResume() {
         super.onResume()
         preViewModel.optList.find { it.key == R.string.click_area }?.coordinate?.let {
-            if (it is CoordinateArea)
+            if (it is CoordinateArea) {
                 viewModel.clickArea = it
+                setInfo()
+            }
         }
     }
 
 
     private fun setInfo() {
         viewModel.mClickEntity?.let {
-            binding.infoTv.text = it.toStringSimple()
+            binding.infoTv.text =
+                it.toStringSimple() + "\n" + "新设点击区域：" + viewModel.clickArea?.toStringSimple()
         }
     }
 
