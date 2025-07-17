@@ -16,6 +16,7 @@ import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityNavigationContainerBinding
 import com.nwq.base.BaseActivity
 import com.nwq.base.BaseToolBar2Fragment
+import com.nwq.baseutils.GsonUtils
 import com.nwq.baseutils.T
 import com.nwq.loguitls.L
 
@@ -43,7 +44,8 @@ class NavigationToolBarActivity : BaseActivity<ActivityNavigationContainerBindin
         ) {
             // 创建一个意图，用于启动NavigationContainerActivity。
             val intent = Intent(context, NavigationToolBarActivity::class.java)
-
+            Log.i(TAG, "startNavigationContainerActivity navigationID: $navigationID")
+            Log.i(TAG, "bundle: ${GsonUtils.toJson(bundle)}")
             // 将导航ID作为额外信息添加到意图中，以便NavigationContainerActivity可以接收并使用它来进行导航。
             intent.putExtra("navigationID", navigationID)
             bundle?.let { intent.putExtras(it) }
@@ -51,6 +53,7 @@ class NavigationToolBarActivity : BaseActivity<ActivityNavigationContainerBindin
             context.startActivity(intent)
         }
     }
+
     /**
      * 全屏的
      */
@@ -70,7 +73,7 @@ class NavigationToolBarActivity : BaseActivity<ActivityNavigationContainerBindin
     }
 
     override fun initData() {
-        L.i(TAG,"initData $this")
+        L.i(TAG, "initData $this")
         binding.toolbar.menu.clear() // 清除旧菜单
         val navigationID = intent.getIntExtra("navigationID", -1)
         val bundle = intent.extras

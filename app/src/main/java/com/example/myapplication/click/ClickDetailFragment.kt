@@ -52,7 +52,7 @@ class ClickDetailFragment : AppToolBarFragment<FragmentClickDetailBinding>() {
         when (menuItem.itemId) {
             R.id.action_set_check_target -> {
                 findNavController().navigate(
-                    R.id.action_logicDetailFragment_to_TargetSelectFragment,
+                    R.id.action_ClickDetailFragment_to_nav_target_select,
                     TargetSelectFragmentArgs(SELECT_TARGET_TAG).toBundle()
                 )
             }
@@ -172,6 +172,6 @@ class ClickDetailFragment : AppToolBarFragment<FragmentClickDetailBinding>() {
             )
         }
         preViewModel.mBitmap = viewModel.mSrcBitmap
-        findNavController().navigate(R.id.action_findTargetDetailFragment_to_nav_opt_preview)
+        findNavController().navigate(R.id.action_ClickDetailFragment_to_nav_opt_preview)
     }
 }

@@ -49,8 +49,8 @@ class ClickAreaListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() 
                             val id = viewModel.createHsvRule(name, description)
                             NavigationToolBarActivity.startNavigationContainerActivity(
                                 requireContext(),
-                                R.navigation.nav_auto_hsv_rule,
-                                AutoHsvRuleDetailFragmentArgs(id, name, description).toBundle()
+                                R.navigation.nav_click_area,
+                                ClickDetailFragmentArgs(id, name).toBundle()
                             )
                         }
                     }
@@ -88,7 +88,7 @@ class ClickAreaListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() 
             override fun onCallBack(data: ClickEntity) {
                 NavigationToolBarActivity.startNavigationContainerActivity(
                     requireContext(),
-                    R.navigation.nav_auto_hsv_rule,
+                    R.navigation.nav_click_area,
                     ClickDetailFragmentArgs(data.id, data.keyTag).toBundle()
                 )
             }

@@ -26,7 +26,6 @@ class ClickAreaListModel : ViewModel() {
     private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 
     private val mAutoRulePointDao = IdentifyDatabase.getDatabase().clickDao()
-    var nowHsv: HSVRule? = null
 
     // 合并查询逻辑
     val resultsFlow = queryFlow.debounce(1000).flatMapLatest { query ->

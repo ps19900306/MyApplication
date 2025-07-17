@@ -7,7 +7,9 @@ object GsonUtils {
         return gson.fromJson(json, clazz)
     }
 
-    fun toJson(obj: Any): String {
+    fun toJson(obj: Any?): String {
+        if (obj == null)
+            return ""
         return gson.toJson(obj)
     }
     public val gson = Gson()
