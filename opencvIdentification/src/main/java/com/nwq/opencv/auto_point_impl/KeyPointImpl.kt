@@ -25,6 +25,7 @@ class KeyPointImpl() : IAutoRulePoint {
         val list = MatUtils.getPointByImageKeyPoint(
             hsvMat
         )
+        pointList.addAll( list)
         return pointList
     }
 
