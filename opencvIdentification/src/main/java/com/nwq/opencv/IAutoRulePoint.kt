@@ -8,6 +8,7 @@ interface IAutoRulePoint {
 
     suspend fun autoPoint(hsvMat: Mat): MutableList<Point>
 
+
     fun getTag(): String
 
     fun getDescriptionInfo(): String

@@ -1,5 +1,6 @@
 package com.nwq.loguitls
 
+import com.nwq.baseutils.DataUtils
 import com.nwq.loguitls.cat.CatLog
 import com.nwq.loguitls.db.DbLog
 import com.nwq.loguitls.file.FileLog
@@ -25,6 +26,7 @@ object L : ILog {
         }
     }
 
+
     override fun d(tag: String, msg: String, time: Long) {
         list.forEach {
             if (checkNeedLog(LogLevel.DEBUG, tag, time, it.getLogFilterInfo())) {
@@ -32,6 +34,16 @@ object L : ILog {
             }
         }
     }
+
+    //time "2025/7/18/16:42"
+    fun d(tag: String, msg: String, time: String) {
+        list.forEach {
+            if (checkNeedLog(LogLevel.DEBUG, tag, time, it.getLogFilterInfo())) {
+                it.d(tag, msg, DataUtils.dateTimeStrToMillis(time, "yyyy/M/dd/HH:mm"))
+            }
+        }
+    }
+
 
     override fun i(tag: String, msg: String, time: Long) {
         list.forEach {
@@ -86,11 +98,41 @@ object L : ILog {
         if (level < filter.level) {
             return false
         }
-        if (time < filter.startTime) {
+        if (time != -1L) {
+            if (time < filter.startTime) {
+                return false
+            }
+            if (filter.endTime != -1L && time > filter.endTime) {
+                return false
+            }
+        }
+        return true
+    }
+
+
+    private fun checkNeedLog(
+        level: Int,
+        tag: String,
+        timeStr: String,
+        filter: LogFilterInfo?
+    ): Boolean {
+        if (filter == null) {
+            return true;
+        }
+        if (filter.keyStr != null && !tag.contains(filter.keyStr!!)) {
             return false
         }
-        if (filter.endTime != -1L && time > filter.endTime) {
+        if (level < filter.level) {
             return false
+        }
+        val time = DataUtils.dateTimeStrToMillis(timeStr, "yyyy/M/dd/HH:mm")
+        if (time != -1L) {
+            if (time < filter.startTime) {
+                return false
+            }
+            if (filter.endTime != -1L && time > filter.endTime) {
+                return false
+            }
         }
         return true
     }

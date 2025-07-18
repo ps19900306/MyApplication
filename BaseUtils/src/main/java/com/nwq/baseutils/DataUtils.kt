@@ -52,6 +52,11 @@ object DataUtils {
         }
     }
 
+    private fun parseTimeToMillis(timeStr: String): Long {
+        val format = SimpleDateFormat("yyyy/M/dd/HH:mm", Locale.getDefault())
+        return format.parse(timeStr)?.time ?: System.currentTimeMillis()
+    }
+
     /**
      * 将毫秒值转换为日期时间字符串
      *

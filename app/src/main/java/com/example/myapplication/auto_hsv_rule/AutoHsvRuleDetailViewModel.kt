@@ -1,6 +1,7 @@
 package com.example.myapplication.auto_hsv_rule
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nwq.adapter.KeyTextImp
@@ -8,6 +9,7 @@ import com.nwq.adapter.KeyTextImp
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
+import com.nwq.loguitls.L
 import com.nwq.opencv.AutoHsvRuleType
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.AutoRulePointEntity
@@ -45,6 +47,15 @@ class AutoHsvRuleDetailViewModel : ViewModel() {
     }
 
     public fun setOnTypeSelectP(typeP: Int) {
+        L.d("AutoHsvRuleDetailViewModel", "setOnTypeSelectP:", "2025/7/18/16:42")
+
+
+
+
+
+
+
+
         typeSelectP = typeP
         type = typeList[typeP].getKey()
     }

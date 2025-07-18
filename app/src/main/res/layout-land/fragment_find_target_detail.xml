@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
+    tools:context=".find_target.FindTargetDetailFragment">
+
+    <TextView
+        android:id="@+id/hsvBgView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/bg_stccc_soe0e0e0"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:text="Hsv"
+        android:textColor="@color/black"
+        app:layout_constraintDimensionRatio="4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/rgbBgView"
+        app:layout_constraintWidth_percent="0.3" />
+
+
+    <TextView
+        android:id="@+id/rgbBgView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_stccc_soe0e0e0"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:text="Rgb"
+        android:textColor="@color/black"
+        app:layout_constraintDimensionRatio="4"
+        app:layout_constraintStart_toEndOf="@+id/hsvBgView"
+        app:layout_constraintTop_toTopOf="@+id/hsvBgView"
+        app:layout_constraintEnd_toStartOf="@+id/imgBgView"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:id="@+id/imgBgView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_stccc_soe0e0e0"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:text="Img"
+        android:textColor="@color/black"
+        app:layout_constraintDimensionRatio="4"
+        app:layout_constraintStart_toEndOf="@+id/rgbBgView"
+        app:layout_constraintTop_toTopOf="@+id/rgbBgView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:id="@+id/matBgView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/bg_stccc_soe0e0e0"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:text="mat"
+        android:textColor="@color/black"
+        app:layout_constraintDimensionRatio="4"
+        app:layout_constraintStart_toStartOf="@+id/hsvBgView"
+        app:layout_constraintTop_toBottomOf="@+id/imgBgView"
+        app:layout_constraintWidth_percent="0.3" />
+</androidx.constraintlayout.widget.ConstraintLayout>
