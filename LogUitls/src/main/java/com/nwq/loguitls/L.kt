@@ -14,14 +14,19 @@ object L : ILog {
     //初始化打印哪些日志
     init {
         // list.add(FileLog(LogFilterInfo(level = LogLevel.INFO))) //日志文件  默认不开启
-        list.add(CatLog()) //普通日志
+        list.add(CatLog()) //普通日志 只在调试模式的时候显示
         list.add(DbLog(LogFilterInfo(level = LogLevel.INFO))) //数据库日志
     }
 
+    /**
+     * 注意这里 方法里面的time: Long 是用来做过滤 让日志不要太多
+     * it.v 里面的Time是触发此事件时候的 时间  用来记录事件的
+     * 二个 time的意义完全不一样
+     */
     override fun v(tag: String, msg: String, time: Long) {
         list.forEach {
             if (checkNeedLog(LogLevel.VERBOSE, tag, time, it.getLogFilterInfo())) {
-                it.v(tag, msg, time)
+                it.v(tag, msg, System.currentTimeMillis())
             }
         }
     }
@@ -30,7 +35,7 @@ object L : ILog {
     override fun d(tag: String, msg: String, time: Long) {
         list.forEach {
             if (checkNeedLog(LogLevel.DEBUG, tag, time, it.getLogFilterInfo())) {
-                it.d(tag, msg, time)
+                it.d(tag, msg, System.currentTimeMillis())
             }
         }
     }
@@ -39,7 +44,7 @@ object L : ILog {
     fun d(tag: String, msg: String, time: String) {
         list.forEach {
             if (checkNeedLog(LogLevel.DEBUG, tag, time, it.getLogFilterInfo())) {
-                it.d(tag, msg, DataUtils.dateTimeStrToMillis(time, "yyyy/M/dd/HH:mm"))
+                it.d(tag, msg, System.currentTimeMillis())
             }
         }
     }
@@ -48,7 +53,7 @@ object L : ILog {
     override fun i(tag: String, msg: String, time: Long) {
         list.forEach {
             if (checkNeedLog(LogLevel.INFO, tag, time, it.getLogFilterInfo())) {
-                it.i(tag, msg, time)
+                it.i(tag, msg,  System.currentTimeMillis())
             }
         }
     }
@@ -56,7 +61,7 @@ object L : ILog {
     override fun w(tag: String, msg: String, time: Long) {
         list.forEach {
             if (checkNeedLog(LogLevel.WARN, tag, time, it.getLogFilterInfo())) {
-                it.w(tag, msg, time)
+                it.w(tag, msg,  System.currentTimeMillis())
             }
         }
     }
@@ -64,7 +69,7 @@ object L : ILog {
     override fun e(tag: String, msg: String, time: Long) {
         list.forEach {
             if (checkNeedLog(LogLevel.ERROR, tag, time, it.getLogFilterInfo())) {
-                it.e(tag, msg, time)
+                it.e(tag, msg,  System.currentTimeMillis())
             }
         }
     }

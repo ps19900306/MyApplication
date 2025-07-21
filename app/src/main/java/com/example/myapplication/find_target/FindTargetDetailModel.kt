@@ -30,7 +30,10 @@ import androidx.paging.LOG_TAG
 import com.nwq.baseutils.MaskUtils
 import com.nwq.loguitls.L
 import com.nwq.opencv.auto_point_impl.CodeHsvRuleUtils
+import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.opencv.db.entity.ImageDescriptorEntity
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import org.opencv.core.Mat
 import org.opencv.core.MatOfKeyPoint
 import org.opencv.features2d.Feature2D
@@ -72,6 +75,49 @@ class FindTargetDetailModel : ViewModel() {
     private val mTargetHsvDao = IdentifyDatabase.getDatabase().findTargetHsvDao()
     private val mTargetImgDao = IdentifyDatabase.getDatabase().findTargetImgDao()
     private val mTargetMatDao = IdentifyDatabase.getDatabase().findTargetMatDao()
+
+    //这个是IMG找目标的
+    private val imgStorageImgFlow = MutableStateFlow<Bitmap?>(null)
+    private var imgStorageHsvRule: AutoRulePointEntity? = null
+    private val imgFinalImgFlow = MutableStateFlow<Bitmap?>(null)
+    private var imgFinalHsvRule: AutoRulePointEntity? = null
+
+    fun updateImgStorageHsvRule(keyTagStr: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            imgStorageHsvRule =
+                IdentifyDatabase.getDatabase().autoRulePointDao().findByKeyTag(keyTagStr)
+            if (getSelectBitmap() == null || imgStorageHsvRule == null)
+                return@launch
+            mSelectMat =
+                if (mSelectMat != null) mSelectMat else MatUtils.bitmapToHsvMat(getSelectBitmap()!!)
+            var lastMaskMat: Mat? = null
+            imgStorageHsvRule!!.prList.forEach { rule ->
+                val maskMat = MatUtils.getFilterMaskMat(
+                    mSelectMat!!,
+                    rule.minH,
+                    rule.maxH,
+                    rule.minS,
+                    rule.maxS,
+                    rule.minV,
+                    rule.maxV
+                )
+                if (lastMaskMat == null) {
+                    lastMaskMat = maskMat
+                } else {
+                    lastMaskMat = MatUtils.mergeMaskMat(lastMaskMat!!, maskMat)
+                }
+            }
+            val resultMap = MatUtils.hsvMatToBitmap(MatUtils.filterByMask(mSelectMat!!, lastMaskMat!!))
+            imgStorageImgFlow.tryEmit(resultMap)
+        }
+    }
+
+    fun updateImgFinalHsvRule(keyTagStr: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            imgFinalHsvRule =
+                IdentifyDatabase.getDatabase().autoRulePointDao().findByKeyTag(keyTagStr)
+        }
+    }
 
 
     public fun init(targetId: Long) {

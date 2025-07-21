@@ -92,7 +92,7 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
                 //选择功能区域
                 findNavController().navigate(
                     R.id.action_hsvTargetDetailFragment_to_AutoHsvRuleSelectFragment,
-                    AutoHsvRuleSelectFragmentArgs(SELECT_HSV_RULE_TAG).toBundle()
+                    AutoHsvRuleSelectFragmentArgs(SELECT_HSV_RULE_TAG,true).toBundle()
                 )
             }
 

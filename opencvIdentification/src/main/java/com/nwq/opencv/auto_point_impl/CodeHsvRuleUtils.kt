@@ -6,4 +6,7 @@ object CodeHsvRuleUtils {
 
     public val mAutoRulePointList: List<IAutoRulePoint> =
         listOf(KeyPointImpl(), HighLightAutoPointImpl(), HighLightAutoPointBlackImpl())
+
+
+
 }

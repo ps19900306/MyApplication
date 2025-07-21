@@ -4,22 +4,22 @@
     tools:context="com.example.myapplication.MainActivity">
     <item
         android:id="@+id/nav_function"
-        android:orderInCategory="100"
-
+        android:orderInCategory="1"
         android:icon="@mipmap/icon_live_open_robot"
         android:title="@string/function" />
     <item
         android:id="@+id/nav_target"
         android:icon="@mipmap/icon_live_open_live_class1"
+        android:orderInCategory="2"
         android:title="@string/result_is_pass" />
     <item
         android:id="@+id/nav_rule"
-        android:orderInCategory="100"
+        android:orderInCategory="4"
         android:icon="@mipmap/icon_live_open_clarity"
         android:title="@string/rule" />
     <item
         android:id="@+id/nav_click"
-        android:orderInCategory="100"
+        android:orderInCategory="3"
         android:icon="@mipmap/icon_live_open_xjd"
         android:title="@string/click_area" />
 </menu>

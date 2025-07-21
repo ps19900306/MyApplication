@@ -70,8 +70,8 @@ class AutoHsvRuleSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_select_all -> {
-                //  mTextAdapter.selectAll(true)
-                return true
+//                mTextAdapter.getSelectData(true)
+//                return true
             }
 
             R.id.action_delete_all -> {
@@ -128,22 +128,24 @@ class AutoHsvRuleSelectFragment : BaseToolBar2Fragment<FragmentSearchListBinding
                             "${data.keyTag}:详情:${data.description}"
                         }
                     }.toMutableList()
-                    if (TextUtils.isEmpty(queryFlow.value)) {
-                        val list2 = CodeHsvRuleUtils.mAutoRulePointList.map { data ->
-                            ICheckTextWrap<IAutoRulePoint>(data) {
-                                "${data.getTag()}:详情:${data.getDescriptionInfo()}"
+                    if (args.showDefault){
+                        if (TextUtils.isEmpty(queryFlow.value)) {
+                            val list2 = CodeHsvRuleUtils.mAutoRulePointList.map { data ->
+                                ICheckTextWrap<IAutoRulePoint>(data) {
+                                    "${data.getTag()}:详情:${data.getDescriptionInfo()}"
+                                }
                             }
-                        }
-                        list.addAll(0, list2)
-                    } else {
-                        val list2 = CodeHsvRuleUtils.mAutoRulePointList.filter { data ->
-                            data.getTag().contains(queryFlow.value)
-                        }.map { data ->
-                            ICheckTextWrap<IAutoRulePoint>(data) {
-                                "${data.getTag()}:详情:${data.getDescriptionInfo()}"
+                            list.addAll(0, list2)
+                        } else {
+                            val list2 = CodeHsvRuleUtils.mAutoRulePointList.filter { data ->
+                                data.getTag().contains(queryFlow.value)
+                            }.map { data ->
+                                ICheckTextWrap<IAutoRulePoint>(data) {
+                                    "${data.getTag()}:详情:${data.getDescriptionInfo()}"
+                                }
                             }
+                            list.addAll(0, list2)
                         }
-                        list.addAll(0, list2)
                     }
                     mTextAdapter.upData(list)
                 }

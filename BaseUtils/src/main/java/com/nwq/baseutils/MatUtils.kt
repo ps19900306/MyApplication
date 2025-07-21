@@ -203,6 +203,22 @@ object MatUtils {
         return destMat
     }
 
+    /**
+     * 根据掩码生成新的目标掩码，规则为：原掩码值为0的区域保留，为1的区域不保留
+     *
+     * @param maskMat 单通道掩码Mat对象，输入掩码
+     * @return 生成的新掩码Mat对象，符合过滤规则
+     */
+    fun generateInverseMask(srcMat: Mat, maskMat: Mat): Mat {
+        // 创建全白Mat作为基准
+        val whiteMat = Mat(maskMat.size(), maskMat.type(), Scalar(255.0))
+
+        // 对原掩码取反
+        val invertedMask = Mat()
+        Core.bitwise_not(maskMat, invertedMask)
+        return filterByMask(srcMat, invertedMask)
+    }
+
 
     // 获取点通过特征点
     public fun getPointByImageKeyPoint(hsvMat: Mat, mask: Mat? = null): List<Point> {

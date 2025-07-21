@@ -119,6 +119,11 @@
         <argument
             android:name="actionTag"
             app:argType="string" />
+
+        <argument
+            android:name="showDefault"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
 
     <include app:graph="@navigation/nav_opt_preview" />
