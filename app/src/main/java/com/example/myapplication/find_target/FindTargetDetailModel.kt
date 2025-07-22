@@ -27,8 +27,8 @@ import kotlinx.coroutines.withContext
 import org.opencv.core.Point
 import androidx.core.graphics.get
 import androidx.paging.LOG_TAG
-import com.nwq.baseutils.MaskUtils
 import com.nwq.loguitls.L
+import com.nwq.opencv.AutoHsvRuleType
 import com.nwq.opencv.auto_point_impl.CodeHsvRuleUtils
 import com.nwq.opencv.db.entity.AutoRulePointEntity
 import com.nwq.opencv.db.entity.ImageDescriptorEntity
@@ -58,8 +58,6 @@ class FindTargetDetailModel : ViewModel() {
 
     //这个是找图范围
     var findArea: CoordinateArea? = null
-    private var maskType: Int = MaskUtils.UN_SET_MASK
-
     //所有的必须一致  如果需要重新生成需要清除掉原有数据
     //进行生成时候选的区域
     var targetOriginalArea: CoordinateArea? = null
@@ -78,10 +76,12 @@ class FindTargetDetailModel : ViewModel() {
 
     //这个是IMG找目标的
     private val imgStorageImgFlow = MutableStateFlow<Bitmap?>(null)
+    private var imgStorageMat: Mat? = null
     private var imgStorageHsvRule: AutoRulePointEntity? = null
     private val imgFinalImgFlow = MutableStateFlow<Bitmap?>(null)
     private var imgFinalHsvRule: AutoRulePointEntity? = null
 
+    //这个是生成存储图片的过滤规则
     fun updateImgStorageHsvRule(keyTagStr: String) {
         viewModelScope.launch(Dispatchers.IO) {
             imgStorageHsvRule =
@@ -107,15 +107,56 @@ class FindTargetDetailModel : ViewModel() {
                     lastMaskMat = MatUtils.mergeMaskMat(lastMaskMat!!, maskMat)
                 }
             }
-            val resultMap = MatUtils.hsvMatToBitmap(MatUtils.filterByMask(mSelectMat!!, lastMaskMat!!))
+            if (imgStorageHsvRule!!.type == AutoHsvRuleType.FILTER_MASK) {
+                imgStorageMat = MatUtils.filterByMask(mSelectMat!!, lastMaskMat!!)
+            } else {
+                imgStorageMat = MatUtils.generateInverseMask(mSelectMat!!, lastMaskMat!!)
+            }
+            val resultMap = MatUtils.hsvMatToBitmap(imgStorageMat!!)
             imgStorageImgFlow.tryEmit(resultMap)
+
+
         }
     }
 
+    //这个是进行图片检验时候的蒙版规则
     fun updateImgFinalHsvRule(keyTagStr: String) {
         viewModelScope.launch(Dispatchers.IO) {
             imgFinalHsvRule =
                 IdentifyDatabase.getDatabase().autoRulePointDao().findByKeyTag(keyTagStr)
+            if (imgFinalHsvRule == null || imgStorageMat == null || imgStorageImgFlow.value == null)
+                return@launch
+            imgStorageMat =
+                if (imgStorageMat != null) imgStorageMat else MatUtils.bitmapToHsvMat(
+                    imgStorageImgFlow.value!!
+                )
+
+            var lastMaskMat: Mat? = null
+            imgFinalHsvRule!!.prList.forEach { rule ->
+                val maskMat = MatUtils.getFilterMaskMat(
+                    imgStorageMat!!,
+                    rule.minH,
+                    rule.maxH,
+                    rule.minS,
+                    rule.maxS,
+                    rule.minV,
+                    rule.maxV
+                )
+                if (lastMaskMat == null) {
+                    lastMaskMat = maskMat
+                } else {
+                    lastMaskMat = MatUtils.mergeMaskMat(lastMaskMat!!, maskMat)
+                }
+
+                val resultMat = if (imgFinalHsvRule!!.type == AutoHsvRuleType.FILTER_MASK) {
+                    MatUtils.filterByMask(mSelectMat!!, lastMaskMat!!)
+                } else {
+                    MatUtils.generateInverseMask(mSelectMat!!, lastMaskMat!!)
+                }
+                val resultMap = MatUtils.hsvMatToBitmap(resultMat)
+                imgFinalImgFlow.tryEmit(resultMap)
+            }
+
         }
     }
 
@@ -277,25 +318,25 @@ class FindTargetDetailModel : ViewModel() {
             targetOriginalArea = selectArea,
             findArea = findArea,
             storageType = MatUtils.STORAGE_EXTERNAL_TYPE,
-            maskType = maskType
+            maskRuleId = imgFinalHsvRule?.id?:-1L
         )
         IdentifyDatabase.getDatabase().findTargetImgDao().insert(data)
     }
 
     private fun buildMatFindTarget(selectMat: Mat, selectArea: CoordinateArea) {
-        val bitmap = MatUtils.hsvMatToBitmap(selectMat!!)
-        FileUtils.saveBitmapToExternalStorageImg(bitmap, mFindTargetRecord?.keyTag ?: "")
-
-        //将特征点保存到数据库
-        buildImageDescriptorEntity(selectMat!!, MaskUtils.getMaskMat(selectMat, maskType))
-        val data = FindTargetMatEntity(
-            keyTag = mFindTargetRecord?.keyTag ?: "",
-            targetOriginalArea = selectArea!!,
-            findArea = findArea,
-            storageType = MatUtils.STORAGE_EXTERNAL_TYPE,
-            maskType = maskType
-        )
-        IdentifyDatabase.getDatabase().findTargetMatDao().insert(data)
+//        val bitmap = MatUtils.hsvMatToBitmap(selectMat!!)
+//        FileUtils.saveBitmapToExternalStorageImg(bitmap, mFindTargetRecord?.keyTag ?: "")
+//
+//        //将特征点保存到数据库
+//        buildImageDescriptorEntity(selectMat!!, MaskUtils.getMaskMat(selectMat, maskType))
+//        val data = FindTargetMatEntity(
+//            keyTag = mFindTargetRecord?.keyTag ?: "",
+//            targetOriginalArea = selectArea!!,
+//            findArea = findArea,
+//            storageType = MatUtils.STORAGE_EXTERNAL_TYPE,
+//            maskType = maskType
+//        )
+//        IdentifyDatabase.getDatabase().findTargetMatDao().insert(data)
     }
 
 

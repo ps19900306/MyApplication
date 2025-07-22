@@ -5,7 +5,6 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinatePoint
-import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.FindTargetType
 import com.nwq.opencv.IFindTarget

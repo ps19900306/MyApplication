@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.FileUtils
-import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.db.IdentifyDatabase
 import com.nwq.opencv.db.entity.ClickEntity

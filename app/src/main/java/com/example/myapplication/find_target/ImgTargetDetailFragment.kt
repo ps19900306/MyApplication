@@ -57,11 +57,13 @@ class ImgTargetDetailFragment : BaseToolBar2Fragment<FragmentImgTargetDetailBind
 
 
     override fun getMenuRes(): Int {
-        TODO("Not yet implemented")
+        return R.menu.menu_target_img
     }
 
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
-        TODO("Not yet implemented")
+        var flag = true
+
+        return flag
     }
 
     override fun onBackPress(): Boolean {

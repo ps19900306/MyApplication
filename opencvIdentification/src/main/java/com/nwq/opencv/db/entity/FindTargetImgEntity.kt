@@ -5,7 +5,6 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinatePoint
-import com.nwq.baseutils.MaskUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.opencv.FindTargetType
 import com.nwq.opencv.IFindTarget
@@ -34,7 +33,7 @@ data class FindTargetImgEntity(
     var storageType: Int = MatUtils.STORAGE_ASSET_TYPE,
 
     //生成匹配蒙版的类型
-    var maskType: Int = MaskUtils.UN_SET_MASK,
+    var maskRuleId: Long = -1,
 
     var thresholdValue: Float = 0.8f,//这个是找图通过的阈值
 
@@ -56,14 +55,14 @@ data class FindTargetImgEntity(
     @Ignore
     private var maskMat: Mat? = null
 
-     @Ignore
-     private val mOffsetPoint: CoordinatePoint = CoordinatePoint(0,0)
+    @Ignore
+    private val mOffsetPoint: CoordinatePoint = CoordinatePoint(0, 0)
 
 
     private fun getMaskMat(): Mat? {
-        if (maskMat == null) {
-            maskMat = MaskUtils.getMaskMat(getTargetMat(), maskType)
-        }
+//        if (maskMat == null) {
+//            maskMat = MaskUtils.getMaskMat(getTargetMat(), maskType)
+//        }
         return maskMat
     }
 
@@ -124,7 +123,7 @@ data class FindTargetImgEntity(
     }
 
     override suspend fun getOffsetPoint(): CoordinatePoint {
-       return mOffsetPoint;
+        return mOffsetPoint;
     }
 
 
@@ -157,8 +156,8 @@ data class FindTargetImgEntity(
                 matchLoc.x.toInt(), matchLoc.y.toInt(),
                 getTargetMat()!!.width(), getTargetMat()!!.height()
             )
-            mOffsetPoint.x =coordinateArea.x-targetOriginalArea.x
-            mOffsetPoint.y =coordinateArea.y-targetOriginalArea.y
+            mOffsetPoint.x = coordinateArea.x - targetOriginalArea.x
+            mOffsetPoint.y = coordinateArea.y - targetOriginalArea.y
             return coordinateArea
         }
         // 否则返回 null
