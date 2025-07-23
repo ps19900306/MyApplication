@@ -12,6 +12,7 @@ import com.nwq.base.BaseActivity
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinateLine
 import com.nwq.baseobj.CoordinatePoint
+import com.nwq.loguitls.L
 import com.nwq.view.PreviewImageView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -108,6 +109,7 @@ abstract class AppTouchActivity<VB : ViewBinding> : BaseActivity<VB>() {
         if (nowMode == TouchOptModel.NORMAL_TYPE) {
             return super.onTouchEvent(ev)
         }
+        L.i("AppTouchActivity", "onTouchEvent  x:${ev.x} y:${ev.y}")
         when (nowMode) {
             TouchOptModel.SINGLE_CLICK_TYPE -> {
                 mTouchOptModel.nowPoint.tryEmit(CoordinatePoint(ev.x.toInt(), ev.y.toInt()))

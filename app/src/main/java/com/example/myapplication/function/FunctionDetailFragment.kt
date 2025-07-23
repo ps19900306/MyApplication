@@ -11,16 +11,16 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.FragmentFunctionDetailBinding
 import com.example.myapplication.R
+import com.example.myapplication.base.AppToolBarFragment
 import com.example.myapplication.logic.LogicCreateDialog
 import com.example.myapplication.logic.LogicDetailFragmentArgs
-import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.callback.CallBack
 import com.nwq.opencv.db.entity.LogicEntity
 import com.nwq.simplelist.ICheckTextWrap
 import com.nwq.simplelist.TextAdapter
 import kotlinx.coroutines.launch
 
-class FunctionDetailFragment : BaseToolBar2Fragment<FragmentFunctionDetailBinding>() {
+class FunctionDetailFragment : AppToolBarFragment<FragmentFunctionDetailBinding>() {
 
     private val args: FunctionDetailFragmentArgs by navArgs()
     private val viewModel: FunctionEdtViewModel by viewModels({ requireActivity() })

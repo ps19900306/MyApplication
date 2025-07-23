@@ -2,6 +2,7 @@ package com.example.myapplication.function
 
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.setFragmentResult
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.FunctionViewModel
 import com.nwq.base.BaseToolBarFragment
 import com.example.myapplication.R
+import com.example.myapplication.base.AppToolBarFragment
 import com.example.myapplication.databinding.FragmentSearchListBinding
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.opencv.db.entity.FunctionEntity
@@ -22,18 +24,15 @@ import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.launch
 
-class FunctionSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() {
+class FunctionSelectFragment : AppToolBarFragment<FragmentSearchListBinding>() {
 
     private val viewModel: FunctionViewModel by viewModels()
     private val args: FunctionSelectFragmentArgs by navArgs()
     private lateinit var mCheckTextAdapter: CheckTextAdapter<FunctionEntity>
 
-    override fun getLayoutId(): Int {
-        return R.layout.fragment_search_list
-    }
 
-    override fun getTitleRes(): Int {
-        return R.string.please_select
+    override fun createBinding(inflater: LayoutInflater): FragmentSearchListBinding {
+        return FragmentSearchListBinding.inflate(inflater)
     }
 
     override fun getMenuRes(): Int {
@@ -41,7 +40,7 @@ class FunctionSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() 
     }
 
 
-    override fun onMenuItemClick(menuItem: MenuItem) {
+    override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_select_all -> {
                 mCheckTextAdapter.selectAll(true)
@@ -55,10 +54,11 @@ class FunctionSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() 
                 mCheckTextAdapter.selectReverse()
             }
         }
+        return true
     }
 
 
-    override fun onBackPress() {
+    override fun onBackPress(): Boolean {
         val selectedItems = mCheckTextAdapter.getSelectedItem()
         val result = Bundle().apply {
             putLongArray(
@@ -68,6 +68,7 @@ class FunctionSelectFragment : BaseToolBarFragment<FragmentSearchListBinding>() 
         }
         parentFragment?.setFragmentResult(args.actionTag, result)
         findNavController().popBackStack()
+        return true
     }
 
 
