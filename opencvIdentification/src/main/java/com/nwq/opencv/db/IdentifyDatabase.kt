@@ -40,18 +40,21 @@ import com.nwq.opencv.db.entity.TargetVerifyResult
 import java.io.FileOutputStream
 import java.io.InputStream
 
-@Database(entities = [AutoRulePointEntity::class, ClickEntity::class, FindTargetHsvEntity::class
-    , FindTargetImgEntity::class , FindTargetMatEntity::class , FindTargetRecord::class ,
-    FindTargetRgbEntity::class ,FunctionEntity::class, ImageDescriptorEntity::class , KeyPointEntity::class,  LogicEntity::class,TargetVerifyResult::class],
-    version = 1,exportSchema = false)
-@TypeConverters(CoordinateAreaConverters::class,
+@Database(
+    entities = [AutoRulePointEntity::class, ClickEntity::class, FindTargetHsvEntity::class, FindTargetImgEntity::class, FindTargetMatEntity::class, FindTargetRecord::class,
+        FindTargetRgbEntity::class, FunctionEntity::class, ImageDescriptorEntity::class, KeyPointEntity::class, LogicEntity::class, TargetVerifyResult::class],
+    version = 1, exportSchema = false
+)
+@TypeConverters(
+    CoordinateAreaConverters::class,
     HSVRuleConverters::class,
     KeyPointConverters::class,
     LongListConverters::class,
     PointConverters::class,
     PointHSVRuleConverters::class,
     PointRuleConverters::class,
-    PointVerifyResultConverters::class)
+    PointVerifyResultConverters::class
+)
 abstract class IdentifyDatabase : RoomDatabase() {
 
     abstract fun imageDescriptorDao(): ImageDescriptorDao
@@ -75,19 +78,24 @@ abstract class IdentifyDatabase : RoomDatabase() {
     abstract fun functionDao(): FunctionDao
 
     abstract fun clickDao(): ClickDao
+
     companion object {
         @Volatile
         private var INSTANCE: IdentifyDatabase? = null
 
-        fun getDatabase(context: Context = ContextUtils.getContext()): IdentifyDatabase {
+        //以后每一个游戏操作单独为一个数据库
+        fun getDatabase(
+            context: Context = ContextUtils.getContext(),
+            name: String = "identify_database"
+        ): IdentifyDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     IdentifyDatabase::class.java,
-                    "identify_database"
+                    name
                 ).build()
 
-         //        检查数据库是否已初始化
+                //        检查数据库是否已初始化
                 if (!isDatabaseInitialized(context)) {
                     // 从assets目录中导入数据库文件
                     importDatabaseFromAssets(context)
