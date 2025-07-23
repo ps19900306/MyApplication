@@ -76,7 +76,6 @@ class FunctionDetailFragment : AppToolBarFragment<FragmentFunctionDetailBinding>
             R.id.action_delete_function -> {
 
             }
-
         }
         return flag;
     }
