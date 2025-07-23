@@ -58,6 +58,7 @@ class FindTargetDetailModel : ViewModel() {
 
     //这个是找图范围
     var findArea: CoordinateArea? = null
+
     //所有的必须一致  如果需要重新生成需要清除掉原有数据
     //进行生成时候选的区域
     var targetOriginalArea: CoordinateArea? = null
@@ -114,8 +115,6 @@ class FindTargetDetailModel : ViewModel() {
             }
             val resultMap = MatUtils.hsvMatToBitmap(imgStorageMat!!)
             imgStorageImgFlow.tryEmit(resultMap)
-
-
         }
     }
 
@@ -147,16 +146,14 @@ class FindTargetDetailModel : ViewModel() {
                 } else {
                     lastMaskMat = MatUtils.mergeMaskMat(lastMaskMat!!, maskMat)
                 }
-
-                val resultMat = if (imgFinalHsvRule!!.type == AutoHsvRuleType.FILTER_MASK) {
-                    MatUtils.filterByMask(mSelectMat!!, lastMaskMat!!)
-                } else {
-                    MatUtils.generateInverseMask(mSelectMat!!, lastMaskMat!!)
-                }
-                val resultMap = MatUtils.hsvMatToBitmap(resultMat)
-                imgFinalImgFlow.tryEmit(resultMap)
             }
-
+            val resultMat = if (imgFinalHsvRule!!.type == AutoHsvRuleType.FILTER_MASK) {
+                MatUtils.filterByMask(mSelectMat!!, lastMaskMat!!)
+            } else {
+                MatUtils.generateInverseMask(mSelectMat!!, lastMaskMat!!)
+            }
+            val resultMap = MatUtils.hsvMatToBitmap(resultMat)
+            imgFinalImgFlow.tryEmit(resultMap)
         }
     }
 
@@ -308,21 +305,6 @@ class FindTargetDetailModel : ViewModel() {
     }
 
 
-    private fun buildImgFindTarget(selectMat: Mat, selectArea: CoordinateArea) {
-        //保存图片
-        val bitmap = MatUtils.hsvMatToBitmap(selectMat)
-        FileUtils.saveBitmapToExternalStorageImg(bitmap, mFindTargetRecord?.keyTag ?: "")
-
-        val data = FindTargetImgEntity(
-            keyTag = mFindTargetRecord?.keyTag ?: "",
-            targetOriginalArea = selectArea,
-            findArea = findArea,
-            storageType = MatUtils.STORAGE_EXTERNAL_TYPE,
-            maskRuleId = imgFinalHsvRule?.id?:-1L
-        )
-        IdentifyDatabase.getDatabase().findTargetImgDao().insert(data)
-    }
-
     private fun buildMatFindTarget(selectMat: Mat, selectArea: CoordinateArea) {
 //        val bitmap = MatUtils.hsvMatToBitmap(selectMat!!)
 //        FileUtils.saveBitmapToExternalStorageImg(bitmap, mFindTargetRecord?.keyTag ?: "")
@@ -396,6 +378,23 @@ class FindTargetDetailModel : ViewModel() {
                 mTargetRgbDao.insert(entity)
             }
         }
+    }
+
+    fun saveImgTarget() {
+        val bitmap = imgStorageImgFlow.value
+        if (bitmap == null) {
+            T.show("请选择图片")
+        }
+        FileUtils.saveBitmapToExternalStorageImg(bitmap!!, mFindTargetRecord?.keyTag ?: "")
+        val data = FindTargetImgEntity(
+            keyTag = mFindTargetRecord?.keyTag ?: "",
+            targetOriginalArea = targetOriginalArea!!,
+            findArea = findArea,
+            storageType = MatUtils.STORAGE_EXTERNAL_TYPE,
+            maskRuleId = imgFinalHsvRule?.id ?: -1L
+        )
+        IdentifyDatabase.getDatabase().findTargetImgDao().insert(data)
+
     }
 
 }

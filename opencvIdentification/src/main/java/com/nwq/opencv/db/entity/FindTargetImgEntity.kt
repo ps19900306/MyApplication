@@ -6,8 +6,12 @@ import androidx.room.PrimaryKey
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinatePoint
 import com.nwq.baseutils.MatUtils
+import com.nwq.opencv.AutoHsvRuleType
 import com.nwq.opencv.FindTargetType
 import com.nwq.opencv.IFindTarget
+import com.nwq.opencv.db.IdentifyDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
@@ -33,7 +37,7 @@ data class FindTargetImgEntity(
     var storageType: Int = MatUtils.STORAGE_ASSET_TYPE,
 
     //生成匹配蒙版的类型
-    var maskRuleId: Long = -1,
+    var maskRuleId: Long = -1L,
 
     var thresholdValue: Float = 0.8f,//这个是找图通过的阈值
 
@@ -59,11 +63,36 @@ data class FindTargetImgEntity(
     private val mOffsetPoint: CoordinatePoint = CoordinatePoint(0, 0)
 
 
-    private fun getMaskMat(): Mat? {
-//        if (maskMat == null) {
-//            maskMat = MaskUtils.getMaskMat(getTargetMat(), maskType)
-//        }
-        return maskMat
+    private suspend fun getMaskMat(): Mat? {
+        if (maskRuleId == -1L || targetMat == null)
+            return null
+        return withContext(Dispatchers.IO) {
+            val imgFinalHsvRule =
+                IdentifyDatabase.getDatabase().autoRulePointDao().findByKeyId(maskRuleId)
+            var lastMaskMat: Mat? = null
+            imgFinalHsvRule!!.prList.forEach { rule ->
+                val maskMat = MatUtils.getFilterMaskMat(
+                    targetMat!!,
+                    rule.minH,
+                    rule.maxH,
+                    rule.minS,
+                    rule.maxS,
+                    rule.minV,
+                    rule.maxV
+                )
+                if (lastMaskMat == null) {
+                    lastMaskMat = maskMat
+                } else {
+                    lastMaskMat = MatUtils.mergeMaskMat(lastMaskMat!!, maskMat)
+                }
+            }
+            maskMat = if (imgFinalHsvRule!!.type == AutoHsvRuleType.FILTER_MASK) {
+                MatUtils.filterByMask(targetMat!!, lastMaskMat!!)
+            } else {
+                MatUtils.generateInverseMask(targetMat!!, lastMaskMat!!)
+            }
+            maskMat
+        }
     }
 
 

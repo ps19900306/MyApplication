@@ -11,6 +11,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
+import com.example.myapplication.auto_hsv_rule.AutoHsvRuleSelectFragmentArgs
 import com.example.myapplication.databinding.FragmentHsvTargetDetailBinding
 import com.example.myapplication.databinding.FragmentImgTargetDetailBinding
 import com.nwq.base.BaseToolBar2Fragment
@@ -39,7 +40,7 @@ class ImgTargetDetailFragment : BaseToolBar2Fragment<FragmentImgTargetDetailBind
             { requestKey, result ->
                 L.d("ImgTargetDetailFragment", "onCreate:", "2025/7/21/15:30")
                 result.getString(ConstantKeyStr.SELECTED_RESULT)?.let { keyTag ->
-                    viewModel.updateHsvRule(keyTag)
+                    viewModel.updateImgStorageHsvRule(keyTag)
                 }
             }
         )
@@ -49,7 +50,7 @@ class ImgTargetDetailFragment : BaseToolBar2Fragment<FragmentImgTargetDetailBind
             { requestKey, result ->
                 L.d("ImgTargetDetailFragment", "onCreate:", "2025/7/21/15:30")
                 result.getString(ConstantKeyStr.SELECTED_RESULT)?.let { keyTag ->
-                    viewModel.updateHsvRule(keyTag)
+                    viewModel.updateImgFinalHsvRule(keyTag)
                 }
             }
         )
@@ -62,7 +63,27 @@ class ImgTargetDetailFragment : BaseToolBar2Fragment<FragmentImgTargetDetailBind
 
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         var flag = true
+        when (menuItem.itemId) {
+            R.id.action_save -> {
+                viewModel.saveImgTarget()
+            }
 
+            R.id.action_storage_rule->{
+                findNavController().navigate(
+                    R.id.action_imgTargetDetailFragment_to_AutoHsvRuleSelectFragment,
+                    AutoHsvRuleSelectFragmentArgs(SELECT_HSV_RULE_TAG1,true).toBundle()
+                )
+            }
+            R.id.action_final_rule -> {
+                findNavController().navigate(
+                    R.id.action_imgTargetDetailFragment_to_AutoHsvRuleSelectFragment,
+                    AutoHsvRuleSelectFragmentArgs(SELECT_HSV_RULE_TAG2,true).toBundle()
+                )
+            }
+            else->{
+                flag = false
+            }
+        }
         return flag
     }
 

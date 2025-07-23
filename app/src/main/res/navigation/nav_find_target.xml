@@ -92,6 +92,9 @@
         <action
             android:id="@+id/action_imgTargetDetailFragment_to_nav_opt_preview"
             app:destination="@id/nav_opt_preview" />
+        <action
+            android:id="@+id/action_imgTargetDetailFragment_to_AutoHsvRuleSelectFragment"
+            app:destination="@id/AutoHsvRuleSelectFragment" />
     </fragment>
 
     <fragment
