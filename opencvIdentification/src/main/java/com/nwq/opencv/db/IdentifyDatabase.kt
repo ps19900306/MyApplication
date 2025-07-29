@@ -7,6 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.nwq.baseutils.ContextUtils
+import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.db.converters.CoordinateAreaConverters
 import com.nwq.opencv.db.converters.HSVRuleConverters
 import com.nwq.opencv.db.converters.KeyPointConverters
@@ -83,68 +84,42 @@ abstract class IdentifyDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: IdentifyDatabase? = null
 
-        //以后每一个游戏操作单独为一个数据库
-        fun getDatabase(
-            context: Context = ContextUtils.getContext(),
-            name: String = "identify_database"
+        private var lastDbName = "identify_database"
+
+        public fun getDatabase(
         ): IdentifyDatabase {
+            return getDatabase(ContextUtils.getContext(), lastDbName)
+        }
+
+        //以后每一个游戏操作单独为一个数据库
+        public fun getDatabase(
+            context: Context,
+            name: String
+        ): IdentifyDatabase {
+            if (INSTANCE != null && lastDbName == name)
+                return INSTANCE!!
+
+            //更新数据库名称
+            lastDbName = name
+
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     IdentifyDatabase::class.java,
                     name
                 ).build()
-
-                //        检查数据库是否已初始化
-                if (!isDatabaseInitialized(context)) {
-                    // 从assets目录中导入数据库文件
-                    importDatabaseFromAssets(context)
-                }
-
                 INSTANCE = instance
                 instance
             }
         }
 
-        private fun isDatabaseInitialized(context: Context): Boolean {
-            val dbPath = context.getDatabasePath("identify_database")
+        public fun isDatabaseInitialized(
+            context: Context,
+            name: String = "identify_database"
+        ): Boolean {
+            val dbPath = context.getDatabasePath(name)
             return dbPath.exists() && dbPath.length() > 0
         }
 
-        private fun importDatabaseFromAssets(context: Context) {
-            val dbPath = context.getDatabasePath("identify_database")
-            val dbFolder = dbPath.parentFile
-            if (!dbFolder.exists()) {
-                dbFolder.mkdirs()
-            }
-
-            val assetManager = context.assets
-            val databaseAssetName = "identify_database.db"
-
-            try {
-                val inputStream: InputStream = assetManager.open(databaseAssetName)
-                val outputStream = FileOutputStream(dbPath)
-                val buffer = ByteArray(1024)
-                var length: Int
-                while (inputStream.read(buffer).also { length = it } > 0) {
-                    outputStream.write(buffer, 0, length)
-                }
-                outputStream.flush()
-                outputStream.close()
-                inputStream.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                // 如果从assets中导入失败，则创建一个新的空数据库
-                createEmptyDatabase(context)
-            }
-        }
-
-        private fun createEmptyDatabase(context: Context) {
-            Room.databaseBuilder(
-                context.applicationContext,
-                IdentifyDatabase::class.java,
-                "identify_database"
-            ).build()
-        }
     }
 }

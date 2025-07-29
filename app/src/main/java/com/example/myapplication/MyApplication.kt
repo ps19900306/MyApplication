@@ -9,7 +9,7 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        OpenCVLoader.initLocal()
         ContextUtils.init(this);
+        OpenCVLoader.initLocal()
     }
 }

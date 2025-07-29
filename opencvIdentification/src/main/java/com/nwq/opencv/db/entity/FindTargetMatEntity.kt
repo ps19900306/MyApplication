@@ -6,9 +6,12 @@ import androidx.room.PrimaryKey
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinatePoint
 import com.nwq.baseutils.MatUtils
+import com.nwq.opencv.AutoHsvRuleType
 import com.nwq.opencv.FindTargetType
 import com.nwq.opencv.IFindTarget
 import com.nwq.opencv.db.IdentifyDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.opencv.calib3d.Calib3d
 import org.opencv.core.Core
 import org.opencv.core.Mat
@@ -41,7 +44,7 @@ data class FindTargetMatEntity(
     val storageType: Int = MatUtils.STORAGE_ASSET_TYPE,
 
     //生成匹配蒙版的类型
-    val maskType: Int = 0,
+    var maskRuleId: Long = -1L,
 
     ) : IFindTarget {
 
@@ -68,18 +71,43 @@ data class FindTargetMatEntity(
     @Ignore
     private var maskMat: Mat? = null
 
-    private fun getMaskMat(): Mat? {
-        if (maskMat == null) {
-            maskMat = MaskUtils.getMaskMat(getTargetMat(), maskType)
+    private suspend fun getMaskMat(): Mat? {
+        if (maskRuleId == -1L || targetMat == null)
+            return null
+        return withContext(Dispatchers.IO) {
+            val imgFinalHsvRule =
+                IdentifyDatabase.getDatabase().autoRulePointDao().findByKeyId(maskRuleId)
+            var lastMaskMat: Mat? = null
+            imgFinalHsvRule!!.prList.forEach { rule ->
+                val maskMat = MatUtils.getFilterMaskMat(
+                    targetMat!!,
+                    rule.minH,
+                    rule.maxH,
+                    rule.minS,
+                    rule.maxS,
+                    rule.minV,
+                    rule.maxV
+                )
+                if (lastMaskMat == null) {
+                    lastMaskMat = maskMat
+                } else {
+                    lastMaskMat = MatUtils.mergeMaskMat(lastMaskMat!!, maskMat)
+                }
+            }
+            maskMat = if (imgFinalHsvRule!!.type == AutoHsvRuleType.FILTER_MASK) {
+                MatUtils.filterByMask(targetMat!!, lastMaskMat!!)
+            } else {
+                MatUtils.generateInverseMask(targetMat!!, lastMaskMat!!)
+            }
+            maskMat
         }
-        return maskMat
     }
 
     @Ignore
     private var descriptorMat: Mat? = null
 
 
-    private fun getDescriptorMat(): Mat? {
+    private suspend fun getDescriptorMat(): Mat? {
         if (descriptorMat == null) {
             descriptorMat = builderTargetMat()
         }
@@ -122,7 +150,7 @@ data class FindTargetMatEntity(
     }
 
 
-    private fun findTargetBitmap(srcMat: Mat): CoordinateArea? {
+    private suspend fun findTargetBitmap(srcMat: Mat): CoordinateArea? {
         // 如果描述信息为空，则返回 null
         getDescriptorMat() ?: return null
 
@@ -176,7 +204,7 @@ data class FindTargetMatEntity(
     }
 
 
-    private fun builderTargetMat(): Mat? {
+    private suspend fun builderTargetMat(): Mat? {
         val imageDescriptorEntity = bImageDescriptorDao.getDescriptor(keyTag)
         return if (imageDescriptorEntity == null) {
             val descriptor = buildImageDescriptorEntity(getTargetMat()!!, getMaskMat()!!)

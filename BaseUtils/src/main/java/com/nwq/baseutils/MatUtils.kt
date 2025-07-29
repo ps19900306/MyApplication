@@ -102,6 +102,11 @@ object MatUtils {
         val upperBound = Scalar(maxH.toDouble(), maxS.toDouble(), maxV.toDouble())
         val maskMat = Mat()
         Core.inRange(hsvMat, lowerBound, upperBound, maskMat)
+
+        // 获取非零像素的数量
+        val nonZeroCount = Core.countNonZero(maskMat)
+
+
         return maskMat
     }
 
@@ -181,6 +186,7 @@ object MatUtils {
         Log.i(TAG, "filterByHsv h $minH:$maxH s $minS:$maxS v $minV:$maxV")
         // 获取基于指定HSV范围的掩码Mat对象
         val maskMat = getFilterMaskMat(srcMat, minH, maxH, minS, maxS, minV, maxV)
+       
         // 返回过滤后的图像
         return filterByMask(srcMat, maskMat)
     }
@@ -669,6 +675,10 @@ object MatUtils {
         val maxV = hsvValues.maxByOrNull { it[2] }?.get(2) ?: 0.0
 
         return doubleArrayOf(minH, maxH, minS, maxS, minV, maxV)
+    }
+
+    fun countNonZero(maskMat: Mat): Int {
+         return Core.countNonZero(maskMat)
     }
 
 

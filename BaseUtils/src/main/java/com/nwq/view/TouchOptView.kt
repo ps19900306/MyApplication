@@ -6,12 +6,14 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinateLine
 import com.nwq.baseobj.CoordinatePoint
 import com.nwq.baseobj.ICoordinate
+import com.nwq.base.TouchOptModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -34,6 +36,17 @@ open class TouchOptView @JvmOverloads constructor(
         const val SINGLE_CLICK_TYPE = 3
         //测算距离
         const val MEASURE_DISTANCE_TYPE = 4
+    }
+
+    private val viewModelStore = ViewModelStore()
+    
+    private val viewModelStoreOwner = object : ViewModelStoreOwner {
+        override val viewModelStore: ViewModelStore
+            get() = viewModelStore
+    }
+    
+    private val touchOptModel by lazy {
+        ViewModelProvider(viewModelStoreOwner).get(TouchOptModel::class.java)
     }
 
     private val _touchCoordinate = MutableStateFlow<ICoordinate?>(null)

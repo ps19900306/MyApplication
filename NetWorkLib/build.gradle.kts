@@ -38,6 +38,8 @@ android {
 
 dependencies {
     implementation(project(":BaseUtils"))
+    implementation(project(":LogUitls"))
+    implementation(project(":opencvIdentification"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

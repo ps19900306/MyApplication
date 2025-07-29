@@ -212,7 +212,33 @@
         tools:layout_height="100dp"
         tools:layout_width="100dp"
         tools:visibility="visible" />
+    <TextView
+        android:id="@+id/imgSizeTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/srcImg"
+        app:layout_constraintTop_toTopOf="@+id/srcImg"
+        app:layout_constraintBottom_toBottomOf="@+id/srcImg"
+        android:text="w:210 h:210"/>
 
+    <TextView
+        android:id="@+id/imgCountTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/srcImg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/srcImg"
+        app:layout_constraintBottom_toBottomOf="@+id/srcImg"
+        android:text="21"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/imgGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="imgCountTv,imgSizeTv,srcImg,saveBtn"/>
     <Button
         android:id="@+id/saveBtn"
         android:layout_width="wrap_content"

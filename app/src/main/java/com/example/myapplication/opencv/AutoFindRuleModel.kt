@@ -116,7 +116,6 @@ class AutoFindRuleModel : ViewModel() {
     private var isBuildImg: Boolean = false
     private var isBuildMat: Boolean = false
 
-    private var maskType: Int = MaskUtils.UN_SET_MASK
     private var keyTag: String? = null //描述显示信息
     private var clickKeyTag: String? = null // 未设置则使用keyTag
 
@@ -228,27 +227,26 @@ class AutoFindRuleModel : ViewModel() {
             targetOriginalArea = selectArea!!,
             findArea = findArea,
             storageType = MatUtils.STORAGE_EXTERNAL_TYPE,
-            maskType = maskType
         )
         IdentifyDatabase.getDatabase().findTargetImgDao().insert(data)
     }
 
     private fun buildMatFindTarget() {
-        if (!isBuildMat) return
-        if (!isBuildImg) {
-            val bitmap = MatUtils.hsvMatToBitmap(selectMat!!)
-            FileUtils.saveBitmapToExternalStorageImg(bitmap, keyTag!!)
-        }
-        //将特征点保存到数据库
-        buildImageDescriptorEntity(selectMat!!, MaskUtils.getMaskMat(selectMat, maskType))
-        val data = FindTargetMatEntity(
-            keyTag = keyTag!!,
-            targetOriginalArea = selectArea!!,
-            findArea = findArea,
-            storageType = MatUtils.STORAGE_EXTERNAL_TYPE,
-            maskType = maskType
-        )
-        IdentifyDatabase.getDatabase().findTargetMatDao().insert(data)
+//        if (!isBuildMat) return
+//        if (!isBuildImg) {
+//            val bitmap = MatUtils.hsvMatToBitmap(selectMat!!)
+//            FileUtils.saveBitmapToExternalStorageImg(bitmap, keyTag!!)
+//        }
+//        //将特征点保存到数据库
+//        buildImageDescriptorEntity(selectMat!!, MaskUtils.getMaskMat(selectMat, maskType))
+//        val data = FindTargetMatEntity(
+//            keyTag = keyTag!!,
+//            targetOriginalArea = selectArea!!,
+//            findArea = findArea,
+//            storageType = MatUtils.STORAGE_EXTERNAL_TYPE,
+//            maskType = maskType
+//        )
+//        IdentifyDatabase.getDatabase().findTargetMatDao().insert(data)
     }
 
 

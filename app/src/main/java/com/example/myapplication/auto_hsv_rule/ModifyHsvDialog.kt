@@ -18,6 +18,7 @@ import com.example.myapplication.adapter.ColorAdapter
 import com.example.myapplication.databinding.FragmentSetSHVFilterDialogBinding
 import com.nwq.baseutils.HsvRuleUtils
 import com.nwq.baseutils.MatUtils
+import com.nwq.baseutils.MatUtils.filterByMask
 import com.nwq.baseutils.singleClick
 import com.nwq.callback.CallBack
 import com.nwq.opencv.hsv.HSVRule
@@ -61,7 +62,7 @@ class ModifyHsvDialog(
         return FragmentSetSHVFilterDialogBinding.inflate(inflater)
     }
 
-    private fun sendUpdateSignal(){
+    private fun sendUpdateSignal() {
         updateSignalFlow.value += 1
     }
 
@@ -153,7 +154,7 @@ class ModifyHsvDialog(
                     )
 
                     srcMat?.let { mat ->
-                        val maskMat = MatUtils.filterByHsv(
+                        val maskMat = MatUtils.getFilterMaskMat(
                             mat,
                             minH,
                             maxH,
@@ -161,8 +162,9 @@ class ModifyHsvDialog(
                             maxS,
                             minV,
                             maxV
-                        )
-                        val newBitmap = MatUtils.hsvMatToBitmap(maskMat)
+                        );
+                        binding.imgCountTv.text = "过滤点数： ${MatUtils.countNonZero(maskMat)}"
+                        val newBitmap = MatUtils.hsvMatToBitmap(MatUtils.filterByMask(mat, maskMat))
                         binding.srcImg.setImageBitmap(newBitmap)
                     }
                 }
@@ -171,9 +173,9 @@ class ModifyHsvDialog(
 
 
         bitmap?.let {
+            binding.imgGroup.isVisible = true
             binding.srcImg.setImageBitmap(it)
-            binding.srcImg.isVisible = true
-            binding.saveBtn.isVisible = true
+            binding.imgSizeTv.text = "图片大小： ${it.width} x ${it.height}"
         }
 
     }

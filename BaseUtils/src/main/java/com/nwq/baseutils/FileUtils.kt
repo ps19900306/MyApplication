@@ -527,4 +527,55 @@ object FileUtils {
             return null
         }
     }
+
+    /**
+     * 从设备的 Documents 目录导入数据库文件到应用数据库目录
+     *
+     * @param context 应用程序上下文
+     * @param databaseName 要导入的数据库名称（例如 "app_database"）
+     * @return 导入成功返回true，否则返回false
+     */
+    fun importRoomDatabase(context: Context, databaseName: String): Boolean {
+        // 获取 Documents 目录中的数据库文件
+        val documentsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) ?: run {
+            Log.e(TAG, "无法访问 Documents 目录")
+            return false
+        }
+
+        val importFile = File(documentsDir, "$databaseName.db")
+        if (!importFile.exists()) {
+            Log.e(TAG, "Documents目录中不存在数据库文件: $databaseName.db")
+            return false
+        }
+
+        // 获取应用数据库目录中的目标文件
+        val dbFile = context.getDatabasePath(databaseName)
+        
+        // 如果目标数据库文件已存在，先删除
+        if (dbFile.exists()) {
+            dbFile.delete()
+        }
+        
+        try {
+            // 复制文件到数据库目录
+            val inputStream = FileInputStream(importFile)
+            val outputStream = FileOutputStream(dbFile)
+
+            val buffer = ByteArray(1024)
+            var length: Int
+            while (inputStream.read(buffer).also { length = it } > 0) {
+                outputStream.write(buffer, 0, length)
+            }
+
+            inputStream.close()
+            outputStream.flush()
+            outputStream.close()
+
+            Log.d(TAG, "成功导入数据库文件: ${dbFile.absolutePath}")
+            return true
+        } catch (e: Exception) {
+            Log.e(TAG, "导入数据库失败", e)
+            return false
+        }
+    }
 }

@@ -57,10 +57,10 @@
         android:id="@+id/tv_hue_max"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
         android:text="Hue Max (0-180)"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="@id/tv_hue_min" />
+        app:layout_constraintStart_toStartOf="@+id/tv_hue_min"
+        app:layout_constraintTop_toBottomOf="@id/et_hue_min" />
 
     <SeekBar
         android:id="@+id/sb_hue_max"
@@ -69,7 +69,7 @@
         android:layout_margin="16dp"
         android:max="180"
         app:layout_constraintEnd_toStartOf="@id/et_hue_max"
-        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_hue_max" />
 
     <EditText
@@ -79,7 +79,7 @@
         android:layout_margin="16dp"
         android:hint="0-180"
         android:inputType="number"
-        app:layout_constraintEnd_toEndOf="@id/guideline1"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@id/tv_hue_max"
         app:layout_constraintWidth_percent="0.13" />
 
@@ -88,10 +88,10 @@
         android:id="@+id/tv_saturation_min"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
         android:text="Saturation Min (0-255)"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sb_hue_max" />
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@id/tv_hue_min" />
 
     <SeekBar
         android:id="@+id/sb_saturation_min"
@@ -100,7 +100,7 @@
         android:layout_margin="16dp"
         android:max="255"
         app:layout_constraintEnd_toStartOf="@id/et_saturation_min"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/tv_saturation_min" />
 
     <EditText
@@ -110,7 +110,7 @@
         android:layout_margin="16dp"
         android:hint="0-255"
         android:inputType="number"
-        app:layout_constraintEnd_toEndOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="@id/guideline1"
         app:layout_constraintTop_toTopOf="@id/tv_saturation_min"
         app:layout_constraintWidth_percent="0.13" />
 
@@ -122,7 +122,7 @@
         android:layout_marginStart="16dp"
         android:text="Saturation Max (0-255)"
         app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toTopOf="@id/tv_saturation_min" />
+        app:layout_constraintTop_toTopOf="@id/tv_hue_max" />
 
     <SeekBar
         android:id="@+id/sb_saturation_max"
@@ -150,10 +150,10 @@
         android:id="@+id/tv_value_min"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
         android:text="Value Min (0-255)"
         app:layout_constraintStart_toStartOf="@id/guideline1"
-        app:layout_constraintTop_toTopOf="@id/tv_hue_max" />
+        app:layout_constraintTop_toTopOf="@id/tv_saturation_min" />
 
     <SeekBar
         android:id="@+id/sb_value_min"
@@ -207,28 +207,18 @@
         app:layout_constraintTop_toTopOf="@id/tv_value_max"
         app:layout_constraintWidth_percent="0.13" />
 
-     <androidx.recyclerview.widget.RecyclerView
-         android:id="@+id/recycler"
-         tools:listitem="@layout/item_colors"
-         android:orientation="horizontal"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintEnd_toStartOf="@+id/srcImg"
-         app:layout_constraintTop_toBottomOf="@+id/et_value_max"
-         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-         android:layout_width="0dp"
-         android:layout_height="50dp"/>
 
-    <ImageView
-        android:id="@+id/srcImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toStartOf="@+id/saveBtn"
-        app:layout_constraintStart_toEndOf="@+id/recycler"
-        app:layout_constraintTop_toTopOf="@+id/recycler"
-        tools:layout_height="100dp"
-        tools:layout_width="100dp"
-        tools:visibility="visible" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_value_max"
+        tools:listitem="@layout/item_colors" />
+
 
     <Button
         android:id="@+id/saveBtn"
@@ -236,10 +226,48 @@
         android:layout_height="wrap_content"
         android:text="@string/save"
         android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@+id/recycler"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/srcImg"
-        app:layout_constraintTop_toTopOf="@+id/srcImg"
         tools:visibility="visible" />
 
+    <ImageView
+        android:id="@+id/srcImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler"
+        tools:layout_height="100dp"
+        tools:layout_width="100dp"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/imgSizeTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/srcImg"
+        app:layout_constraintTop_toTopOf="@+id/srcImg"
+        app:layout_constraintBottom_toBottomOf="@+id/srcImg"
+        android:text="w:210 h:210"/>
+
+    <TextView
+        android:id="@+id/imgCountTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/srcImg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/srcImg"
+        app:layout_constraintBottom_toBottomOf="@+id/srcImg"
+        android:text="21"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/imgGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="imgCountTv,imgSizeTv,srcImg,saveBtn"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
