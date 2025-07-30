@@ -19,6 +19,7 @@ import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.simplelist.TextAdapter
 import com.nwq.simplelist.TextWarp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -91,6 +92,8 @@ class PreviewFragment : AppToolBarFragment<FragmentPreviewBinding>() {
                 // opts.outConfig = Bitmap.Config.ARGB_8888
                 binding.draggableTextView.setBackgroundColor(color)
                 binding.draggableTextView.text = "(${it.x},${it.y})"
+                delay(3000)
+
             }
         }
     }

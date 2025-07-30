@@ -36,7 +36,6 @@ class ModifyHsvDialog(
 ) :
     BaseDialogFragment<FragmentSetSHVFilterDialogBinding>() {
     private val TAG = ModifyHsvDialog::class.java.simpleName
-
     private val srcMat by lazy {
         if (bitmap != null) {
             MatUtils.bitmapToHsvMat(bitmap)
@@ -193,8 +192,10 @@ class ModifyHsvDialog(
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                editText.setText(progress.toString())
-                updateFlow?.invoke(progress)
+                if (fromUser){
+                    editText.setText(progress.toString())
+                    updateFlow?.invoke(progress)
+                }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}

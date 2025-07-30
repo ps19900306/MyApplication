@@ -58,7 +58,7 @@ open class TouchOptView @JvmOverloads constructor(
     private var isFirst = true
     private var nowMode = NORMAL_TYPE
     private var lastTime = 0L
-    private val cancelInterval = 3000L
+    private val cancelInterval = 5000L
 
     suspend fun getPoint(): CoordinatePoint {
         _touchCoordinate.value = null

@@ -24,7 +24,10 @@ import org.opencv.features2d.Feature2D
 import org.opencv.features2d.SIFT
 import org.opencv.imgproc.Imgproc
 
-
+/**
+ * 尽量不要使用这种方式取做匹配
+ * 速度慢
+ */
 @Entity(tableName = "find_target_mat")
 data class FindTargetMatEntity(
 
