@@ -14,6 +14,7 @@ import org.opencv.core.Mat
 import org.opencv.core.MatOfKeyPoint
 import org.opencv.core.MatOfPoint
 import org.opencv.core.Point
+import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.core.Size
 import org.opencv.features2d.Feature2D
@@ -102,13 +103,37 @@ object MatUtils {
         val upperBound = Scalar(maxH.toDouble(), maxS.toDouble(), maxV.toDouble())
         val maskMat = Mat()
         Core.inRange(hsvMat, lowerBound, upperBound, maskMat)
-
-        // 获取非零像素的数量
-        val nonZeroCount = Core.countNonZero(maskMat)
-
-
+//        类型：maskMat 是单通道（1通道）的二值图像
+//        数据类型：8位无符号整型（CV_8U）
+//        值范围：像素值只有两种，0（黑色）或255（白色）
         return maskMat
     }
+
+
+    //根据连同性能进行区域提取 这样理由后面生成数据字典
+    fun findConnectedRegions(destMat: Mat): List<Rect> {
+        val contours = mutableListOf<MatOfPoint>()
+        val hierarchy = Mat()
+
+        // 查找轮廓（连通区域）
+        Imgproc.findContours(
+            destMat,
+            contours,
+            hierarchy,
+            Imgproc.RETR_EXTERNAL, // 只检测外部轮廓（不包含内孔）
+            Imgproc.CHAIN_APPROX_SIMPLE
+        )
+
+        // 提取每个轮廓的边界矩形
+        val regions = mutableListOf<Rect>()
+        for (contour in contours) {
+            val rect = Imgproc.boundingRect(contour)
+            regions.add(rect)
+        }
+
+        return regions
+    }
+
 
     /**
      * 合并两张掩码图进行逻辑or运算
@@ -186,7 +211,7 @@ object MatUtils {
         Log.i(TAG, "filterByHsv h $minH:$maxH s $minS:$maxS v $minV:$maxV")
         // 获取基于指定HSV范围的掩码Mat对象
         val maskMat = getFilterMaskMat(srcMat, minH, maxH, minS, maxS, minV, maxV)
-       
+
         // 返回过滤后的图像
         return filterByMask(srcMat, maskMat)
     }
@@ -678,7 +703,7 @@ object MatUtils {
     }
 
     fun countNonZero(maskMat: Mat): Int {
-         return Core.countNonZero(maskMat)
+        return Core.countNonZero(maskMat)
     }
 
 
