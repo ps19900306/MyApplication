@@ -101,6 +101,8 @@ class AutoHsvRuleDetailViewModel : ViewModel() {
                     targetOriginalArea!!.width,
                     targetOriginalArea!!.height
                 )
+            }else{
+                return mSrcBitmap
             }
         }
         return mSelectBitmap

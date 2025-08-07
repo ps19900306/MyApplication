@@ -404,16 +404,18 @@ object MatUtils {
 
 
     fun bitmapToMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
+        //如果不指定ARGB_8888	CV_8UC4	4 通道（BGRA，Alpha 通道保留）
+        //RGB_565	CV_8UC3	3 通道（BGR，自动从 16 位转 24 位，可能有精度损失）
+        //ALPHA_8 / 灰度图	CV_8UC1	单通道（灰度）
         // 创建一个 Mat 对象
-        var mat = Mat()
+        //var mat = Mat()
         // 使用 OpenCV 的 Utils 类将 Bitmap 转换为 Mat
+        //Utils.bitmapToMat(bitmap, mat)
+        //所以我们这里强行指定为三通道的格式
+
+        //原因如上注释 这么指定强制放弃A通道 减少开销
+        val mat = Mat(bitmap.height, bitmap.width, CvType.CV_8UC3)
         Utils.bitmapToMat(bitmap, mat)
-        // 如果 Bitmap 是 ARGB_8888 格式，需要将其转换为 RGB 格式 去掉A通道
-        if (bitmap.config == Bitmap.Config.ARGB_8888) {
-            val rgbMat = Mat()
-            Imgproc.cvtColor(mat, rgbMat, Imgproc.COLOR_RGBA2RGB)
-            mat = rgbMat
-        }
         return if (coordinateArea != null) {
             cropMat(mat, coordinateArea)
         } else {
@@ -421,19 +423,26 @@ object MatUtils {
         }
     }
 
-
     fun bitmapToHsvMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
         // 将 Bitmap 转换为 Mat
-        val mat = bitmapToMat(bitmap)
+        // 创建一个 Mat 对象
+        val mat = bitmapToMat(bitmap,coordinateArea);
         // 创建一个 HSV 格式的 Mat 对象
         val hsvMat = Mat(mat.size(), CvType.CV_8UC3)
         // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
         Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_RGB2HSV)
-        return if (coordinateArea != null) {
-            cropMat(hsvMat, coordinateArea)
-        } else {
-            hsvMat
-        }
+        return hsvMat;
+    }
+
+    fun bitmapToGrayMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
+        // 将 Bitmap 转换为 Mat
+        // 创建一个 Mat 对象
+        val mat = bitmapToMat(bitmap,coordinateArea);
+        // 创建一个 HSV 格式的 Mat 对象
+        val hsvMat = Mat(mat.size(), CvType.CV_8UC1)
+        // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
+        Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_RGB2GRAY)
+        return hsvMat;
     }
 
 
@@ -456,12 +465,12 @@ object MatUtils {
         val rgbMat = Mat()
         // 将 HSV 格式的 Mat 转换为 RGB 格式的 Mat
         Imgproc.cvtColor(srcMat, rgbMat, Imgproc.COLOR_HSV2RGB)
-
         // 将 RGB 格式的 Mat 转换为 Bitmap
         return matToBitmap(rgbMat)
     }
 
 
+    //根据区域对象进行裁剪
     fun cropMat(srcMat: Mat, coordinateArea: CoordinateArea): Mat {
         val dstMat = Mat(coordinateArea.height, coordinateArea.width, srcMat.type())
         srcMat.submat(

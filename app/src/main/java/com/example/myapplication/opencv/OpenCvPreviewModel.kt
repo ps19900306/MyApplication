@@ -56,43 +56,7 @@ class OpenCvPreviewModel : ViewModel() {
         }
     }
 
-    fun getSelectBitmaps(
-        next: (bitmap: Bitmap?, bitmap2: Bitmap?, bitmap3: Bitmap?) -> Unit,
-        are: CoordinateArea
-    ) {
-        srcBitmap ?: return
-        if (result == null || result!!.size <= 1) {
-            L.d(TAG, "单图片 ");
-            val bitmap1 = MatUtils.hsvMatToBitmap(MatUtils.bitmapToMat(srcBitmap!!, are))
-            next.invoke(bitmap1, null, null)
-        } else {
-            //
-            var bitmap1:Bitmap? = null
-            var bitmap2:Bitmap? = null
-            var bitmap3:Bitmap? = null
-            for (i in 0 until Math.min(3, result!!.size)) {
-                if (i == 0) {
-                    MatUtils.getMatFormPaths(result!![i]!!.realPath, are)?.let {
-                        bitmap1 =MatUtils.hsvMatToBitmap(it)
-                    }
-                    L.d(TAG, "多单图片 1");
-                }
-                if (i == 1) {
-                    MatUtils.getMatFormPaths(result!![i]!!.realPath, are)?.let {
-                        bitmap2 =MatUtils.hsvMatToBitmap(it)
-                    }
-                    L.d(TAG, "多单图片 2");
-                }
-                if (i == 2) {
-                    MatUtils.getMatFormPaths(result!![i]!!.realPath, are)?.let {
-                        bitmap3 =MatUtils.hsvMatToBitmap(it)
-                    }
-                    L.d(TAG, "多单图片 3");
-                }
-            }
-            next.invoke(bitmap1, bitmap2, bitmap3)
-        }
-    }
+
 
 
     fun setScrMap(it: Bitmap) {
@@ -277,18 +241,7 @@ class OpenCvPreviewModel : ViewModel() {
         return ByteToIntUtils.getByteFromInt2(_VFlow.value, 1)
     }
 
-    private fun getOrCreateSrcMat(): Mat? {
-        return if (srcMat == null) {
-            if (srcBitmap != null) {
-                srcMat = MatUtils.bitmapToMat(srcBitmap!!)
-                srcMat
-            } else {
-                null
-            }
-        } else {
-            srcMat
-        }
-    }
+
 
     private fun getOrCreateHsvMat(): Mat? {
         return if (srcHSVMat == null) {
