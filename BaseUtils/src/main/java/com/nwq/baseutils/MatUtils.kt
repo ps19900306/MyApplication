@@ -224,31 +224,35 @@ object MatUtils {
      * @return 过滤后的Mat对象，只包含源图像中被掩码指定的区域
      */
     fun filterByMask(srcMat: Mat, maskMat: Mat): Mat {
-        // 将单通道掩码转换为三通道，使其与源图像兼容
-        val maskMat3Channel = Mat()
-        Imgproc.cvtColor(maskMat, maskMat3Channel, Imgproc.COLOR_GRAY2BGR)
-
-        // 执行按位与操作，应用掩码过滤源图像
-        val destMat = Mat()
-        Core.bitwise_and(srcMat, maskMat3Channel, destMat)
-        return destMat
+        val result = Mat.zeros(srcMat.size(), srcMat.type())
+        srcMat.copyTo(result, maskMat)
+        return result
     }
 
     /**
-     * 根据掩码生成新的目标掩码，规则为：原掩码值为0的区域保留，为1的区域不保留
+     * 根据掩码生成新的目标掩码，规则为：原掩码值为0的区域保留，为255的区域不保留
      *
      * @param maskMat 单通道掩码Mat对象，输入掩码
      * @return 生成的新掩码Mat对象，符合过滤规则
      */
     fun generateInverseMask(srcMat: Mat, maskMat: Mat): Mat {
-        // 创建全白Mat作为基准
-        val whiteMat = Mat(maskMat.size(), maskMat.type(), Scalar(255.0))
-
-        // 对原掩码取反
-        val invertedMask = Mat()
-        Core.bitwise_not(maskMat, invertedMask)
-        return filterByMask(srcMat, invertedMask)
+        return filterByMask(srcMat,maskMatInverse(maskMat))
     }
+
+    /**
+     * 对单通道二值掩码进行取反操作（黑变白，白变黑）
+     * @param maskMat 单通道(CV_8UC1)二值掩码，黑色(0)表示保留，白色(255)表示去除
+     * @return 取反后的掩码
+     */
+    fun maskMatInverse(maskMat: Mat): Mat {
+        // 1. 创建输出矩阵
+        val invertedMask = Mat()
+        // 2. 使用bitwise_not进行取反（核心操作）
+        Core.bitwise_not(maskMat, invertedMask)
+
+        return invertedMask
+    }
+
 
 
     // 获取点通过特征点
