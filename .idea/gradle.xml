@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/exculdeModule" />
             <option value="$PROJECT_DIR$/opencvIdentification" />
+            <option value="$PROJECT_DIR$/scheduler" />
           </set>
         </option>
       </GradleProjectSettings>

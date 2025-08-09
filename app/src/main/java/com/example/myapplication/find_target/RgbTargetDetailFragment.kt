@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 /**
  * A simple [com.nwq.opencv.db.entity.FindTargetRgbEntity] 的预览.
  * 默认情况下尽量使用HSV进行图色比较
+ * 尽量不要使用这种方式
  */
 class RgbTargetDetailFragment : BaseToolBar2Fragment<FragmentRgbTargetDetailBinding>() {
 
