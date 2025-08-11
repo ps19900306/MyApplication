@@ -93,6 +93,13 @@ abstract class IdentifyDatabase : RoomDatabase() {
             return getDatabase(ContextUtils.getContext(), lastDbName)
         }
 
+        public fun getDatabase(
+            name: String
+        ): IdentifyDatabase {
+            return getDatabase(ContextUtils.getContext(), name)
+        }
+
+
         //以后每一个游戏操作单独为一个数据库
         public fun getDatabase(
             context: Context,
@@ -116,10 +123,9 @@ abstract class IdentifyDatabase : RoomDatabase() {
         }
 
         public fun isDatabaseInitialized(
-            context: Context,
             name: String = "identify_database"
         ): Boolean {
-            val dbPath = context.getDatabasePath(name)
+            val dbPath = ContextUtils.getContext().getDatabasePath(name)
             return dbPath.exists() && dbPath.length() > 0
         }
 

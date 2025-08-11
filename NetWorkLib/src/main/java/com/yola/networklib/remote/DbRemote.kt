@@ -9,17 +9,15 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import java.io.File
 
-class DbRemote(baseUrl: String) : BaseRemote<DbApi>(baseUrl) {
+class DbRemote() : BaseRemote<DbApi>() {
 
     override fun getApi(): Class<DbApi> {
         return DbApi::class.java
     }
 
 
-    suspend fun downloadDatabaseFile(): BaseNetSigResult<ResponseBody> {
-        return runOnIoAndReturnOnMain {
-            api.downloadDatabase()
-        }
+    suspend fun downloadDatabaseFile(dbName: String): BaseNetSigResult<ResponseBody> {
+        return api.downloadDatabase(dbName)
     }
 
     suspend fun uploadDatabaseFile(file: File): BaseNetSigResult<String> {

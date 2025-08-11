@@ -529,6 +529,40 @@ object FileUtils {
     }
 
     /**
+     * 从Assets目录导入数据库
+     */
+    fun importDatabaseFromAssets(context: Context,name:String): Boolean {
+        return try {
+            val dbPath = context.getDatabasePath(name)
+            val dbFolder = dbPath.parentFile
+            dbFolder?.let {
+                if (!it.exists()) {
+                    it.mkdirs()
+                }
+            }
+
+            val assetManager = context.assets
+            val databaseAssetName = "$name.db"
+
+            val inputStream: InputStream = assetManager.open(databaseAssetName)
+            val outputStream = FileOutputStream(dbPath)
+            val buffer = ByteArray(1024)
+            var length: Int
+            while (inputStream.read(buffer).also { length = it } > 0) {
+                outputStream.write(buffer, 0, length)
+            }
+            outputStream.flush()
+            outputStream.close()
+            inputStream.close()
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+
+    /**
      * 从设备的 Documents 目录导入数据库文件到应用数据库目录
      *
      * @param context 应用程序上下文

@@ -5,7 +5,7 @@ import com.yola.networklib.BaseNetSigResult
 import com.yola.networklib.BaseRemote
 import com.yola.networklib.Interceptor.UnifiedHeaderInterceptor
 
-class LoginRemote(baseUrl: String) : BaseRemote<LoginApi>(baseUrl) {
+class LoginRemote() : BaseRemote<LoginApi>() {
 
     override fun getApi(): Class<LoginApi> {
         return LoginApi::class.java

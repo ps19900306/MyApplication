@@ -17,7 +17,7 @@ interface DbApi {
      */
     @Streaming
     @GET("/api/db/download")
-    suspend fun downloadDatabase(): BaseNetSigResult<ResponseBody>
+    suspend fun downloadDatabase(dbName: String): BaseNetSigResult<ResponseBody>
 
     /**
      * 上传本地数据库文件到服务器。
@@ -25,6 +25,7 @@ interface DbApi {
      * @param databaseFile 使用 [MultipartBody.Part] 包装的数据库文件。
      * @return 返回上传结果。
      */
+    @Streaming
     @POST("/api/db/upload")
     suspend fun uploadDatabase(
         @Part databaseFile: MultipartBody.Part
