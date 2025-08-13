@@ -10,7 +10,7 @@ import com.yola.networklib.remote.LoginRemote
 class LoginViewModel : ViewModel() {
 
     private val mLoginRemote by lazy {
-        LoginRemote(BuildConfig.BASE_URL)
+        LoginRemote()
     }
 
     private suspend fun login(username: String, password: String): Boolean {

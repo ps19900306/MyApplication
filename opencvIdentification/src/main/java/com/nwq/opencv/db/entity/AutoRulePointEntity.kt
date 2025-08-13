@@ -56,6 +56,10 @@ class AutoRulePointEntity() : IAutoRulePoint {
         return pointList
     }
 
+
+
+
+
     override fun getTag(): String {
         return keyTag
     }
