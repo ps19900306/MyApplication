@@ -151,6 +151,8 @@ object MatUtils {
     }
 
 
+
+
     fun createBitmapFromMask(
         maskMat: Mat,
         color: Int = Color.RED,
@@ -719,5 +721,24 @@ object MatUtils {
         return Core.countNonZero(maskMat)
     }
 
-
+    /**
+     * 对灰度图像进行二值化处理
+     * 将像素值在[min, max]范围内的像素设为255，其余设为0
+     *
+     * @param grayMat 输入的灰度图像Mat对象
+     * @param min 最小阈值（包含）
+     * @param max 最大阈值（包含）
+     * @return 二值化后的Mat对象
+     */
+    fun thresholdByRange(grayMat: Mat, min: Int, max: Int): Mat {
+        // 检查输入是否为单通道灰度图
+        require(grayMat.type() == CvType.CV_8UC1) {
+            "输入必须是单通道灰度图(CV_8UC1)"
+        }
+        
+        val resultMat = Mat()
+        // 使用inRange函数进行范围阈值处理
+        Core.inRange(grayMat, Scalar(min.toDouble()), Scalar(max.toDouble()), resultMat)
+        return resultMat
+    }
 }
