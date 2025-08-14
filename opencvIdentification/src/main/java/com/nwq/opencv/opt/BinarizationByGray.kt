@@ -11,4 +11,8 @@ class BinarizationByGray(val min: Int, val max: Int) : MatResult {
     override fun performOperations(srcMat: Mat): Mat {
         return MatUtils.thresholdByRange(srcMat, min, max);
     }
+
+    override fun requireMatType(): Int {
+        return OptStep.MAT_TYPE_GRAY
+    }
 }

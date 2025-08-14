@@ -10,4 +10,5 @@ class CropArea(val coordinateArea: CoordinateArea) : MatResult {
         return MatUtils.cropMat(srcMat, coordinateArea)
     }
 
+
 }
