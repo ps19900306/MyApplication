@@ -1,8 +1,11 @@
 package com.example.myapplication.complex
 
 import android.graphics.Bitmap
+import android.widget.Toast
+import com.luck.picture.lib.utils.ToastUtils
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MatUtils
+import com.nwq.baseutils.T
 import com.nwq.opencv.opt.CropAreaStep
 import com.nwq.opencv.opt.MatResult
 import com.nwq.opencv.opt.OptStep
@@ -52,7 +55,15 @@ class ComplexRecognitionViewModel {
     public suspend fun addOptStep(optStep: MatResult) {
         if (srcMat == null)
             return;
-        val newMat = optStep.performOperations(if (matList.isEmpty()) srcMat!! else matList.last())
+        val (newMat, type) = optStep.performOperations(
+            if (matList.isEmpty()) srcMat!! else matList.last(),
+            lastType
+        )
+        if (newMat == null) {
+            T.show("操作失败,请查看日志")
+            return
+        }
+        lastType = type
         matList.add(newMat)
         optList.add(optStep)
     }
@@ -66,8 +77,15 @@ class ComplexRecognitionViewModel {
             matList.clear()
             matList.addAll(list)
             for (i in index until optList.size) {
-                // 确保matList不为空再访问last()
-                val newMat = optList[i].performOperations(matList.last())
+                val (newMat, type) =  optList[i].performOperations(
+                    if (matList.isEmpty()) srcMat!! else matList.last(),
+                    lastType
+                )
+                if (newMat == null) {
+                    T.show("操作失败,请查看日志")
+                    return
+                }
+                lastType = type
                 matList.add(newMat)
             }
         } else if (index == 0) {
@@ -80,8 +98,15 @@ class ComplexRecognitionViewModel {
     private fun reExecute() {
         matList.clear()
         optList.forEach {
-            val newMat =
-                it.performOperations(if (matList.isEmpty()) srcMat!! else matList.last())
+            val (newMat, type) = it.performOperations(
+                if (matList.isEmpty()) srcMat!! else matList.last(),
+                lastType
+            )
+            if (newMat == null) {
+                T.show("操作失败,请查看日志")
+                return
+            }
+            lastType = type
             matList.add(newMat)
         }
     }
