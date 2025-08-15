@@ -33,6 +33,10 @@ class ComplexRecognitionViewModel {
     private var mCropArea: CoordinateArea? = null
 
 
+//    public fun getGrayMat(): Mat? {
+//
+//    }
+
     public fun setNewBitmap(bitmap: Bitmap) {
         srcMat = MatUtils.bitmapToMat(bitmap)
         lastType = OptStep.MAT_TYPE_RGB
