@@ -1,9 +1,13 @@
 package com.example.myapplication.complex
 
 import android.graphics.Bitmap
+import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MatUtils
+import com.nwq.opencv.opt.CropAreaStep
 import com.nwq.opencv.opt.MatResult
 import com.nwq.opencv.opt.OptStep
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.opencv.core.Mat
 
 //复杂识别 图像目标识别
@@ -13,16 +17,35 @@ class ComplexRecognitionViewModel {
 
     private val matList = mutableListOf<Mat>()
 
+    //原始图片 GBR格式的Mat
     private var srcMat: Mat? = null
 
-    private var lastMatType: Int = -1
+    //用于展示最新图片的
+    private val _nowBitmapFlow: MutableStateFlow<Bitmap?> = MutableStateFlow(null);
+    public val nowBitmapFlow: Flow<Bitmap?> = _nowBitmapFlow
+    //这个是找图范围
+    private var mCropArea: CoordinateArea? = null
 
 
-    public fun setBitmap(bitmap: Bitmap) {
+
+
+
+    public fun setNewBitmap(bitmap: Bitmap) {
         srcMat = MatUtils.bitmapToMat(bitmap)
-        MatUtils.bitmapToHsvMat()
+        _nowBitmapFlow.tryEmit(bitmap)
+        reExecute();
     }
 
+
+    //注意裁剪区域必定是在获取截图第一步就处理了
+    public fun setCropArea(cropArea: CoordinateArea) {
+        mCropArea = cropArea
+        if (!optList.isEmpty() && (optList[0] is CropAreaStep)) {
+            optList.removeAt(0)
+        }
+        optList.add(CropAreaStep(cropArea))
+        reExecute()
+    }
 
     //增加一部操作
     public suspend fun addOptStep(optStep: MatResult) {
@@ -55,9 +78,9 @@ class ComplexRecognitionViewModel {
 
     private fun reExecute() {
         matList.clear()
-        for (i in optList.indices) {
+        optList.forEach {
             val newMat =
-                optList[i].performOperations(if (matList.isEmpty()) srcMat!! else matList.last())
+                it.performOperations(if (matList.isEmpty()) srcMat!! else matList.last())
             matList.add(newMat)
         }
     }
