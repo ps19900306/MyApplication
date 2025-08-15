@@ -32,8 +32,8 @@ class AutoHsvRuleDetailViewModel : ViewModel() {
     public var targetOriginalArea: CoordinateArea? = null
     public var path: String? = null
     public var storageType: Int = MatUtils.STORAGE_ASSET_TYPE
-    public var mSrcBitmap: Bitmap? = null
-    public var mSelectBitmap: Bitmap? = null
+    public var mSrcBitmap: Bitmap? = null  //原图
+    public var mSelectBitmap: Bitmap? = null //选择区域
     public var typeSelectP = 0;
     private var type = AutoHsvRuleType.KEY_POINT
     public val typeList by lazy {
@@ -48,14 +48,6 @@ class AutoHsvRuleDetailViewModel : ViewModel() {
 
     public fun setOnTypeSelectP(typeP: Int) {
         L.d("AutoHsvRuleDetailViewModel", "setOnTypeSelectP:", "2025/7/18/16:42")
-
-
-
-
-
-
-
-
         typeSelectP = typeP
         type = typeList[typeP].getKey()
     }

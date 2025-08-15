@@ -12,9 +12,7 @@ interface OptStep<T> {
         public var MAT_TYPE_GRAY = 3
     }
 
-    fun performOperations(srcMat: Mat): T
+    fun performOperations(srcMat: Mat, type: Int): T
 
-    fun requireMatType(): Int {
-        return MAT_TYPE_ALL
-    }
+
 }

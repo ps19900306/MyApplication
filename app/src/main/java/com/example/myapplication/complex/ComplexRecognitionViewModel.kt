@@ -20,18 +20,19 @@ class ComplexRecognitionViewModel {
     //原始图片 GBR格式的Mat
     private var srcMat: Mat? = null
 
+    private var lastType = OptStep.MAT_TYPE_ALL
+
     //用于展示最新图片的
     private val _nowBitmapFlow: MutableStateFlow<Bitmap?> = MutableStateFlow(null);
     public val nowBitmapFlow: Flow<Bitmap?> = _nowBitmapFlow
+
     //这个是找图范围
     private var mCropArea: CoordinateArea? = null
 
 
-
-
-
     public fun setNewBitmap(bitmap: Bitmap) {
         srcMat = MatUtils.bitmapToMat(bitmap)
+        lastType = OptStep.MAT_TYPE_RGB
         _nowBitmapFlow.tryEmit(bitmap)
         reExecute();
     }

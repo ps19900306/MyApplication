@@ -151,8 +151,6 @@ object MatUtils {
     }
 
 
-
-
     fun createBitmapFromMask(
         maskMat: Mat,
         color: Int = Color.RED,
@@ -238,7 +236,7 @@ object MatUtils {
      * @return 生成的新掩码Mat对象，符合过滤规则
      */
     fun generateInverseMask(srcMat: Mat, maskMat: Mat): Mat {
-        return filterByMask(srcMat,maskMatInverse(maskMat))
+        return filterByMask(srcMat, maskMatInverse(maskMat))
     }
 
     /**
@@ -254,7 +252,6 @@ object MatUtils {
 
         return invertedMask
     }
-
 
 
     // 获取点通过特征点
@@ -432,7 +429,7 @@ object MatUtils {
     fun bitmapToHsvMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
         // 将 Bitmap 转换为 Mat
         // 创建一个 Mat 对象
-        val mat = bitmapToMat(bitmap,coordinateArea);
+        val mat = bitmapToMat(bitmap, coordinateArea);
         // 创建一个 HSV 格式的 Mat 对象
         val hsvMat = Mat(mat.size(), CvType.CV_8UC3)
         // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
@@ -443,7 +440,7 @@ object MatUtils {
     fun bitmapToGrayMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
         // 将 Bitmap 转换为 Mat
         // 创建一个 Mat 对象
-        val mat = bitmapToMat(bitmap,coordinateArea);
+        val mat = bitmapToMat(bitmap, coordinateArea);
         // 创建一个 HSV 格式的 Mat 对象
         val hsvMat = Mat(mat.size(), CvType.CV_8UC1)
         // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
@@ -735,10 +732,49 @@ object MatUtils {
         require(grayMat.type() == CvType.CV_8UC1) {
             "输入必须是单通道灰度图(CV_8UC1)"
         }
-        
+
         val resultMat = Mat()
         // 使用inRange函数进行范围阈值处理
         Core.inRange(grayMat, Scalar(min.toDouble()), Scalar(max.toDouble()), resultMat)
         return resultMat
+    }
+
+
+    fun rgb2Gray(srcMat: Mat): Mat {
+        require(srcMat.type() == CvType.CV_8UC3) {
+            "输入必须是单通道灰度图(CV_8UC3)"
+        }
+        val grayMat = Mat(srcMat.size(), CvType.CV_8UC1)
+        // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
+        Imgproc.cvtColor(srcMat, grayMat, Imgproc.COLOR_RGB2GRAY)
+        return grayMat
+    }
+
+    fun rgb2Hsv(srcMat: Mat): Mat {
+        require(srcMat.type() == CvType.CV_8UC3) {
+            "输入必须是单通道灰度图(CV_8UC3)"
+        }
+        val hsvMat = Mat(srcMat.size(), CvType.CV_8UC3)
+        // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
+        Imgproc.cvtColor(srcMat, hsvMat, Imgproc.COLOR_RGB2HSV)
+        return hsvMat
+    }
+
+    fun hsv2Rgb(srcMat: Mat): Mat {
+        require(srcMat.type() == CvType.CV_8UC3) {
+            "输入必须是单通道灰度图(CV_8UC3)"
+        }
+        val grbMat = Mat(srcMat.size(), CvType.CV_8UC3)
+        // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
+        Imgproc.cvtColor(srcMat, grbMat, Imgproc.COLOR_HSV2RGB)
+        return grbMat
+    }
+
+    fun hsv2Gray(srcMat: Mat): Mat {
+        require(srcMat.type() == CvType.CV_8UC3) {
+            "输入必须是单通道灰度图(CV_8UC3)"
+        }
+        val grbMat = hsv2Rgb(srcMat)
+        return rgb2Gray(grbMat)
     }
 }
