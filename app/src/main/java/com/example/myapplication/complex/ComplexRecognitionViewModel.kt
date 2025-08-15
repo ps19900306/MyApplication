@@ -25,6 +25,8 @@ class ComplexRecognitionViewModel {
 
     private var lastType = OptStep.MAT_TYPE_ALL
 
+    private var nowStep = 0;
+
     //用于展示最新图片的
     private val _nowBitmapFlow: MutableStateFlow<Bitmap?> = MutableStateFlow(null);
     public val nowBitmapFlow: Flow<Bitmap?> = _nowBitmapFlow
@@ -81,7 +83,7 @@ class ComplexRecognitionViewModel {
             matList.clear()
             matList.addAll(list)
             for (i in index until optList.size) {
-                val (newMat, type) =  optList[i].performOperations(
+                val (newMat, type) = optList[i].performOperations(
                     if (matList.isEmpty()) srcMat!! else matList.last(),
                     lastType
                 )
