@@ -20,6 +20,8 @@ class ComplexRecognitionViewModel {
 
     private val matList = mutableListOf<Mat>()
 
+    private val typeList = mutableListOf<Int>()
+
     //原始图片 GBR格式的Mat
     private var srcMat: Mat? = null
 
@@ -35,15 +37,14 @@ class ComplexRecognitionViewModel {
     private var mCropArea: CoordinateArea? = null
 
 
-//    public fun getGrayMat(): Mat? {
-//
-//    }
 
     public fun setNewBitmap(bitmap: Bitmap) {
         srcMat = MatUtils.bitmapToMat(bitmap)
-        lastType = OptStep.MAT_TYPE_RGB
-        _nowBitmapFlow.tryEmit(bitmap)
-        reExecute();
+        if (optList.isEmpty()) {
+            _nowBitmapFlow.tryEmit(bitmap)
+        } else {
+            reExecute();
+        }
     }
 
 
@@ -57,56 +58,83 @@ class ComplexRecognitionViewModel {
         reExecute()
     }
 
+
     //增加一部操作
     public suspend fun addOptStep(optStep: MatResult) {
         if (srcMat == null)
             return;
-        val (newMat, type) = optStep.performOperations(
-            if (matList.isEmpty()) srcMat!! else matList.last(),
-            lastType
-        )
-        if (newMat == null) {
-            T.show("操作失败,请查看日志")
-            return
+        if (nowStep >= optList.size) {
+            optList.add(optStep)
+            rereExecute(optList.size - 1)
+        } else {
+            optList.add(nowStep, optStep)
+            rereExecute(nowStep)
         }
-        lastType = type
-        matList.add(newMat)
-        optList.add(optStep)
     }
 
-    //removeOptStep
+    //当移除一个选择项目时候的操作
     public suspend fun removeOptStep(optStep: MatResult) {
-        val index = optList.indexOf(optStep)  //4   5
-        if (index > 0) {
-            optList.removeAt(index)   //4   5
-            val list = matList.subList(0, index)//0-3   4
-            matList.clear()
-            matList.addAll(list)
-            for (i in index until optList.size) {
-                val (newMat, type) = optList[i].performOperations(
-                    if (matList.isEmpty()) srcMat!! else matList.last(),
-                    lastType
-                )
-                if (newMat == null) {
-                    T.show("操作失败,请查看日志")
-                    return
-                }
-                lastType = type
-                matList.add(newMat)
-            }
-        } else if (index == 0) {
-            optList.removeAt(index)
-            reExecute();
-        }
+        val index = optList.indexOf(optStep)
+        rereExecute(index)
     }
 
 
     private fun reExecute() {
         matList.clear()
+        typeList.clear()
         optList.forEach {
             val (newMat, type) = it.performOperations(
                 if (matList.isEmpty()) srcMat!! else matList.last(),
-                lastType
+                if (typeList.isEmpty()) OptStep.MAT_TYPE_RGB else typeList.last()
+            )
+            if (newMat == null) {
+                T.show("操作失败,请查看日志")
+                return
+            }
+            typeList.add(type)
+            lastType = type
+            matList.add(newMat)
+        }
+    }
+
+    //这里表示从第几项开始重新操作
+    private fun rereExecute(startIndex: Int) { //1
+        if (startIndex >= optList.size) {
+            T.show("rereExecute 下标越界")
+            return
+        }
+        //全部从新开始做
+        if (startIndex == 0) {
+            reExecute()
+            return
+        }
+        //为尾部添加的操作
+        if (startIndex == (optList.size - 1)) {//修改的是最后一项
+            val (newMat, type) = optList[startIndex].performOperations(
+                if (matList.isEmpty()) srcMat!! else matList.last(),
+                if (typeList.isEmpty()) OptStep.MAT_TYPE_RGB else typeList.last()
+            )
+            if (newMat == null) {
+                T.show("操作失败,请查看日志")
+                return
+            }
+            matList.add(newMat)
+            typeList.add(type)
+            return
+        }
+
+        //在中间进行的操作进行的修改
+        val tempMatList = matList.subList(0, startIndex) //这里开始是包含 结束是不包含
+        val tempTypeList = typeList.subList(0, startIndex)
+        matList.clear()
+        typeList.clear()
+        matList.addAll(tempMatList)
+        typeList.addAll(tempTypeList)
+
+        for (i in startIndex until optList.size) {
+            val (newMat, type) = optList[i].performOperations(
+                if (matList.isEmpty()) srcMat!! else matList.last(),
+                if (typeList.isEmpty()) OptStep.MAT_TYPE_RGB else typeList.last()
             )
             if (newMat == null) {
                 T.show("操作失败,请查看日志")
@@ -114,7 +142,9 @@ class ComplexRecognitionViewModel {
             }
             lastType = type
             matList.add(newMat)
+            typeList.add(type)
         }
     }
+
 
 }
