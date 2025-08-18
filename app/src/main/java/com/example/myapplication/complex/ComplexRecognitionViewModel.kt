@@ -2,6 +2,7 @@ package com.example.myapplication.complex
 
 import android.graphics.Bitmap
 import android.widget.Toast
+import androidx.lifecycle.ViewModel
 import com.luck.picture.lib.utils.ToastUtils
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MatUtils
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.opencv.core.Mat
 
 //复杂识别 图像目标识别
-class ComplexRecognitionViewModel {
+class ComplexRecognitionViewModel : ViewModel() {
 
     private val optList = mutableListOf<MatResult>()
 
@@ -37,6 +38,35 @@ class ComplexRecognitionViewModel {
     private var mCropArea: CoordinateArea? = null
 
 
+    public fun getGrayMat(isModify: Boolean = false): Mat? {
+        if (srcMat == null) {
+            return null
+        }
+        if (nowStep <= 0) {
+            return MatUtils.rgb2Gray(srcMat!!)
+        }
+        val mat = matList.get(if (isModify) nowStep - 2 else nowStep - 1)
+        val type = typeList.get(if (isModify) nowStep - 2 else nowStep - 1)
+
+        when (type) {
+            OptStep.MAT_TYPE_RGB -> {
+                return MatUtils.rgb2Gray(mat)
+            }
+
+            OptStep.MAT_TYPE_HSV -> {
+                return MatUtils.rgb2Hsv(mat)
+            }
+
+            OptStep.MAT_TYPE_GRAY -> {
+                return mat
+            }
+        }
+        return null
+    }
+
+    public fun getCropArea(): CoordinateArea? {
+        return mCropArea
+    }
 
     public fun setNewBitmap(bitmap: Bitmap) {
         srcMat = MatUtils.bitmapToMat(bitmap)
@@ -59,6 +89,12 @@ class ComplexRecognitionViewModel {
     }
 
 
+    public suspend fun modifyStep(optStep: MatResult) {
+        val index = optList.indexOf(optStep)
+        rereExecute(index)
+    }
+
+
     //增加一部操作
     public suspend fun addOptStep(optStep: MatResult) {
         if (srcMat == null)
@@ -70,6 +106,7 @@ class ComplexRecognitionViewModel {
             optList.add(nowStep, optStep)
             rereExecute(nowStep)
         }
+        nowStep++
     }
 
     //当移除一个选择项目时候的操作
@@ -95,7 +132,28 @@ class ComplexRecognitionViewModel {
             lastType = type
             matList.add(newMat)
         }
+        sendNowBitmap(
+            if (matList.isEmpty()) srcMat!! else matList.last(),
+            if (typeList.isEmpty()) OptStep.MAT_TYPE_RGB else typeList.last()
+        )
     }
+
+    private fun sendNowBitmap(mat: Mat, type: Int) {
+        when (type) {
+            OptStep.MAT_TYPE_RGB -> {
+                _nowBitmapFlow.tryEmit(MatUtils.matToBitmap(mat))
+            }
+
+            OptStep.MAT_TYPE_HSV -> {
+                _nowBitmapFlow.tryEmit(MatUtils.hsvMatToBitmap(mat))
+            }
+
+            OptStep.MAT_TYPE_GRAY -> {
+                _nowBitmapFlow.tryEmit(MatUtils.grayMatToBitmap(mat))
+            }
+        }
+    }
+
 
     //这里表示从第几项开始重新操作
     private fun rereExecute(startIndex: Int) { //1

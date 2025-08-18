@@ -19,7 +19,6 @@ class OptItemDialog : BaseDialogFragment<DialogOptItemBinding>() {
         return DialogOptItemBinding.inflate(inflater, container, false)
     }
 
-
     private var callBack: CallBack<Int>? = null
 
     public fun setCallBack(callBack: CallBack<Int>): OptItemDialog {
@@ -31,6 +30,7 @@ class OptItemDialog : BaseDialogFragment<DialogOptItemBinding>() {
     override fun initData() {
         binding.binarizationRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
         val binarizationAdapter = TextAdapter(mCallBack = callBack)
+        binding.binarizationRecyclerView.adapter = binarizationAdapter
         binarizationAdapter.upData(
             listOf<IText<Int>>(
                 TextResWarp(R.string.grayscale_binarization),

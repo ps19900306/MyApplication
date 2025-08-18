@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_complex"
+    app:startDestination="@+id/complexIndexFragment">
+
+
+    <fragment
+        android:id="@+id/complexIndexFragment"
+        android:name="com.example.myapplication.complex.ComplexIndexFragment"
+        android:label="复杂过程"
+        tools:layout="@layout/fragment_complex_index">
+        <action
+            android:id="@+id/action_complexIndexFragment_to_grayscaleBinarizationFragment"
+            app:destination="@id/grayscaleBinarizationFragment" />
+        <action
+            android:id="@+id/action_complexIndexFragment_to_nav_opt_preview"
+            app:destination="@id/nav_opt_preview" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/grayscaleBinarizationFragment"
+        android:name="com.example.myapplication.complex.GrayscaleBinarizationFragment"
+        android:label="灰度二值化"
+        tools:layout="@layout/fragment_grayscale_binarization">
+<!--        <argument-->
+<!--            android:name="nowStep"-->
+<!--            app:argType="long" />-->
+        <argument
+            android:name="isModify"
+            app:argType="boolean" />
+    </fragment>
+
+    <include app:graph="@navigation/nav_opt_preview" />
+</navigation>

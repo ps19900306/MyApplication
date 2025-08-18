@@ -464,14 +464,14 @@ object MatUtils {
 
 
     fun hsvMatToBitmap(srcMat: Mat): Bitmap {
-        // 创建一个临时的 Mat 对象，用于存储 RGB 格式的图像
-        val rgbMat = Mat()
-        // 将 HSV 格式的 Mat 转换为 RGB 格式的 Mat
-        Imgproc.cvtColor(srcMat, rgbMat, Imgproc.COLOR_HSV2RGB)
-        // 将 RGB 格式的 Mat 转换为 Bitmap
-        return matToBitmap(rgbMat)
+        return matToBitmap(hsv2Rgb(srcMat))
     }
 
+
+    //灰度图转换成Bitmap
+    fun grayMatToBitmap(srcMat: Mat):Bitmap {
+        return matToBitmap(gray2Rbg(srcMat))
+    }
 
     //根据区域对象进行裁剪
     fun cropMat(srcMat: Mat, coordinateArea: CoordinateArea): Mat {
@@ -777,4 +777,17 @@ object MatUtils {
         val grbMat = hsv2Rgb(srcMat)
         return rgb2Gray(grbMat)
     }
+
+    fun gray2Rbg(srcMat: Mat): Mat {
+        // 创建对应大小的 Bitmap
+        val bitmap = Bitmap.createBitmap(srcMat.cols(), srcMat.rows(), Bitmap.Config.ARGB_8888)
+
+        // 将灰度 Mat 转换为彩色 Mat (因为 Android Bitmap 需要 ARGB 格式)
+        val rgbMat = Mat()
+        org.opencv.imgproc.Imgproc.cvtColor(srcMat, rgbMat, org.opencv.imgproc.Imgproc.COLOR_GRAY2RGBA)
+        return rgbMat
+    }
+
+
+
 }

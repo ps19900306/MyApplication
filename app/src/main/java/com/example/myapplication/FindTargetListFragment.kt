@@ -76,6 +76,13 @@ class FindTargetListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>()
                 }
                 return true
             }
+            R.id.action_complex -> {
+                NavigationToolBarActivity.startNavigationContainerActivity(
+                    requireContext(),
+                    R.navigation.nav_complex
+                )
+                return true
+            }
         }
         return false
     }

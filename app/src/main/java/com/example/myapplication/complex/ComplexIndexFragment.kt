@@ -31,6 +31,10 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
     private val TAG = "ComplexIndexFragment"
     private val viewModel: ComplexRecognitionViewModel by viewModels({ requireActivity() })
     private val preViewModel: PreviewViewModel by viewModels({ requireActivity() })
+    private val mOptItemDialog: OptItemDialog by lazy {
+        OptItemDialog().setCallBack(callBack)
+    }
+
     override fun createBinding(inflater: LayoutInflater): FragmentComplexIndexBinding {
         return FragmentComplexIndexBinding.inflate(inflater)
     }
@@ -48,6 +52,7 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
     }
 
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
+
         var flag = true
         when (menuItem.itemId) {
             R.id.action_select_picture -> {
@@ -59,8 +64,7 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
             }
 
             R.id.action_opt_list -> {
-                OptItemDialog().setCallBack(callBack)
-                    .show(requireActivity().supportFragmentManager, "OptItemDialog")
+                mOptItemDialog.show(requireActivity().supportFragmentManager, "OptItemDialog")
             }
 
             else -> {
@@ -72,13 +76,20 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
 
 
     private fun onOptItemSelect(i: Int) {
+        mOptItemDialog.dismiss()
         when (i) {
             R.string.grayscale_binarization -> {
-
+                findNavController().navigate(
+                    R.id.action_complexIndexFragment_to_grayscaleBinarizationFragment,
+                    GrayscaleBinarizationFragmentArgs(false).toBundle()
+                );
             }
 
             R.string.h_s_v_binarization -> {
-
+                findNavController().navigate(
+                    R.id.action_complexIndexFragment_to_grayscaleBinarizationFragment,
+                    GrayscaleBinarizationFragmentArgs(false).toBundle()
+                );
             }
 
         }
@@ -141,10 +152,10 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
                     key = R.string.crop_picture,
                     type = TouchOptModel.RECT_AREA_TYPE,
                     color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
-                    coordinate = null
+                    coordinate = viewModel.getCropArea()
                 )
             )
         }
-        findNavController().navigate(R.id.action_findTargetDetailFragment_to_nav_opt_preview)
+        findNavController().navigate(R.id.action_complexIndexFragment_to_nav_opt_preview)
     }
 }
