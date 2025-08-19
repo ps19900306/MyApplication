@@ -224,17 +224,21 @@ class ComplexRecognitionViewModel : ViewModel() {
             return
         val mat = matList.last()
         val rect = MatUtils.findBoundingRectForWhiteArea(mat) ?: return
+        Log.i(TAG, "mergeAndCrop 2:${GsonUtils.toJson(rect)} ")
         val matResult = optList[0]
         if (matResult is CropAreaStep) {
             matResult.coordinateArea.x += rect.x
             matResult.coordinateArea.y += rect.y
             matResult.coordinateArea.width = rect.width
             matResult.coordinateArea.height = rect.height
-            Log.i(TAG, "mergeAndCrop:${GsonUtils.toJson(matResult.coordinateArea)} ")
+            Log.i(TAG, "mergeAndCrop 1:${GsonUtils.toJson(matResult.coordinateArea)} ")
         } else {
-            optList.add(0, CropAreaStep(CoordinateArea(rect.x, rect.y, rect.width, rect.height)))
+            val coordinateArea = CoordinateArea(rect.x, rect.y, rect.width, rect.height)
+            Log.i(TAG, "mergeAndCrop 2:${GsonUtils.toJson(coordinateArea)} ")
+            optList.add(0, CropAreaStep(coordinateArea))
+
         }
-        reExecute()
+       // reExecute()
     }
 
 
