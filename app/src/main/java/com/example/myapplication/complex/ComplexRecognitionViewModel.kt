@@ -1,10 +1,12 @@
 package com.example.myapplication.complex
 
 import android.graphics.Bitmap
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.luck.picture.lib.utils.ToastUtils
 import com.nwq.baseobj.CoordinateArea
+import com.nwq.baseutils.GsonUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.opencv.opt.CropAreaStep
@@ -17,6 +19,7 @@ import org.opencv.core.Mat
 //复杂识别 图像目标识别
 class ComplexRecognitionViewModel : ViewModel() {
 
+    private val TAG = "ComplexRecognitionViewModel"
     private val optList = mutableListOf<MatResult>()
 
     private val matList = mutableListOf<Mat>()
@@ -43,18 +46,18 @@ class ComplexRecognitionViewModel : ViewModel() {
             return null
         }
         if (nowStep <= 0) {
-            return MatUtils.rgb2Gray(srcMat!!)
+            return MatUtils.bgr2Gray(srcMat!!)
         }
         val mat = matList.get(if (isModify) nowStep - 2 else nowStep - 1)
         val type = typeList.get(if (isModify) nowStep - 2 else nowStep - 1)
 
         when (type) {
-            OptStep.MAT_TYPE_RGB -> {
-                return MatUtils.rgb2Gray(mat)
+            OptStep.MAT_TYPE_BGR -> {
+                return MatUtils.bgr2Gray(mat)
             }
 
             OptStep.MAT_TYPE_HSV -> {
-                return MatUtils.rgb2Hsv(mat)
+                return MatUtils.bgr2Hsv(mat)
             }
 
             OptStep.MAT_TYPE_GRAY -> {
@@ -85,6 +88,7 @@ class ComplexRecognitionViewModel : ViewModel() {
             optList.removeAt(0)
         }
         optList.add(CropAreaStep(cropArea))
+        nowStep = 1
         reExecute()
     }
 
@@ -117,12 +121,15 @@ class ComplexRecognitionViewModel : ViewModel() {
 
 
     private fun reExecute() {
+        matList.forEach {
+            it.release()
+        }
         matList.clear()
         typeList.clear()
         optList.forEach {
             val (newMat, type) = it.performOperations(
                 if (matList.isEmpty()) srcMat!! else matList.last(),
-                if (typeList.isEmpty()) OptStep.MAT_TYPE_RGB else typeList.last()
+                if (typeList.isEmpty()) OptStep.MAT_TYPE_BGR else typeList.last()
             )
             if (newMat == null) {
                 T.show("操作失败,请查看日志")
@@ -134,13 +141,13 @@ class ComplexRecognitionViewModel : ViewModel() {
         }
         sendNowBitmap(
             if (matList.isEmpty()) srcMat!! else matList.last(),
-            if (typeList.isEmpty()) OptStep.MAT_TYPE_RGB else typeList.last()
+            if (typeList.isEmpty()) OptStep.MAT_TYPE_BGR else typeList.last()
         )
     }
 
     private fun sendNowBitmap(mat: Mat, type: Int) {
         when (type) {
-            OptStep.MAT_TYPE_RGB -> {
+            OptStep.MAT_TYPE_BGR -> {
                 _nowBitmapFlow.tryEmit(MatUtils.matToBitmap(mat))
             }
 
@@ -166,11 +173,13 @@ class ComplexRecognitionViewModel : ViewModel() {
             reExecute()
             return
         }
+
+        //**其实是添加 **
         //为尾部添加的操作
         if (startIndex == (optList.size - 1)) {//修改的是最后一项
             val (newMat, type) = optList[startIndex].performOperations(
                 if (matList.isEmpty()) srcMat!! else matList.last(),
-                if (typeList.isEmpty()) OptStep.MAT_TYPE_RGB else typeList.last()
+                if (typeList.isEmpty()) OptStep.MAT_TYPE_BGR else typeList.last()
             )
             if (newMat == null) {
                 T.show("操作失败,请查看日志")
@@ -181,9 +190,14 @@ class ComplexRecognitionViewModel : ViewModel() {
             return
         }
 
+        //** 在中间进行操作 **
         //在中间进行的操作进行的修改
         val tempMatList = matList.subList(0, startIndex) //这里开始是包含 结束是不包含
         val tempTypeList = typeList.subList(0, startIndex)
+        //对资源进行释放
+        for (i in startIndex until matList.size) {
+            matList[i].release()
+        }
         matList.clear()
         typeList.clear()
         matList.addAll(tempMatList)
@@ -192,7 +206,7 @@ class ComplexRecognitionViewModel : ViewModel() {
         for (i in startIndex until optList.size) {
             val (newMat, type) = optList[i].performOperations(
                 if (matList.isEmpty()) srcMat!! else matList.last(),
-                if (typeList.isEmpty()) OptStep.MAT_TYPE_RGB else typeList.last()
+                if (typeList.isEmpty()) OptStep.MAT_TYPE_BGR else typeList.last()
             )
             if (newMat == null) {
                 T.show("操作失败,请查看日志")
@@ -202,6 +216,25 @@ class ComplexRecognitionViewModel : ViewModel() {
             matList.add(newMat)
             typeList.add(type)
         }
+    }
+
+
+    fun mergeAndCrop() {
+        if (matList.isEmpty() || srcMat == null)
+            return
+        val mat = matList.last()
+        val rect = MatUtils.findBoundingRectForWhiteArea(mat) ?: return
+        val matResult = optList[0]
+        if (matResult is CropAreaStep) {
+            matResult.coordinateArea.x += rect.x
+            matResult.coordinateArea.y += rect.y
+            matResult.coordinateArea.width = rect.width
+            matResult.coordinateArea.height = rect.height
+            Log.i(TAG, "mergeAndCrop:${GsonUtils.toJson(matResult.coordinateArea)} ")
+        } else {
+            optList.add(0, CropAreaStep(CoordinateArea(rect.x, rect.y, rect.width, rect.height)))
+        }
+        reExecute()
     }
 
 

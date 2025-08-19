@@ -13,8 +13,8 @@ class BinarizationByHsvRule(val autoRulePointEntity: AutoRulePointEntity) : MatR
     override fun performOperations(srcMat: Mat, type: Int): Pair<Mat?, Int> {
         val hsvMat = if (type == OptStep.MAT_TYPE_HSV) {
             srcMat
-        } else if (type == OptStep.MAT_TYPE_RGB) {
-            MatUtils.rgb2Hsv(srcMat)
+        } else if (type == OptStep.MAT_TYPE_BGR) {
+            MatUtils.bgr2Hsv(srcMat)
         } else {
             Log.i("MatResult", "BinarizationByGray::不支持的类型")
             return Pair(null, type)

@@ -7,7 +7,7 @@ interface OptStep<T> {
 
     companion object {
         public var MAT_TYPE_ALL = 0
-        public var MAT_TYPE_RGB = 1
+        public var MAT_TYPE_BGR = 1
         public var MAT_TYPE_HSV = 2
         public var MAT_TYPE_GRAY = 3
     }

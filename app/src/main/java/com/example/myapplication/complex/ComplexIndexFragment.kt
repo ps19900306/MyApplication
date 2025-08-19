@@ -76,7 +76,7 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
 
 
     private fun onOptItemSelect(i: Int) {
-        mOptItemDialog.dismiss()
+
         when (i) {
             R.string.grayscale_binarization -> {
                 findNavController().navigate(
@@ -91,8 +91,11 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
                     GrayscaleBinarizationFragmentArgs(false).toBundle()
                 );
             }
-
+            R.string.merge_and_crop->{
+                viewModel.mergeAndCrop()
+            }
         }
+        mOptItemDialog.dismiss()
     }
 
 

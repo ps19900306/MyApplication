@@ -20,6 +20,8 @@ import com.example.myapplication.databinding.FragmentGrayscaleBinarizationBindin
 import com.example.myapplication.find_target.FindTargetDetailFragmentArgs
 import com.nwq.baseutils.HsvRuleUtils
 import com.nwq.baseutils.MatUtils
+import com.nwq.baseutils.singleClick
+import com.nwq.opencv.opt.BinarizationByGray
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -85,6 +87,12 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
         ) { i ->
             maxI = i
             sendUpdateSignal()
+        }
+        binding.saveBtn.singleClick {
+            lifecycleScope.launch {
+                viewModel.addOptStep(BinarizationByGray(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI))
+            }
+            onBackPress()
         }
     }
 

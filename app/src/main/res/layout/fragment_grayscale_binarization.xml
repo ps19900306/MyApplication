@@ -63,10 +63,10 @@
         app:layout_constraintStart_toEndOf="@+id/sb_max" />
 
     <Button
-        android:id="@+id/fullBtn"
+        android:id="@+id/saveBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Full"
+        android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="@+id/et_max"
         app:layout_constraintEnd_toEndOf="parent" />
 

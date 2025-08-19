@@ -37,5 +37,12 @@ class OptItemDialog : BaseDialogFragment<DialogOptItemBinding>() {
                 TextResWarp(R.string.h_s_v_binarization),
             )
         )
+        binding.corpRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
+        val corpAdapter = TextAdapter(mCallBack = callBack)
+        binding.corpRecyclerView.adapter = corpAdapter
+        corpAdapter.upData(listOf<IText<Int>>(
+            TextResWarp(R.string.merge_and_crop),
+            TextResWarp(R.string.separate_cropping),
+        ))
     }
 }

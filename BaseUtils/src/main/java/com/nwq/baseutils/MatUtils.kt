@@ -161,7 +161,7 @@ object MatUtils {
             "掩码必须是单通道8位无符号整型(CV_8UC1)"
         }
 
-        // 创建ARGB_8888格式的Bitmap
+        // 创建ABGR_8888格式的Bitmap
         val width = maskMat.cols()
         val height = maskMat.rows()
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -329,9 +329,13 @@ object MatUtils {
                 }
             }
         }
-
         // 按照最小距离过滤点
-        return filterPointsByDistance(points, distance)
+        val result= filterPointsByDistance(points, distance)
+        binaryMat.release()
+        erodedMat1.release()
+        erodedMat2.release()
+        borderMat.release()
+        return  result
     }
 
     /**
@@ -407,22 +411,22 @@ object MatUtils {
 
 
     fun bitmapToMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
-        //如果不指定ARGB_8888	CV_8UC4	4 通道（BGRA，Alpha 通道保留）
-        //RGB_565	CV_8UC3	3 通道（BGR，自动从 16 位转 24 位，可能有精度损失）
-        //ALPHA_8 / 灰度图	CV_8UC1	单通道（灰度）
-        // 创建一个 Mat 对象
-        //var mat = Mat()
-        // 使用 OpenCV 的 Utils 类将 Bitmap 转换为 Mat
-        //Utils.bitmapToMat(bitmap, mat)
-        //所以我们这里强行指定为三通道的格式
 
-        //原因如上注释 这么指定强制放弃A通道 减少开销
-        val mat = Mat(bitmap.height, bitmap.width, CvType.CV_8UC3)
+        //原因如上注释 这么指定强制放弃A通道 减少开销 指定成这个似乎没有用CvType.CV_8UC3
+        val mat = Mat()
         Utils.bitmapToMat(bitmap, mat)
-        return if (coordinateArea != null) {
-            cropMat(mat, coordinateArea)
+        val lastMat = if (mat.type() == CvType.CV_8UC4) {
+            val result = Mat()
+            Imgproc.cvtColor(mat, result, Imgproc.COLOR_BGRA2BGR)
+            mat.release()
+            result
         } else {
             mat
+        }
+        return if (coordinateArea != null) {
+            cropMat(lastMat, coordinateArea)
+        } else {
+            lastMat
         }
     }
 
@@ -432,8 +436,9 @@ object MatUtils {
         val mat = bitmapToMat(bitmap, coordinateArea);
         // 创建一个 HSV 格式的 Mat 对象
         val hsvMat = Mat(mat.size(), CvType.CV_8UC3)
-        // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
-        Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_RGB2HSV)
+        // 将 BGR 格式的 Mat 转换为 HSV 格式的 Mat
+        Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_BGR2HSV)
+        mat.release()
         return hsvMat;
     }
 
@@ -443,46 +448,61 @@ object MatUtils {
         val mat = bitmapToMat(bitmap, coordinateArea);
         // 创建一个 HSV 格式的 Mat 对象
         val hsvMat = Mat(mat.size(), CvType.CV_8UC1)
-        // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
-        Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_RGB2GRAY)
+        // 将 BGR 格式的 Mat 转换为 HSV 格式的 Mat
+        Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_BGR2GRAY)
+        mat.release()
         return hsvMat;
     }
 
 
     fun matToBitmap(srcMat: Mat): Bitmap {
-        // 创建一个临时的 Mat 对象，用于存储 ARGB_8888 格式的图像
-        val argbMat = Mat()
-        // 将 RGB 格式的 Mat 转换为 ARGB_8888 格式
-        Imgproc.cvtColor(srcMat, argbMat, Imgproc.COLOR_RGB2RGBA)
+        // 创建一个临时的 Mat 对象，用于存储 ABGR_8888 格式的图像
+        val abgrMat = Mat()
+        // 将 BGR 格式的 Mat 转换为 ABGR_8888 格式
+        Imgproc.cvtColor(srcMat, abgrMat, Imgproc.COLOR_BGR2BGRA)
 
         // 创建一个 Bitmap 对象
-        val bitmap = Bitmap.createBitmap(argbMat.cols(), argbMat.rows(), Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(abgrMat.cols(), abgrMat.rows(), Bitmap.Config.ARGB_8888)
         // 使用 OpenCV 的 Utils 类将 Mat 转换为 Bitmap
-        Utils.matToBitmap(argbMat, bitmap)
+        Utils.matToBitmap(abgrMat, bitmap)
+        abgrMat.release()
         return bitmap
     }
 
 
     fun hsvMatToBitmap(srcMat: Mat): Bitmap {
-        return matToBitmap(hsv2Rgb(srcMat))
+        return matToBitmap(hsv2Bgr(srcMat))
     }
 
 
     //灰度图转换成Bitmap
-    fun grayMatToBitmap(srcMat: Mat):Bitmap {
-        return matToBitmap(gray2Rbg(srcMat))
+    fun grayMatToBitmap(srcMat: Mat): Bitmap {
+        return matToBitmap(gray2Bgr(srcMat))
+    }
+
+
+    /**
+     * 根据指定的矩形区域裁剪图像
+     * @param srcMat 源图像
+     * @param rect 裁剪区域
+     * @return 裁剪后的图像
+     */
+    fun cropMat(srcMat: Mat, rect: Rect): Mat {
+        return Mat(srcMat, rect)
     }
 
     //根据区域对象进行裁剪
-    fun cropMat(srcMat: Mat, coordinateArea: CoordinateArea): Mat {
-        val dstMat = Mat(coordinateArea.height, coordinateArea.width, srcMat.type())
-        srcMat.submat(
-            coordinateArea.y,
-            coordinateArea.y + coordinateArea.height,
-            coordinateArea.x,
-            coordinateArea.x + coordinateArea.width
-        ).copyTo(dstMat)
-        return dstMat
+    fun cropMat(srcMat: Mat, area: CoordinateArea): Mat {
+//        val dstMat = Mat(coordinateArea.height, coordinateArea.width, srcMat.type())
+//        srcMat.submat(
+//            coordinateArea.y,
+//            coordinateArea.y + coordinateArea.height,
+//            coordinateArea.x,
+//            coordinateArea.x + coordinateArea.width
+//        ).copyTo(dstMat)
+//        return dstMat
+        val rect = Rect(area.x, area.y, area.width, area.height)
+        return Mat(srcMat, rect)
     }
 
 
@@ -740,33 +760,67 @@ object MatUtils {
     }
 
 
-    fun rgb2Gray(srcMat: Mat): Mat {
-        require(srcMat.type() == CvType.CV_8UC3) {
-            "输入必须是单通道灰度图(CV_8UC3)"
+    /**
+     * 查找二值图像中白色区域的最小外接矩形
+     * @param binaryMat 输入的二值图像（CV_8UC1格式，255表示目标区域）
+     * @return 包含最小外接矩形的Rect对象，如果没有找到白色区域则返回null
+     */
+    fun findBoundingRectForWhiteArea(binaryMat: Mat): Rect? {
+        // 检查输入是否为单通道灰度图
+        require(binaryMat.type() == CvType.CV_8UC1) {
+            "输入必须是单通道灰度图(CV_8UC1)"
         }
+
+        // 查找轮廓
+        val contours: MutableList<MatOfPoint> = mutableListOf()
+        val hierarchy = Mat()
+        Imgproc.findContours(
+            binaryMat,
+            contours,
+            hierarchy,
+            Imgproc.RETR_EXTERNAL,
+            Imgproc.CHAIN_APPROX_SIMPLE
+        )
+
+        // 合并所有轮廓点以找到整体的边界矩形
+        val allPoints = mutableListOf<Point>()
+        for (contour in contours) {
+            allPoints.addAll(contour.toList())
+        }
+
+        // 如果没有找到任何点，返回null
+        if (allPoints.isEmpty()) {
+            return null
+        }
+
+        // 计算边界矩形
+        return Imgproc.boundingRect(MatOfPoint(*allPoints.toTypedArray()))
+    }
+
+
+    fun bgr2Gray(srcMat: Mat): Mat {
         val grayMat = Mat(srcMat.size(), CvType.CV_8UC1)
-        // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
-        Imgproc.cvtColor(srcMat, grayMat, Imgproc.COLOR_RGB2GRAY)
+        Imgproc.cvtColor(srcMat, grayMat, Imgproc.COLOR_BGR2GRAY)
         return grayMat
     }
 
-    fun rgb2Hsv(srcMat: Mat): Mat {
+    fun bgr2Hsv(srcMat: Mat): Mat {
         require(srcMat.type() == CvType.CV_8UC3) {
             "输入必须是单通道灰度图(CV_8UC3)"
         }
         val hsvMat = Mat(srcMat.size(), CvType.CV_8UC3)
-        // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
-        Imgproc.cvtColor(srcMat, hsvMat, Imgproc.COLOR_RGB2HSV)
+        // 将 BGR 格式的 Mat 转换为 HSV 格式的 Mat
+        Imgproc.cvtColor(srcMat, hsvMat, Imgproc.COLOR_BGR2HSV)
         return hsvMat
     }
 
-    fun hsv2Rgb(srcMat: Mat): Mat {
+    fun hsv2Bgr(srcMat: Mat): Mat {
         require(srcMat.type() == CvType.CV_8UC3) {
             "输入必须是单通道灰度图(CV_8UC3)"
         }
         val grbMat = Mat(srcMat.size(), CvType.CV_8UC3)
-        // 将 RGB 格式的 Mat 转换为 HSV 格式的 Mat
-        Imgproc.cvtColor(srcMat, grbMat, Imgproc.COLOR_HSV2RGB)
+        // 将 BGR 格式的 Mat 转换为 HSV 格式的 Mat
+        Imgproc.cvtColor(srcMat, grbMat, Imgproc.COLOR_HSV2BGR)
         return grbMat
     }
 
@@ -774,20 +828,25 @@ object MatUtils {
         require(srcMat.type() == CvType.CV_8UC3) {
             "输入必须是单通道灰度图(CV_8UC3)"
         }
-        val grbMat = hsv2Rgb(srcMat)
-        return rgb2Gray(grbMat)
+        val grbMat = hsv2Bgr(srcMat)
+        val grayMat = bgr2Gray(grbMat)
+        grbMat.release()
+        return grayMat
     }
 
-    fun gray2Rbg(srcMat: Mat): Mat {
+    fun gray2Bgr(srcMat: Mat): Mat {
         // 创建对应大小的 Bitmap
         val bitmap = Bitmap.createBitmap(srcMat.cols(), srcMat.rows(), Bitmap.Config.ARGB_8888)
 
-        // 将灰度 Mat 转换为彩色 Mat (因为 Android Bitmap 需要 ARGB 格式)
-        val rgbMat = Mat()
-        org.opencv.imgproc.Imgproc.cvtColor(srcMat, rgbMat, org.opencv.imgproc.Imgproc.COLOR_GRAY2RGBA)
-        return rgbMat
+        // 将灰度 Mat 转换为彩色 Mat (因为 Android Bitmap 需要 ABGR 格式)
+        val bgrMat = Mat()
+        org.opencv.imgproc.Imgproc.cvtColor(
+            srcMat,
+            bgrMat,
+            org.opencv.imgproc.Imgproc.COLOR_GRAY2BGR
+        )
+        return bgrMat
     }
-
 
 
 }

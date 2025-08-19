@@ -17,8 +17,8 @@ class BinarizationByGray(val min: Int, val max: Int) : MatResult {
     override fun performOperations(srcMat: Mat, type: Int): Pair<Mat?, Int> {
         val grayMat = if (type == OptStep.MAT_TYPE_GRAY) {
             srcMat
-        } else if (type == OptStep.MAT_TYPE_RGB) {
-            MatUtils.rgb2Gray(srcMat)
+        } else if (type == OptStep.MAT_TYPE_BGR) {
+            MatUtils.bgr2Gray(srcMat)
         } else if (type == OptStep.MAT_TYPE_HSV) {
             MatUtils.hsv2Gray(srcMat)
         } else {
