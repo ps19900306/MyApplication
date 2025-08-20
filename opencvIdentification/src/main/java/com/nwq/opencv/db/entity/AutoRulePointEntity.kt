@@ -21,13 +21,13 @@ class AutoRulePointEntity() : IAutoRulePoint {
     var id: Long = 0
 
     var keyTag: String = ""
+    var description: String = ""
+
 
     //识别规则 这里的坐标信息是基于全图的
     @TypeConverters(HSVRuleConverters::class)
     @JvmField
     var prList: List<HSVRule> = listOf()
-    var description: String = ""
-
 
     //类型 请在这些类型里面选择
     @AutoHsvRuleType
@@ -55,7 +55,6 @@ class AutoRulePointEntity() : IAutoRulePoint {
         }
         return pointList
     }
-
 
 
 

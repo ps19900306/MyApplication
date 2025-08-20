@@ -4,16 +4,21 @@ import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.utils.ToastUtils
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.GsonUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
+import com.nwq.opencv.db.IdentifyDatabase
+import com.nwq.opencv.opt.BinarizationByHsvRule
 import com.nwq.opencv.opt.CropAreaStep
 import com.nwq.opencv.opt.MatResult
 import com.nwq.opencv.opt.OptStep
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 
 //复杂识别 图像目标识别
@@ -246,6 +251,14 @@ class ComplexRecognitionViewModel : ViewModel() {
             optList.add(0, CropAreaStep(coordinateArea))
         }
         reExecute()
+    }
+
+    fun addHsvRule(keyTag: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+           val autoRulePoint =
+                IdentifyDatabase.getDatabase().autoRulePointDao().findByKeyTag(keyTag)?:return@launch
+            addOptStep(BinarizationByHsvRule(autoRulePoint))
+        }
     }
 
 

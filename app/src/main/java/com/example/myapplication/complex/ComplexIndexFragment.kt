@@ -2,15 +2,19 @@ package com.example.myapplication.complex
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
+import com.example.myapplication.auto_hsv_rule.AutoHsvRuleSelectFragmentArgs
 import com.example.myapplication.base.TouchOptModel
 import com.example.myapplication.databinding.FragmentComplexIndexBinding
 import com.example.myapplication.preview.PreviewOptItem
@@ -22,6 +26,7 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.callback.CallBack
+import com.nwq.constant.ConstantKeyStr
 import com.nwq.loguitls.L
 import com.nwq.simplelist.TextResWarp
 import kotlinx.coroutines.launch
@@ -29,6 +34,7 @@ import kotlinx.coroutines.launch
 class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>() {
 
     private val TAG = "ComplexIndexFragment"
+    private val SELECT_HSV_RULE_TAG = "select_hsv_rule"
     private val viewModel: ComplexRecognitionViewModel by viewModels({ requireActivity() })
     private val preViewModel: PreviewViewModel by viewModels({ requireActivity() })
     private val mOptItemDialog: OptItemDialog by lazy {
@@ -46,6 +52,21 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
             }
         }
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parentFragment?.setFragmentResultListener(
+            SELECT_HSV_RULE_TAG,
+            { requestKey, result ->
+                Log.i("HsvTargetDetailFragment", "SELECT_HSV_RULE_TAG called")
+                result.getString(ConstantKeyStr.SELECTED_RESULT)?.let { keyTag ->
+                    viewModel.addHsvRule(keyTag)
+                }
+
+            }
+        )
+    }
+
 
     override fun getMenuRes(): Int {
         return R.menu.menu_complex_index
@@ -85,11 +106,16 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
                 );
             }
 
-            R.string.h_s_v_binarization -> {
+            R.string.h_s_v_binarization -> { //选择已有的过滤规则
                 findNavController().navigate(
-                    R.id.action_complexIndexFragment_to_grayscaleBinarizationFragment,
-                    GrayscaleBinarizationFragmentArgs(false).toBundle()
+                    R.id.action_complexIndexFragment_to_nav_select_hsv,
+                    AutoHsvRuleSelectFragmentArgs(SELECT_HSV_RULE_TAG, false).toBundle()
                 );
+
+            }
+
+            R.string.h_s_v_binarization_c -> {//新建新的过滤规则
+
             }
 
             R.string.merge_and_crop -> {

@@ -104,7 +104,8 @@
     <string name="set_click_area">设置点击区域</string>
     <string name="crop_picture">裁剪图片</string>
     <string name="grayscale_binarization">灰度图二值化</string>
-    <string name="h_s_v_binarization">Hsv二值化</string>
+    <string name="h_s_v_binarization">选择Hsv二值化规则</string>
+    <string name="h_s_v_binarization_c">创建HSV二值化规则</string>
     <string name="merge_and_crop">合并裁剪</string>
     <string name="separate_cropping">分离裁剪</string>
 </resources>

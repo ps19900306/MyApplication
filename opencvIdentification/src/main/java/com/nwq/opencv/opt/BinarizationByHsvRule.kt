@@ -34,16 +34,19 @@ class BinarizationByHsvRule(val autoRulePointEntity: AutoRulePointEntity) : MatR
             if (lastMaskMat == null) {
                 lastMaskMat = maskMat
             } else {
-                lastMaskMat = MatUtils.mergeMaskMat(lastMaskMat!!, maskMat)
+                val tempMat = MatUtils.mergeMaskMat(lastMaskMat!!, maskMat)
+                lastMaskMat?.release()
+                maskMat.release()
+                lastMaskMat = tempMat
             }
         }
         //这里可以直接
-        val mat = if (autoRulePointEntity.type == AutoHsvRuleType.RE_FILTER_MASK) {
-            MatUtils.generateInverseMask(hsvMat, lastMaskMat!!)
-        } else {
-            MatUtils.filterByMask(hsvMat, lastMaskMat!!)
-        }
-        return Pair(mat, OptStep.MAT_TYPE_HSV)
+//        val mat = if (autoRulePointEntity.type == AutoHsvRuleType.RE_FILTER_MASK) {
+//            MatUtils.generateInverseMask(hsvMat, lastMaskMat!!)
+//        } else {
+//            MatUtils.filterByMask(hsvMat, lastMaskMat!!)
+//        }
+        return Pair(lastMaskMat, OptStep.MAT_TYPE_GRAY)
     }
 
 }

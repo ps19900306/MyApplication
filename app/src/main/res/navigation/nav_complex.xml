@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_complexIndexFragment_to_nav_opt_preview"
             app:destination="@id/nav_opt_preview" />
+        <action
+            android:id="@+id/action_complexIndexFragment_to_nav_select_hsv"
+            app:destination="@id/nav_select_hsv" />
     </fragment>
 
 
@@ -32,6 +35,8 @@
             android:name="isModify"
             app:argType="boolean" />
     </fragment>
+
+    <include app:graph="@navigation/nav_select_hsv" />
 
     <include app:graph="@navigation/nav_opt_preview" />
 </navigation>

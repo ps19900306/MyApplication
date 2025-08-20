@@ -51,7 +51,7 @@
             app:argType="string" />
         <action
             android:id="@+id/action_hsvTargetDetailFragment_to_AutoHsvRuleSelectFragment"
-            app:destination="@id/AutoHsvRuleSelectFragment" />
+            app:destination="@id/nav_select_hsv" />
         <action
             android:id="@+id/action_hsvTargetDetailFragment_to_nav_opt_preview"
             app:destination="@id/nav_opt_preview" />
@@ -71,7 +71,7 @@
             app:argType="string" />
         <action
             android:id="@+id/action_rgbTargetDetailFragment_to_AutoHsvRuleSelectFragment"
-            app:destination="@id/AutoHsvRuleSelectFragment" />
+            app:destination="@id/nav_select_hsv" />
         <action
             android:id="@+id/action_rgbTargetDetailFragment_to_nav_opt_preview"
             app:destination="@id/nav_opt_preview" />
@@ -94,7 +94,7 @@
             app:destination="@id/nav_opt_preview" />
         <action
             android:id="@+id/action_imgTargetDetailFragment_to_AutoHsvRuleSelectFragment"
-            app:destination="@id/AutoHsvRuleSelectFragment" />
+            app:destination="@id/nav_select_hsv" />
     </fragment>
 
     <fragment
@@ -114,20 +114,9 @@
             app:destination="@id/nav_opt_preview" />
     </fragment>
 
-    <fragment
-        android:id="@+id/AutoHsvRuleSelectFragment"
-        android:name="com.example.myapplication.auto_hsv_rule.AutoHsvRuleSelectFragment"
-        android:label="AutoHsvRuleSelectFragment"
-        tools:layout="@layout/fragment_search_list">
-        <argument
-            android:name="actionTag"
-            app:argType="string" />
 
-        <argument
-            android:name="showDefault"
-            android:defaultValue="false"
-            app:argType="boolean" />
-    </fragment>
+
+    <include app:graph="@navigation/nav_select_hsv" />
 
     <include app:graph="@navigation/nav_opt_preview" />
 
