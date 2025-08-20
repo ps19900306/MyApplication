@@ -178,16 +178,16 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
     }
 
     private fun cropPicture() {
-        if (preViewModel.optList.isEmpty()) {
-            preViewModel.optList.add(
-                PreviewOptItem(
-                    key = R.string.crop_picture,
-                    type = TouchOptModel.RECT_AREA_TYPE,
-                    color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
-                    coordinate = viewModel.getCropArea()
-                )
+        //因为可能会多处使用到preViewModel，所以这里先清空
+        preViewModel.optList.clear();
+        preViewModel.optList.add(
+            PreviewOptItem(
+                key = R.string.crop_picture,
+                type = TouchOptModel.RECT_AREA_TYPE,
+                color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
+                coordinate = viewModel.getCropArea()
             )
-        }
+        )
         findNavController().navigate(R.id.action_complexIndexFragment_to_nav_opt_preview)
     }
 }
