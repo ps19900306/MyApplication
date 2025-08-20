@@ -177,6 +177,7 @@ class ComplexRecognitionViewModel : ViewModel() {
         //**其实是添加 **
         //为尾部添加的操作
         if (startIndex == (optList.size - 1)) {//修改的是最后一项
+            Log.i(TAG, "添加新的操作")
             val (newMat, type) = optList[startIndex].performOperations(
                 if (matList.isEmpty()) srcMat!! else matList.last(),
                 if (typeList.isEmpty()) OptStep.MAT_TYPE_BGR else typeList.last()
@@ -192,6 +193,7 @@ class ComplexRecognitionViewModel : ViewModel() {
 
         //** 在中间进行操作 **
         //在中间进行的操作进行的修改
+        Log.i(TAG, "修改操作")
         val tempMatList = matList.subList(0, startIndex) //这里开始是包含 结束是不包含
         val tempTypeList = typeList.subList(0, startIndex)
         //对资源进行释放
@@ -224,21 +226,26 @@ class ComplexRecognitionViewModel : ViewModel() {
             return
         val mat = matList.last()
         val rect = MatUtils.findBoundingRectForWhiteArea(mat) ?: return
-        Log.i(TAG, "mergeAndCrop 2:${GsonUtils.toJson(rect)} ")
-        val matResult = optList[0]
+        Log.i(TAG, "mergeAndCrop rect:${GsonUtils.toJson(rect)} ")
+        val matResult = optList.find { it is CropAreaStep }
         if (matResult is CropAreaStep) {
+            Log.i(
+                TAG,
+                "mergeAndCrop old:${GsonUtils.toJson(matResult.coordinateArea)}  index::${
+                    optList.indexOf(matResult)
+                } "
+            )
             matResult.coordinateArea.x += rect.x
             matResult.coordinateArea.y += rect.y
             matResult.coordinateArea.width = rect.width
             matResult.coordinateArea.height = rect.height
-            Log.i(TAG, "mergeAndCrop 1:${GsonUtils.toJson(matResult.coordinateArea)} ")
+            Log.i(TAG, "mergeAndCrop new:${GsonUtils.toJson(matResult.coordinateArea)} ")
         } else {
             val coordinateArea = CoordinateArea(rect.x, rect.y, rect.width, rect.height)
-            Log.i(TAG, "mergeAndCrop 2:${GsonUtils.toJson(coordinateArea)} ")
+            Log.i(TAG, "mergeAndCrop creat:${GsonUtils.toJson(coordinateArea)} ")
             optList.add(0, CropAreaStep(coordinateArea))
-
         }
-       // reExecute()
+        reExecute()
     }
 
 

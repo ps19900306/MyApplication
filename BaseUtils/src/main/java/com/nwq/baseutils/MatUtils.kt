@@ -501,6 +501,7 @@ object MatUtils {
 //            coordinateArea.x + coordinateArea.width
 //        ).copyTo(dstMat)
 //        return dstMat
+
         val rect = Rect(area.x, area.y, area.width, area.height)
         return Mat(srcMat, rect)
     }

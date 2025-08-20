@@ -91,7 +91,8 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
                     GrayscaleBinarizationFragmentArgs(false).toBundle()
                 );
             }
-            R.string.merge_and_crop->{
+
+            R.string.merge_and_crop -> {
                 viewModel.mergeAndCrop()
             }
         }
@@ -142,9 +143,11 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
 
     override fun onResume() {
         super.onResume()
-        preViewModel.optList.find { it.key == R.string.crop_picture }?.coordinate?.let {
-            if (it is CoordinateArea)
-                viewModel.setCropArea(it)
+        preViewModel.optList.find { it.key == R.string.crop_picture }?.let {
+            if (it.coordinate != null && it.coordinate is CoordinateArea) {
+                viewModel.setCropArea(it.coordinate as CoordinateArea)
+                it.coordinate = null
+            }
         }
     }
 
