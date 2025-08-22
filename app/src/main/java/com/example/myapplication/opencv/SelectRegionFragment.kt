@@ -114,55 +114,55 @@ class SelectRegionFragment : BaseFragment<FragmentSelectRegionBinding>(), CallBa
 
     private fun getList(): List<ResStrKeyText> {
         val list = mutableListOf<ResStrKeyText>()
-        list.add(ResStrKeyText(R.string.full_screen))
-        list.add(ResStrKeyText(R.string.start_screen))
-        list.add(ResStrKeyText(R.string.select_picture))
-        list.add(ResStrKeyText(R.string.take_img))
-        list.add(ResStrKeyText(R.string.take_img_continue))
-        list.add(ResStrKeyText(R.string.select_critical_area))
-        list.add(ResStrKeyText(R.string.find_the_image_area))
-        list.add(ResStrKeyText(R.string.hsv_filter))
-        list.add(ResStrKeyText(R.string.add_hsv_filter))
-        list.add(ResStrKeyText(R.string.auto_exc))
-        list.add(ResStrKeyText(R.string.check_target_object))
+        list.add(ResStrKeyText(com.nwq.baseutils.R.string.full_screen))
+        list.add(ResStrKeyText(com.nwq.baseutils.R.string.start_screen))
+        list.add(ResStrKeyText(com.nwq.baseutils.R.string.select_picture))
+        list.add(ResStrKeyText(com.nwq.baseutils.R.string.take_img))
+        list.add(ResStrKeyText(com.nwq.baseutils.R.string.take_img_continue))
+        list.add(ResStrKeyText(com.nwq.baseutils.R.string.select_critical_area))
+        list.add(ResStrKeyText(com.nwq.baseutils.R.string.find_the_image_area))
+        list.add(ResStrKeyText(com.nwq.baseutils.R.string.hsv_filter))
+        list.add(ResStrKeyText(com.nwq.baseutils.R.string.add_hsv_filter))
+        list.add(ResStrKeyText(com.nwq.baseutils.R.string.auto_exc))
+        list.add(ResStrKeyText(com.nwq.baseutils.R.string.check_target_object))
         return list
     }
 
     override fun onCallBack(data: Int) {
         when (data) {
-            R.string.full_screen -> {
+            com.nwq.baseutils.R.string.full_screen -> {
                 mTouchOptModel.fullScreen()
             }
 
-            R.string.select_picture -> {
+            com.nwq.baseutils.R.string.select_picture -> {
                 selectPicture()
             }
 
-            R.string.take_img -> {
+            com.nwq.baseutils.R.string.take_img -> {
                 openCvPreviewModel.takeImage()
             }
-            R.string.take_img_continue->{
+            com.nwq.baseutils.R.string.take_img_continue->{
                 openCvPreviewModel.takeImageS()
             }
-            R.string.select_critical_area -> {
+            com.nwq.baseutils.R.string.select_critical_area -> {
                 selectCriticalArea()
             }
 
-            R.string.find_the_image_area -> {
+            com.nwq.baseutils.R.string.find_the_image_area -> {
                 selectCriticalArea()
             }
 
-            R.string.hsv_filter->{
+            com.nwq.baseutils.R.string.hsv_filter->{
                 val SetSHVFilterDialog = SetSHVFilterDialog()
                 SetSHVFilterDialog.show(requireActivity().supportFragmentManager, "SetSHVFilterDialog")
             }
-            R.string.add_hsv_filter->{
+            com.nwq.baseutils.R.string.add_hsv_filter->{
                 addHsvFilter()
             }
-            R.string.auto_exc->{
+            com.nwq.baseutils.R.string.auto_exc->{
                 autoCode()
             }
-            R.string.check_target_object-> {
+            com.nwq.baseutils.R.string.check_target_object-> {
              //   NavigationContainerActivity.startNavigationContainerActivity(requireActivity(), R.navigation.nav_find_target)
             }
         }

@@ -171,7 +171,7 @@ class AutoHsvRuleDetailFragment : AppToolBarFragment<FragmentAutoHsvRuleDetailBi
             return
         }
         //增加一个新选取点颜色
-        preViewModel.optList.find { it.key == R.string.select_point_hsv }?.let { item ->
+        preViewModel.optList.find { it.key ==  com.nwq.baseutils.R.string.select_point_hsv }?.let { item ->
             preViewModel.getSrcMat()?.let { mat ->
                 val point = item.coordinate
                 if (point != null && point is CoordinatePoint) {
@@ -187,7 +187,7 @@ class AutoHsvRuleDetailFragment : AppToolBarFragment<FragmentAutoHsvRuleDetailBi
             }
         }
         //增加一个新选取点颜色
-        preViewModel.optList.find { it.key == R.string.select_area_hsv }?.let { item ->
+        preViewModel.optList.find { it.key ==  com.nwq.baseutils.R.string.select_area_hsv }?.let { item ->
             preViewModel.getSrcMat()?.let { mat ->
                 val point = item.coordinate
                 if (point != null && point is CoordinateArea) {
@@ -210,7 +210,7 @@ class AutoHsvRuleDetailFragment : AppToolBarFragment<FragmentAutoHsvRuleDetailBi
             }
         }
 
-        preViewModel.optList.find { it.key == R.string.select_critical_area }?.coordinate?.let {
+        preViewModel.optList.find { it.key ==  com.nwq.baseutils.R.string.select_critical_area }?.coordinate?.let {
             if (it is CoordinateArea)
                 viewModel.targetOriginalArea = it
         }
@@ -316,7 +316,7 @@ class AutoHsvRuleDetailFragment : AppToolBarFragment<FragmentAutoHsvRuleDetailBi
         if (preViewModel.optList.isEmpty()) {
             preViewModel.optList.add(
                 PreviewOptItem(
-                    key = R.string.select_critical_area,
+                    key =  com.nwq.baseutils.R.string.select_critical_area,
                     type = TouchOptModel.RECT_AREA_TYPE,
                     color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
                     coordinate = viewModel.targetOriginalArea
@@ -324,7 +324,7 @@ class AutoHsvRuleDetailFragment : AppToolBarFragment<FragmentAutoHsvRuleDetailBi
             )
             preViewModel.optList.add(
                 PreviewOptItem(
-                    key = R.string.select_point_hsv,
+                    key =  com.nwq.baseutils.R.string.select_point_hsv,
                     type = TouchOptModel.SINGLE_CLICK_TYPE,
                     color = ContextCompat.getColor(
                         requireContext(),
@@ -334,7 +334,7 @@ class AutoHsvRuleDetailFragment : AppToolBarFragment<FragmentAutoHsvRuleDetailBi
             )
             preViewModel.optList.add(
                 PreviewOptItem(
-                    key = R.string.select_area_hsv,
+                    key =  com.nwq.baseutils.R.string.select_area_hsv,
                     type = TouchOptModel.RECT_AREA_TYPE,
                     color = ContextCompat.getColor(
                         requireContext(),

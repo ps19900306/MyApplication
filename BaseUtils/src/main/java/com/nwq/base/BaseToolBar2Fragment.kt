@@ -28,6 +28,10 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
     private var _binding: VB? = null
     protected val binding: VB get() = _binding!!
 
+    companion object {
+        const val NO_MENU = -1
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,23 +60,27 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val a = requireActivity();
-        Log.i("BaseToolBarFragment", "Activity" + a + "Fragment" + this.tag);
-        a.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(getMenuRes(), menu)
-            }
+        Log.i("BaseToolBarFragment", "Fragment" + this.tag);
+        if (getMenuRes() != NO_MENU) {
+            val a = requireActivity();
+            a.addMenuProvider(object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(getMenuRes(), menu)
+                }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return onMenuItemClick(menuItem)
-            }
-        }, viewLifecycleOwner)
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return onMenuItemClick(menuItem)
+                }
+            }, viewLifecycleOwner)
+        }
         initView()
         initData() // 初始化视图，设置监听器等
     }
 
     abstract fun getMenuRes(): Int
-    abstract fun onMenuItemClick(menuItem: MenuItem): Boolean
+    open fun onMenuItemClick(menuItem: MenuItem): Boolean {
+        return false;
+    }
 
 
     abstract fun onBackPress(): Boolean
@@ -100,7 +108,6 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
     ) {
         SimpleTipsDialog(titleRes, descriptionRes, onClick).showDialog(childFragmentManager)
     }
-
 
 
 }

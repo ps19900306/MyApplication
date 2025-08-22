@@ -99,14 +99,14 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
     private fun onOptItemSelect(i: Int) {
 
         when (i) {
-            R.string.grayscale_binarization -> {
+             com.nwq.baseutils.R.string.grayscale_binarization -> {
                 findNavController().navigate(
                     R.id.action_complexIndexFragment_to_grayscaleBinarizationFragment,
                     GrayscaleBinarizationFragmentArgs(false).toBundle()
                 );
             }
 
-            R.string.h_s_v_binarization -> { //选择已有的过滤规则
+             com.nwq.baseutils.R.string.h_s_v_binarization -> { //选择已有的过滤规则
                 findNavController().navigate(
                     R.id.action_complexIndexFragment_to_nav_select_hsv,
                     AutoHsvRuleSelectFragmentArgs(SELECT_HSV_RULE_TAG, false).toBundle()
@@ -114,11 +114,11 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
 
             }
 
-            R.string.h_s_v_binarization_c -> {//新建新的过滤规则
+             com.nwq.baseutils.R.string.h_s_v_binarization_c -> {//新建新的过滤规则
 
             }
 
-            R.string.merge_and_crop -> {
+             com.nwq.baseutils.R.string.merge_and_crop -> {
                 viewModel.mergeAndCrop()
             }
         }
@@ -169,7 +169,7 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
 
     override fun onResume() {
         super.onResume()
-        preViewModel.optList.find { it.key == R.string.crop_picture }?.let {
+        preViewModel.optList.find { it.key ==  com.nwq.baseutils.R.string.crop_picture }?.let {
             if (it.coordinate != null && it.coordinate is CoordinateArea) {
                 viewModel.setCropArea(it.coordinate as CoordinateArea)
                 it.coordinate = null
@@ -182,7 +182,7 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
         preViewModel.optList.clear();
         preViewModel.optList.add(
             PreviewOptItem(
-                key = R.string.crop_picture,
+                key =  com.nwq.baseutils.R.string.crop_picture,
                 type = TouchOptModel.RECT_AREA_TYPE,
                 color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
                 coordinate = viewModel.getCropArea()

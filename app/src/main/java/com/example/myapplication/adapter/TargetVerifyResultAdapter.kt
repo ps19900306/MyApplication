@@ -63,9 +63,9 @@ class TargetVerifyResultAdapter(
             }
             binding.fileName.text = it.ImgName
             if (it.hasFind){
-                binding.isPassTv.text = binding.root.context.getText(R.string.has_find_t)
+                binding.isPassTv.text = binding.root.context.getText( com.nwq.baseutils.R.string.has_find_t)
             }else{
-                binding.isPassTv.text = binding.root.context.getText(R.string.un_has_find_t)
+                binding.isPassTv.text = binding.root.context.getText( com.nwq.baseutils.R.string.un_has_find_t)
             }
         }
     }

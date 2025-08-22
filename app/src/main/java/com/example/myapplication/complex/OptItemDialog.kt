@@ -33,17 +33,17 @@ class OptItemDialog : BaseDialogFragment<DialogOptItemBinding>() {
         binding.binarizationRecyclerView.adapter = binarizationAdapter
         binarizationAdapter.upData(
             listOf<IText<Int>>(
-                TextResWarp(R.string.grayscale_binarization),
-                TextResWarp(R.string.h_s_v_binarization),
-                TextResWarp(R.string.h_s_v_binarization_c),
+                TextResWarp( com.nwq.baseutils.R.string.grayscale_binarization),
+                TextResWarp( com.nwq.baseutils.R.string.h_s_v_binarization),
+                TextResWarp( com.nwq.baseutils.R.string.h_s_v_binarization_c),
             )
         )
         binding.corpRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
         val corpAdapter = TextAdapter(mCallBack = callBack)
         binding.corpRecyclerView.adapter = corpAdapter
         corpAdapter.upData(listOf<IText<Int>>(
-            TextResWarp(R.string.merge_and_crop),
-            TextResWarp(R.string.separate_cropping),
+            TextResWarp( com.nwq.baseutils.R.string.merge_and_crop),
+            TextResWarp( com.nwq.baseutils.R.string.separate_cropping),
         ))
     }
 }

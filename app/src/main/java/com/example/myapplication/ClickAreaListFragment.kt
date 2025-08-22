@@ -44,7 +44,7 @@ class ClickAreaListFragment : BaseToolBar2Fragment<FragmentSearchListBinding>() 
         when (menuItem.itemId) {
             R.id.action_add -> {
                 val dialog =
-                    Simple2InputDialog(titleRes = R.string.create_target) { name, description ->
+                    Simple2InputDialog(titleRes = com.nwq.baseutils.R.string.create_target) { name, description ->
                         lifecycleScope.launch {
                             val id = viewModel.createHsvRule(name, description)
                             NavigationToolBarActivity.startNavigationContainerActivity(

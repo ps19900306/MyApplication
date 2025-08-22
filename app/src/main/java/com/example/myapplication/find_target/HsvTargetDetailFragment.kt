@@ -186,7 +186,8 @@ class HsvTargetDetailFragment : BaseToolBar2Fragment<FragmentHsvTargetDetailBind
             binding.previewLayout.imageView.setImageBitmap(viewModel.getSelectBitmap())
             binding.previewLayout.checkBox.setOnCheckedChangeListener(object :
                 CompoundButton.OnCheckedChangeListener {
-                override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+
+                override fun onCheckedChanged(p0: CompoundButton, p1: Boolean) {
                     if (p1) {
                         binding.previewLayout.imageView.isVisible = true
                     } else {

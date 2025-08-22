@@ -1,15 +1,115 @@
 <resources>
-    <string name="app_name">默认标题</string>
-    <string name="accessibility_service_label">Talker</string>
-    <string name="accessibility_service_description">Talker</string>
+    <string name="app_name">MyApplication</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="delete">删除</string>
+    <string name="delete_select">删除选中</string>
+    <string name="delete_all">删除全部</string>
+    <string name="delete_point">删除点</string>
+    <string name="boundary">边界</string>
+    <string name="expand">展开</string>
+    <string name="add">添加</string>
+    <string name="add_point">添加点</string>
+    <string name="feature">特点</string>
+    <string name="auto_exc">全自动</string>
+    <string name="auto_code">代码</string>
+    <string name="preview">预览</string>
+    <string name="preview1">预览区域</string>
+    <string name="attribute">属性</string>
+    <string name="create_new">新增</string>
+    <string name="filter_rule">过滤规则</string>
+
+    <string name="select_picture">选择图片</string>
+    <string name="select_critical_area">选择关键区域</string>
+    <string name="select_point_hsv">选择点HSV</string>
+    <string name="select_area_hsv">选择区域HSV</string>
+    <string name="image_feature_extraction">图片特征提取</string>
+    <string name="characters_feature_extraction">文字识别</string>
+    <string name="all_feature_extraction">全点特征提取</string>
+    <string name="shadow_feature_extraction">阴影识别</string>
+    <string name="rich_color_image_recognition">富颜色识别</string>
+    <string name="calculate_space">测距</string>
+    <string name="hsv_filter">hsv过滤</string>
+    <string name="add_hsv_filter">添加HSV过滤规则</string>
+
+    <string name="merge">合并</string>
+    <string name="background">设为底色</string>
+    <string name="useBackground">补充底色</string>
+    <string name="test_pick_up_points">测试代码</string>
+    <string name="test_pick_up_points1">测试代码多图</string>
+
+
+    <string name="add_rectangle_click_are">点击方形区域</string>
+    <string name="add_circular_click_are">点击圆形区域</string>
+    <string name="inverse_value">底色取反</string>
+    <string name="find_the_image_area">找图区域</string>
+    <string name="take_point_interval">总取点数</string>
+    <string name="find_image_area">找图区域</string>
+    <string name="clear_find_image_area">清除找图区域</string>
+    <string name="start_screen">开启录屏</string>
+
+    <string name="accessibility_service_label">autoTake</string>
+    <string name="accessibility_service_description">autoTakeImg</string>
     <string name="ok">确定</string>
     <string name="clear">清除</string>
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="all_point_key">全点取特</string>
+    <string name="filter_out_areas">过滤掉区域</string>
+    <string name="full_screen">全屏幕</string>
+    <string name="mini_steps">最小步数</string>
+    <string name="sort_by_x">x轴倒序</string>
+    <string name="offset_value">底色取差</string>
+    <string name="take_img">截图</string>
+    <string name="take_img_continue">连续截图</string>
+    <string name="replace_img">替换图片</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="result_is_do">标签</string>
+    <string name="result_is_effective">有效</string>
+    <string name="result_is_pass">目标</string>
+    <string name="create_target">新建目标</string>
+    <string name="has_find_t">检查到目标</string>
+    <string name="un_has_find_t">未检测到目标</string>
+    <string name="check_target_object">目标检测实体</string>
+
+    <string name="function">功能</string>
+    <string name="function_list">功能列表</string>
+    <string name="function_detail">功能详情</string>
+    <string name="create_function">新建功能</string>
+    <string name="detail">详情</string>
+    <string name="trigger">触发</string>
+    <string name="create_logic_unit">创建逻辑单元</string>
+    <string name="root_logic">根逻辑</string>
+    <string name="delete_logic">删除逻辑</string>
+    <string name="delete_function">删除功能</string>
+    <string name="please_select">请选择</string>
+    <string name="select_all">全选</string>
+    <string name="delete_all_select">全不选</string>
+    <string name="reverse_all">反选</string>
+    <string name="click_area">点击区域:</string>
+    <string name="add_logic">新增逻辑</string>
+    <string name="start_function">启动功能</string>
+    <string name="max_consecutive_entries">最大进入次数</string>
+    <string name="rule">规则</string>
+    <string name="target_list">检测目标列表</string>
+    <string name="rule_list">规则列表</string>
+    <string name="set_check_target">设置检测目标</string>
+    <string name="set_click_area">设置点击区域</string>
+    <string name="crop_picture">裁剪图片</string>
+    <string name="grayscale_binarization">灰度图二值化</string>
+    <string name="h_s_v_binarization">选择Hsv二值化规则</string>
+    <string name="h_s_v_binarization_c">创建HSV二值化规则</string>
+    <string name="merge_and_crop">合并裁剪</string>
+    <string name="separate_cropping">分离裁剪</string>
+
     <string name="title_activity_immanager">IMmanagerActivity</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
     <string name="harvest_setting">收菜设置</string>
     <string name="task_setting">际遇设置</string>
     <string name="daily_gifts">每日优惠礼物</string>

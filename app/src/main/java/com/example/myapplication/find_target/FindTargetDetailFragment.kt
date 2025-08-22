@@ -74,11 +74,11 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
 
     override fun onResume() {
         super.onResume()
-        preViewModel.optList.find { it.key == R.string.select_critical_area }?.coordinate?.let {
+        preViewModel.optList.find { it.key == com.nwq.baseutils.R.string.select_critical_area }?.coordinate?.let {
             if (it is CoordinateArea)
                 viewModel.targetOriginalArea = it
         }
-        preViewModel.optList.find { it.key == R.string.find_the_image_area }?.coordinate?.let {
+        preViewModel.optList.find { it.key == com.nwq.baseutils.R.string.find_the_image_area }?.coordinate?.let {
             if (it is CoordinateArea)
                 viewModel.findArea = it
         }
@@ -153,7 +153,7 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
         if (preViewModel.optList.isEmpty()) {
             preViewModel.optList.add(
                 PreviewOptItem(
-                    key = R.string.select_critical_area,
+                    key = com.nwq.baseutils.R.string.select_critical_area,
                     type = TouchOptModel.RECT_AREA_TYPE,
                     color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
                     coordinate = viewModel.targetOriginalArea
@@ -161,7 +161,7 @@ class FindTargetDetailFragment : BaseToolBar2Fragment<FragmentFindTargetDetailBi
             )
             preViewModel.optList.add(
                 PreviewOptItem(
-                    key = R.string.find_the_image_area,
+                    key = com.nwq.baseutils.R.string.find_the_image_area,
                     type = TouchOptModel.RECT_AREA_TYPE,
                     color = ContextCompat.getColor(
                         requireContext(),

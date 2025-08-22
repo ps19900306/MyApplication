@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/previewFragment"
-        android:name="com.example.myapplication.preview.PreviewFragment"
+        android:name="com.nwq.autocodetool.preview.PreviewFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_preview">
         <argument

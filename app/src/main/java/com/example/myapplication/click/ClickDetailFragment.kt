@@ -101,7 +101,7 @@ class ClickDetailFragment : AppToolBarFragment<FragmentClickDetailBinding>() {
 
     override fun onResume() {
         super.onResume()
-        preViewModel.optList.find { it.key == R.string.click_area }?.coordinate?.let {
+        preViewModel.optList.find { it.key ==  com.nwq.baseutils.R.string.click_area }?.coordinate?.let {
             if (it is CoordinateArea) {
                 viewModel.clickArea = it
                 setInfo()
@@ -148,7 +148,7 @@ class ClickDetailFragment : AppToolBarFragment<FragmentClickDetailBinding>() {
         if (preViewModel.optList.isEmpty()) {
             preViewModel.optList.add(
                 PreviewOptItem(
-                    key = R.string.click_area,
+                    key =  com.nwq.baseutils.R.string.click_area,
                     type = TouchOptModel.RECT_AREA_TYPE,
                     color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
                     coordinate = viewModel.clickArea

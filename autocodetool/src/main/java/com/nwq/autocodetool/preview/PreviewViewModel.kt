@@ -1,10 +1,8 @@
-package com.example.myapplication.preview
+package com.nwq.autocodetool.preview
 
 import android.graphics.Bitmap
-import android.text.TextUtils
 import androidx.lifecycle.ViewModel
-import com.example.myapplication.R
-import com.example.myapplication.base.TouchOptModel
+import com.nwq.base.TouchOptModel
 import com.nwq.baseobj.ICoordinate
 import com.nwq.baseobj.PreviewCoordinateData
 import com.nwq.baseutils.MatUtils
@@ -34,7 +32,7 @@ class PreviewViewModel : ViewModel() {
 
     //这个是默认选项
     public val defaultList = listOf<PreviewOptItem>(
-        PreviewOptItem(com.nwq.baseutils.R.string.full_screen, TouchOptModel.FULL_SCREEN),
+        PreviewOptItem(R.string.full_screen, TouchOptModel.FULL_SCREEN),
       //  PreviewOptItem(R.string.select_picture, TouchOptModel.SELECT_PICTURE),
     )
 
