@@ -53,8 +53,7 @@ android {
 dependencies {
     implementation(project(":BaseUtils"))
     implementation(project(":LogUitls"))
-    implementation(project(":opencvIdentification"))
-    implementation(project(":exculdeModule"))
+    implementation(project(":OptLib"))
     implementation(project(":NetWorkLib"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
