@@ -29,7 +29,7 @@ abstract class BaseToolBar2Fragment<VB : ViewBinding>() : Fragment() {
     protected val binding: VB get() = _binding!!
 
     companion object {
-        const val NO_MENU = -1
+       protected const val NO_MENU = -1
     }
 
     override fun onCreateView(

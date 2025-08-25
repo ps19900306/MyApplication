@@ -1,6 +1,8 @@
 package com.nwq.baseobj
 
-open class CoordinateArea() : ICoordinate {
+import com.nwq.BeCode
+
+open class CoordinateArea() : ICoordinate, BeCode {
 
     public var x: Int = 0
     public var y: Int = 0
@@ -48,6 +50,10 @@ open class CoordinateArea() : ICoordinate {
         this.width = width.toInt()
         this.height = height.toInt()
         this.isRound = isRound
+    }
+
+    override fun codeString(): String {
+        return "CoordinateArea($x,$y,$width,$height,$isRound)"
     }
 
     override fun toString(): String {

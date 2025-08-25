@@ -12,8 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
-import com.example.myapplication.R
-import com.example.myapplication.databinding.ActivityNavigationContainerBinding
+import com.nwq.autocodetool.databinding.ActivityNavigationContainerBinding
 import com.nwq.base.BaseActivity
 import com.nwq.base.BaseToolBar2Fragment
 import com.nwq.baseutils.GsonUtils

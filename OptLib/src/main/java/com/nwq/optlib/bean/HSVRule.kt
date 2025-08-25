@@ -1,5 +1,7 @@
 package com.nwq.optlib.bean
 
+import com.nwq.BeCode
+
 
 class HSVRule(
     var minH: Int = 0,
@@ -8,7 +10,7 @@ class HSVRule(
     var maxS: Int = 255,
     var minV: Int = 0,
     var maxV: Int = 255
-) {
+) : BeCode {
 
     companion object {
 
@@ -38,8 +40,8 @@ class HSVRule(
         mSelected = isSelected
     }
 
-    override fun toString(): String {
-        return "HSVRule(minH=$minH, maxH=$maxH, minS=$minS, maxS=$maxS, minV=$minV, maxV=$maxV)"
+    override fun codeString(): String {
+        return "HSVRule($minH, $maxH, $minS, $maxS, $minV, $maxV)"
     }
 
     fun toStringSimple(): String {

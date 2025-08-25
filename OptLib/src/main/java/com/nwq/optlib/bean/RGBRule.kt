@@ -3,6 +3,7 @@ package com.nwq.optlib.bean
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import com.nwq.BeCode
 import com.nwq.baseutils.toRgbInt
 
 /**
@@ -17,7 +18,7 @@ class RGBRule(
     val redToGreenMax: Float, val redToGreenMin: Float,
     val redToBlueMax: Float, val redToBlueMin: Float,
     val greenToBlueMax: Float, val greenToBlueMin: Float,
-) {
+): BeCode {
 
     constructor(
         maxRed: Int,
@@ -75,12 +76,14 @@ class RGBRule(
         return flag1 && flag2 && flag3
     }
 
-    override fun toString(): String {
-        return "RGBRuleRatioImpl(maxRed=$maxRed, minRed=$minRed, maxGreen=$maxGreen, minGreen=$minGreen, maxBlue=$maxBlue, minBlue=$minBlue, redToGreenMax=$redToGreenMax, redToGreenMin=$redToGreenMin, redToBlueMax=$redToBlueMax, redToBlueMin=$redToBlueMin, greenToBlueMax=$greenToBlueMax, greenToBlueMin=$greenToBlueMin)"
+    override fun codeString(): String {
+        return "RGBRule($maxRed,$minRed,$maxGreen,$minGreen,$maxBlue,$minBlue,$redToGreenMax,$redToGreenMin,$redToBlueMax,$redToBlueMin,$greenToBlueMax,$greenToBlueMin)"
     }
 
+
+
     fun toSimpleString(): String {
-        return "RGBRuleRatioImpl(xR=$maxRed, nR=$minRed, xG=$maxGreen, nG=$minGreen,xB=$maxBlue, nBe=$minBlue)"
+        return "RGBRule(xR=$maxRed, nR=$minRed, xG=$maxGreen, nG=$minGreen,xB=$maxBlue, nBe=$minBlue)"
     }
 
     companion object {
