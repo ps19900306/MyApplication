@@ -16,7 +16,6 @@ import com.nwq.autocodetool.AppToolBarFragment
 import com.nwq.autocodetool.databinding.FragmentGrayscaleBinarizationBinding
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.singleClick
-import com.nwq.optlib.db.bean.GrayFilterRuleDb
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest

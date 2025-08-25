@@ -32,7 +32,7 @@ class PreviewViewModel : ViewModel() {
 
     //这个是默认选项
     public val defaultList = listOf<PreviewOptItem>(
-        PreviewOptItem(R.string.full_screen, TouchOptModel.FULL_SCREEN),
+        PreviewOptItem(com.nwq.baseutils.R.string.full_screen, TouchOptModel.FULL_SCREEN),
       //  PreviewOptItem(R.string.select_picture, TouchOptModel.SELECT_PICTURE),
     )
 
