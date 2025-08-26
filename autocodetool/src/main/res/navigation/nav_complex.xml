@@ -14,12 +14,12 @@
         <action
             android:id="@+id/action_complexIndexFragment_to_grayscaleBinarizationFragment"
             app:destination="@id/grayscaleBinarizationFragment" />
-<!--        <action-->
-<!--            android:id="@+id/action_complexIndexFragment_to_nav_opt_preview"-->
-<!--            app:destination="@id/nav_opt_preview" />-->
-<!--        <action-->
-<!--            android:id="@+id/action_complexIndexFragment_to_nav_select_hsv"-->
-<!--            app:destination="@id/nav_select_hsv" />-->
+        <!--        <action-->
+        <!--            android:id="@+id/action_complexIndexFragment_to_nav_opt_preview"-->
+        <!--            app:destination="@id/nav_opt_preview" />-->
+        <!--        <action-->
+        <!--            android:id="@+id/action_complexIndexFragment_to_nav_select_hsv"-->
+        <!--            app:destination="@id/nav_select_hsv" />-->
     </fragment>
 
 
@@ -28,15 +28,34 @@
         android:name="com.nwq.autocodetool.index.GrayscaleBinarizationFragment"
         android:label="灰度二值化"
         tools:layout="@layout/fragment_grayscale_binarization">
-<!--        <argument-->
-<!--            android:name="nowStep"-->
-<!--            app:argType="long" />-->
         <argument
             android:name="isModify"
             app:argType="boolean" />
     </fragment>
 
-<!--    <include app:graph="@navigation/nav_select_hsv" />-->
+    <fragment
+        android:id="@+id/hsvFilterRuleDetailFragment"
+        android:name="com.nwq.autocodetool.hsv_filter.HsvFilterRuleDetailFragment"
+        android:label="Hsv二值化"
+        tools:layout="@layout/fragment_grayscale_binarization">
+        <argument
+            android:name="isModify"
+            app:argType="boolean" />
+    </fragment>
 
-<!--    <include app:graph="@navigation/nav_opt_preview" />-->
+
+    <action
+        android:id="@+id/action_any_to_previewFragment"
+        app:destination="@id/previewFragment" />
+
+    <fragment
+        android:id="@+id/previewFragment"
+        android:name="com.nwq.autocodetool.preview.PreviewFragment"
+        android:label="预览与操作"
+        tools:layout="@layout/fragment_grayscale_binarization"/>
+
+
+    <!--    <include app:graph="@navigation/nav_select_hsv" />-->
+
+    <!--    <include app:graph="@navigation/nav_opt_preview" />-->
 </navigation>

@@ -2,21 +2,16 @@ package com.nwq.autocodetool.index
 
 import android.graphics.Bitmap
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.luck.picture.lib.utils.ToastUtils
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.GsonUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.T
 import com.nwq.optlib.MatResult
-import com.nwq.optlib.db.IdentifyDatabase
 import com.nwq.optlib.db.bean.CropAreaDb
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 
 //复杂识别 图像目标识别
@@ -70,6 +65,30 @@ class ComplexRecognitionViewModel : ViewModel() {
         return null
     }
 
+    public fun getHsvMat(isModify: Boolean = false): Mat? {
+        if (srcMat == null) {
+            return null
+        }
+        if (nowStep <= 0) {
+            return MatUtils.bgr2Gray(srcMat!!)
+        }
+        val mat = matList.get(if (isModify) nowStep - 2 else nowStep - 1)
+        val type = typeList.get(if (isModify) nowStep - 2 else nowStep - 1)
+
+        when (type) {
+            MatResult.MAT_TYPE_BGR -> {
+                return MatUtils.bgr2Hsv(mat)
+            }
+
+            MatResult.MAT_TYPE_HSV -> {
+                return mat
+            }
+
+        }
+        return null
+    }
+
+
     public fun getCropArea(): CoordinateArea? {
         return mCropArea
     }
@@ -84,26 +103,34 @@ class ComplexRecognitionViewModel : ViewModel() {
     }
 
 
-    //注意裁剪区域必定是在获取截图第一步就处理了
-    public fun setCropArea(cropArea: CoordinateArea) {
-        mCropArea = cropArea
-        if (!optList.isEmpty() && (optList[0] is CropAreaDb)) {
-            optList.removeAt(0)
+
+
+    public fun checkAndAddOpt(optStep: MatResult, targetClass: Class<out MatResult>) {
+        val index = optList.indexOfFirst { targetClass.isInstance(it) }
+        when {
+            index == -1 -> {
+                // 不存在该类型步骤，添加到末尾
+                addOptStep(optStep)
+            }
+
+            else -> {
+                // 替换现有步骤并重新执行
+                optList[index] = optStep
+                rereExecute(index)
+            }
         }
-        optList.add(CropAreaDb().apply { coordinateArea = cropArea })
-        nowStep = 1
-        reExecute()
     }
 
 
-    public suspend fun modifyStep(optStep: MatResult) {
+
+    //当移除一个选择项目时候的操作
+    public suspend fun removeOptStep(optStep: MatResult) {
         val index = optList.indexOf(optStep)
         rereExecute(index)
     }
 
-
     //增加一部操作
-    public suspend fun addOptStep(optStep: MatResult) {
+    private fun addOptStep(optStep: MatResult) {
         if (srcMat == null)
             return;
         if (nowStep >= optList.size) {
@@ -114,12 +141,6 @@ class ComplexRecognitionViewModel : ViewModel() {
             rereExecute(nowStep)
         }
         nowStep++
-    }
-
-    //当移除一个选择项目时候的操作
-    public suspend fun removeOptStep(optStep: MatResult) {
-        val index = optList.indexOf(optStep)
-        rereExecute(index)
     }
 
 

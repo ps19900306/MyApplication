@@ -16,6 +16,8 @@ import com.nwq.autocodetool.AppToolBarFragment
 import com.nwq.autocodetool.databinding.FragmentGrayscaleBinarizationBinding
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.singleClick
+import com.nwq.optlib.bean.GrayRule
+import com.nwq.optlib.db.bean.GrayFilterRuleDb
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -31,6 +33,8 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
     private val grayMat: Mat? by lazy {
         viewModel.getGrayMat(args.isModify)
     }
+
+    private val list = mutableListOf<GrayRule>()
     private val updateSignalFlow: MutableStateFlow<Int> = MutableStateFlow(Int.MIN_VALUE)
 
 
@@ -83,13 +87,22 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
             sendUpdateSignal()
         }
         binding.saveBtn.singleClick {
-            lifecycleScope.launch {
-//                viewModel.addOptStep(GrayFilterRuleDb().apply {
-//                   thi listOf()
-//                    (if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI)
-//                })
+            list.add(GrayRule(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI))
+            val grayFilterRule = GrayFilterRuleDb().apply {
+                this.ruleList = list
             }
+            viewModel.checkAndAddOpt(grayFilterRule, GrayFilterRuleDb::class.java)
             onBackPress()
+        }
+
+        binding.addBtn.singleClick {
+            list.add(GrayRule(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI))
+            minI=0
+            maxI=255
+            binding.etMin.setText("0")
+            binding.etMax.setText("255")
+            binding.sbMin.progress = 0
+            binding.sbMax.progress = 255
         }
     }
 
@@ -120,8 +133,6 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
         max: Int,
         updateFlow: ((Int) -> Unit)? = null
     ) {
-
-
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {

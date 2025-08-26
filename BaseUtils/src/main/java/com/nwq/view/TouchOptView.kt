@@ -5,15 +5,12 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.FrameLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.CoordinateLine
 import com.nwq.baseobj.CoordinatePoint
 import com.nwq.baseobj.ICoordinate
-import com.nwq.base.TouchOptModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -45,9 +42,7 @@ open class TouchOptView @JvmOverloads constructor(
             get() = viewModelStore
     }
     
-    private val touchOptModel by lazy {
-        ViewModelProvider(viewModelStoreOwner).get(TouchOptModel::class.java)
-    }
+
 
     private val _touchCoordinate = MutableStateFlow<ICoordinate?>(null)
     public val nowPoint = MutableStateFlow(CoordinatePoint(0, 0))

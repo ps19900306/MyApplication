@@ -6,28 +6,27 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
+
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.nwq.autocodetool.R
 import com.nwq.autocodetool.databinding.FragmentComplexIndexBinding
-import com.nwq.autocodetool.preview.PreviewOptItem
 import com.nwq.autocodetool.preview.PreviewViewModel
 import com.nwq.base.BaseToolBar2Fragment
-import com.nwq.base.TouchOptModel
+
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.callback.CallBack
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.loguitls.L
-import com.nwq.simplelist.TextResWarp
+
+import com.nwq.optlib.db.bean.CropAreaDb
 import kotlinx.coroutines.launch
 
 class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>() {
@@ -44,6 +43,7 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
         return FragmentComplexIndexBinding.inflate(inflater)
     }
 
+
     private val callBack: CallBack<Int> by lazy {
         object : CallBack<Int> {
             override fun onCallBack(data: Int) {
@@ -55,15 +55,13 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentFragment?.setFragmentResultListener(
-            SELECT_HSV_RULE_TAG,
-            { requestKey, result ->
+            SELECT_HSV_RULE_TAG, { requestKey, result ->
                 Log.i("HsvTargetDetailFragment", "SELECT_HSV_RULE_TAG called")
                 result.getString(ConstantKeyStr.SELECTED_RESULT)?.let { keyTag ->
                     viewModel.addHsvRule(keyTag)
                 }
 
-            }
-        )
+            })
     }
 
 
@@ -98,14 +96,14 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
     private fun onOptItemSelect(i: Int) {
 
         when (i) {
-             com.nwq.baseutils.R.string.grayscale_binarization -> {
+            com.nwq.baseutils.R.string.grayscale_binarization -> {
 //                findNavController().navigate(
 //                    R.id.action_complexIndexFragment_to_grayscaleBinarizationFragment,
 //                    GrayscaleBinarizationFragmentArgs(false).toBundle()
 //                );
             }
 
-             com.nwq.baseutils.R.string.h_s_v_binarization -> { //选择已有的过滤规则
+            com.nwq.baseutils.R.string.h_s_v_binarization -> { //选择已有的过滤规则
 //                findNavController().navigate(
 //                    R.id.action_complexIndexFragment_to_nav_select_hsv,
 //                    AutoHsvRuleSelectFragmentArgs(SELECT_HSV_RULE_TAG, false).toBundle()
@@ -113,11 +111,11 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
 
             }
 
-             com.nwq.baseutils.R.string.h_s_v_binarization_c -> {//新建新的过滤规则
+            com.nwq.baseutils.R.string.h_s_v_binarization_c -> {//新建新的过滤规则
 
             }
 
-             com.nwq.baseutils.R.string.merge_and_crop -> {
+            com.nwq.baseutils.R.string.merge_and_crop -> {
                 viewModel.mergeAndCrop()
             }
         }
@@ -168,9 +166,10 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
 
     override fun onResume() {
         super.onResume()
-        preViewModel.optList.find { it.key ==  com.nwq.baseutils.R.string.crop_picture }?.let {
+        preViewModel.optList.find { it.key == com.nwq.baseutils.R.string.crop_picture }?.let {
             if (it.coordinate != null && it.coordinate is CoordinateArea) {
-                viewModel.setCropArea(it.coordinate as CoordinateArea)
+                val opt = CropAreaDb().apply { coordinateArea = (it.coordinate as CoordinateArea) }
+                viewModel.checkAndAddOpt(opt, CropAreaDb::class.java)
                 it.coordinate = null
             }
         }

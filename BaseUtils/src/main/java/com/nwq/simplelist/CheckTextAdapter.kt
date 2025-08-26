@@ -45,6 +45,7 @@ class CheckTextAdapter<T>(
         return list.filter { it.isCheckStatus() } ?: listOf()
     }
 
+    //这里会同步更新ui数据
     public fun removeSelectAndGet(): List<T> {
         val remainingItems = list.filter { !it.isCheckStatus() }
         list.clear()
@@ -54,6 +55,7 @@ class CheckTextAdapter<T>(
         return remainingItems.map { it.getT() }
     }
 
+    //这里不会更新数据只是将结果进行返回
     public fun removeSelectAndGet2(): List<ICheckText<T>> {
         val remainingItems = list.filter { !it.isCheckStatus() }
         checkListFlow.tryEmit(listOf())
