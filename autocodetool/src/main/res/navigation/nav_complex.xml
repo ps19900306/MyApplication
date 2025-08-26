@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_complexIndexFragment_to_grayscaleBinarizationFragment"
             app:destination="@id/grayscaleBinarizationFragment" />
+        <action
+            android:id="@+id/action_complexIndexFragment_to_hsvFilterRuleDetailFragment"
+            app:destination="@id/hsvFilterRuleDetailFragment" />
         <!--        <action-->
         <!--            android:id="@+id/action_complexIndexFragment_to_nav_opt_preview"-->
         <!--            app:destination="@id/nav_opt_preview" />-->

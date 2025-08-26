@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
@@ -18,6 +20,8 @@ import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.nwq.autocodetool.R
 import com.nwq.autocodetool.databinding.FragmentComplexIndexBinding
+import com.nwq.autocodetool.hsv_filter.HsvFilterRuleDetailFragmentArgs
+import com.nwq.autocodetool.preview.PreviewOptItem
 import com.nwq.autocodetool.preview.PreviewViewModel
 import com.nwq.base.BaseToolBar2Fragment
 
@@ -27,6 +31,7 @@ import com.nwq.constant.ConstantKeyStr
 import com.nwq.loguitls.L
 
 import com.nwq.optlib.db.bean.CropAreaDb
+import com.nwq.view.TouchOptView
 import kotlinx.coroutines.launch
 
 class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>() {
@@ -94,24 +99,19 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
 
 
     private fun onOptItemSelect(i: Int) {
-
         when (i) {
             com.nwq.baseutils.R.string.grayscale_binarization -> {
-//                findNavController().navigate(
-//                    R.id.action_complexIndexFragment_to_grayscaleBinarizationFragment,
-//                    GrayscaleBinarizationFragmentArgs(false).toBundle()
-//                );
+                findNavController().navigate(
+                    R.id.action_complexIndexFragment_to_grayscaleBinarizationFragment,
+                    GrayscaleBinarizationFragmentArgs(false).toBundle()
+                );
             }
 
             com.nwq.baseutils.R.string.h_s_v_binarization -> { //选择已有的过滤规则
-//                findNavController().navigate(
-//                    R.id.action_complexIndexFragment_to_nav_select_hsv,
-//                    AutoHsvRuleSelectFragmentArgs(SELECT_HSV_RULE_TAG, false).toBundle()
-//                );
-
-            }
-
-            com.nwq.baseutils.R.string.h_s_v_binarization_c -> {//新建新的过滤规则
+                findNavController().navigate(
+                    R.id.action_complexIndexFragment_to_hsvFilterRuleDetailFragment,
+                    HsvFilterRuleDetailFragmentArgs(false).toBundle()
+                );
 
             }
 
@@ -173,19 +173,33 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
                 it.coordinate = null
             }
         }
+        preViewModel.optList.find { it.key == com.nwq.baseutils.R.string.find_image_area }?.let {
+            if (it.coordinate != null && it.coordinate is CoordinateArea) {
+                viewModel.findArea = (it.coordinate as CoordinateArea)
+                it.coordinate = null
+            }
+        }
     }
 
     private fun cropPicture() {
         //因为可能会多处使用到preViewModel，所以这里先清空
-//        preViewModel.optList.clear();
-//        preViewModel.optList.add(
-//            PreviewOptItem(
-//                key = com.nwq.baseutils.R.string.crop_picture,
-//                type = TouchOptModel.RECT_AREA_TYPE,
-//                color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
-//                coordinate = viewModel.getCropArea()
-//            )
-//        )
-//        findNavController().navigate(R.id.action_complexIndexFragment_to_nav_opt_preview)
+        preViewModel.optList.clear();
+        preViewModel.optList.add(
+            PreviewOptItem(
+                key = com.nwq.baseutils.R.string.find_image_area,
+                type = TouchOptView.RECT_AREA_TYPE,
+                color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
+                coordinate = viewModel.findArea
+            )
+        )
+        preViewModel.optList.add(
+            PreviewOptItem(
+                key = com.nwq.baseutils.R.string.crop_picture,
+                type = TouchOptView.RECT_AREA_TYPE,
+                color = ContextCompat.getColor(requireContext(), com.nwq.baseutils.R.color.red),
+                coordinate = viewModel.getCropArea()
+            )
+        )
+        findNavController().navigate(R.id.action_any_to_previewFragment)
     }
 }

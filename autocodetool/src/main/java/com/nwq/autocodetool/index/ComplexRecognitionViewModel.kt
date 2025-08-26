@@ -36,6 +36,7 @@ class ComplexRecognitionViewModel : ViewModel() {
     public val nowBitmapFlow: Flow<Bitmap?> = _nowBitmapFlow
 
     //这个是找图范围
+    public var findArea: CoordinateArea? = null
     private var mCropArea: CoordinateArea? = null
 
 
