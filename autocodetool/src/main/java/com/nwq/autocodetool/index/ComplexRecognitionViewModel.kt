@@ -107,12 +107,14 @@ class ComplexRecognitionViewModel : ViewModel() {
         val index = optList.indexOfFirst { targetClass.isInstance(it) }
         when {
             index == -1 -> {
+                Log.i(TAG, "checkAndAddOpt 添加新的操作")
                 // 不存在该类型步骤，添加到末尾
                 addOptStep(optStep)
             }
 
             else -> {
                 // 替换现有步骤并重新执行
+                Log.i(TAG, "checkAndAddOpt 执行替换操作")
                 optList[index] = optStep
                 rereExecute(index)
             }

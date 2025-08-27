@@ -110,8 +110,6 @@ class PreviewFragment : AppToolBarFragment<FragmentPreviewBinding>() {
                 // opts.outConfig = Bitmap.Config.ARGB_8888
                 binding.draggableTextView.setBackgroundColor(color)
                 binding.draggableTextView.text = "(${it.x},${it.y})"
-                delay(3000)
-
             }
         }
     }

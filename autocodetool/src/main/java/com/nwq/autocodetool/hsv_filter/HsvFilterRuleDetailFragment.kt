@@ -6,8 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +29,8 @@ import com.nwq.optlib.db.bean.HsvFilterRuleDb
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
 import com.nwq.view.TouchOptView
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 
 
@@ -34,10 +38,9 @@ import org.opencv.core.Mat
  * [AutoRulePointEntity]
  */
 class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDetailBinding>() {
-
     private val TAG = HsvFilterRuleDetailFragment::class.java.simpleName
     private val args: HsvFilterRuleDetailFragmentArgs by navArgs()
-    private val preViewModel: PreviewViewModel by viewModels({ requireActivity() })
+
     private val viewModel: ComplexRecognitionViewModel by viewModels({ requireActivity() })
 
     private val hsvMat: Mat? by lazy {
@@ -61,9 +64,8 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         var flag = true
         when (menuItem.itemId) {
-
             R.id.action_save -> {
-                val list = mCheckTextAdapter.getSelectedItem().map { it.getT() }
+                val list = mCheckTextAdapter.list.map { it.getT() }
                 val hsvFilterRuleDb = HsvFilterRuleDb().apply {
                     this.ruleList = list
                 }
@@ -71,31 +73,18 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
                 onBackPress()
             }
 
-            R.id.action_merge_select -> {
-                mergeSelect()
-            }
 
             R.id.action_area -> {
-                findArea()
+                addByArea()
+            }
+
+            R.id.action_point -> {
+
+                addByPoint()
             }
 
             R.id.action_select_area -> { //根据选中的Rule对图片尽心给过滤
                 preViewSelectArea()
-            }
-
-            R.id.action_add -> {
-                val dialog =
-                    ModifyHsvDialog(
-                        HSVRule(),
-                        srcBitMap,
-                        object : CallBack<HSVRule> {
-                            override fun onCallBack(data: HSVRule) {
-                                mCheckTextAdapter.addData(ICheckTextWrap<HSVRule>(data) {
-                                    it.toString()
-                                })
-                            }
-                        })
-                dialog.show(childFragmentManager, "ModifyHsvDialog")
             }
 
             R.id.action_delete_select -> {
@@ -104,6 +93,10 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
 
             R.id.action_delete_all -> {
                 mCheckTextAdapter.upData(listOf())
+            }
+
+            R.id.action_merge_select -> {
+                mergeSelect()
             }
 
             else -> {
@@ -137,60 +130,19 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
         return false
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (preViewModel.mBitmap == null) {
-            return
-        }
-        //增加一个新选取点颜色
-        preViewModel.optList.find { it.key == com.nwq.baseutils.R.string.select_point_hsv }
-            ?.let { item ->
-                preViewModel.getSrcMat()?.let { mat ->
-                    val point = item.coordinate
-                    if (point != null && point is CoordinatePoint) {
-                        MatUtils.getHsv(mat, point.x, point.y)?.let { da ->
-                            val pointHSVRule =
-                                HSVRule.getSimple(da[0].toInt(), da[1].toInt(), da[2].toInt())
-                            mCheckTextAdapter.addData(ICheckTextWrap<HSVRule>(pointHSVRule) {
-                                it.toStringSimple()
-                            })
-                            item.coordinate = null
-                        }
-                    }
-                }
-            }
-        //增加一个新选取点颜色
-        preViewModel.optList.find { it.key == com.nwq.baseutils.R.string.select_area_hsv }
-            ?.let { item ->
-                preViewModel.getSrcMat()?.let { mat ->
-                    val point = item.coordinate
-                    if (point != null && point is CoordinateArea) {
-                        MatUtils.getHsv(mat, point.x, point.y, point.width, point.height)
-                            ?.let { da ->
-                                val pointHSVRule =
-                                    HSVRule(
-                                        da[0].toInt(),
-                                        da[1].toInt(),
-                                        da[2].toInt(),
-                                        da[3].toInt(),
-                                        da[4].toInt(),
-                                        da[5].toInt()
-                                    )
-                                mCheckTextAdapter.addData(ICheckTextWrap<HSVRule>(pointHSVRule) {
-                                    it.toStringSimple()
-                                })
-                                item.coordinate = null
-                            }
-                    }
-                }
-            }
-    }
-
 
     override fun initData() {
         super.initData()
         Log.i(TAG, "initData");
-
+        lifecycleScope.launch {
+            binding.previewCoordinateView.nowPoint.collectLatest {
+                val bitmap = srcBitMap ?: return@collectLatest
+                val color = bitmap[it.x, it.y]
+                // opts.outConfig = Bitmap.Config.ARGB_8888
+                binding.draggableTextView.setBackgroundColor(color)
+                binding.draggableTextView.text = "(${it.x},${it.y})"
+            }
+        }
 
         binding.recycler.layoutManager = LinearLayoutManager(requireContext())
         mCheckTextAdapter = CheckTextAdapter(mLongClick = object : CallBack<HSVRule> {
@@ -209,6 +161,7 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
         })
         binding.recycler.adapter = mCheckTextAdapter
 
+        binding.srcImg.setImageBitmap(srcBitMap)
 
     }
 
@@ -244,31 +197,46 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
     }
 
 
-    //选择图片和关键区域
-    private fun findArea() {
-        preViewModel.optList.clear()
-        preViewModel.optList.add(
-            PreviewOptItem(
-                key = com.nwq.baseutils.R.string.select_point_hsv,
-                type = TouchOptView.SINGLE_CLICK_TYPE,
-                color = ContextCompat.getColor(
-                    requireContext(),
-                    com.nwq.baseutils.R.color.black
-                )
-            )
-        )
-        preViewModel.optList.add(
-            PreviewOptItem(
-                key = com.nwq.baseutils.R.string.select_area_hsv,
-                type = TouchOptView.RECT_AREA_TYPE,
-                color = ContextCompat.getColor(
-                    requireContext(),
-                    com.nwq.baseutils.R.color.black
-                )
-            )
-        )
-        preViewModel.mBitmap = srcBitMap
-        findNavController().navigate(R.id.action_any_to_previewFragment)
+    private fun addByPoint() {
+        if (hsvMat == null) {
+            return
+        }
+        lifecycleScope.launch {
+            binding.draggableTextView.isVisible = true
+            val point = binding.previewCoordinateView.getPoint()
+            MatUtils.getHsv(hsvMat!!, point.x, point.y)?.let { da ->
+                val pointHSVRule =
+                    HSVRule.getSimple(da[0].toInt(), da[1].toInt(), da[2].toInt())
+                mCheckTextAdapter.addData(ICheckTextWrap<HSVRule>(pointHSVRule) {
+                    it.toStringSimple()
+                })
+            }
+            binding.draggableTextView.isVisible = false
+        }
+    }
+
+    private fun addByArea() {
+        if (hsvMat == null) {
+            return
+        }
+        lifecycleScope.launch {
+            val area = binding.previewCoordinateView.getRectArea()
+            MatUtils.getHsv(hsvMat!!, area.x, area.y, area.width, area.height)
+                ?.let { da ->
+                    val pointHSVRule =
+                        HSVRule(
+                            da[0].toInt(),
+                            da[1].toInt(),
+                            da[2].toInt(),
+                            da[3].toInt(),
+                            da[4].toInt(),
+                            da[5].toInt()
+                        )
+                    mCheckTextAdapter.addData(ICheckTextWrap<HSVRule>(pointHSVRule) {
+                        it.toStringSimple()
+                    })
+                }
+        }
     }
 
 }
