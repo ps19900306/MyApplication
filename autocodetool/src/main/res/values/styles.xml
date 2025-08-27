@@ -1,0 +1,26 @@
+<resources>
+
+    <style name="Widget.Theme.AppCompat.Light.NoActionBar.FullScreen.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <style name="Widget.Theme.AppCompat.Light.NoActionBar.FullScreen.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
+
+    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemTextAppearanceActive">@style/BottomNavigationTextAppearanceActive</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavigationTextAppearanceInactive</item>
+<!--        <item name="itemTextColor">@color/bottom_nav_item_color</item>-->
+    </style>
+
+    <style name="BottomNavigationTextAppearanceActive" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BottomNavigationTextAppearanceInactive" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textStyle">normal</item>
+    </style>
+
+</resources>

@@ -14,5 +14,10 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.container, MainFragment.newInstance())
                 .commitNow()
         }
+
+        NavigationToolBarActivity.startNavigationContainerActivity(
+            this,
+            R.navigation.nav_complex,
+        )
     }
 }
