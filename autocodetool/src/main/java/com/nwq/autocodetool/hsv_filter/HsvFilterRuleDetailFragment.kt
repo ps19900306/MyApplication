@@ -152,7 +152,7 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
                             val pointHSVRule =
                                 HSVRule.getSimple(da[0].toInt(), da[1].toInt(), da[2].toInt())
                             mCheckTextAdapter.addData(ICheckTextWrap<HSVRule>(pointHSVRule) {
-                                it.toString()
+                                it.toStringSimple()
                             })
                             item.coordinate = null
                         }
@@ -177,7 +177,7 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
                                         da[5].toInt()
                                     )
                                 mCheckTextAdapter.addData(ICheckTextWrap<HSVRule>(pointHSVRule) {
-                                    it.toString()
+                                    it.toStringSimple()
                                 })
                                 item.coordinate = null
                             }
@@ -215,11 +215,6 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
 
     //预览选中区域
     private fun preViewSelectArea() {
-        if (binding.srcImg.isVisible) {
-            binding.srcImg.isVisible = false
-            return
-        }
-        binding.srcImg.isVisible = true
         val rules = mCheckTextAdapter.getSelectedItem()
         if (rules.isEmpty()) {
             T.show("请选择规则")

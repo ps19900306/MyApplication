@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:contentDescription="@string/app_name"
-        android:visibility="gone"
         tools:src="@drawable/ic_launcher_background"
         tools:visibility="visible" />
 
