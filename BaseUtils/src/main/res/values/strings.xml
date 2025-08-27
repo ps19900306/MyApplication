@@ -107,7 +107,7 @@
     <string name="h_s_v_binarization">选择Hsv二值化规则</string>
     <string name="h_s_v_binarization_c">创建HSV二值化规则</string>
     <string name="merge_and_crop">合并裁剪</string>
-    <string name="separate_cropping">分离裁剪</string>
+    <string name="segment_connected_regions">连通性分割</string>
 
     <string name="title_activity_immanager">IMmanagerActivity</string>
     <string name="harvest_setting">收菜设置</string>

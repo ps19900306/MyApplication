@@ -330,12 +330,12 @@ object MatUtils {
             }
         }
         // 按照最小距离过滤点
-        val result= filterPointsByDistance(points, distance)
+        val result = filterPointsByDistance(points, distance)
         binaryMat.release()
         erodedMat1.release()
         erodedMat2.release()
         borderMat.release()
-        return  result
+        return result
     }
 
     /**
@@ -797,6 +797,73 @@ object MatUtils {
         // 计算边界矩形
         return Imgproc.boundingRect(MatOfPoint(*allPoints.toTypedArray()))
     }
+
+
+    /**
+     * 根据连通区域分割图像
+     * @param binaryMat 输入的二值图像，必须为单通道灰度图(CV_8UC1)
+     * @param minW 连通区域的最小宽度  小于这个值将被忽略  如果值为<=0 则不检查此项目
+     * @param maxW 连通区域的最大宽度
+     * @param minH 连通区域的最小高度
+     * @param maxH 连通区域的最大高度
+     * @return 符合宽高条件的连通区域坐标信息列表
+     */
+    fun segmentImageByConnectedRegions(
+        binaryMat: Mat,
+        minW: Int = -1,
+        maxW: Int = -1,
+        minH: Int = -1,
+        maxH: Int = -1
+    ): List<CoordinateArea> {
+        // 检查输入是否为单通道灰度图
+        require(binaryMat.type() == CvType.CV_8UC1) {
+            "输入必须是单通道灰度图(CV_8UC1)"
+        }
+
+        // 查找轮廓
+        val contours: MutableList<MatOfPoint> = mutableListOf()
+        val hierarchy = Mat()
+        Imgproc.findContours(
+            binaryMat,
+            contours,
+            hierarchy,
+            Imgproc.RETR_EXTERNAL,
+            Imgproc.CHAIN_APPROX_SIMPLE
+        )
+
+        // 提取每个轮廓的边界矩形，并根据宽高条件进行过滤
+        val regions = mutableListOf<CoordinateArea>()
+        for (contour in contours) {
+            val rect = Imgproc.boundingRect(contour)
+            // 根据指定的宽高范围过滤区域，如果值为-1则不检查对应项目
+            var widthCheck = true
+            var heightCheck = true
+
+            // 检查宽度条件
+            if (minW > 0) {
+                widthCheck = widthCheck && (rect.width >= minW)
+            }
+            if (maxW > 0) {
+                widthCheck = widthCheck && (rect.width <= maxW)
+            }
+
+            // 检查高度条件
+            if (minH > 0) {
+                heightCheck = heightCheck && (rect.height >= minH)
+            }
+            if (maxH > 0) {
+                heightCheck = heightCheck && (rect.height <= maxH)
+            }
+
+            if (widthCheck && heightCheck) {
+                regions.add(CoordinateArea(rect.x, rect.y, rect.width, rect.height))
+            }
+        }
+        return regions
+    }
+
+
+
 
 
     fun bgr2Gray(srcMat: Mat): Mat {

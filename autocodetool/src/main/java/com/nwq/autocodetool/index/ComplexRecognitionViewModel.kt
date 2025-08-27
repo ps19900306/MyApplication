@@ -27,8 +27,6 @@ class ComplexRecognitionViewModel : ViewModel() {
     //原始图片 GBR格式的Mat
     private var srcMat: Mat? = null
 
-    private var lastType = MatResult.MAT_TYPE_BGR
-
     private var nowStep = 0;
 
     //用于展示最新图片的
@@ -96,14 +94,13 @@ class ComplexRecognitionViewModel : ViewModel() {
 
     public fun setNewBitmap(bitmap: Bitmap) {
         srcMat = MatUtils.bitmapToMat(bitmap)
+        segmentAreaListFow.tryEmit(null)
         if (optList.isEmpty()) {
             _nowBitmapFlow.tryEmit(bitmap)
         } else {
             reExecute();
         }
     }
-
-
 
 
     public fun checkAndAddOpt(optStep: MatResult, targetClass: Class<out MatResult>) {
@@ -121,7 +118,6 @@ class ComplexRecognitionViewModel : ViewModel() {
             }
         }
     }
-
 
 
     //当移除一个选择项目时候的操作
@@ -161,7 +157,6 @@ class ComplexRecognitionViewModel : ViewModel() {
                 return
             }
             typeList.add(type)
-            lastType = type
             matList.add(newMat)
         }
         sendNowBitmap(
@@ -239,7 +234,6 @@ class ComplexRecognitionViewModel : ViewModel() {
                 T.show("操作失败,请查看日志")
                 return
             }
-            lastType = type
             matList.add(newMat)
             typeList.add(type)
         }
@@ -281,5 +275,28 @@ class ComplexRecognitionViewModel : ViewModel() {
 //        }
     }
 
+    public var segmentParameter: IntArray = intArrayOf(0, 0, 0, 0)
+    public val segmentAreaListFow = MutableStateFlow<List<CoordinateArea>?>(null)
+
+    //
+    fun segmentByConnectedRegion(data: IntArray) {
+        if (srcMat == null || matList.isEmpty()) {
+            T.show("请先选择图片")
+            return
+        }
+        segmentParameter = data
+        if (typeList.last() == MatResult.MAT_TYPE_GRAY) {
+            val areaList = MatUtils.segmentImageByConnectedRegions(
+                matList.last(),
+                data[0],
+                data[1],
+                data[2],
+                data[3]
+            )
+            segmentAreaListFow.tryEmit(areaList)
+        } else {
+            T.show("只能对二值图进行分割")
+        }
+    }
 
 }

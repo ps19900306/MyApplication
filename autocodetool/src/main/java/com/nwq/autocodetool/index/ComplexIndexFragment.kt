@@ -23,9 +23,11 @@ import com.nwq.autocodetool.databinding.FragmentComplexIndexBinding
 import com.nwq.autocodetool.hsv_filter.HsvFilterRuleDetailFragmentArgs
 import com.nwq.autocodetool.preview.PreviewOptItem
 import com.nwq.autocodetool.preview.PreviewViewModel
+import com.nwq.autocodetool.segment.SegmentParameterDialog
 import com.nwq.base.BaseToolBar2Fragment
 
 import com.nwq.baseobj.CoordinateArea
+import com.nwq.baseobj.PreviewCoordinateData
 import com.nwq.callback.CallBack
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.loguitls.L
@@ -112,11 +114,19 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
                     R.id.action_complexIndexFragment_to_hsvFilterRuleDetailFragment,
                     HsvFilterRuleDetailFragmentArgs(false).toBundle()
                 );
-
             }
 
             com.nwq.baseutils.R.string.merge_and_crop -> {
                 viewModel.mergeAndCrop()
+            }
+
+            com.nwq.baseutils.R.string.segment_connected_regions -> {
+                SegmentParameterDialog().setDefaultParameter(viewModel.segmentParameter)
+                    .setCallBack(object : CallBack<IntArray> {
+                        override fun onCallBack(data: IntArray) {
+                            viewModel.segmentByConnectedRegion(data)
+                        }
+                    }).show(requireActivity().supportFragmentManager, "SegmentParameterDialog")
             }
         }
         mOptItemDialog.dismiss()
@@ -136,7 +146,28 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
                 }
             }
         }
-
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.segmentAreaListFow.collect { list ->
+                    if (list == null || list.isEmpty()) {
+                        binding.previewCoordinateView.updateList(listOf())
+                    } else {
+                        binding.previewCoordinateView.updateList(
+                            list.map {
+                                PreviewCoordinateData(
+                                    it,
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        com.nwq.baseutils.R.color.red
+                                    ),
+                                    1f
+                                )
+                            }.toMutableList()
+                        )
+                    }
+                }
+            }
+        }
     }
 
 

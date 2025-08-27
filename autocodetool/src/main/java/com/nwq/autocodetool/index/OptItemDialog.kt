@@ -42,7 +42,7 @@ class OptItemDialog : BaseDialogFragment<DialogOptItemBinding>() {
         binding.corpRecyclerView.adapter = corpAdapter
         corpAdapter.upData(listOf<IText<Int>>(
             TextResWarp( com.nwq.baseutils.R.string.merge_and_crop),
-            TextResWarp( com.nwq.baseutils.R.string.separate_cropping),
+            TextResWarp( com.nwq.baseutils.R.string.segment_connected_regions),
         ))
     }
 }
