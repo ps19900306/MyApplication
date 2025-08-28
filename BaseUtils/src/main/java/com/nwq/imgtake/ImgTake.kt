@@ -39,6 +39,7 @@ abstract class ImgTake {
 
     //每次获取新的图片需要清楚掉原来的
     protected fun clearLastBitMapCache() {
+        lastMat?.release()
         lastMat = null
         hsvMatMap.clear()
     }
