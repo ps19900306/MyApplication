@@ -37,6 +37,10 @@ class ComplexRecognitionViewModel : ViewModel() {
     public var findArea: CoordinateArea? = null
     private var mCropArea: CoordinateArea? = null
 
+    //分割后的参数详细间SegmentParameterDialog
+    public var segmentParameter: IntArray = intArrayOf(0, 0, 0, 0, 0, 0)
+    public val segmentAreaListFow = MutableStateFlow<List<CoordinateArea>?>(null)
+
 
     public fun getGrayMat(isModify: Boolean = false): Mat? {
         if (srcMat == null) {
@@ -279,8 +283,6 @@ class ComplexRecognitionViewModel : ViewModel() {
 //        }
     }
 
-    public var segmentParameter: IntArray = intArrayOf(0, 0, 0, 0)
-    public val segmentAreaListFow = MutableStateFlow<List<CoordinateArea>?>(null)
 
     //
     fun segmentByConnectedRegion(data: IntArray) {
@@ -290,13 +292,16 @@ class ComplexRecognitionViewModel : ViewModel() {
         }
         segmentParameter = data
         if (typeList.last() == MatResult.MAT_TYPE_GRAY) {
-            val areaList = MatUtils.segmentImageByConnectedRegions(
+            var areaList = MatUtils.segmentImageByConnectedRegions(
                 matList.last(),
                 data[0],
                 data[1],
                 data[2],
                 data[3]
             )
+            if (segmentParameter[4] > 0 || segmentParameter[5] > 0) {
+                areaList = MatUtils.mergeRegions(areaList, segmentParameter[4], segmentParameter[5])
+            }
             segmentAreaListFow.tryEmit(areaList)
         } else {
             T.show("只能对二值图进行分割")

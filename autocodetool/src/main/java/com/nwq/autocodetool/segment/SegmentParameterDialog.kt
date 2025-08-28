@@ -14,7 +14,7 @@ class SegmentParameterDialog : BaseDialogFragment<DialogSegmentParameterBinding>
 
     private var callBack: CallBack<IntArray>? = null
 
-    private var defaultParameter = intArrayOf(-1, -1, -1, -1)
+    private var defaultParameter = intArrayOf(0, 0, 0, 0, 0, 0)
 
     public fun setCallBack(callBack: CallBack<IntArray>): SegmentParameterDialog {
         this.callBack = callBack
@@ -42,7 +42,8 @@ class SegmentParameterDialog : BaseDialogFragment<DialogSegmentParameterBinding>
         binding.editMaxW.setText("${defaultParameter[1]}")
         binding.editMinH.setText("${defaultParameter[2]}")
         binding.editMaxH.setText("${defaultParameter[3]}")
-
+        binding.editSpacingWidth.setText("${defaultParameter[4]}")
+        binding.editSpacingHeight.setText("${defaultParameter[5]}")
 
         binding.btnConfirm.setOnClickListener {
             val minW =
@@ -57,8 +58,13 @@ class SegmentParameterDialog : BaseDialogFragment<DialogSegmentParameterBinding>
             val maxH =
                 if (binding.editMaxH.text.isNullOrEmpty()) -1 else binding.editMaxH.text.toString()
                     .toInt()
-
-            callBack?.onCallBack(intArrayOf(minW, maxW, minH, maxH))
+            val spaceW =
+                if (binding.editSpacingWidth.text.isNullOrEmpty()) -1 else binding.editSpacingWidth.text.toString()
+                    .toInt()
+            val spaceH =
+                if (binding.editSpacingHeight.text.isNullOrEmpty()) -1 else binding.editSpacingHeight.text.toString()
+                    .toInt()
+            callBack?.onCallBack(intArrayOf(minW, maxW, minH, maxH, spaceW, spaceH))
             dismiss()
         }
     }

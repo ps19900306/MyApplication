@@ -863,9 +863,6 @@ object MatUtils {
     }
 
 
-
-
-
     fun bgr2Gray(srcMat: Mat): Mat {
         val grayMat = Mat(srcMat.size(), CvType.CV_8UC1)
         Imgproc.cvtColor(srcMat, grayMat, Imgproc.COLOR_BGR2GRAY)
@@ -915,6 +912,73 @@ object MatUtils {
         )
         return bgrMat
     }
+
+        /**
+     * 合并区域列表中距离较近的区域
+     *
+     * @param areaList 需要合并的区域列表
+     * @param spaceW X轴方向上的合并距离阈值，当两个区域在X轴上的距离小于此值时进行合并
+     * @param spaceH Y轴方向上的合并距离阈值，当两个区域在Y轴上的距离小于此值时进行合并
+     * @return 合并后的区域列表
+     */
+    fun mergeRegions(
+        areaList: List<CoordinateArea>,
+        spaceW: Int,
+        spaceH: Int
+    ): List<CoordinateArea> {
+        if (areaList.isEmpty()) return emptyList()
+
+        val result = mutableListOf<CoordinateArea>()
+        val processed = BooleanArray(areaList.size) { false }
+
+        for (i in areaList.indices) {
+            if (processed[i]) continue
+
+            var currentArea = areaList[i]
+            processed[i] = true
+
+            for (j in i + 1 until areaList.size) {
+                if (processed[j]) continue
+
+                val otherArea = areaList[j]
+
+                // 计算两个区域在X轴和Y轴上的距离
+                val xDistance = when {
+                    currentArea.x <= otherArea.x -> otherArea.x - (currentArea.x + currentArea.width)
+                    else -> currentArea.x - (otherArea.x + otherArea.width)
+                }
+
+                val yDistance = when {
+                    currentArea.y <= otherArea.y -> otherArea.y - (currentArea.y + currentArea.height)
+                    else -> currentArea.y - (otherArea.y + otherArea.height)
+                }
+
+                // 如果X轴或Y轴距离小于阈值，则合并区域
+                if (xDistance <= spaceW || yDistance <= spaceH) {
+                    val minX = minOf(currentArea.x, otherArea.x)
+                    val minY = minOf(currentArea.y, otherArea.y)
+                    val maxX =
+                        maxOf(currentArea.x + currentArea.width, otherArea.x + otherArea.width)
+                    val maxY =
+                        maxOf(currentArea.y + currentArea.height, otherArea.y + otherArea.height)
+
+                    currentArea = CoordinateArea(
+                        minX,
+                        minY,
+                        maxX - minX,
+                        maxY - minY,
+                        currentArea.isRound || otherArea.isRound
+                    )
+                    processed[j] = true
+                }
+            }
+
+            result.add(currentArea)
+        }
+
+        return result
+    }
+
 
 
 }
