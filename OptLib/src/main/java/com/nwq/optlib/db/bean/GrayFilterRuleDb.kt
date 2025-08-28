@@ -51,15 +51,17 @@ class GrayFilterRuleDb : MatResult {
             if (lastMaskMat == null) {
                 lastMaskMat = maskMat
             } else {
-                val tempMat = MatUtils.mergeMaskMat(lastMaskMat!!, maskMat)
-                lastMaskMat?.release()
+                val tempMat = MatUtils.mergeMaskMat(lastMaskMat, maskMat)
+                lastMaskMat.release()
                 maskMat.release()
                 lastMaskMat = tempMat
             }
         }
 
-        if (isWhite && lastMaskMat != null) {
-            lastMaskMat = MatUtils.maskMatInverse(lastMaskMat!!)
+        if (!isWhite && lastMaskMat != null) {
+            val tempMat = MatUtils.maskMatInverse(lastMaskMat)
+            lastMaskMat.release()
+            lastMaskMat = tempMat
         }
         return Pair(lastMaskMat, MatResult.MAT_TYPE_GRAY)
     }

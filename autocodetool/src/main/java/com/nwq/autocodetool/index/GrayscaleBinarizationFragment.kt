@@ -119,6 +119,7 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
                     } else {
                         MatUtils.thresholdByRange(grayMat!!, minI, maxI)
                     }
+                    binding.imgCountTv.text = "过滤点数： ${MatUtils.countNonZero(mat)}"
                     binding.imageView.setImageBitmap(MatUtils.grayMatToBitmap(mat))
                 }
             }

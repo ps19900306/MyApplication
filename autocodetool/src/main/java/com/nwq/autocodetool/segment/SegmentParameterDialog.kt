@@ -38,10 +38,10 @@ class SegmentParameterDialog : BaseDialogFragment<DialogSegmentParameterBinding>
             dismiss()
         }
 
-        binding.editMinW.setText(defaultParameter[0])
-        binding.editMaxW.setText(defaultParameter[1])
-        binding.editMinH.setText(defaultParameter[2])
-        binding.editMaxH.setText(defaultParameter[3])
+        binding.editMinW.setText("${defaultParameter[0]}")
+        binding.editMaxW.setText("${defaultParameter[1]}")
+        binding.editMinH.setText("${defaultParameter[2]}")
+        binding.editMaxH.setText("${defaultParameter[3]}")
 
 
         binding.btnConfirm.setOnClickListener {

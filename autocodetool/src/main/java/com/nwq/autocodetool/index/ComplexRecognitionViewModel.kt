@@ -210,6 +210,7 @@ class ComplexRecognitionViewModel : ViewModel() {
             }
             matList.add(newMat)
             typeList.add(type)
+            sendNowBitmap(newMat, type)
             return
         }
 
@@ -239,6 +240,7 @@ class ComplexRecognitionViewModel : ViewModel() {
             matList.add(newMat)
             typeList.add(type)
         }
+        sendNowBitmap(matList.last(), typeList.last())
     }
 
 

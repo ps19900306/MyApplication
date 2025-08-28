@@ -79,7 +79,6 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
             }
 
             R.id.action_point -> {
-
                 addByPoint()
             }
 
