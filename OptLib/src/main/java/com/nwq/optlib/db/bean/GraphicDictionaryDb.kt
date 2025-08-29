@@ -1,9 +1,9 @@
 package com.nwq.optlib.db.bean
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.nwq.baseobj.CoordinateArea
-import com.nwq.baseutils.FileUtils
 import com.nwq.baseutils.MatUtils
 import com.nwq.loguitls.L
 import com.nwq.optlib.GraphicDictionaryResult
@@ -28,12 +28,15 @@ class GraphicDictionaryDb {
     var storageType: Int = MatUtils.STORAGE_ASSET_TYPE
 
     //二值化的灰度图
+    @Ignore
     var dictionaryMatList = mutableListOf<Mat>()
 
 
-    suspend fun checkMat(
-        matList: List<Mat>,
-        areaList: List<CoordinateArea>
+
+
+    suspend fun checkMatList(
+        matList: List<Mat>,//待匹配的图
+        areaList: List<CoordinateArea>//待匹配的图对应的区域
     ): List<GraphicDictionaryResult>? {
         if (dictionaryNameList.isEmpty()) {
             return null
@@ -100,5 +103,7 @@ class GraphicDictionaryDb {
         }
         return result
     }
+
+
 
 }
