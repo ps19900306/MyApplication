@@ -53,7 +53,7 @@ object L : ILog {
     override fun i(tag: String, msg: String, time: Long) {
         list.forEach {
             if (checkNeedLog(LogLevel.INFO, tag, time, it.getLogFilterInfo())) {
-                it.i(tag, msg,  System.currentTimeMillis())
+                it.i(tag, msg, System.currentTimeMillis())
             }
         }
     }
@@ -61,7 +61,7 @@ object L : ILog {
     override fun w(tag: String, msg: String, time: Long) {
         list.forEach {
             if (checkNeedLog(LogLevel.WARN, tag, time, it.getLogFilterInfo())) {
-                it.w(tag, msg,  System.currentTimeMillis())
+                it.w(tag, msg, System.currentTimeMillis())
             }
         }
     }
@@ -69,7 +69,7 @@ object L : ILog {
     override fun e(tag: String, msg: String, time: Long) {
         list.forEach {
             if (checkNeedLog(LogLevel.ERROR, tag, time, it.getLogFilterInfo())) {
-                it.e(tag, msg,  System.currentTimeMillis())
+                it.e(tag, msg, System.currentTimeMillis())
             }
         }
     }

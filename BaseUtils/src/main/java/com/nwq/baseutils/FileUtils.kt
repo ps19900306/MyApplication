@@ -92,16 +92,16 @@ object FileUtils {
 
 
     /**
-     * 从根目录/img/读取Bitmap
+     * 从根目录/directoryStr 读取Bitmap
      *
      * @param fileName 文件名
      * @return 读取的Bitmap对象，如果读取失败则返回null
      */
-    fun readBitmapFromRootImg(fileName: String?): Bitmap? {
+    fun readBitmapFromRootImg(fileName: String?, directoryStr: String = "img/target"): Bitmap? {
         if (fileName.isNullOrEmpty())
             return null
         // 获取根目录下的 img 文件夹
-        val directory = File(Environment.getExternalStorageDirectory(), "img")
+        val directory = File(Environment.getExternalStorageDirectory(), directoryStr)
         if (!directory.exists()) {
             return null
         }
@@ -110,7 +110,7 @@ object FileUtils {
         val file = if (fileName.contains(".")) {
             File(directory, fileName)
         } else {
-            File(directory, "$fileName.jpg")
+            File(directory, "$fileName.png")
         }
 
         // 检查文件是否存在
@@ -125,6 +125,54 @@ object FileUtils {
             e.printStackTrace()
             null
         }
+    }
+
+    /**
+     * 从根目录/directoryStr 读取Bitmap
+     *
+     * @param fileName 文件名
+     * @return 读取的Bitmap对象，如果读取失败则返回null
+     */
+    fun saveBitmap2RootImg(
+        bitmap: Bitmap?,
+        fileName: String?,
+        directoryStr: String = "img/target"
+    ): Boolean {
+        if (fileName.isNullOrEmpty() || bitmap == null){
+            Log.i(TAG,"saveBitmap2RootImg: fileName is null or empty")
+            return false
+        }
+
+        // 获取根目录下的 img 文件夹
+        val directory = File(Environment.getExternalStorageDirectory(), directoryStr)
+        if (!directory.exists()) {
+             directory.mkdirs()
+        }
+        if (!directory.exists()){
+            Log.i(TAG,"")
+            return false
+        }
+
+        // 创建文件对象
+        val file = if (fileName.contains(".")) {
+            File(directory, fileName)
+        } else {
+            File(directory, "$fileName.png")
+        }
+        // 将Bitmap保存到文件
+        return try {
+            val outputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+            Log.i(TAG, "saveBitmap2RootImg: success")
+            true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Log.i(TAG, "saveBitmap2RootImg: failed - ${e.message}")
+            false
+        }
+
     }
 
 
@@ -148,9 +196,6 @@ object FileUtils {
     }
 
 
-
-
-
     /**
      * 从Asset读取Bitmap
      *
@@ -161,7 +206,7 @@ object FileUtils {
         if (fileName.isNullOrEmpty())
             return null
         return try {
-            val inputStream = context.assets.open("$fileName.jpg")
+            val inputStream = context.assets.open("$fileName.png")
             BitmapFactory.decodeStream(inputStream)
         } catch (e: IOException) {
             e.printStackTrace()
@@ -216,11 +261,11 @@ object FileUtils {
         coordinateArea: CoordinateArea? = null,
         parentPath: String? = null
     ): Boolean {
-        // 如果文件名不包含扩展名，则默认添加.jpg扩展名
+        // 如果文件名不包含扩展名，则默认添加.png扩展名
         val fileName = if (fileNameStr.contains(".")) {
             fileNameStr
         } else {
-            "$fileNameStr.jpg"
+            "$fileNameStr.png"
         }
 
         // 裁剪Bitmap（如果指定了裁剪区域）
@@ -239,7 +284,7 @@ object FileUtils {
         // 准备ContentValues以插入MediaStore
         val contentValues = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
             // 从Android Q开始，需要指定相对路径
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (parentPath != null) {
@@ -272,7 +317,7 @@ object FileUtils {
             }
 
             // 将Bitmap压缩为JPEG格式并写入输出流
-            bitmapToSave.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            bitmapToSave.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
             Log.i(TAG, "saveBitmapToGallery 成功")
             return true
         } catch (e: Exception) {
@@ -300,7 +345,7 @@ object FileUtils {
         val fileName = if (fileNameStr.contains(".")) {
             fileNameStr
         } else {
-            "$fileNameStr.jpg"
+            "$fileNameStr.png"
         }
 
         // 查询相册中的图片
@@ -531,7 +576,7 @@ object FileUtils {
     /**
      * 从Assets目录导入数据库
      */
-    fun importDatabaseFromAssets(context: Context,name:String): Boolean {
+    fun importDatabaseFromAssets(context: Context, name: String): Boolean {
         return try {
             val dbPath = context.getDatabasePath(name)
             val dbFolder = dbPath.parentFile
@@ -584,12 +629,12 @@ object FileUtils {
 
         // 获取应用数据库目录中的目标文件
         val dbFile = context.getDatabasePath(databaseName)
-        
+
         // 如果目标数据库文件已存在，先删除
         if (dbFile.exists()) {
             dbFile.delete()
         }
-        
+
         try {
             // 复制文件到数据库目录
             val inputStream = FileInputStream(importFile)
@@ -612,4 +657,7 @@ object FileUtils {
             return false
         }
     }
+
+
+
 }

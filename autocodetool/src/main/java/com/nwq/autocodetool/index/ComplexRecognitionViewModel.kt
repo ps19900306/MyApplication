@@ -53,37 +53,42 @@ class ComplexRecognitionViewModel : ViewModel() {
         val type = typeList.get(if (isModify) nowStep - 2 else nowStep - 1)
 
         when (type) {
-            MatResult.MAT_TYPE_BGR -> {
+            MatUtils.MAT_TYPE_BGR -> {
                 return MatUtils.bgr2Gray(mat)
             }
 
-            MatResult.MAT_TYPE_HSV -> {
+            MatUtils.MAT_TYPE_HSV -> {
                 return MatUtils.bgr2Hsv(mat)
             }
 
-            MatResult.MAT_TYPE_GRAY -> {
+            MatUtils.MAT_TYPE_GRAY -> {
                 return mat
             }
         }
         return null
     }
 
-    public fun getHsvMat(isModify: Boolean = false): Mat? {
+    public fun getIndex(targetClass: Class<out MatResult>): Int {
+        val index = optList.indexOfFirst { targetClass.isInstance(it) }
+        return index
+    }
+
+    public fun getHsvMat(index: Int): Mat? {
         if (srcMat == null) {
             return null
         }
         if (nowStep <= 0) {
             return MatUtils.bgr2Gray(srcMat!!)
         }
-        val mat = matList.get(if (isModify) nowStep - 2 else nowStep - 1)
-        val type = typeList.get(if (isModify) nowStep - 2 else nowStep - 1)
+        val mat = matList.get(if (index == -1) nowStep - 1 else index - 1)
+        val type = typeList.get(if (index == -1) nowStep - 1 else index - 1)
 
         when (type) {
-            MatResult.MAT_TYPE_BGR -> {
+            MatUtils.MAT_TYPE_BGR -> {
                 return MatUtils.bgr2Hsv(mat)
             }
 
-            MatResult.MAT_TYPE_HSV -> {
+            MatUtils.MAT_TYPE_HSV -> {
                 return mat
             }
 
@@ -156,7 +161,7 @@ class ComplexRecognitionViewModel : ViewModel() {
         optList.forEach {
             val (newMat, type) = it.performOperations(
                 if (matList.isEmpty()) srcMat!! else matList.last(),
-                if (typeList.isEmpty()) MatResult.MAT_TYPE_BGR else typeList.last()
+                if (typeList.isEmpty()) MatUtils.MAT_TYPE_BGR else typeList.last()
             )
             if (newMat == null) {
                 T.show("操作失败,请查看日志")
@@ -167,21 +172,21 @@ class ComplexRecognitionViewModel : ViewModel() {
         }
         sendNowBitmap(
             if (matList.isEmpty()) srcMat!! else matList.last(),
-            if (typeList.isEmpty()) MatResult.MAT_TYPE_BGR else typeList.last()
+            if (typeList.isEmpty()) MatUtils.MAT_TYPE_BGR else typeList.last()
         )
     }
 
     private fun sendNowBitmap(mat: Mat, type: Int) {
         when (type) {
-            MatResult.MAT_TYPE_BGR -> {
+            MatUtils.MAT_TYPE_BGR -> {
                 _nowBitmapFlow.tryEmit(MatUtils.matToBitmap(mat))
             }
 
-            MatResult.MAT_TYPE_HSV -> {
+            MatUtils.MAT_TYPE_HSV -> {
                 _nowBitmapFlow.tryEmit(MatUtils.hsvMatToBitmap(mat))
             }
 
-            MatResult.MAT_TYPE_GRAY -> {
+            MatUtils.MAT_TYPE_GRAY ,MatUtils.MAT_TYPE_THRESHOLD-> {
                 _nowBitmapFlow.tryEmit(MatUtils.grayMatToBitmap(mat))
             }
         }
@@ -206,7 +211,7 @@ class ComplexRecognitionViewModel : ViewModel() {
             Log.i(TAG, "添加新的操作")
             val (newMat, type) = optList[startIndex].performOperations(
                 if (matList.isEmpty()) srcMat!! else matList.last(),
-                if (typeList.isEmpty()) MatResult.MAT_TYPE_BGR else typeList.last()
+                if (typeList.isEmpty()) MatUtils.MAT_TYPE_BGR else typeList.last()
             )
             if (newMat == null) {
                 T.show("操作失败,请查看日志")
@@ -235,7 +240,7 @@ class ComplexRecognitionViewModel : ViewModel() {
         for (i in startIndex until optList.size) {
             val (newMat, type) = optList[i].performOperations(
                 if (matList.isEmpty()) srcMat!! else matList.last(),
-                if (typeList.isEmpty()) MatResult.MAT_TYPE_BGR else typeList.last()
+                if (typeList.isEmpty()) MatUtils.MAT_TYPE_BGR else typeList.last()
             )
             if (newMat == null) {
                 T.show("操作失败,请查看日志")
@@ -291,7 +296,7 @@ class ComplexRecognitionViewModel : ViewModel() {
             return
         }
         segmentParameter = data
-        if (typeList.last() == MatResult.MAT_TYPE_GRAY) {
+        if (typeList.last() == MatUtils.MAT_TYPE_GRAY) {
             var areaList = MatUtils.segmentImageByConnectedRegions(
                 matList.last(),
                 data[0],

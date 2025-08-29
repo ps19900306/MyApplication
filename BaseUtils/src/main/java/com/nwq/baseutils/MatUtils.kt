@@ -2,11 +2,14 @@ package com.nwq.baseutils
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.text.TextUtils
 import android.util.Log
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.checkhsv.CheckHSVSame
 import com.nwq.checkhsv.CheckHSVSame3
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
@@ -29,6 +32,13 @@ object MatUtils {
     const val STORAGE_EXTERNAL_TYPE = 1
     const val REAL_PATH_TYPE = 3
     const val TAG = "MatUtils"
+
+    const val MAT_TYPE_BGR = 1
+    const val MAT_TYPE_HSV = 2
+    const val MAT_TYPE_GRAY = 3//灰度图
+
+
+    const val MAT_TYPE_THRESHOLD = 4//二值化的图
 
     /**
      * 读取并转换HSV色彩空间的Mat对象
@@ -62,6 +72,77 @@ object MatUtils {
             }
         }
     }
+
+
+    /**
+     * 根据存储类型和图像格式要求读取图像并转换为Mat对象
+     *
+     * @param storageType 存储类型，支持STORAGE_ASSET_TYPE（资产目录）和STORAGE_EXTERNAL_TYPE（外部存储）
+     * @param fileName 文件名
+     * @param matType Mat图像类型，支持MAT_TYPE_BGR（BGR色彩空间）、MAT_TYPE_HSV（HSV色彩空间）、MAT_TYPE_GRAY（灰度图像）和MAT_TYPE_THRESHOLD（二值化图像）
+     * @param directoryPath 当storageType为STORAGE_EXTERNAL_TYPE时，指定外部存储中的目录路径，默认为"img/target"
+     * @return 返回对应格式的Mat对象，如果读取或转换失败则返回null
+     */
+    suspend fun getMat(
+        storageType: Int,
+        fileName: String,
+        matType: Int,
+        directoryPath: String = "img/target"
+    ): Mat? {
+        return withContext(Dispatchers.IO) {
+            // 根据存储类型处理不同的图像读取逻辑
+            val bitmap = when (storageType) {
+                STORAGE_ASSET_TYPE -> {
+                    // 从资产目录读取位图，如果失败则返回null
+                    FileUtils.readBitmapFromAsset(fileName) ?: return@withContext null
+                }
+
+                STORAGE_EXTERNAL_TYPE -> {
+                    // 从外部存储读取位图，如果失败则返回null
+                    FileUtils.readBitmapFromRootImg(fileName, directoryPath)
+                        ?: return@withContext null
+                }
+
+                else -> {
+                    // 对于不支持的存储类型，返回null
+                    return@withContext null
+                }
+            }
+            return@withContext try {
+                when (matType) {
+                    MAT_TYPE_BGR -> {
+                        // 将位图转换为BGR色彩空间的Mat对象
+                        bitmapToMat(bitmap)
+                    }
+
+                    MAT_TYPE_HSV -> {
+                        // 将位图转换为HSV色彩空间的Mat对象
+                        bitmapToHsvMat(bitmap)
+                    }
+
+                    MAT_TYPE_GRAY -> {
+                        // 将位图转换为灰度图像的Mat对象
+                        bitmapToGrayMat(bitmap)
+                    }
+
+                    MAT_TYPE_THRESHOLD -> {
+                        // 将位图转换为二值化图像的Mat对象
+                        bitmapToThresholdMat(bitmap)
+                    }
+
+                    else -> {
+                        null
+                    }
+                }
+            } catch (e: Exception) {
+                // 发生异常时返回null
+                null
+            } finally {
+                bitmap.recycle()
+            }
+        }
+    }
+
 
     fun matToByteArray(mat: Mat): ByteArray {
         val size = (mat.total() * mat.elemSize()).toInt()
@@ -447,11 +528,25 @@ object MatUtils {
         // 创建一个 Mat 对象
         val mat = bitmapToMat(bitmap, coordinateArea);
         // 创建一个 HSV 格式的 Mat 对象
-        val hsvMat = Mat(mat.size(), CvType.CV_8UC1)
+        val grayMat = Mat(mat.size(), CvType.CV_8UC1)
         // 将 BGR 格式的 Mat 转换为 HSV 格式的 Mat
-        Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_BGR2GRAY)
+        Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_BGR2GRAY)
         mat.release()
-        return hsvMat;
+        return grayMat;
+    }
+
+    fun bitmapToThresholdMat(bitmap: Bitmap, coordinateArea: CoordinateArea? = null): Mat {
+        // 将 Bitmap 转换为 Mat
+        // 创建一个 Mat 对象
+        val mat = bitmapToMat(bitmap, coordinateArea);
+        // 创建一个 HSV 格式的 Mat 对象
+        val thresholdMat = Mat(mat.size(), CvType.CV_8UC1)
+        // 将 BGR 格式的 Mat 转换为 HSV 格式的 Mat
+        Imgproc.cvtColor(mat, thresholdMat, Imgproc.COLOR_BGR2GRAY)
+        mat.release()
+        //确保读的图依旧是二值化的
+        Imgproc.threshold(thresholdMat, thresholdMat, 127.0, 255.0, Imgproc.THRESH_BINARY)
+        return thresholdMat;
     }
 
 
@@ -913,7 +1008,7 @@ object MatUtils {
         return bgrMat
     }
 
-        /**
+    /**
      * 合并区域列表中距离较近的区域
      *
      * @param areaList 需要合并的区域列表
@@ -975,10 +1070,40 @@ object MatUtils {
 
             result.add(currentArea)
         }
-
         return result
     }
 
+    /**
+     * 计算两个二值化图像之间的相似度
+     * 通过计算相同像素点的比例来确定相似度
+     *
+     * @param mat1 第一个图像（已二值化）
+     * @param mat2 第二个图像（已二值化，模板图像）
+     * @return 相似度值，范围在0到1之间，1表示完全匹配
+     */
+    public fun calculateSimilarity(mat1: Mat, mat2: Mat): Double {
+        // 确保两个图像尺寸相同
+        if (mat1.size() != mat2.size()) {
+            Log.e(TAG, "calculateSimilarity 图像尺寸不匹配: ${mat1.size()} vs ${mat2.size()}")
+            return -1.0
+        }
+
+        // 计算相同像素点的数量
+        val comparisonMat = Mat()
+        org.opencv.core.Core.compare(mat1, mat2, comparisonMat, org.opencv.core.Core.CMP_EQ)
+
+        // 统计值为255的像素点数量（相同点）
+        val samePixels = org.opencv.core.Core.countNonZero(comparisonMat)
+
+        // 计算总像素数
+        val totalPixels = mat1.rows() * mat1.cols()
+
+        // 释放临时矩阵
+        comparisonMat.release()
+
+        // 返回相似度（相同像素点比例）
+        return samePixels.toDouble() / totalPixels.toDouble()
+    }
 
 
 }

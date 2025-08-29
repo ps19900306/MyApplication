@@ -20,7 +20,6 @@ abstract class ImgTake {
     companion object {
         //Need int() 这个必须初始化ImgTake的一个子类并赋值
         lateinit var imgTake: ImgTake
-
     }
 
     private var hsvMatMap = HashMap<CoordinateArea, Mat>()
@@ -41,6 +40,10 @@ abstract class ImgTake {
     protected fun clearLastBitMapCache() {
         lastMat?.release()
         lastMat = null
+        //遍历hsvMatMap
+        for (mat in hsvMatMap.values) {
+            mat.release()
+        }
         hsvMatMap.clear()
     }
 

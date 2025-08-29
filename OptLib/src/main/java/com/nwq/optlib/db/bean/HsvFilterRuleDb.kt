@@ -26,9 +26,9 @@ class HsvFilterRuleDb : MatResult {
     //对符合的范围设置为白色，不设置白色就是黑色
     var isWhite: Boolean = true
     override fun performOperations(srcMat: Mat, type: Int): Pair<Mat?, Int> {
-        val hsvMat = if (type == MatResult.MAT_TYPE_HSV) {
+        val hsvMat = if (type == MatUtils.MAT_TYPE_HSV) {
             srcMat
-        } else if (type == MatResult.MAT_TYPE_BGR) {
+        } else if (type == MatUtils.MAT_TYPE_BGR) {
             MatUtils.bgr2Hsv(srcMat)
         } else {
             Log.i("MatResult", "BinarizationByGray::不支持的类型")
@@ -60,7 +60,7 @@ class HsvFilterRuleDb : MatResult {
             lastMaskMat.release()
             lastMaskMat = tempMat
         }
-        return Pair(lastMaskMat, MatResult.MAT_TYPE_GRAY)
+        return Pair(lastMaskMat, MatUtils.MAT_TYPE_GRAY)
     }
 
     override fun codeString(): String {

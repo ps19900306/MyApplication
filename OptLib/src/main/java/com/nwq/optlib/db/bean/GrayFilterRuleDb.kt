@@ -30,11 +30,11 @@ class GrayFilterRuleDb : MatResult {
 
 
     override fun performOperations(srcMat: Mat, type: Int): Pair<Mat?, Int> {
-        val grayMat = if (type == MatResult.MAT_TYPE_GRAY) {
+        val grayMat = if (type == MatUtils.MAT_TYPE_GRAY) {
             srcMat
-        } else if (type == MatResult.MAT_TYPE_BGR) {
+        } else if (type == MatUtils.MAT_TYPE_BGR) {
             MatUtils.bgr2Gray(srcMat)
-        } else if (type == MatResult.MAT_TYPE_HSV) {
+        } else if (type == MatUtils.MAT_TYPE_HSV) {
             MatUtils.hsv2Gray(srcMat)
         } else {
             Log.i("MatResult", "BinarizationByGray::不支持的类型")
@@ -63,7 +63,7 @@ class GrayFilterRuleDb : MatResult {
             lastMaskMat.release()
             lastMaskMat = tempMat
         }
-        return Pair(lastMaskMat, MatResult.MAT_TYPE_GRAY)
+        return Pair(lastMaskMat, MatUtils.MAT_TYPE_GRAY)
     }
 
     override fun codeString(): String {

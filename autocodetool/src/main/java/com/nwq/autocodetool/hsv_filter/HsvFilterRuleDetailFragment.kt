@@ -44,7 +44,7 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
     private val viewModel: ComplexRecognitionViewModel by viewModels({ requireActivity() })
 
     private val hsvMat: Mat? by lazy {
-        viewModel.getHsvMat(args.isModify)
+        viewModel.getHsvMat(viewModel.getIndex(HsvFilterRuleDb::class.java))
     }
 
     private val srcBitMap: Bitmap? by lazy {
