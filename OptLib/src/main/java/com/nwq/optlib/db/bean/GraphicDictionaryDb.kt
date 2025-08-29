@@ -32,8 +32,6 @@ class GraphicDictionaryDb {
     var dictionaryMatList = mutableListOf<Mat>()
 
 
-
-
     suspend fun checkMatList(
         matList: List<Mat>,//待匹配的图
         areaList: List<CoordinateArea>//待匹配的图对应的区域
@@ -103,7 +101,6 @@ class GraphicDictionaryDb {
         }
         return result
     }
-
 
 
 }
