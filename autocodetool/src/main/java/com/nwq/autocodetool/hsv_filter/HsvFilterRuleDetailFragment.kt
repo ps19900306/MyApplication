@@ -29,6 +29,7 @@ import com.nwq.optlib.db.bean.HsvFilterRuleDb
 import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
 import com.nwq.view.TouchOptView
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.opencv.core.Mat
@@ -40,7 +41,7 @@ import org.opencv.core.Mat
 class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDetailBinding>() {
     private val TAG = HsvFilterRuleDetailFragment::class.java.simpleName
     private val args: HsvFilterRuleDetailFragmentArgs by navArgs()
-
+    var job: Job? = null //增加点或者区域选择颜色的
     private val viewModel: ComplexRecognitionViewModel by viewModels({ requireActivity() })
 
     private val hsvMat: Mat? by lazy {
@@ -119,14 +120,15 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
         val list2 = mCheckTextAdapter.removeSelectAndGet2().toMutableList()
         val rule = HSVRule(minH, maxH, minS, maxS, minV, maxV)
         list2.add(ICheckTextWrap<HSVRule>(rule) {
-            it.toString()
+            it.toStringSimple()
         })
         mCheckTextAdapter.upData(list2)
     }
 
 
     override fun onBackPress(): Boolean {
-        return false
+        findNavController().popBackStack()
+        return true
     }
 
 
@@ -137,7 +139,6 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
             binding.previewCoordinateView.nowPoint.collectLatest {
                 val bitmap = srcBitMap ?: return@collectLatest
                 val color = bitmap[it.x, it.y]
-                // opts.outConfig = Bitmap.Config.ARGB_8888
                 binding.draggableTextView.setBackgroundColor(color)
                 binding.draggableTextView.text = "(${it.x},${it.y})"
             }
@@ -161,7 +162,13 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
         binding.recycler.adapter = mCheckTextAdapter
 
         binding.srcImg.setImageBitmap(srcBitMap)
-
+        viewModel.getMatResultByClass(HsvFilterRuleDb::class.java)?.let { db ->
+            mCheckTextAdapter.upData(db.ruleList.map { pointHSVRule ->
+                ICheckTextWrap<HSVRule>(pointHSVRule) {
+                    it.toStringSimple()
+                }
+            })
+        }
     }
 
 
@@ -200,6 +207,8 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
         if (hsvMat == null) {
             return
         }
+        job?.cancel()
+        job = null;
         lifecycleScope.launch {
             binding.draggableTextView.isVisible = true
             val point = binding.previewCoordinateView.getPoint()
@@ -211,6 +220,7 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
                 })
             }
             binding.draggableTextView.isVisible = false
+            job = null
         }
     }
 
@@ -218,7 +228,9 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
         if (hsvMat == null) {
             return
         }
-        lifecycleScope.launch {
+        job?.cancel()
+        job = null;
+        job = lifecycleScope.launch {
             val area = binding.previewCoordinateView.getRectArea()
             MatUtils.getHsv(hsvMat!!, area.x, area.y, area.width, area.height)
                 ?.let { da ->
@@ -235,6 +247,7 @@ class HsvFilterRuleDetailFragment : AppToolBarFragment<FragmentHsvFilterRuleDeta
                         it.toStringSimple()
                     })
                 }
+            job = null;
         }
     }
 

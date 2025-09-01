@@ -6,13 +6,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
@@ -23,16 +28,19 @@ import com.nwq.autocodetool.databinding.FragmentComplexIndexBinding
 import com.nwq.autocodetool.hsv_filter.HsvFilterRuleDetailFragmentArgs
 import com.nwq.autocodetool.preview.PreviewOptItem
 import com.nwq.autocodetool.preview.PreviewViewModel
+import com.nwq.autocodetool.segment.SegmentMatInfo
 import com.nwq.autocodetool.segment.SegmentParameterDialog
 import com.nwq.base.BaseToolBar2Fragment
 
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseobj.PreviewCoordinateData
 import com.nwq.callback.CallBack
+import com.nwq.callback.CallBack2
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.loguitls.L
 
 import com.nwq.optlib.db.bean.CropAreaDb
+import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.view.TouchOptView
 import kotlinx.coroutines.launch
 
@@ -45,6 +53,8 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
     private val mOptItemDialog: OptItemDialog by lazy {
         OptItemDialog().setCallBack(callBack)
     }
+    private lateinit var mCheckTextAdapter: CheckTextAdapter<SegmentMatInfo>
+
 
     override fun createBinding(inflater: LayoutInflater): FragmentComplexIndexBinding {
         return FragmentComplexIndexBinding.inflate(inflater)
@@ -139,6 +149,33 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
 
     override fun initData() {
         super.initData()
+
+        mCheckTextAdapter = CheckTextAdapter(
+            layoutId = R.layout.item_segment_info,
+            textId = R.id.areaTv,
+            mLongClick = object : CallBack<SegmentMatInfo> {
+                override fun onCallBack(data: SegmentMatInfo) {
+
+                }
+            })
+        mCheckTextAdapter.setBindView(object : CallBack2<View, SegmentMatInfo> {
+            override fun onCallBack(
+                data: View,
+                data2: SegmentMatInfo
+            ) {
+                if (data2.mBitmap != null){
+                    data.findViewById<ImageView>(R.id.matImg).setImageBitmap(data2.mBitmap)
+                }
+                if (data2.flagStr != null){
+                    data.findViewById<TextView>(R.id.tagTv).text = data2.flagStr
+                }
+            }
+        })
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.adapter = mCheckTextAdapter
+
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.nowBitmapFlow.collect { bmp ->
@@ -150,12 +187,14 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.segmentAreaListFow.collect { list ->
                     if (list == null || list.isEmpty()) {
+                        mCheckTextAdapter.upData(listOf())
                         binding.previewCoordinateView.updateList(listOf())
                     } else {
+                        mCheckTextAdapter.upData(list)
                         binding.previewCoordinateView.updateList(
                             list.map {
                                 PreviewCoordinateData(
-                                    it,
+                                    it.coordinateArea!!,
                                     ContextCompat.getColor(
                                         requireContext(),
                                         com.nwq.baseutils.R.color.red
@@ -168,6 +207,9 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
                 }
             }
         }
+
+
+
     }
 
 

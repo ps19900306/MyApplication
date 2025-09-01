@@ -31,7 +31,7 @@ class HsvFilterRuleDb : MatResult {
         } else if (type == MatUtils.MAT_TYPE_BGR) {
             MatUtils.bgr2Hsv(srcMat)
         } else {
-            Log.i("MatResult", "BinarizationByGray::不支持的类型")
+            Log.i("MatResult", "BinarizationByGray::不支持的类型"+type)
             return Pair(null, type)
         }
 
@@ -60,7 +60,7 @@ class HsvFilterRuleDb : MatResult {
             lastMaskMat.release()
             lastMaskMat = tempMat
         }
-        return Pair(lastMaskMat, MatUtils.MAT_TYPE_GRAY)
+        return Pair(lastMaskMat, MatUtils.MAT_TYPE_THRESHOLD)
     }
 
     override fun codeString(): String {

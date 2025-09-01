@@ -21,6 +21,6 @@ class CropAreaDb() : MatResult {
     }
 
     override fun codeString(): String {
-        return "val cropArea = CropAreaDb() \n cropArea = ${coordinateArea.codeString()}\n"
+        return "val cropArea = CropAreaDb() \n cropArea.coordinateArea = ${coordinateArea.codeString()}\n"
     }
 }

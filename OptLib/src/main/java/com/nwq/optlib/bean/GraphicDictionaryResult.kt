@@ -1,4 +1,4 @@
-package com.nwq.optlib
+package com.nwq.optlib.bean
 
 import com.nwq.baseobj.CoordinateArea
 import org.opencv.core.Mat

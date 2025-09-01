@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MatUtils
 import com.nwq.loguitls.L
-import com.nwq.optlib.GraphicDictionaryResult
+import com.nwq.optlib.bean.GraphicDictionaryResult
 import org.opencv.core.Mat
 
 

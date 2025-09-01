@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nwq.autocodetool.segment.SegmentMatInfo
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.GsonUtils
 import com.nwq.baseutils.MatUtils
@@ -39,18 +40,18 @@ class ComplexRecognitionViewModel : ViewModel() {
 
     //分割后的参数详细间SegmentParameterDialog
     public var segmentParameter: IntArray = intArrayOf(0, 0, 0, 0, 0, 0)
-    public val segmentAreaListFow = MutableStateFlow<List<CoordinateArea>?>(null)
+    public val segmentAreaListFow = MutableStateFlow<List<SegmentMatInfo>?>(null)
 
 
-    public fun getGrayMat(isModify: Boolean = false): Mat? {
+    public fun getGrayMat(index: Int): Mat? {
         if (srcMat == null) {
             return null
         }
         if (nowStep <= 0) {
             return MatUtils.bgr2Gray(srcMat!!)
         }
-        val mat = matList.get(if (isModify) nowStep - 2 else nowStep - 1)
-        val type = typeList.get(if (isModify) nowStep - 2 else nowStep - 1)
+        val mat = matList.get(if (index == -1) nowStep - 1 else index - 1)
+        val type = typeList.get(if (index == -1) nowStep - 1 else index - 1)
 
         when (type) {
             MatUtils.MAT_TYPE_BGR -> {
@@ -66,11 +67,6 @@ class ComplexRecognitionViewModel : ViewModel() {
             }
         }
         return null
-    }
-
-    public fun getIndex(targetClass: Class<out MatResult>): Int {
-        val index = optList.indexOfFirst { targetClass.isInstance(it) }
-        return index
     }
 
     public fun getHsvMat(index: Int): Mat? {
@@ -91,10 +87,26 @@ class ComplexRecognitionViewModel : ViewModel() {
             MatUtils.MAT_TYPE_HSV -> {
                 return mat
             }
-
         }
         return null
     }
+
+
+
+    public fun getIndex(targetClass: Class<out MatResult>): Int {
+        val index = optList.indexOfFirst { targetClass.isInstance(it) }
+        return index
+    }
+
+    public fun <T : MatResult> getMatResultByClass(targetClass: Class<T>): T? {
+        val index = optList.indexOfFirst { targetClass.isInstance(it) }
+        if (index == -1) {
+            return null
+        }
+        return targetClass.cast(optList[index])
+    }
+
+
 
 
     public fun getCropArea(): CoordinateArea? {
@@ -186,7 +198,7 @@ class ComplexRecognitionViewModel : ViewModel() {
                 _nowBitmapFlow.tryEmit(MatUtils.hsvMatToBitmap(mat))
             }
 
-            MatUtils.MAT_TYPE_GRAY ,MatUtils.MAT_TYPE_THRESHOLD-> {
+            MatUtils.MAT_TYPE_GRAY, MatUtils.MAT_TYPE_THRESHOLD -> {
                 _nowBitmapFlow.tryEmit(MatUtils.grayMatToBitmap(mat))
             }
         }
@@ -295,8 +307,9 @@ class ComplexRecognitionViewModel : ViewModel() {
             T.show("请先选择图片")
             return
         }
+
         segmentParameter = data
-        if (typeList.last() == MatUtils.MAT_TYPE_GRAY) {
+        if (typeList.last() == MatUtils.MAT_TYPE_THRESHOLD) {
             var areaList = MatUtils.segmentImageByConnectedRegions(
                 matList.last(),
                 data[0],
@@ -307,7 +320,17 @@ class ComplexRecognitionViewModel : ViewModel() {
             if (segmentParameter[4] > 0 || segmentParameter[5] > 0) {
                 areaList = MatUtils.mergeRegions(areaList, segmentParameter[4], segmentParameter[5])
             }
-            segmentAreaListFow.tryEmit(areaList)
+            val mat = matList.last()
+            val resultList= areaList.map {
+                val nowMat = MatUtils.cropMat(mat, it)
+                val bitmap = MatUtils.grayMatToBitmap( nowMat)
+                val info =  SegmentMatInfo()
+                info.mMat = nowMat
+                info.mBitmap = bitmap
+                info.coordinateArea = it
+                info
+            }
+            segmentAreaListFow.tryEmit(resultList)
         } else {
             T.show("只能对二值图进行分割")
         }

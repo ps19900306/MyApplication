@@ -1049,7 +1049,7 @@ object MatUtils {
                 }
 
                 // 如果X轴或Y轴距离小于阈值，则合并区域
-                if (xDistance <= spaceW || yDistance <= spaceH) {
+                if (xDistance <= spaceW && yDistance <= spaceH) {
                     val minX = minOf(currentArea.x, otherArea.x)
                     val minY = minOf(currentArea.y, otherArea.y)
                     val maxX =

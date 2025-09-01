@@ -17,7 +17,10 @@ import com.nwq.autocodetool.databinding.FragmentGrayscaleBinarizationBinding
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.singleClick
 import com.nwq.optlib.bean.GrayRule
+import com.nwq.optlib.bean.HSVRule
 import com.nwq.optlib.db.bean.GrayFilterRuleDb
+import com.nwq.optlib.db.bean.HsvFilterRuleDb
+import com.nwq.simplelist.ICheckTextWrap
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -31,7 +34,7 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
     private val viewModel: ComplexRecognitionViewModel by viewModels({ requireActivity() })
 
     private val grayMat: Mat? by lazy {
-        viewModel.getGrayMat(args.isModify)
+        viewModel.getGrayMat(viewModel.getIndex(GrayFilterRuleDb::class.java))
     }
 
     private val list = mutableListOf<GrayRule>()
@@ -97,8 +100,8 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
 
         binding.addBtn.singleClick {
             list.add(GrayRule(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI))
-            minI=0
-            maxI=255
+            minI = 0
+            maxI = 255
             binding.etMin.setText("0")
             binding.etMax.setText("255")
             binding.sbMin.progress = 0
@@ -124,6 +127,11 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
                 }
             }
         }
+//        viewModel.getMatResultByClass(GrayFilterRuleDb::class.java)?.let { db ->
+//            db.ruleList.forEach {
+//                list.add(GrayRule(it.min, it.max))
+//            }
+//        }
     }
 
 
