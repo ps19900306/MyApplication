@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nwq.autocodetool.AppToolBarFragment
+import com.nwq.autocodetool.R
 import com.nwq.autocodetool.databinding.FragmentGrayscaleBinarizationBinding
 import com.nwq.autocodetool.hsv_filter.ModifyHsvDialog
 import com.nwq.baseutils.MatUtils
@@ -41,7 +42,7 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
     private val grayMat: Mat? by lazy {
         viewModel.getGrayMat(viewModel.getIndex(GrayFilterRuleDb::class.java))
     }
-    private lateinit var mTextAdapter: TextAdapter<GrayRule>
+    private lateinit var mTextAdapter: CheckTextAdapter<GrayRule>
 
 
     private val updateSignalFlow: MutableStateFlow<Int> = MutableStateFlow(Int.MIN_VALUE)
@@ -56,19 +57,76 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
 
     //实际并不会使用 只是保持格式
     override fun getMenuRes(): Int {
-        return NO_MENU
+        return R.menu.menu_filter_rule
     }
 
     //实际并不会使用 只是保持格式
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
-        return true
+        var flag = true
+        when (menuItem.itemId) {
+            R.id.action_save -> {
+                val grayRule =
+                    GrayRule(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI)
+                mTextAdapter.addData(ICheckTextWrap<GrayRule>(grayRule) {
+                    it.codeString()
+                })
+
+                val grayFilterRule = GrayFilterRuleDb().apply {
+                    this.ruleList = mTextAdapter.list.map { it.getT() }
+                }
+                viewModel.checkAndAddOpt(grayFilterRule, GrayFilterRuleDb::class.java)
+                onBackPress()
+            }
+
+            R.id.action_add -> {
+                val grayRule =
+                    GrayRule(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI)
+                mTextAdapter.addData(ICheckTextWrap<GrayRule>(grayRule) {
+                    it.codeString()
+                })
+                minI = 0
+                maxI = 255
+                binding.etMin.setText("0")
+                binding.etMax.setText("255")
+                binding.sbMin.progress = 0
+                binding.sbMax.progress = 255
+            }
+
+            R.id.action_delete_select -> {
+                mTextAdapter.removeSelectAndGet()
+            }
+
+            R.id.action_delete_all -> {
+                mTextAdapter.upData(listOf())
+            }
+
+            R.id.action_merge_select -> {
+                mergeSelect()
+            }
+
+            else -> {
+                flag = false
+            }
+        }
+        return flag
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        fullScreen()
+    //合并选中的 过滤规则
+    private fun mergeSelect() {
+        val list = mTextAdapter.getSelectedItem().map { it.getT() }
+        if (list.isEmpty() || list.size == 1)
+            return
+        val min = list.minByOrNull { it.min }?.min ?: 0
+        val max = list.maxByOrNull { it.max }?.max ?: 255
+        val list2 = mTextAdapter.removeSelectAndGet2().toMutableList()
+        val rule = GrayRule(min, max)
+        list2.add(ICheckTextWrap<GrayRule>(rule) {
+            it.codeString()
+        })
+        mTextAdapter.upData(list2)
     }
+
 
     override fun onBackPress(): Boolean {
         findNavController().popBackStack()
@@ -95,33 +153,7 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
             maxI = i
             sendUpdateSignal()
         }
-        binding.saveBtn.singleClick {
-            val grayRule =
-                GrayRule(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI)
-            mTextAdapter.addData(ICheckTextWrap<GrayRule>(grayRule) {
-                it.codeString()
-            })
 
-            val grayFilterRule = GrayFilterRuleDb().apply {
-                this.ruleList = mTextAdapter.list.map { it.getT() }
-            }
-            viewModel.checkAndAddOpt(grayFilterRule, GrayFilterRuleDb::class.java)
-            onBackPress()
-        }
-
-        binding.addBtn.singleClick {
-            val grayRule =
-                GrayRule(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI)
-            mTextAdapter.addData(ICheckTextWrap<GrayRule>(grayRule) {
-                it.codeString()
-            })
-            minI = 0
-            maxI = 255
-            binding.etMin.setText("0")
-            binding.etMax.setText("255")
-            binding.sbMin.progress = 0
-            binding.sbMax.progress = 255
-        }
     }
 
     override fun initData() {
@@ -145,7 +177,7 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
 
 
         binding.recycler.layoutManager = LinearLayoutManager(requireContext())
-        mTextAdapter = TextAdapter()
+        mTextAdapter = CheckTextAdapter()
         binding.recycler.adapter = mTextAdapter
 
         viewModel.getMatResultByClass(GrayFilterRuleDb::class.java)?.let { db ->
