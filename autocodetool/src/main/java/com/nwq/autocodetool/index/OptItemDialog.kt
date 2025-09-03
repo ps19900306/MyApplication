@@ -34,7 +34,7 @@ class OptItemDialog : BaseDialogFragment<DialogOptItemBinding>() {
             listOf<IText<Int>>(
                 TextResWarp( com.nwq.baseutils.R.string.grayscale_binarization),
                 TextResWarp( com.nwq.baseutils.R.string.h_s_v_binarization),
-//                TextResWarp( com.nwq.baseutils.R.string.h_s_v_binarization_c),
+//              TextResWarp( com.nwq.baseutils.R.string.h_s_v_binarization_c),
             )
         )
         binding.corpRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
