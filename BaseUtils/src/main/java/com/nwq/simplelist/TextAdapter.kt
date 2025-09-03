@@ -58,6 +58,10 @@ class TextAdapter<T>(
         }
     }
 
+    public fun addData(item: ICheckText<T>) {
+        list.add(item)
+        notifyItemInserted(list.size - 1)
+    }
 
     /**
      * 创建并返回一个新的 ViewHolder 实例。

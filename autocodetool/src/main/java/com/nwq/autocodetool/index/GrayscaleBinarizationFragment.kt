@@ -12,15 +12,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.nwq.autocodetool.AppToolBarFragment
 import com.nwq.autocodetool.databinding.FragmentGrayscaleBinarizationBinding
+import com.nwq.autocodetool.hsv_filter.ModifyHsvDialog
 import com.nwq.baseutils.MatUtils
 import com.nwq.baseutils.singleClick
+import com.nwq.callback.CallBack
 import com.nwq.optlib.bean.GrayRule
 import com.nwq.optlib.bean.HSVRule
 import com.nwq.optlib.db.bean.GrayFilterRuleDb
 import com.nwq.optlib.db.bean.HsvFilterRuleDb
+import com.nwq.simplelist.CheckTextAdapter
 import com.nwq.simplelist.ICheckTextWrap
+import com.nwq.simplelist.TextAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -36,8 +41,9 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
     private val grayMat: Mat? by lazy {
         viewModel.getGrayMat(viewModel.getIndex(GrayFilterRuleDb::class.java))
     }
+    private lateinit var mTextAdapter: TextAdapter<GrayRule>
 
-    private val list = mutableListOf<GrayRule>()
+
     private val updateSignalFlow: MutableStateFlow<Int> = MutableStateFlow(Int.MIN_VALUE)
 
 
@@ -90,16 +96,25 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
             sendUpdateSignal()
         }
         binding.saveBtn.singleClick {
-            list.add(GrayRule(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI))
+            val grayRule =
+                GrayRule(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI)
+            mTextAdapter.addData(ICheckTextWrap<GrayRule>(grayRule) {
+                it.codeString()
+            })
+
             val grayFilterRule = GrayFilterRuleDb().apply {
-                this.ruleList = list
+                this.ruleList = mTextAdapter.list.map { it.getT() }
             }
             viewModel.checkAndAddOpt(grayFilterRule, GrayFilterRuleDb::class.java)
             onBackPress()
         }
 
         binding.addBtn.singleClick {
-            list.add(GrayRule(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI))
+            val grayRule =
+                GrayRule(if (minI > maxI) maxI else minI, if (minI > maxI) minI else maxI)
+            mTextAdapter.addData(ICheckTextWrap<GrayRule>(grayRule) {
+                it.codeString()
+            })
             minI = 0
             maxI = 255
             binding.etMin.setText("0")
@@ -127,11 +142,19 @@ class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinari
                 }
             }
         }
-//        viewModel.getMatResultByClass(GrayFilterRuleDb::class.java)?.let { db ->
-//            db.ruleList.forEach {
-//                list.add(GrayRule(it.min, it.max))
-//            }
-//        }
+
+
+        binding.recycler.layoutManager = LinearLayoutManager(requireContext())
+        mTextAdapter = TextAdapter()
+        binding.recycler.adapter = mTextAdapter
+
+        viewModel.getMatResultByClass(GrayFilterRuleDb::class.java)?.let { db ->
+            mTextAdapter.upData(db.ruleList.map { grayRule ->
+                ICheckTextWrap<GrayRule>(grayRule) {
+                    it.codeString()
+                }
+            })
+        }
     }
 
 
