@@ -64,7 +64,7 @@ class GrayFilterRuleDb : MatResult {
             lastMaskMat.release()
             lastMaskMat = tempMat
         }
-        return Pair(lastMaskMat, MatUtils.MAT_TYPE_GRAY)
+        return Pair(lastMaskMat, MatUtils.MAT_TYPE_THRESHOLD)
     }
 
     override fun getType(): Int {

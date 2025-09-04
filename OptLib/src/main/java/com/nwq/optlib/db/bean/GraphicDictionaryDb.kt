@@ -7,6 +7,7 @@ import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MatUtils
 import com.nwq.loguitls.L
 import com.nwq.optlib.bean.GraphicDictionaryResult
+import kotlinx.serialization.descriptors.PrimitiveKind
 import org.opencv.core.Mat
 
 
@@ -20,7 +21,6 @@ class GraphicDictionaryDb {
     var keyTag: String = ""
 
     var description: String = ""
-
 
     var dictionaryNameList = mutableListOf<String>()
 
