@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.MatUtils
 import com.nwq.optlib.MatResult
+import com.nwq.optlib.MatResult.Companion.TYPE_CROP_AREA
 import org.opencv.core.Mat
 
 @Entity(tableName = "crop_area")
@@ -18,6 +19,10 @@ class CropAreaDb() : MatResult {
 
     override fun performOperations(srcMat: Mat, type: Int): Pair<Mat?, Int> {
         return Pair(MatUtils.cropMat(srcMat, coordinateArea), type)
+    }
+
+    override fun getType(): Int {
+        return TYPE_CROP_AREA
     }
 
     override fun codeString(): String {

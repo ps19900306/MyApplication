@@ -8,6 +8,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.nwq.optlib.db.bean.CropAreaDb
 import com.nwq.optlib.db.bean.GrayFilterRuleDb
 import kotlinx.coroutines.flow.Flow
 
@@ -21,6 +22,8 @@ interface GrayFilterRuleDao {
     @Query("SELECT * FROM gray_filter_rule WHERE keyTag = :keyTag")
     fun findByKeyTag(keyTag: String): GrayFilterRuleDb?
 
+    @Query("SELECT * FROM gray_filter_rule WHERE id = :id")
+    fun findById(id: Long): GrayFilterRuleDb?
     // 根据 keyTag 查询
     @Query("SELECT * FROM gray_filter_rule WHERE keyTag = :keyTag")
     fun findByKeyTagFlow(keyTag: String): Flow<GrayFilterRuleDb>?

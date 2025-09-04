@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseutils.MatUtils
 import com.nwq.optlib.MatResult
+import com.nwq.optlib.MatResult.Companion.TYPE_GRAY_FILTER_RULE
 import com.nwq.optlib.bean.GrayRule
 import com.nwq.optlib.db.converters.GrayRuleConverters
 import org.opencv.core.Mat
@@ -64,6 +65,10 @@ class GrayFilterRuleDb : MatResult {
             lastMaskMat = tempMat
         }
         return Pair(lastMaskMat, MatUtils.MAT_TYPE_GRAY)
+    }
+
+    override fun getType(): Int {
+       return TYPE_GRAY_FILTER_RULE
     }
 
     override fun codeString(): String {

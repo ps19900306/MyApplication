@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.nwq.baseutils.MatUtils
 import com.nwq.optlib.MatResult
+import com.nwq.optlib.MatResult.Companion.TYPE_HSV_FILTER_RULE
 import com.nwq.optlib.bean.HSVRule
 import com.nwq.optlib.db.converters.HSVRuleConverters
 import org.opencv.core.Mat
@@ -61,6 +62,10 @@ class HsvFilterRuleDb : MatResult {
             lastMaskMat = tempMat
         }
         return Pair(lastMaskMat, MatUtils.MAT_TYPE_THRESHOLD)
+    }
+
+    override fun getType(): Int {
+       return TYPE_HSV_FILTER_RULE
     }
 
     override fun codeString(): String {

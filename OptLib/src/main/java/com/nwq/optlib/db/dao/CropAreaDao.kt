@@ -12,7 +12,10 @@ import kotlinx.coroutines.flow.Flow
 interface CropAreaDao {
 
     @Query("SELECT * FROM crop_area WHERE keyTag = :keyTag")
-    fun findByKeyTag(keyTag: String): CropAreaDb
+    fun findByKeyTag(keyTag: String): CropAreaDb?
+
+    @Query("SELECT * FROM crop_area WHERE id = :id")
+    fun findById(id: Long): CropAreaDb?
 
     @Delete
     fun delete(entity: CropAreaDb)

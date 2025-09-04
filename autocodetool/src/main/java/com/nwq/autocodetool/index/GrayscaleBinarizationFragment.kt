@@ -36,15 +36,12 @@ import org.opencv.core.Mat
 
 class GrayscaleBinarizationFragment : AppToolBarFragment<FragmentGrayscaleBinarizationBinding>() {
 
-    private val args: GrayscaleBinarizationFragmentArgs by navArgs()
-    private val viewModel: ComplexRecognitionViewModel by viewModels({ requireActivity() })
 
+    private val viewModel: ComplexRecognitionViewModel by viewModels({ requireActivity() })
     private val grayMat: Mat? by lazy {
         viewModel.getGrayMat(viewModel.getIndex(GrayFilterRuleDb::class.java))
     }
     private lateinit var mTextAdapter: CheckTextAdapter<GrayRule>
-
-
     private val updateSignalFlow: MutableStateFlow<Int> = MutableStateFlow(Int.MIN_VALUE)
 
 
