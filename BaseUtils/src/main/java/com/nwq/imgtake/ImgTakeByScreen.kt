@@ -18,7 +18,6 @@ class ImgTakeByScreen(val acService: AccessibilityService) : ImgTake() {
 
 
 
-
     @RequiresApi(Build.VERSION_CODES.R)
     override suspend fun takeScreenImg(): Bitmap? = suspendCoroutine {
         lastImg?.recycle()
