@@ -42,6 +42,8 @@ class ComplexRecognitionViewModel : ViewModel() {
     public var segmentParameter: IntArray = intArrayOf(0, 0, 0, 0, 0, 0)
     public val segmentAreaListFow = MutableStateFlow<List<SegmentMatInfo>?>(null)
 
+    //已经保存的信息
+    public val saveSegmentList = mutableListOf<SegmentMatInfo>()
 
     public fun getGrayMat(index: Int): Mat? {
         if (srcMat == null) {
