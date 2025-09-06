@@ -1,4 +1,4 @@
-package com.nwq.autocodetool.segment
+package com.nwq.optlib.bean
 
 import android.graphics.Bitmap
 import com.nwq.baseobj.CoordinateArea

@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nwq.autocodetool.segment.SegmentMatInfo
+import com.nwq.optlib.bean.SegmentMatInfo
 import com.nwq.baseobj.CoordinateArea
 import com.nwq.baseutils.GsonUtils
 import com.nwq.baseutils.MatUtils

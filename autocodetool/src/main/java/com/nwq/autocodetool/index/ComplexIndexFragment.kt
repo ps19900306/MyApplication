@@ -28,7 +28,7 @@ import com.nwq.autocodetool.databinding.FragmentComplexIndexBinding
 import com.nwq.autocodetool.hsv_filter.HsvFilterRuleDetailFragmentArgs
 import com.nwq.autocodetool.preview.PreviewOptItem
 import com.nwq.autocodetool.preview.PreviewViewModel
-import com.nwq.autocodetool.segment.SegmentMatInfo
+import com.nwq.optlib.bean.SegmentMatInfo
 import com.nwq.autocodetool.segment.SegmentParameterDialog
 import com.nwq.base.BaseToolBar2Fragment
 

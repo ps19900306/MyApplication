@@ -22,6 +22,7 @@ class GraphicDictionaryDb {
 
     var description: String = ""
 
+    //存放图片已经字典匹配后显示的字符串
     var dictionaryNameList = mutableListOf<String>()
 
     //这个文件存放的类型现在考虑放外部存储或者asset文件夹 测试时候考虑为外部 打包时候考虑放asset
