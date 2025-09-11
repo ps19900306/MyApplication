@@ -28,6 +28,7 @@ import com.nwq.autocodetool.databinding.FragmentComplexIndexBinding
 import com.nwq.autocodetool.hsv_filter.HsvFilterRuleDetailFragmentArgs
 import com.nwq.autocodetool.preview.PreviewOptItem
 import com.nwq.autocodetool.preview.PreviewViewModel
+import com.nwq.autocodetool.segment.SegmentMatDialog
 import com.nwq.optlib.bean.SegmentMatInfo
 import com.nwq.autocodetool.segment.SegmentParameterDialog
 import com.nwq.base.BaseToolBar2Fragment
@@ -77,7 +78,6 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
                 result.getString(ConstantKeyStr.SELECTED_RESULT)?.let { keyTag ->
                     viewModel.addHsvRule(keyTag)
                 }
-
             })
     }
 
@@ -149,13 +149,12 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
 
     override fun initData() {
         super.initData()
-
         mCheckTextAdapter = CheckTextAdapter(
             layoutId = R.layout.item_segment_info,
             textId = R.id.areaTv,
             mLongClick = object : CallBack<SegmentMatInfo> {
                 override fun onCallBack(data: SegmentMatInfo) {
-
+                    SegmentMatDialog(data).show(requireActivity().supportFragmentManager, "SegmentMatDialog")
                 }
             })
         mCheckTextAdapter.setBindView(object : CallBack2<View, SegmentMatInfo> {
@@ -207,9 +206,6 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
                 }
             }
         }
-
-
-
     }
 
 
