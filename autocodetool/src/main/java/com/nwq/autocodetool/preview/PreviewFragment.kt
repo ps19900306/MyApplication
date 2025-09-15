@@ -17,7 +17,6 @@ import com.nwq.baseutils.T
 import com.nwq.callback.CallBack
 import com.nwq.simplelist.TextAdapter
 import com.nwq.simplelist.TextWarp
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
