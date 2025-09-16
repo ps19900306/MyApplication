@@ -94,7 +94,6 @@ class ComplexRecognitionViewModel : ViewModel() {
     }
 
 
-
     public fun getIndex(targetClass: Class<out MatResult>): Int {
         val index = optList.indexOfFirst { targetClass.isInstance(it) }
         return index
@@ -109,8 +108,6 @@ class ComplexRecognitionViewModel : ViewModel() {
     }
 
 
-
-
     public fun getCropArea(): CoordinateArea? {
         return mCropArea
     }
@@ -123,6 +120,10 @@ class ComplexRecognitionViewModel : ViewModel() {
         } else {
             reExecute();
         }
+    }
+
+    public fun getOptList(): List<MatResult> {
+        return optList
     }
 
 
@@ -323,10 +324,10 @@ class ComplexRecognitionViewModel : ViewModel() {
                 areaList = MatUtils.mergeRegions(areaList, segmentParameter[4], segmentParameter[5])
             }
             val mat = matList.last()
-            val resultList= areaList.map {
+            val resultList = areaList.map {
                 val nowMat = MatUtils.cropMat(mat, it)
-                val bitmap = MatUtils.grayMatToBitmap( nowMat)
-                val info =  SegmentMatInfo()
+                val bitmap = MatUtils.grayMatToBitmap(nowMat)
+                val info = SegmentMatInfo()
                 info.mMat = nowMat
                 info.mBitmap = bitmap
                 info.coordinateArea = it
@@ -336,6 +337,16 @@ class ComplexRecognitionViewModel : ViewModel() {
         } else {
             T.show("只能对二值图进行分割")
         }
+    }
+
+    fun updateOptList(data: List<MatResult>) {
+        // 对比 数据  optList 和 data 是否完全一致
+        if (optList.size == data.size && optList.containsAll(data) && data.containsAll(optList)) {
+            return
+        }
+        optList.clear()
+        optList.addAll(data)
+        rereExecute(0);
     }
 
 }

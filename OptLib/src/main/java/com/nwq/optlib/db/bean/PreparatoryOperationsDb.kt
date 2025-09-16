@@ -56,7 +56,6 @@ class PreparatoryOperationsDb {
                     MatResult.TYPE_HSV_FILTER_RULE -> {
                         hsvFilterRuleDao.findById(idList[index])
                     }
-
                     else -> null
                 }
                 if (matResult != null) {

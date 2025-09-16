@@ -46,7 +46,6 @@ class TakeImgAccessibilityService : AccessibilityService(), RequestParameter<Bit
                         val srcBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
                         bitmap?.recycle()
                         screenshotResult.hardwareBuffer.close()
-
                         continuation.resume(srcBitmap)
                     }
 
@@ -55,10 +54,6 @@ class TakeImgAccessibilityService : AccessibilityService(), RequestParameter<Bit
                     }
                 }
             )
-
-//            continuation.invokeOnCancellation {
-//                // Handle cancellation if needed
-//            }
         }
     }
 

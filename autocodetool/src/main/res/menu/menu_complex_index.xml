@@ -20,14 +20,15 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_edit_opt_ser"
+        android:orderInCategory="100"
+        android:title="编辑顺序"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_above"
         android:orderInCategory="100"
         android:title="上一步"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_next"
-        android:orderInCategory="100"
-        android:title="下一步"
-        app:showAsAction="never" />
 </menu>

@@ -25,6 +25,7 @@ import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.nwq.autocodetool.R
 import com.nwq.autocodetool.databinding.FragmentComplexIndexBinding
+import com.nwq.autocodetool.edit_operation_sequence.EditOperationSequenceDialog
 import com.nwq.autocodetool.hsv_filter.HsvFilterRuleDetailFragmentArgs
 import com.nwq.autocodetool.preview.PreviewOptItem
 import com.nwq.autocodetool.preview.PreviewViewModel
@@ -39,6 +40,7 @@ import com.nwq.callback.CallBack
 import com.nwq.callback.CallBack2
 import com.nwq.constant.ConstantKeyStr
 import com.nwq.loguitls.L
+import com.nwq.optlib.MatResult
 
 import com.nwq.optlib.db.bean.CropAreaDb
 import com.nwq.simplelist.CheckTextAdapter
@@ -96,6 +98,16 @@ class ComplexIndexFragment : BaseToolBar2Fragment<FragmentComplexIndexBinding>()
 
             R.id.action_corp_picture -> {
                 cropPicture()
+            }
+            R.id.action_edit_opt_ser->{
+                EditOperationSequenceDialog()
+                    .setOperations(viewModel.getOptList())
+                    .setCallback(object : CallBack<List<MatResult>> {
+                        override fun onCallBack(data: List<MatResult>) {
+                            viewModel.updateOptList(data)
+                        }
+                    })
+                    .show(requireActivity().supportFragmentManager, "EditOperationSequenceDialog")
             }
 
             R.id.action_opt_list -> {
